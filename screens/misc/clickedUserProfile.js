@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Modal, Image, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions,  Image, ActivityIndicator } from 'react-native'
 import Firebase from '../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
-import { Ionicons } from '@expo/vector-icons';
+import Modal from 'react-native-modal';
 
 import FeedCellClass from '../cells/feedCellClass';
 
@@ -346,25 +346,20 @@ class ClickedUserProfile extends React.Component {
         return (
             <View style = {styles.container}>
                     <Modal
-                            animationType="slide"
-                            visible={this.state.modalOpen}
-                            presentationStyle="pageSheet"
-                            onDismiss={() => this.closeImageModal()}
-                        >
-                            
-                        <View  style={{flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                            <TouchableOpacity 
-                                style={{padding: 15}}
-                                onPress = { () => this.closeImageModal() }>
-                                <Ionicons name="ios-close-circle" size={30} color="red" />
-                            </TouchableOpacity>
+                        isVisible={this.state.modalOpen}
+                        animationIn='fadeIn'
+                        onSwipeComplete={() => this.closeImageModal()}
+                        swipeDirection="down"
+                    >
+                
+                    <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
 
-                            <Image
-                                source={{ uri: this.state.storage_image_uri }}
-                                style={styles.fullScreenImage}
-                            />
-                        </View>
-                    </Modal>
+                        <Image
+                            source={{ uri: this.state.storage_image_uri }}
+                            style={styles.fullScreenImage}
+                        />
+                    </View>
+                </Modal>
                     
                     <View style={{ flexDirection: "row", paddingBottom: 20 }}>
                         <Text style = {styles.subheader}> {this.state.posterUsername}'s profile </Text>

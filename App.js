@@ -35,6 +35,10 @@ import LossScreenshot from './screens/create/createLoss/lossScreenshot'
 import LossTrade from './screens/create/createLoss/lossTradeInfo'
 import LossTradeNumbers from './screens/create/createLoss/lossTradeNumbers'
 import LossTradeConfirm from './screens/create/createLoss/lossTradeConfirm'
+import YoloScreenshot from './screens/create/createTrade/yoloScreenshot'
+import YoloTrade from './screens/create/createTrade/yoloInfo'
+import YoloNumbers from './screens/create/createTrade/yoloNumbers'
+import YoloConfirm from './screens/create/createTrade/yoloConfirm'
 
 
 //Cells
@@ -504,6 +508,97 @@ function createFlowStack() {
           <CreateStack.Screen 
               name="LossTradeConfirm" 
               component={LossTradeConfirm} 
+              options={({ navigation }) => ({
+                headerRight: () => (
+                  <Button 
+                      onPress={() => 
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'Create' }],
+                        })}
+                      title="Cancel"
+                      color="red" />
+                  ),
+                  headerBackTitle: "",
+                  headerStyle: {
+                    backgroundColor: '#000000',
+                    shadowColor: 'transparent'
+                  },
+                  headerTitle: ""
+      
+              })}/>
+              <CreateStack.Screen 
+              name="YoloScreenshot" 
+              component={YoloScreenshot} 
+              options={({ navigation }) => ({
+                headerRight: () => (
+                  <Button 
+                      onPress={() => 
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'Create' }],
+                        })}
+                      title="Cancel"
+                      color="red" />
+                  ),
+                  headerBackTitle: "",
+                  headerStyle: {
+                    backgroundColor: '#000000',
+                    shadowColor: 'transparent'
+                  },
+                  headerTitle: ""
+      
+              })}/>
+
+          <CreateStack.Screen 
+              name="YoloTrade" 
+              component={YoloTrade} 
+              options={({ navigation }) => ({
+                headerRight: () => (
+                  <Button 
+                      onPress={() => 
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'Create' }],
+                        })}
+                      title="Cancel"
+                      color="red" />
+                  ),
+                  headerBackTitle: "",
+                  headerStyle: {
+                    backgroundColor: '#000000',
+                    shadowColor: 'transparent'
+                  },
+                  headerTitle: ""
+      
+              })}/>
+
+          <CreateStack.Screen 
+              name="YoloNumbers" 
+              component={YoloNumbers} 
+              options={({ navigation }) => ({
+                headerRight: () => (
+                  <Button 
+                      onPress={() => 
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'Create' }],
+                        })}
+                      title="Cancel"
+                      color="red" />
+                  ),
+                  headerBackTitle: "",
+                  headerStyle: {
+                    backgroundColor: '#000000',
+                    shadowColor: 'transparent'
+                  },
+                  headerTitle: ""
+      
+              })}/>
+
+          <CreateStack.Screen 
+              name="YoloConfirm" 
+              component={YoloConfirm} 
               options={({ navigation }) => ({
                 headerRight: () => (
                   <Button 

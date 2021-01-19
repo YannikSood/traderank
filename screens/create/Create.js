@@ -27,7 +27,7 @@ class Create extends React.Component {
                 <Text style={styles.subheaderText}>open postions [unrealized] - not done yet</Text>
 
                 <TouchableOpacity 
-                    onPress={() => this.props.navigation.navigate('Create')}
+                    onPress={() => this.props.navigation.navigate('YoloScreenshot')}
                     style={styles.yoloButton}>
 
                         <Text style={styles.buttonText}>post yolo 🙏</Text>

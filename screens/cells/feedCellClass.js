@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
+import {  Alert, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
 import Firebase from '../../firebase'
 import LikeComponent from './FFCcomponents/likeComponent'
 import UserComponent from './FFCcomponents/userComponent'
 import CommentIconComponent from './FFCcomponents/commentIconComponent'
-import DeleteComponent from './CUPFcomponents/deleteComponent'
+import DeleteComponent from './FFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
+import Modal from 'react-native-modal';
 
 
 
@@ -31,7 +32,8 @@ class FeedCellClass extends React.Component{
             isLoading: false,
             currentUser: Firebase.auth().currentUser.uid,
             posterUID: this.props.uid,
-            currentUserPosted: false
+            currentUserPosted: false,
+            modalOpen: false,
         }
     }
 
@@ -39,7 +41,6 @@ class FeedCellClass extends React.Component{
         if (this.state.posterUID == this.state.currentUser) {
             this.setState({ currentUserPosted: true })
         }
-        // moment(this.state.date_created.t.seconds, "x").format("DD MMM YYYY hh:mm a")
     }
 
     renderGainLoss = () => {
@@ -58,15 +59,25 @@ class FeedCellClass extends React.Component{
                 
             )
         }
+        else if (this.state.gain_loss == "loss") {
+            return (
+                <Text style={styles.pnlContainer}>
+                    <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
+                    <Text style={styles.tradeText}>  🥴  </Text>
+                    <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
+                    <View style={styles.timeContainer}>
+
+                        <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
+                            
+                    </View>
+                </Text>
+            )
+        }
         return (
             <Text style={styles.pnlContainer}>
-                <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
-                <Text style={styles.tradeText}>  🥴  </Text>
-                <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
+                <Text style={styles.yoloText}>${this.state.profit_loss} yolo 🙏</Text>
                 <View style={styles.timeContainer}>
-
                     <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                        
                 </View>
             </Text>
         )
@@ -139,6 +150,14 @@ class FeedCellClass extends React.Component{
         }
         
     }
+
+    openImageModal = () => {
+        this.setState({modalOpen: true})
+    }
+
+    closeImageModal = () => {
+        this.setState({modalOpen: false})
+    }
     
 
 
@@ -146,9 +165,26 @@ class FeedCellClass extends React.Component{
     render() {
         
         return (
-            <View style={{flex:1, color: '#FFFFFF'}}>
+            <View style={styles.gainFeedCell}>
+
+                <Modal
+                    isVisible={this.state.modalOpen}
+                    animationIn='fadeIn'
+                    onSwipeComplete={() => this.closeImageModal()}
+                    swipeDirection="down"
+                >
+                        
+                    <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
+
+                        <Image
+                            source={{ uri: this.state.image }}
+                            style={styles.fullScreenImage}
+                        />
+                    </View>
+                </Modal>
+
                 <TouchableOpacity   
-                    style={styles.gainFeedCell}
+                    
                     onPress={() => this.showPostPage()} >
                     <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
                         <View style={{flexDirection: 'row', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
@@ -166,17 +202,24 @@ class FeedCellClass extends React.Component{
                         </View>
                         { this.renderGainLoss() }
                     </View>
+
+                    </TouchableOpacity>
+
                     
                     
+                    <TouchableOpacity onPress={() => this.openImageModal()}>
+                        <View style={styles.thumbnailContainer}>
+                            <Image
+                                source={{ uri: this.state.image }}
+                                style={styles.thumbnail}
+                            />
+                        </View>
+                    </TouchableOpacity>
                     
-                    <View style={styles.thumbnailContainer}>
-                        <Image
-                            source={{ uri: this.state.image }}
-                            style={styles.thumbnail}
-                        />
-                    </View>
                     
                 
+                    <TouchableOpacity
+                    onPress={() => this.showPostPage()} >
 
                     <View style={styles.descriptionContainer}>
 
@@ -194,7 +237,8 @@ class FeedCellClass extends React.Component{
                     
                     <View style = {styles.lineStyle} />
 
-                </TouchableOpacity>
+                    </TouchableOpacity>
+
             </View>
         )
     }
@@ -247,6 +291,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#cc0000',
     },
+    yoloText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#0066CC',
+    },
     textContainer: {
         alignContent: 'center',
         paddingBottom: 10,
@@ -256,8 +305,8 @@ const styles = StyleSheet.create({
     },
     pnlContainer: {
         flex: 1,
-        // justifyContent: 'left', 
-        // alignContent: 'left',
+        justifyContent: 'center', 
+        alignItems: 'center',
         paddingBottom: 10,
         paddingLeft: 10,
         paddingRight: 10,
@@ -293,14 +342,23 @@ const styles = StyleSheet.create({
     },
     thumbnailContainer: {
         flex: 1, 
-        justifyContent: 'center', 
-        alignContent: 'center',
+        // justifyContent: 'flex-start', 
+        alignItems: 'flex-end',
         paddingBottom: 10,
-        backgroundColor: '#121212'
+        paddingRight: 25,
+        backgroundColor: '#121212',
     },
     thumbnail: {
+        width:  Dimensions.get('window').width - 50,
+        height: 300,
+        borderRadius: 15
+    },
+    fullScreenImage: {
         width:  Dimensions.get('window').width,
-        height: 250,
+        height: Dimensions.get('window').height ,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
         resizeMode: "contain",
     },
 })

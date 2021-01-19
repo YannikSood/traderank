@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Modal, Dimensions, TouchableOpacity } from 'react-native'
+import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity } from 'react-native'
 import Firebase from '../../firebase'
 import LikeComponent from '../cells/FFCcomponents/likeComponent'
 import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent'
@@ -7,7 +7,7 @@ import UserComponent from '../cells/FFCcomponents/userComponent'
 import CommentCellClass from '../cells/commentCellClass'
 import CommentComponent from '../cells/FFCcomponents/commentComponent'
 import TimeAgo from 'react-native-timeago';
-import KeyboardSpacer from 'react-native-keyboard-spacer'
+import Modal from 'react-native-modal';
 
 import { Ionicons } from '@expo/vector-icons';
 
@@ -93,7 +93,7 @@ class ClickedPostPage extends React.Component {
             return (
                 <Text style={styles.pnlContainer}>
                     <Text style={styles.gainText}>${this.state.profit_loss}</Text>
-                    <Text style={styles.regularTradeText}>  💵  </Text>
+                    <Text style={styles.regularTradeText}>  🚀  </Text>
                     <Text style={styles.gainText}>{this.state.percent_gain_loss}%</Text>
                     <View style={styles.timeContainer}>
 
@@ -104,15 +104,25 @@ class ClickedPostPage extends React.Component {
                 
             )
         }
+        else if (this.state.gain_loss == "loss") {
+            return (
+                <Text style={styles.pnlContainer}>
+                    <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
+                    <Text style={styles.tradeText}>  🥴  </Text>
+                    <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
+                    <View style={styles.timeContainer}>
+
+                        <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
+                            
+                    </View>
+                </Text>
+            )
+        }
         return (
             <Text style={styles.pnlContainer}>
-                <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
-                <Text style={styles.tradeText}>  🥴  </Text>
-                <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
+                <Text style={styles.yoloText}>${this.state.profit_loss} yolo 🙏</Text>
                 <View style={styles.timeContainer}>
-
                     <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                        
                 </View>
             </Text>
         )
@@ -123,18 +133,13 @@ class ClickedPostPage extends React.Component {
             <View style={styles.container} >
 
             <Modal
-                animationType="slide"
-                visible={this.state.modalOpen}
-                presentationStyle="pageSheet"
-                onDismiss={() => this.closeImageModal()}
+                isVisible={this.state.modalOpen}
+                animationIn='fadeIn'
+                onSwipeComplete={() => this.closeImageModal()}
+                swipeDirection="down"
             >
                     
-                <View  style={{ flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                    <TouchableOpacity 
-                        style={{padding: 15}}
-                        onPress = { () => this.closeImageModal() }>
-                        <Ionicons name="ios-close-circle" size={30} color="red" />
-                    </TouchableOpacity>
+                <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
 
                     <Image
                         source={{ uri: this.state.image }}
@@ -238,18 +243,13 @@ class ClickedPostPage extends React.Component {
                     <View style={styles.noCommentsContainer} >
                         
                             <Modal
-                                animationType="slide"
-                                visible={this.state.modalOpen}
-                                presentationStyle="pageSheet"
-                                onDismiss={() => this.closeImageModal()}
+                                isVisible={this.state.modalOpen}
+                                animationIn='fadeIn'
+                                onSwipeComplete={() => this.closeImageModal()}
+                                swipeDirection="down"
                             >
                                     
                                 <View  style={{flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                                    <TouchableOpacity 
-                                        style={{padding: 15}}
-                                        onPress = { () => this.closeImageModal() }>
-                                        <Ionicons name="ios-close-circle" size={30} color="red" />
-                                    </TouchableOpacity>
 
                                     <Image
                                         source={{ uri: this.state.image }}
@@ -362,13 +362,13 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         paddingBottom: 20,
         backgroundColor: '#000000',
-        color: '#000000'
+        color: '#000000',
     },
     noCommentsContainer: {
         paddingTop: 20,
         paddingBottom: 100,
         backgroundColor: '#000000',
-        color: '#000000'
+        color: '#000000',
     },
     tradeText: {
         fontSize: 20,
@@ -399,6 +399,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#cc0000',
+    },
+    yoloText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#0066CC',
     },
     textContainer: {
         alignContent: 'center',
@@ -445,12 +450,10 @@ const styles = StyleSheet.create({
         color: '#FFFFFF'
     },
     thumbnail: {
-        alignItems: "center",
-        justifyContent: "center",
-        width:  Dimensions.get('window').width * 0.4,
-        height: Dimensions.get('window').height * 0.4,
-        margin: 10,
-        resizeMode: "contain",
+        width:  Dimensions.get('window').width - 50,
+        height: 300,
+        borderRadius: 15,
+        margin: 20
     },
     fullScreenImage: {
         width:  Dimensions.get('window').width,

@@ -1,8 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, Image, Alert, ActivityIndicator, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, Image, Alert, ActivityIndicator, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { connect } from 'react-redux';
 import { getUser } from '../../../redux/app-redux';
-import { Ionicons } from '@expo/vector-icons';
+import Modal from 'react-native-modal';
 
 import Firebase from '../../../firebase'
 
@@ -31,7 +31,7 @@ class GainTradeConfirm extends React.Component {
             gain_loss: "gain",
             username: this.props.user.username,
             uid: this.props.user.id,
-            description: " ",
+            description: "",
             storage_image_uri: '',
             postID: '',
             isLoading: false,
@@ -146,7 +146,17 @@ class GainTradeConfirm extends React.Component {
     }
 
     checkAndNext = async() => {
-        if (this.state.description.length != 0) {
+        if (this.state.description.trim().length == 0 || this.state.description.trim() == "") {
+            Alert.alert(
+                'please enter a caption',
+                'caption cannot be blank',
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') }
+                ],
+                { cancelable: false }
+              );
+        }
+        else {
             await Firebase.firestore()
             .collection('users')
             .doc(Firebase.auth().currentUser.uid)
@@ -163,16 +173,6 @@ class GainTradeConfirm extends React.Component {
             }.bind(this))
             .then(() => this.onSubmit())
 
-        }
-        else {
-            Alert.alert(
-                'please enter a caption',
-                'caption cannot be blank',
-                [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
-              );
         }
     }
 
@@ -202,27 +202,22 @@ class GainTradeConfirm extends React.Component {
                 <View
                     style={styles.container}>
 
-                    <Modal
-                        animationType="slide"
-                        visible={this.state.modalOpen}
-                        presentationStyle="pageSheet"
-                        onDismiss={() => this.closeImageModal()}
-                    >
-                            
-                        <View  style={{ flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                            <TouchableOpacity 
-                                style={{padding: 15}}
-                                onPress = { () => this.closeImageModal() }>
-                                <Ionicons name="ios-close-circle" size={30} color="red" />
-                            </TouchableOpacity>
+                        <Modal
+                            isVisible={this.state.modalOpen}
+                            animationIn='fadeIn'
+                            onSwipeComplete={() => this.closeImageModal()}
+                            swipeDirection="down"
+                        >
+                                
+                            <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
 
-                            <Image
-                                source={{ uri: this.state.image.uri }}
-                                style={styles.fullScreenImage}
-                            />
-                        </View>
-
-                    </Modal>
+                                <Image
+                                    source={{ uri: this.state.image.uri }}
+                                    style={styles.fullScreenImage}
+                                />
+                                
+                            </View>
+                        </Modal>
 
                     
                     <Text style = {styles.textContainer}>
@@ -239,13 +234,14 @@ class GainTradeConfirm extends React.Component {
                             <Text style = {styles.boldGainText}>+{this.state.percent_gain_loss}% </Text>
                     </Text>
 
-                    <TouchableOpacity onPress={() => this.openImageModal()} >
-
-                        <Image
-                            source={{ uri: this.state.image.uri }}
-                            style={styles.thumbnail}
-                        />
-
+                    <TouchableOpacity   
+                                onPress={() => this.openImageModal()} >
+                            <View style={styles.thumbnailContainer}>
+                                <Image
+                                    source={{ uri: this.state.image.uri }}
+                                    style={styles.thumbnail}
+                                />
+                            </View>
                     </TouchableOpacity>
 
 
@@ -261,7 +257,7 @@ class GainTradeConfirm extends React.Component {
                                 placeholder='I love tendies... '
                                 autoCapitalize='none'
                                 multiline={true}
-                                maxLength={400}
+                                maxLength={500}
                             />
                         </View>
                         
@@ -324,11 +320,19 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         color: '#FFFFFF'
     },
+    thumbnailContainer: {
+        // flex: 1, 
+        // justifyContent: 'flex-start', 
+        paddingBottom: 10,
+        // paddingRight: 25,
+        // backgroundColor: '#121212',
+        // position: "absolute",
+        // top: 0
+    },
     thumbnail: {
-        width: 200,
-        height: 200,
-        resizeMode: "contain",
-        marginBottom: 20
+        width:  Dimensions.get('window').width - 50,
+        height: 300,
+        borderRadius: 15
     },
     labelText: {
         fontSize: 18,
@@ -359,7 +363,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderColor: '#d3d3d3',
         borderWidth: 1,
-        textAlign: 'center',
+        // textAlign: 'center',
         color: '#FFFFFF'
     },
     textContainer: {

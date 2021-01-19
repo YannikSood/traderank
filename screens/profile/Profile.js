@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, FlatList, Modal, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, FlatList, Image } from 'react-native'
 import Firebase from '../../firebase'
 import { Ionicons } from '@expo/vector-icons';
+import Modal from 'react-native-modal';
 
 //Profile Components 
 import ProfilePic from './profileComponents/profilePic.js'
@@ -138,19 +139,14 @@ class Profile extends React.Component {
     renderListHeader = () => {
         return (
             <View style = {styles.container}>
-                <Modal
-                    animationType="slide"
-                    visible={this.state.modalOpen}
-                    presentationStyle="pageSheet"
-                    onDismiss={() => this.closeImageModal()}
-                >
-                        
-                    <View  style={{flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                        <TouchableOpacity 
-                            style={{padding: 15}}
-                            onPress = { () => this.closeImageModal() }>
-                            <Ionicons name="ios-close-circle" size={30} color="red" />
-                        </TouchableOpacity>
+                    <Modal
+                        isVisible={this.state.modalOpen}
+                        animationIn='fadeIn'
+                        onSwipeComplete={() => this.closeImageModal()}
+                        swipeDirection="down"
+                    >
+                
+                    <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
 
                         <Image
                             source={{ uri: this.state.storage_image_uri }}

@@ -1,34 +1,38 @@
-import React from 'react';
-import { View, Picker, Text, StyleSheet, TextInput, Image, TouchableOpacity, Dimensions, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, Image, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 
-class LossTrade extends React.Component {
+
+class YoloNumbers extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            image: this.props.route.params,
-            ticker: '',
-            security: 'options',
-            modalOpen: false,
-
+            image: this.props.route.params.image,
+            ticker: this.props.route.params.ticker,
+            security: this.props.route.params.security,
+            profit_loss: '',
+            percent_gain_loss: '',
+            modalOpen: false
         }
     }
 
     checkAndNext = () => {
-        if (this.state.ticker.length != 0) {
-            this.props.navigation.navigate('LossTradeNumbers', 
+        if (this.state.profit_loss.length != 0) {
+            this.props.navigation.navigate('YoloConfirm', 
                 {
                     image: this.state.image, 
-                    ticker: this.state.ticker.trim().replace(/[^A-Za-z]/ig, ''), 
-                    security: this.state.security
+                    ticker: this.state.ticker, 
+                    security: this.state.security,
+                    profit_loss: this.state.profit_loss.trim().replace(/[^0-9]/g, ''),
+                    percent_gain_loss: this.state.percent_gain_loss.trim().replace(/[^0-9]/g, ''),
                 })
         }
         else {
             Alert.alert(
-                'please enter a valid ticker',
-                'tickers can be up to 5 characters long',
+                'please fill out all the fields',
+                'one or more of the numbers is blank',
                 [
                   { text: 'OK', onPress: () => console.log('OK Pressed') }
                 ],
@@ -54,8 +58,8 @@ class LossTrade extends React.Component {
                 behavior="padding" enabled   
                 keyboardVerticalOffset={200}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View
-                            style={styles.container}>
+                    <View
+                        style={styles.container}>
 
                             <Modal
                                 isVisible={this.state.modalOpen}
@@ -84,59 +88,37 @@ class LossTrade extends React.Component {
                                     </View>
                             </TouchableOpacity>
 
-                            <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                        <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                                <Text style={styles.labelText}>💡is this a stock, option, or crypto trade?</Text>
-
-                                <View style={{flexDirection: 'row', justifyContent: 'center' }}>
-
-                                    <Picker
-                                        selectedValue={this.state.security}
-                                        onValueChange={value => this.setState({ security: value })}
-                                        style={styles.twoPickers} itemStyle={styles.twoPickerItems}
-                                        >
-                                        <Picker.Item label="stocks" value="stocks" />
-                                        <Picker.Item label="options" value="options" />
-                                        <Picker.Item label="cryptos" value="cryptos" />
-                                    </Picker>
-
-
-                                </View>
+                            <Text style={styles.labelText}>how much did you spend?</Text>
                             
-                            </View>
-
-                            <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-
-                                <Text style={styles.labelText}>💡type the ticker, stock or crypto</Text>
                             <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 
                                     <Text style={styles.inputBoxText}>$</Text>
                                     <TextInput
                                         style={styles.inputBox}
-                                        value={this.state.ticker.trim().replace(/[^A-Za-z]/ig, '')}
-                                        onChangeText={ticker => this.setState({ ticker })}
-                                        placeholder='TSLA'
+                                        value={this.state.profit_loss.trim().replace(/[^0-9]/g, '')}
+                                        onChangeText={profit_loss => this.setState({ profit_loss })}
+                                        placeholder='420'
                                         placeholderTextColor="#696969" 
-                                        autoCapitalize='characters'
-                                        autoCorrect={false}
-                                        maxLength={5}
+                                        keyboardType='numeric'
                                     />
 
-
-                                </View>
-                                
                             </View>
+
+                            <Text style = {{color: '#696969', fontSize: 12, paddingBottom: 15}}>💡Should be in your image</Text>
                             
-
-                            <TouchableOpacity  
-                                onPress={() => this.checkAndNext()}
-                                style={styles.gainButton}>
-                                        <Text style={styles.buttonText}>next</Text>
-                            </TouchableOpacity>
-
-
                         </View>
-                    </TouchableWithoutFeedback>
+                        
+
+                        <TouchableOpacity  
+                            onPress={() => this.checkAndNext()}
+                            style={styles.gainButton}>
+                                    <Text style={styles.buttonText}>review</Text>
+                        </TouchableOpacity>
+                        
+                    </View>
+                </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
         )
         
@@ -151,7 +133,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     container: {
-        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#000000',
@@ -172,8 +153,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         alignItems: 'center',
         backgroundColor: '#0000cc',
-        borderColor: '#FFFFFF',
-        borderWidth: 1,
         borderRadius: 5,
         width: 140
 
@@ -184,8 +163,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         alignItems: 'center',
         backgroundColor: '#cc0000',
-        borderColor: '#FFFFFF',
-        borderWidth: 1,
         borderRadius: 5,
         width: 140
     },
@@ -197,13 +174,15 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 30,
         fontWeight: 'bold',
-        paddingBottom: 10
+        paddingBottom: 10,
+        color: '#FFFFFF'
     },
     subheaderText: {
         fontSize: 20,
         fontWeight: 'bold',
         alignContent: 'center',
-        paddingBottom: 10
+        paddingBottom: 10,
+        color: '#FFFFFF'
     },
     thumbnailContainer: {
         // flex: 1, 
@@ -243,8 +222,7 @@ const styles = StyleSheet.create({
     twoPickers: {
         width: 150,
         height: 88,
-        margin: 20,
-        color: '#FFFFFF'
+        margin: 20
     },
     twoPickerItems: {
         height: 88,
@@ -260,4 +238,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default LossTrade
+export default YoloNumbers

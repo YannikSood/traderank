@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, Image, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, Image, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
+import Modal from 'react-native-modal';
 
 class GainTradeNumbers extends React.Component {
 
@@ -31,8 +32,8 @@ class GainTradeNumbers extends React.Component {
                     image: this.state.image, 
                     ticker: this.state.ticker, 
                     security: this.state.security,
-                    profit_loss: this.state.profit_loss,
-                    percent_gain_loss: this.state.percent_gain_loss,
+                    profit_loss: this.state.profit_loss.trim().replace(/[^0-9]/g, ''),
+                    percent_gain_loss: this.state.percent_gain_loss.trim().replace(/[^0-9]/g, ''),
                 })
         }
         else {
@@ -59,70 +60,73 @@ class GainTradeNumbers extends React.Component {
                         style={styles.container}>
 
                             <Modal
-                                animationType="slide"
-                                visible={this.state.modalOpen}
-                                presentationStyle="pageSheet"
-                                onDismiss={() => this.closeImageModal()}
+                                isVisible={this.state.modalOpen}
+                                animationIn='fadeIn'
+                                onSwipeComplete={() => this.closeImageModal()}
+                                swipeDirection="down"
                             >
                                     
-                                <View  style={{ flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                                    <TouchableOpacity 
-                                        style={{padding: 15}}
-                                        onPress = { () => this.closeImageModal() }>
-                                        <Ionicons name="ios-close-circle" size={30} color="red" />
-                                    </TouchableOpacity>
+                                <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
 
                                     <Image
                                         source={{ uri: this.state.image.uri }}
                                         style={styles.fullScreenImage}
                                     />
+                                    
                                 </View>
-
                             </Modal>
 
-                            <TouchableOpacity onPress={() => this.openImageModal()} >
-
-                                <Image
-                                    source={{ uri: this.state.image.uri }}
-                                    style={styles.thumbnail}
-                                />
-
+                            <TouchableOpacity   
+                                onPress={() => this.openImageModal()} >
+                                    <View style={styles.thumbnailContainer}>
+                                        <Image
+                                            source={{ uri: this.state.image.uri }}
+                                            style={styles.thumbnail}
+                                        />
+                                    </View>
                             </TouchableOpacity>
 
                         <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                            <Text style={styles.labelText}>💰how much did you profit? </Text>
-                        <View style={{flexDirection: 'row', justifyContent: 'center' }}>
+                            <Text style={styles.labelText}>how much did you profit? </Text>
 
-                                <Text style={styles.inputBoxText}>$</Text>
-                                <TextInput
-                                    style={styles.inputBox}
-                                    value={this.state.profit_loss.trim().replace(/[^0-9]/g, '')}
-                                    onChangeText={profit_loss => this.setState({ profit_loss })}
-                                    placeholder='420'
-                                    placeholderTextColor="#696969" 
-                                    keyboardType='numeric'
-                                />
+                            <View style={{flexDirection: 'row', justifyContent: 'center' }}>
+
+                                    <Text style={styles.inputBoxText}>$</Text>
+                                    <TextInput
+                                        style={styles.inputBox}
+                                        value={this.state.profit_loss.trim().replace(/[^0-9]/g, '')}
+                                        onChangeText={profit_loss => this.setState({ profit_loss })}
+                                        placeholder='420'
+                                        placeholderTextColor="#696969" 
+                                        keyboardType='numeric'
+                                    />
 
                             </View>
+
+                            <Text style = {{color: '#696969', fontSize: 12, paddingBottom: 15}}>💡Should be in your image</Text>
                             
                         </View>
 
                         <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                            <Text style={styles.labelText}>💰what was your % gain?</Text>
-                        <View style={{flexDirection: 'row', justifyContent: 'center' }}>
+                            <Text style={styles.labelText}>what was your % gain?</Text>
 
-                                <Text style={styles.inputBoxText}>%</Text>
-                                <TextInput
-                                    style={styles.inputBox}
-                                    value={this.state.percent_gain_loss.trim().replace(/[^0-9]/g, '')}
-                                    onChangeText={percent_gain_loss => this.setState({ percent_gain_loss })}
-                                    placeholder='69'
-                                    placeholderTextColor="#696969" 
-                                    keyboardType='numeric'
-                                />
+                            <View style={{flexDirection: 'row', justifyContent: 'center' }}>
+
+                                    <Text style={styles.inputBoxText}>%</Text>
+
+                                    <TextInput
+                                        style={styles.inputBox}
+                                        value={this.state.percent_gain_loss.trim().replace(/[^0-9]/g, '')}
+                                        onChangeText={percent_gain_loss => this.setState({ percent_gain_loss })}
+                                        placeholder='69'
+                                        placeholderTextColor="#696969" 
+                                        keyboardType='numeric'
+                                    />
                             </View>
+
+                            <Text style = {{color: '#696969', fontSize: 12, paddingBottom: 15}}>💡Should be in your image</Text>
                             
                         </View>
                         
@@ -200,11 +204,19 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         color: '#FFFFFF'
     },
+    thumbnailContainer: {
+        // flex: 1, 
+        // justifyContent: 'flex-start', 
+        paddingBottom: 10,
+        // paddingRight: 25,
+        // backgroundColor: '#121212',
+        // position: "absolute",
+        // top: 0
+    },
     thumbnail: {
-        width: 200,
-        height: 200,
-        resizeMode: "contain",
-        marginBottom: 20
+        width:  Dimensions.get('window').width - 50,
+        height: 300,
+        borderRadius: 15
     },
     labelText: {
         fontSize: 16,

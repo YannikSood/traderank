@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch) => {
      };
 }
 
-class LossTradeConfirm extends React.Component {
+class YoloConfirm extends React.Component {
 
     constructor(props) {
         super(props)
@@ -28,7 +28,7 @@ class LossTradeConfirm extends React.Component {
             security: this.props.route.params.security,
             profit_loss: this.props.route.params.profit_loss,
             percent_gain_loss: this.props.route.params.percent_gain_loss,
-            gain_loss: "loss",
+            gain_loss: "yolo",
             username: this.props.user.username,
             uid: this.props.user.id,
             description: "",
@@ -90,7 +90,7 @@ class LossTradeConfirm extends React.Component {
             security: this.state.security,
             postID: this.state.postID,
             score: 0,
-            postType: 2,
+            postType: 3,
             commentsCount: 0
         })
         .catch(function(error) {
@@ -98,7 +98,7 @@ class LossTradeConfirm extends React.Component {
         });
 
         await Firebase.firestore()
-        .collection('loss')
+        .collection('yolo')
         .doc(this.state.postID)
         .set ({
             username: this.state.username,
@@ -114,7 +114,7 @@ class LossTradeConfirm extends React.Component {
             security: this.state.security,
             postID: this.state.postID,
             score: 0,
-            postType: 2,
+            postType: 3,
             commentsCount: 0
         })
         .catch(function(error) {
@@ -221,17 +221,15 @@ class LossTradeConfirm extends React.Component {
 
                     
                     <Text style = {styles.textContainer}>
-                        <Text style = {styles.boldText}>{this.state.username}</Text>
-                        <Text style = {styles.labelText}> traded </Text> 
+                        <Text style = {styles.boldText}>{this.state.username}'s</Text>
+                        <Text style = {styles.labelText}> yolo on </Text> 
                         <Text style = {styles.boldText}>${this.state.ticker} </Text>
                         <Text style = {styles.boldText}>[{this.state.security}]</Text>
 
                     </Text>
 
                     <Text style = {styles.textContainer}>
-                            <Text style = {styles.boldGainText}>-${this.state.profit_loss} </Text>
-                            <Text style = {styles.labelText}> 🥴 </Text>  
-                            <Text style = {styles.boldGainText}>-{this.state.percent_gain_loss}% </Text>
+                            <Text style = {styles.boldGainText}>${this.state.profit_loss} </Text>
                     </Text>
 
                     <TouchableOpacity   
@@ -247,7 +245,7 @@ class LossTradeConfirm extends React.Component {
 
                     <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                        <Text style={styles.labelText}>lastly, caption your trade:</Text>
+                        <Text style={styles.labelText}>lastly, caption your yolo:</Text>
                        <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 
                             <TextInput
@@ -257,7 +255,7 @@ class LossTradeConfirm extends React.Component {
                                 placeholder='I love tendies... '
                                 autoCapitalize='none'
                                 multiline={true}
-                                maxLength={400}
+                                maxLength={700}
                             />
                         </View>
                         
@@ -347,7 +345,7 @@ const styles = StyleSheet.create({
     boldGainText: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#cc0000',
+        color: '#FFFFFF',
     },
     inputBoxText: {
         fontSize: 16,
@@ -381,4 +379,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(LossTradeConfirm)
+export default connect(mapStateToProps, mapDispatchToProps)(YoloConfirm)

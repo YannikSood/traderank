@@ -27,7 +27,7 @@ class CommentComponent extends React.Component {
             commentorUsername: this.props.user.username,
             postID: this.props.postID,
             posterUID: " ",
-            commentText: " ",
+            commentText: "",
             commentUID: " ",
             commentsCount: 0,
             userCommentsCount: 0

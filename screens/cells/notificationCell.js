@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
 import Firebase from '../../firebase'
-import CommentUserComponent from './CFCcomponents/userCommentComponent'
-import CommentLikeComponent from './CFCcomponents/likeComponent'
+import UserComponent from './FFCcomponents/userComponent'
 import TimeAgo from 'react-native-timeago';
 
 class NotificationCellClass extends React.Component{ 

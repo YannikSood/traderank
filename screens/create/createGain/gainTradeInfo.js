@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Picker, Text, StyleSheet, TextInput, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert, KeyboardAvoidingView, Dimensions, Modal } from 'react-native';
+import { View, Picker, Text, StyleSheet, TextInput, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert, KeyboardAvoidingView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Modal from 'react-native-modal';
 
 class GainTrade extends React.Component {
 
@@ -19,7 +20,7 @@ class GainTrade extends React.Component {
             this.props.navigation.navigate('GainTradeNumbers', 
                 {
                     image: this.state.image, 
-                    ticker: this.state.ticker, 
+                    ticker: this.state.ticker.trim().replace(/[^A-Za-z]/ig, ''), 
                     security: this.state.security
                 })
         }
@@ -56,39 +57,36 @@ class GainTrade extends React.Component {
                             style={styles.container}>
 
                             <Modal
-                                animationType="slide"
-                                visible={this.state.modalOpen}
-                                presentationStyle="pageSheet"
-                                onDismiss={() => this.closeImageModal()}
+                                isVisible={this.state.modalOpen}
+                                animationIn='fadeIn'
+                                onSwipeComplete={() => this.closeImageModal()}
+                                swipeDirection="down"
                             >
                                     
-                                <View  style={{ flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                                    <TouchableOpacity 
-                                        style={{padding: 15}}
-                                        onPress = { () => this.closeImageModal() }>
-                                        <Ionicons name="ios-close-circle" size={30} color="red" />
-                                    </TouchableOpacity>
+                                <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
 
                                     <Image
                                         source={{ uri: this.state.image.uri }}
                                         style={styles.fullScreenImage}
                                     />
+                                    
                                 </View>
-
                             </Modal>
 
-                                <TouchableOpacity   
-                                    onPress={() => this.openImageModal()} >
 
+                            <TouchableOpacity   
+                                onPress={() => this.openImageModal()} >
+                                    <View style={styles.thumbnailContainer}>
                                         <Image
                                             source={{ uri: this.state.image.uri }}
                                             style={styles.thumbnail}
                                         />
-                                </TouchableOpacity>
+                                    </View>
+                            </TouchableOpacity>
 
                             <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                                <Text style={styles.labelText}>💡is this a stock, option, or crypto trade?</Text>
+                                <Text style={styles.labelText}>is this a stock, option, or crypto trade?</Text>
 
                                 <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 
@@ -104,12 +102,14 @@ class GainTrade extends React.Component {
 
 
                                 </View>
+
                             
                             </View>
 
                             <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                                <Text style={styles.labelText}>💡type the ticker, stock or crypto</Text>
+                                <Text style={styles.labelText}>type the ticker, stock or crypto</Text>
+
                             <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 
                                     <Text style={styles.inputBoxText}>$</Text>
@@ -207,11 +207,19 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         paddingBottom: 10
     },
+    thumbnailContainer: {
+        // flex: 1, 
+        // justifyContent: 'flex-start', 
+        paddingBottom: 10,
+        // paddingRight: 25,
+        // backgroundColor: '#121212',
+        // position: "absolute",
+        // top: 0
+    },
     thumbnail: {
-        width: 200,
-        height: 200,
-        resizeMode: "contain",
-        marginBottom: 20
+        width:  Dimensions.get('window').width - 50,
+        height: 300,
+        borderRadius: 15
     },
     labelText: {
         fontSize: 16,

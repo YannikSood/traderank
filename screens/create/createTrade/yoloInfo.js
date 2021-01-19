@@ -3,7 +3,7 @@ import { View, Picker, Text, StyleSheet, TextInput, Image, TouchableOpacity, Dim
 import { Ionicons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 
-class LossTrade extends React.Component {
+class YoloTrade extends React.Component {
 
     constructor(props) {
         super(props)
@@ -18,7 +18,7 @@ class LossTrade extends React.Component {
 
     checkAndNext = () => {
         if (this.state.ticker.length != 0) {
-            this.props.navigation.navigate('LossTradeNumbers', 
+            this.props.navigation.navigate('YoloNumbers', 
                 {
                     image: this.state.image, 
                     ticker: this.state.ticker.trim().replace(/[^A-Za-z]/ig, ''), 
@@ -86,7 +86,7 @@ class LossTrade extends React.Component {
 
                             <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                                <Text style={styles.labelText}>💡is this a stock, option, or crypto trade?</Text>
+                                <Text style={styles.labelText}>💡is this a stock, option, or crypto yolo?</Text>
 
                                 <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 
@@ -260,4 +260,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default LossTrade
+export default YoloTrade
