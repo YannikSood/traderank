@@ -24,7 +24,7 @@ class Create extends React.Component {
 
                 <Text style={styles.headerText}>get ranked</Text>
 
-                <Text style={styles.subheaderText}>open postions [unrealized] - not done yet</Text>
+                <Text style={styles.subheaderText}>open postions [unrealized]</Text>
 
                 <TouchableOpacity 
                     onPress={() => this.props.navigation.navigate('YoloScreenshot')}
