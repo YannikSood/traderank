@@ -212,7 +212,7 @@ class Profile extends React.Component {
 
         if(this.state.isLoading){
             return(
-              <View styles = {styles.container}>
+              <View style = {styles.container}>
                 <ActivityIndicator size="large" color="#9E9E9E"/>
               </View>
             )
