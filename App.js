@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import Firebase from './firebase.js'
 
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons'; 
 import { Provider } from 'react-redux'
 import { store } from './redux/app-redux.js'
 
@@ -96,7 +97,7 @@ class App extends React.Component {
             <Stack.Screen name="Signup" 
               component={Signup} 
               options=  {{
-                headerLeft: null,
+                // headerLeft: null,
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 20,
@@ -136,10 +137,10 @@ class App extends React.Component {
                 },
                 headerBackTitle: ""
             }}/>
-            <Stack.Screen name="Notifications" 
-              component={Notification} 
+            <Stack.Screen name="Leaderboard" 
+              component={LBTopTabs} 
               options=  {{
-                title: "notifications",
+                title: "leaderboard",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 20,
@@ -232,8 +233,8 @@ class App extends React.Component {
 
                       <TouchableOpacity 
                           style={{paddingRight: 20}}
-                          onPress={() => navigation.navigate('Notifications')}>
-                          <Ionicons name="md-notifications" size={25} color="white" />
+                          onPress={() => navigation.navigate('Leaderboard')}>
+                          <Ionicons name="ios-trophy" size={25} color="white" />
                       </TouchableOpacity>
 
                     </View>
@@ -278,15 +279,17 @@ function Tabs() {
       />
 
       <Tab.Screen 
-        name="Leaderboard" 
-        component={LBTopTabs} 
+        name="Chat" 
+        component={Chat} 
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ios-trophy" size={size} color={color} />
+            <FontAwesome name="users" size={size} color={color} />
           ),
         }}
       />
+
+      
 
       <Tab.Screen 
         name="Create" 
@@ -301,15 +304,17 @@ function Tabs() {
       />
 
       <Tab.Screen 
-        name="Chat" 
-        component={Chat} 
+        name="Notificaton" 
+        component={Notification}
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbox" size={size} color={color} />
+            <Ionicons name="md-notifications" size={size} color={color} />
           ),
         }}
-      />
+      />  
+
+      
 
       <Tab.Screen 
         name="Profile"

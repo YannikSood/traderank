@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, TouchableWithoutFeedback, Keyboard, } from 'react-native'
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, TouchableWithoutFeedback, Keyboard, Alert, Linking } from 'react-native'
 import Firebase from '../../firebase'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 
@@ -26,7 +26,7 @@ class Signup extends React.Component {
         this.state = {
             email: '',
             password: '',
-            user: this.props.user
+            user: this.props.user,
         }
     }
 
@@ -34,6 +34,7 @@ class Signup extends React.Component {
     handleSignUp = async() => {
         const { email, password } = this.state
         
+        if(email != '' && password != '') {
             try { 
                 this.props.navigation.navigate('Register', 
                 {
@@ -41,11 +42,33 @@ class Signup extends React.Component {
                     password: password,
                     
                 })
+                }
+            catch(error) {
+                console.log(error);
             }
-           catch(error) {
-               console.log(error);
-           }
+        }
+        else {
+            Alert.alert(
+                'please fill out the fields',
+                'you need an email and password!',
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') }
+                ],
+                { cancelable: false }
+              );
+        }
     }
+
+    toggleTOSBox = () => {
+        this.setState({ tosAgreed: !this.state.tosAgreed })
+    }
+
+    togglePrivacyBoxTrue = () => {
+        this.setState({ 
+            privacyAgreed: !this.state.privacyAgreed,
+        })
+    }
+
 
     render() {
         return (
@@ -77,15 +100,27 @@ class Signup extends React.Component {
                         secureTextEntry={true}
                     />
 
+                    
                     <TouchableOpacity 
                         style={styles.button} 
                         onPress={this.handleSignUp}>
                             <Text style={styles.buttonText}>sign up</Text>
                     </TouchableOpacity>
 
-                    <Button title="back to login" 
-                        onPress={() => this.props.navigation.navigate('Login')}/>
 
+                        <Text style={{color: '#FFFFFF', paddingTop: 5, paddingBottom: 5}}>
+                                clicking signup means you agree to our
+                        </Text>
+
+                        <Text style={{color: '#5233FF', padding: 4}}
+                            onPress={() => Linking.openURL('http://socialtradinginc.com/#tos')}> 
+                            Terms of Service
+                        </Text>
+
+                        <Text style={{color: '#5233FF', padding: 4}}
+                            onPress={() => Linking.openURL('http://socialtradinginc.com/#privacy')}> 
+                            Privacy Policy
+                        </Text>
                     <KeyboardSpacer />
                 </View>
             </TouchableWithoutFeedback>

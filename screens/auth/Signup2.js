@@ -49,7 +49,7 @@ class Signup2 extends React.Component {
                 .collection('users')
                 .doc(Firebase.auth().currentUser.uid)
                 .set ({
-                    username: this.state.username,
+                    username: this.state.username.trim().replace(/[^\w\s]/gi, ""),
                     email: Firebase.auth().currentUser.email,
                     profilePic: this.state.storage_image_uri,
                     followerCount: 0,
@@ -72,7 +72,7 @@ class Signup2 extends React.Component {
                 //Now add a reference to the usernames so you can check n shit
                 await Firebase.firestore()
                 .collection('usernames')
-                .doc(this.state.username)
+                .doc(this.state.username.trim().replace(/[^\w\s]/gi, ""))
                 .set ({
                     uid: Firebase.auth().currentUser.uid
                 })
@@ -111,7 +111,7 @@ class Signup2 extends React.Component {
         else {
             await Firebase.firestore()
             .collection('usernames')
-            .doc(this.state.username)
+            .doc(this.state.username.trim().replace(/[^\w\s]/gi, ""))
             .get()
             .then(function(doc) {
                 if (doc.exists) {
