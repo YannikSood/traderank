@@ -57,7 +57,7 @@ class GainTradeConfirm extends React.Component {
     }
 
     onSubmit = async() => {
-
+        console.log("submitStarted")
         //create a new document in firestore with the path posts/uid/posts/postID
         //get the newly created post ID (docRef.id)
         //pass it to the upload to storagefunction
@@ -72,6 +72,7 @@ class GainTradeConfirm extends React.Component {
             console.error("Error storing and retrieving image url: ", error);
         });
 
+        console.log("addedTODB")
         //And now we are storing user posts. Now, we do the same thing for global posts, to display in the global feed
         await Firebase.firestore()
         .collection('globalPosts')
@@ -91,7 +92,8 @@ class GainTradeConfirm extends React.Component {
             postID: this.state.postID,
             score: 0,
             postType: 1,
-            commentsCount: 0
+            commentsCount: 0,
+            viewsCount: 0
         })
         .catch(function(error) {
             console.error("Error writing document to global posts: ", error);
@@ -116,7 +118,8 @@ class GainTradeConfirm extends React.Component {
             postID: this.state.postID,
             score: 0,
             postType: 1,
-            commentsCount: 0
+            commentsCount: 0,
+            viewsCount: 0
         })
         .catch(function(error) {
             console.error("Error writing document to global posts: ", error);
@@ -132,7 +135,7 @@ class GainTradeConfirm extends React.Component {
         .catch(function(error) {
             console.error("Error writing document to user collection: ", error);
         })
-
+        
 
         this.setState({
             isLoading: false
@@ -142,7 +145,7 @@ class GainTradeConfirm extends React.Component {
         this.props.navigation.reset({
             index: 0,
             routes: [{ name: 'Create' }],
-          });
+        });
     }
 
     checkAndNext = async() => {

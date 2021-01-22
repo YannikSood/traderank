@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList, Share } from 'react-native'
 import Firebase from '../../firebase'
 
 import FeedCellClass from '../cells/feedCellClass.js';
+import { ThemeConsumer } from 'react-native-elements';
 
 
 
@@ -10,24 +11,46 @@ class FriendsScreen extends React.Component {
 
     constructor() {
         super();
-        this.firestoreRef = Firebase.firestore().collection('following').doc(Firebase.auth().currentUser.uid).collection('following');
+       
         this.state = {
-          isLoading: true,
-          followingPosts: []
+          isLoading: false,
+          followingPosts: [],
         };
     }
 
     componentDidMount() {
-        this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        // this.setState({isLoading: true})
+        this.getCollection()
     }
     
     componentWillUnmount(){
-        this.unsubscribe();
+        this.getCollection();
     }
 
     _refresh = () => {
         this.setState({ isLoading: true });
-        this.firestoreRef.onSnapshot(this.getCollection);
+        this.getCollection();
+    };
+
+    onShare = async () => {
+        try {
+          const result = await Share.share({
+           title: 'traderank invite',
+            message: 'join traderank, the social network for traders!', 
+            url: 'https://testflight.apple.com/join/eHiBK1S3'
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
       };
     
     //username: this.state.username,
@@ -42,93 +65,118 @@ class FriendsScreen extends React.Component {
     // percent_gain_loss: this.state.percent_gain_loss,
     // security: this.state.security,
     // postID: this.state.postID
-    getCollection = async (querySnapshot) => {
-        const followingPosts = [];
+    getCollection = async () => {
 
-        await Firebase.firestore()
-        .collection('globalPosts')
-        .where("uid", "==", Firebase.auth().currentUser.uid)
-        .onSnapshot(function(query) {
-            query.forEach((doc) =>  {
-                const { 
-                    username,
-                    uid,
-                    image,
-                    ticker,
-                    security,
-                    description,
-                    percent_gain_loss,
-                    profit_loss,
-                    gain_loss,
-                    date_created
-                    } = doc.data();
+        // const followingPosts = [];
+
+        // await Firebase.firestore()
+        // .collection('following')
+        // .doc(Firebase.auth().currentUser.uid)
+        // .collection('following')
+        // .get()
+        // .then(querySnapshot => {
+        //     querySnapshot.forEach((res) => {
+        //         Firebase.firestore()
+        //         .collection('globalPosts')
+        //         .where("uid", "==", res.data().uid)
+        //         .onSnapshot(function(query) {
+        //             query.forEach((doc) =>  {
+        //                 const { 
+        //                     username,
+        //                     uid,
+        //                     image,
+        //                     ticker,
+        //                     security,
+        //                     description,
+        //                     percent_gain_loss,
+        //                     profit_loss,
+        //                     gain_loss,
+        //                     date_created
+        //                     } = doc.data();
+
+                
+        //                     followingPosts.push({
+        //                         key: doc.id,
+        //                         username,
+        //                         uid,
+        //                         image,
+        //                         ticker,
+        //                         security,
+        //                         description,
+        //                         percent_gain_loss,
+        //                         profit_loss,
+        //                         gain_loss,
+        //                         date_created
+        //                     });
+
+
+                        
+        //             })
+
+        //             followingPosts.sort(function(a,b){ 
+
+        //                 return b.date_created.toDate() - a.date_created.toDate()
+                
+        //             })
+
+        //         })
+
+        //     })
+
+        //     this.setState({
+        //         followingPosts,
+        //         isLoading: false, 
+        //     })
+
+        //     console.log(this.state.followingPosts.length)
+        // })
+
+
+
+
         
-                    followingPosts.push({
-                        key: doc.id,
-                        username,
-                        uid,
-                        image,
-                        ticker,
-                        security,
-                        description,
-                        percent_gain_loss,
-                        profit_loss,
-                        gain_loss,
-                        date_created
-                    });
-            })
+
         
-        });
 
-        querySnapshot.forEach(async (res) => {
-            await Firebase.firestore()
-            .collection('globalPosts')
-            .where("uid", "==", res.data().uid)
-            .onSnapshot(function(query) {
-                query.forEach((doc) =>  {
-                    const { 
-                        username,
-                        uid,
-                        image,
-                        ticker,
-                        security,
-                        description,
-                        percent_gain_loss,
-                        profit_loss,
-                        gain_loss,
-                        date_created
-                        } = doc.data();
+        // await Firebase.firestore()
+        // .collection('globalPosts')
+        // .where("uid", "==", Firebase.auth().currentUser.uid)
+        // .onSnapshot(function(query) {
+        //     query.forEach((doc) =>  {
+        //         const { 
+        //             username,
+        //             uid,
+        //             image,
+        //             ticker,
+        //             security,
+        //             description,
+        //             percent_gain_loss,
+        //             profit_loss,
+        //             gain_loss,
+        //             date_created
+        //             } = doc.data();
+        
+        //             followingPosts.push({
+        //                 key: doc.id,
+        //                 username,
+        //                 uid,
+        //                 image,
+        //                 ticker,
+        //                 security,
+        //                 description,
+        //                 percent_gain_loss,
+        //                 profit_loss,
+        //                 gain_loss,
+        //                 date_created
+        //             });
 
-            
-                        followingPosts.push({
-                            key: doc.id,
-                            username,
-                            uid,
-                            image,
-                            ticker,
-                            security,
-                            description,
-                            percent_gain_loss,
-                            profit_loss,
-                            gain_loss,
-                            date_created
-                        });
-                    
-                })
-                followingPosts.sort(function(a,b){ 
+        //     })
 
-                    return b.date_created.toDate() - a.date_created.toDate()
-            
-                })
-            
-            });
+        //     
+        
+        // }.bind(this))
 
-        });
 
-        this.setState({
-            followingPosts,
-            isLoading: false,   
-        });
 
         
 
@@ -160,6 +208,21 @@ class FriendsScreen extends React.Component {
                 </View>
             )
         }    
+
+        if (this.state.followingPosts.length == 0) {
+            return(
+                <View style={styles.emptyContainer}>
+
+                    <Text style = {styles.buttonText}>following feed coming soon!</Text>
+                    <TouchableOpacity  
+                    style = {styles.button} 
+                    onPress={() => this.onShare()} >
+                        <Text style = {styles.buttonText}>invite friends to traderank</Text>
+                    </TouchableOpacity>
+                    
+                </View>
+            )
+        }
 
         return (
             <View style={styles.view}>
@@ -237,10 +300,8 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         alignItems: 'center',
         backgroundColor: '#5233FF',
-        borderColor: '#FFFFFF',
-        borderWidth: 1,
         borderRadius: 5,
-        width: 200
+        width: 300
     },
     globalFeedCell: {
         marginTop: 10,

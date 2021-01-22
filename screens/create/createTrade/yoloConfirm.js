@@ -91,7 +91,8 @@ class YoloConfirm extends React.Component {
             postID: this.state.postID,
             score: 0,
             postType: 3,
-            commentsCount: 0
+            commentsCount: 0,
+            viewsCount: 0
         })
         .catch(function(error) {
             console.error("Error writing document to global posts: ", error);
@@ -115,7 +116,8 @@ class YoloConfirm extends React.Component {
             postID: this.state.postID,
             score: 0,
             postType: 3,
-            commentsCount: 0
+            commentsCount: 0,
+            viewsCount: 0
         })
         .catch(function(error) {
             console.error("Error writing document to global posts: ", error);
@@ -132,7 +134,6 @@ class YoloConfirm extends React.Component {
             console.error("Error writing document to user collection: ", error);
         })
 
-
         this.setState({
             isLoading: false
         })
@@ -141,7 +142,18 @@ class YoloConfirm extends React.Component {
         this.props.navigation.reset({
             index: 0,
             routes: [{ name: 'Create' }],
-          });
+        });
+
+
+        // this.setState({
+        //     isLoading: false
+        // })
+        // //Cool, now we can redirect to home, where we will see the post at the top of the global feed.
+        // this.props.navigation.navigate('Home')
+        // this.props.navigation.reset({
+        //     index: 0,
+        //     routes: [{ name: 'Create' }],
+        //   });
     }
 
     checkAndNext = async() => {

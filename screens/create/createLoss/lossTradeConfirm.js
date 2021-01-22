@@ -91,7 +91,8 @@ class LossTradeConfirm extends React.Component {
             postID: this.state.postID,
             score: 0,
             postType: 2,
-            commentsCount: 0
+            commentsCount: 0,
+            viewsCount: 0
         })
         .catch(function(error) {
             console.error("Error writing document to global posts: ", error);
@@ -115,7 +116,8 @@ class LossTradeConfirm extends React.Component {
             postID: this.state.postID,
             score: 0,
             postType: 2,
-            commentsCount: 0
+            commentsCount: 0,
+            viewsCount: 0
         })
         .catch(function(error) {
             console.error("Error writing document to global posts: ", error);

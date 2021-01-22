@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator
 import Firebase from '../../firebase'
 import { Ionicons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
+import { FontAwesome } from '@expo/vector-icons';
 
 //Profile Components 
 import ProfilePic from './profileComponents/profilePic.js'
 import ProfileStats from './profileComponents/profileStats.js'
 import ProfileBio from './profileComponents/profileBio.js'
 import FeedCellClass from '../cells/feedCellClass'
+import TimeAgo from 'react-native-timeago';
 
 //Redux
 import { connect } from 'react-redux';
@@ -43,6 +45,7 @@ class Profile extends React.Component {
             userUID: Firebase.auth().currentUser.uid,
             userPostsArray: [],
             modalOpen: false,
+            dateJoined: null
         }
 
         this.firestoreRef = 
@@ -81,7 +84,8 @@ class Profile extends React.Component {
             percent_gain_loss,
             profit_loss,
             gain_loss,
-            date_created
+            date_created,
+            viewsCount
              } = res.data();
 
             userPostsArray.push({
@@ -95,7 +99,8 @@ class Profile extends React.Component {
                 percent_gain_loss,
                 profit_loss,
                 gain_loss,
-                date_created
+                date_created,
+                viewsCount
             });
         });
 
@@ -118,14 +123,21 @@ class Profile extends React.Component {
                 followingCount: doc.data().followingCount,
                 storage_image_uri: doc.data().profilePic,
                 bio: doc.data().bio,
+                dateJoined: doc.data().signupDate.toDate(),
                 isLoading: false
             })
 
+
         }.bind(this))
+
     } 
 
     gotToSettings() {
         this.state.navigation.navigate('Settings')
+    }
+
+    goToEditProfile() {
+        this.state.navigation.navigate('EditProfile')
     }
 
     openImageModal = () => {
@@ -179,10 +191,38 @@ class Profile extends React.Component {
 
                 <ProfileBio bio = {this.state.bio}/>
 
-                <TouchableOpacity 
-                    onPress={() => this.gotToSettings()}>
-                    <Ionicons name="ios-settings" size={35} color="white" />
-                </TouchableOpacity>
+
+                <View style={{flexDirection: 'row'}}>
+
+                    <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
+
+                        <Text>{this.state.user.username} joined </Text>
+                        <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
+                        <Text> </Text>
+                        <FontAwesome name="birthday-cake" size={14} color="white" />
+
+                    </Text>
+
+                </View>
+                
+
+                <View style={{flexDirection: 'row'}}>
+
+                        <TouchableOpacity 
+                            onPress={() => this.goToEditProfile()}
+                            style={styles.button}>
+                            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>edit profile</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            onPress={() => this.gotToSettings()}
+                            style={styles.button}>
+                            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>settings</Text>
+                        </TouchableOpacity>
+
+                        
+
+                </View>
 
             </View>
 
@@ -207,6 +247,7 @@ class Profile extends React.Component {
                 navigation={navigation}
                 date_created={item.date_created.toDate()}
                 uid={item.uid}
+                viewsCount={item.viewsCount}
             />
         );
 
@@ -217,63 +258,67 @@ class Profile extends React.Component {
               </View>
             )
         }    
-        if(this.state.userPostsArray.length == 0) {
-            return (
-                <View style = {styles.emptyContainer}>
+        // if(this.state.userPostsArray.length == 0) {
+        //     return (
+        //         <View style = {styles.emptyContainer}>
     
-                    <Modal
-                        animationType="slide"
-                        visible={this.state.modalOpen}
-                        presentationStyle="pageSheet"
-                        onDismiss={() => this.closeImageModal()}
-                    >
-                            
-                        <View  style={{flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-                            <TouchableOpacity 
-                                style={{padding: 15}}
-                                onPress = { () => this.closeImageModal() }>
-                                <Ionicons name="ios-close-circle" size={30} color="red" />
-                            </TouchableOpacity>
+        //             <Modal
+        //                 isVisible={this.state.modalOpen}
+        //                 animationIn='fadeIn'
+        //                 onSwipeComplete={() => this.closeImageModal()}
+        //                 swipeDirection="down"
+        //             >
+                
+        //                 <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
 
-                            <Image
-                                source={{ uri: this.state.storage_image_uri }}
-                                style={styles.fullScreenImage}
-                            />
-                        </View>
-                    </Modal>
+        //                     <Image
+        //                         source={{ uri: this.state.storage_image_uri }}
+        //                         style={styles.fullScreenImage}
+        //                     />
+        //                 </View>
+        //             </Modal>
 
-                    <View style={{ flexDirection: "row", padding: 20 }}>
-                        <Text style = {styles.subheader}> {this.state.user.username} </Text>
-                    </View>
+        //             <View style={{ flexDirection: "row", padding: 20 }}>
+        //                 <Text style = {styles.subheader}> {this.state.user.username} </Text>
+        //             </View>
                     
-                    <View style={{ flex: 1, flexDirection: "row", alignItems: 'center',
-                        justifyContent: 'center',}}>
+        //             <View style={{ flex: 1, flexDirection: "row", alignItems: 'center',
+        //                 justifyContent: 'center',}}>
     
-                    <TouchableOpacity   
-                    onPress={() => this.openImageModal()} >
+        //             <TouchableOpacity   
+        //             onPress={() => this.openImageModal()} >
 
-                        <ProfilePic storage_image_uri = {this.state.storage_image_uri} /> 
+        //                 <ProfilePic storage_image_uri = {this.state.storage_image_uri} /> 
 
-                    </TouchableOpacity>
+        //             </TouchableOpacity>
     
-                        <View style={{paddingLeft:30}}> 
-                            <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
-                        </View>
+        //                 <View style={{paddingLeft:30}}> 
+        //                     <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
+        //                 </View>
                         
-                    </View>
+        //             </View>
     
     
-                    <ProfileBio bio = {this.state.bio}/>
+        //             <ProfileBio bio = {this.state.bio}/>
+
+        //             <View style={{flexDirection: 'row'}}>
+        //                 <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
+        //                 <Text>{this.state.user.username} joined </Text>
+        //                 <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
+        //                 <Text> </Text>
+        //                 <FontAwesome name="birthday-cake" size={14} color="white" />
+        //                 </Text>
+        //             </View>
+                    
+                    
+
+                    
+                    
     
-                    <TouchableOpacity 
-                        onPress={() => this.gotToSettings()}>
-                        <Ionicons name="ios-settings" size={35} color="white" />
-                    </TouchableOpacity>
+        //         </View>
     
-                </View>
-    
-            )
-        }
+        //     )
+        // }
         return (
             <View style= {{backgroundColor: '#000000'}}>
                 <FlatList
@@ -328,7 +373,19 @@ const styles = StyleSheet.create({
         borderColor:'black',
         width: Dimensions.get('window').width,
         margin: 5
-   }
+   },
+   button: {
+        marginTop: 30,
+        paddingVertical: 5,
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        borderColor: '#FFFFFF',
+        borderWidth: 1,
+        borderRadius: 5,
+        width: 150,
+        marginRight: 10,
+        marginLeft: 10,
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

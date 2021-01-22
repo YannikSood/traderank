@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  Alert, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
+import {  Alert, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, ActivityIndicator } from 'react-native'
 import Firebase from '../../firebase'
 import LikeComponent from './FFCcomponents/likeComponent'
 import UserComponent from './FFCcomponents/userComponent'
@@ -7,6 +7,7 @@ import CommentIconComponent from './FFCcomponents/commentIconComponent'
 import DeleteComponent from './FFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -29,6 +30,7 @@ class FeedCellClass extends React.Component{
             postID: this.props.postID,
             navigation: this.props.navigation,
             date_created: this.props.date_created,
+            viewsCount: this.props.viewsCount,
             isLoading: false,
             currentUser: Firebase.auth().currentUser.uid,
             posterUID: this.props.uid,
@@ -41,6 +43,8 @@ class FeedCellClass extends React.Component{
         if (this.state.posterUID == this.state.currentUser) {
             this.setState({ currentUserPosted: true })
         }
+        this.setState({isLoading: true})
+        this.setState({isLoading: false})
     }
 
     renderGainLoss = () => {
@@ -120,6 +124,16 @@ class FeedCellClass extends React.Component{
                             <View style={styles.buttonContainer}>
 
 
+                                <Ionicons name="eye-sharp" size={30} color="white" />
+                                <Text style = {{color: '#FFFFFF', paddingLeft: 4}} >{this.state.viewsCount}</Text>
+
+
+                            </View>
+
+
+                            <View style={styles.buttonContainer}>
+
+
                                 <DeleteComponent postID = {this.state.postID} postType = {this.state.gain_loss} />
 
                             </View>
@@ -143,6 +157,15 @@ class FeedCellClass extends React.Component{
                                 <CommentIconComponent postID = {this.state.postID} />
 
                             </View>
+
+                            <View style={styles.buttonContainer}>
+
+
+                                <Ionicons name="eye-sharp" size={30} color="white" />
+                                <Text style = {{color: '#FFFFFF', paddingLeft: 4}}>{this.state.viewsCount}</Text>
+
+
+                            </View>
                             
 
                     </View>
@@ -163,6 +186,13 @@ class FeedCellClass extends React.Component{
 
 
     render() {
+        if(this.state.isLoading) {
+            return (
+                <View style={styles.gainFeedCell}>
+                    <ActivityIndicator size="large" color="#9E9E9E"/>
+                </View>
+            )
+        }
         
         return (
             <View style={styles.gainFeedCell}>

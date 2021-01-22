@@ -4,6 +4,8 @@ import Firebase from '../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
 import Modal from 'react-native-modal';
+import TimeAgo from 'react-native-timeago';
+import { FontAwesome } from '@expo/vector-icons';
 
 import FeedCellClass from '../cells/feedCellClass';
 
@@ -48,7 +50,8 @@ class ClickedUserProfile extends React.Component {
             //clickedUserUID: this.props.clickedUserUID, posterUID
             //navigation: this.props.navigation
             notificationUID: "",
-            modalOpen: false
+            modalOpen: false,
+            dateJoined: null,
         }
 
         this.firestoreRef = 
@@ -137,6 +140,7 @@ class ClickedUserProfile extends React.Component {
                     posterPostCount: doc.data().postCount,
                     posterBio: doc.data().bio,
                     storage_image_uri: doc.data().profilePic,
+                    dateJoined: doc.data().signupDate.toDate(),
                     isLoading: false
                 })
             } else {
@@ -176,7 +180,8 @@ class ClickedUserProfile extends React.Component {
             percent_gain_loss,
             profit_loss,
             gain_loss,
-            date_created
+            date_created,
+            viewsCount
             } = res.data();
 
             userPostsArray.push({
@@ -190,7 +195,8 @@ class ClickedUserProfile extends React.Component {
                 percent_gain_loss,
                 profit_loss,
                 gain_loss,
-                date_created
+                date_created,
+                viewsCount
             });
         });
 
@@ -198,7 +204,6 @@ class ClickedUserProfile extends React.Component {
             userPostsArray,
         });
 
-        // console.log(this.state.userPostsArray)
     }
 
     //If the current user is already following the poster, check here.
@@ -313,23 +318,23 @@ class ClickedUserProfile extends React.Component {
         if(this.state.isFollowing) {
             return (
                 <TouchableOpacity
-                            style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                            style={ styles.button }
                             onPress={() => {
                                 this.unfollowUser();
                             }}>
 
-                            <Text style={styles.textStyle}>unfollow</Text>
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>unfollow</Text>
                 </TouchableOpacity>
             )
         }
         return (
             <TouchableOpacity
-                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                        style={ styles.button }
                         onPress={() => {
                             this.followUser();
                         }}>
 
-                        <Text style={styles.textStyle}>follow</Text>
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>follow</Text>
             </TouchableOpacity>
         )
     }
@@ -394,9 +399,22 @@ class ClickedUserProfile extends React.Component {
                             </View>  
                         </View>
 
-                    <View style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', padding: 20 }}>
-                        <Text style={{color: '#FFFFFF'}}> {this.state.posterBio} </Text>
+                    <View style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', padding: 15 }}>
+                        <Text style={styles.bioText}> {this.state.posterBio} </Text>
                     </View> 
+
+                    <View style={{flexDirection: 'row'}}>
+
+                        <Text style={{flexDirection: 'row', color: '#FFFFFF', paddingBottom: 25}}>
+
+                            <Text>{this.state.posterUsername} joined </Text>
+                            <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
+                            <Text> </Text>
+                            <FontAwesome name="birthday-cake" size={14} color="white" />
+
+                        </Text>
+
+                    </View>
 
                     { this.renderFollowButton() }
 
@@ -422,6 +440,7 @@ class ClickedUserProfile extends React.Component {
                 navigation={navigation}
                 date_created = {item.date_created.toDate()}
                 uid = {item.uid}
+                viewsCount={item.viewsCount}
             />
         );
         //We want to render a profile pic and username side by side lookin nice and clickable. 
@@ -508,6 +527,24 @@ const styles = StyleSheet.create({
         width:  Dimensions.get('window').height * 0.4,
         height: Dimensions.get('window').height * 0.4,
         borderRadius: Dimensions.get('window').height * 0.2
+    },
+    bioText: {
+        fontSize: 16,
+        alignContent: 'center',
+        padding: 20,
+        color: '#FFFFFF'
+    },
+    button: {
+        marginTop: 30,
+        paddingVertical: 5,
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        borderColor: '#FFFFFF',
+        borderWidth: 1,
+        borderRadius: 5,
+        width: 150,
+        marginRight: 10,
+        marginLeft: 10,
     },
 })
 

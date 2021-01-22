@@ -94,6 +94,7 @@ class GlobalScreen extends React.Component {
                     profit_loss,
                     gain_loss,
                     date_created,
+                    viewsCount
                     } = res.data();
 
                     globalPostsArray.push({
@@ -108,6 +109,7 @@ class GlobalScreen extends React.Component {
                         profit_loss,
                         gain_loss,
                         date_created,
+                        viewsCount
                     });
 
             });
@@ -145,6 +147,7 @@ class GlobalScreen extends React.Component {
                     profit_loss,
                     gain_loss,
                     date_created,
+                    viewsCount
                     } = res.data();
     
                     newPostsArray.push({
@@ -159,6 +162,7 @@ class GlobalScreen extends React.Component {
                         profit_loss,
                         gain_loss,
                         date_created,
+                        viewsCount
                     });
                 });
 
@@ -187,6 +191,7 @@ class GlobalScreen extends React.Component {
                 navigation={navigation}
                 date_created={item.date_created.toDate()}
                 uid={item.uid}
+                viewsCount={item.viewsCount}
             />
         );
         if(this.state.isLoading){

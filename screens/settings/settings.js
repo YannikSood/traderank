@@ -33,47 +33,7 @@ class Settings extends React.Component {
         }
         
     }
-
-    componentDidMount() {
-        this.pullBio()
-    }
     
-    
-    //Pull bio from the db, save it to state
-    pullBio = async() => {
-        await Firebase.firestore()
-        .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
-        .get()
-        .then(function(doc) {
-            if (doc.exists) {
-                this.setState ({
-                    oldBio: doc.data().bio
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document!");
-            }
-        }.bind(this));
-    }
-
-    changeBio = async() => {
-        this.setState({ isLoading: true })
-        // This should take us to the right place, adding a temp uid where we need it
-        await Firebase.firestore()
-        .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
-        .set({
-            bio: this.state.newBio
-        }, { merge: true })
-        .then(() => this.setState ({ 
-            oldBio: this.state.newBio,
-            isLoading: false
-        }))
-        .catch(function(error) {
-            console.error("Error storing and retrieving image url: ", error);
-        });
-    }
 
     //Delete from users, usernames, all posts, following, followers, and likes?
     deleteAccount = async() => {
@@ -111,19 +71,6 @@ class Settings extends React.Component {
                     onPress={this.logOut}>
                     <Text>Sign out 🤷{this.state.user.username}</Text>
                 </TouchableOpacity>
-
-                <TextInput
-                    style={styles.inputBox}
-                    value={this.state.newBio}
-                    onChangeText={newBio => this.setState({ newBio })}
-                    placeholder={this.state.oldBio}
-                    autoCapitalize='none'
-                />
-                <TouchableOpacity onPress={() => { this.changeBio() }}> 
-                    <Text>Change Bio</Text>    
-                </TouchableOpacity>
-
-                
             </View>
         )
     }

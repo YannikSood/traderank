@@ -51,6 +51,7 @@ class Chat extends React.Component {
 
             querySnapshot.forEach((res) => {
                 const { 
+                    _id,
                     user,
                     text,
                     createdAt,
@@ -58,6 +59,7 @@ class Chat extends React.Component {
     
                     messages.push({
                         key: res._id,
+                        _id,
                         user,
                         text,
                         createdAt,
@@ -135,7 +137,7 @@ class Chat extends React.Component {
                     showUserAvatar= {true}
                     dateFormat = 'll'
                     timeFormat = 'LT'
-                    placeholder = "Talk to the traderank family..."
+                    placeholder = "Talk to the traderank mafia..."
                     onPressAvatar={user => this.getProfile(user)}
                 />
             </View>

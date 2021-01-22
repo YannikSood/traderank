@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Share, FlatList } from 'react-native'
 import Firebase from '../../firebase'
 
 import NotificationCellClass from '../cells/notificationCell';
@@ -17,7 +17,7 @@ class Notification extends React.Component {
 
         // console.log(today)
 
-        this.firestoreRef = Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc")
+        this.firestoreRef = Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc").limit(50)
 
         this.state = {
           isLoading: true,
@@ -38,6 +38,28 @@ class Notification extends React.Component {
         this.setState({ isLoading: true });
         this.firestoreRef.onSnapshot(this.getCollection);
     };
+
+    onShare = async () => {
+        try {
+          const result = await Share.share({
+           title: 'traderank invite',
+            message: 'join traderank, the social network for traders!', 
+            url: 'https://testflight.apple.com/join/eHiBK1S3'
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
+    
 
     //username: this.state.username,
     // description: this.state.description,
@@ -108,6 +130,27 @@ class Notification extends React.Component {
             )
         }    
 
+        if(this.state.notificationsArray.length == 0) {
+            return (
+                <View style={styles.container}>
+                    <Text style = {styles.buttonText}>no notifications!</Text>
+                    <TouchableOpacity  
+                    style = {styles.button} 
+                    onPress={() => this.onShare()} >
+                        <Text style = {styles.buttonText}>invite friends</Text>
+                    </TouchableOpacity>
+
+                    
+                    <TouchableOpacity 
+                        style = {styles.button} 
+                        onPress={() => this.props.navigation.navigate('Create')} >
+                        <Text style = {styles.buttonText}>post something!</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+            
+        }
+
         return (
             <View style={styles.container}>
                 <FlatList
@@ -131,6 +174,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#000000'
+    },
+    button: {
+        marginTop: 30,
+        paddingVertical: 5,
+        alignItems: 'center',
+        backgroundColor: '#5233FF',
+        borderRadius: 5,
+        width: 300
+    },
+    buttonText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#fff'
     },
 })
 

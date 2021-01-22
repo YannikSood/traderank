@@ -33,7 +33,7 @@ class Search extends React.Component {
                 <View style = {styles.searchContainer}>
                     <SearchBar
                         containerStyle={{backgroundColor: '#121212'}}
-                        placeholder="Find a user..."
+                        placeholder="Find a user... incomplete"
                         onChangeText={this.updateSearch}
                         value={this.state.search}
                         platform="ios"

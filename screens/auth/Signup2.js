@@ -42,8 +42,7 @@ class Signup2 extends React.Component {
                 //Username, uid, email, [following, followers, post all 0] and profile pic
                 await Firebase.auth()
                 .createUserWithEmailAndPassword(this.state.email.trim().toLowerCase(), this.state.password)
-                
-                await this.uploadToStorage()
+
 
                 await Firebase.firestore()
                 .collection('users')
@@ -51,7 +50,7 @@ class Signup2 extends React.Component {
                 .set ({
                     username: this.state.username.trim().replace(/[^\w\s]/gi, ""),
                     email: Firebase.auth().currentUser.email,
-                    profilePic: this.state.storage_image_uri,
+                    profilePic: 'https://firebasestorage.googleapis.com/v0/b/traderank-288df.appspot.com/o/profilePictures%2Fnoimage.jpeg?alt=media&token=873305d1-e583-4c9c-b60a-42cd080ae822',
                     followerCount: 0,
                     followingCount: 0,
                     postCount: 0,
@@ -130,55 +129,6 @@ class Signup2 extends React.Component {
             }.bind(this));
         }
     }
-
-   
-    //Pick an image logic
-    //---------------------------------------------------------------
-    openImagePickerAsync = async() => {
-        let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
-    
-        if (permissionResult.granted === false) {
-          alert("Permission to access camera roll is required!");
-          return;
-        }
-
-        let pickerResult = await ImagePicker.launchImageLibraryAsync()
-        
-        try {
-            if (pickerResult !== null) {
-
-                await this.setState({
-                    profilePic: pickerResult
-                });
-            }
-            else {
-                return;
-            }
-        }
-        catch (error) {
-            console.log(error);
-        }
-        if (pickerResult.cancelled === true) {
-            return;
-        }
-    };
-
-    //Upload to storage with this function, and get a URL back
-    //Storage location is //ProfilePic/UID
-    uploadToStorage = async() => {
-        const response = await fetch(this.state.profilePic.uri);
-        const file = await response.blob();
-        await Firebase
-        .storage()
-        .ref(`profilePictures/${Firebase.auth().currentUser.uid}`)
-        .put(file);
-
-        const url = await Firebase.storage().ref(`profilePictures/${Firebase.auth().currentUser.uid}`).getDownloadURL();
-        this.setState({
-            storage_image_uri: url
-        })
-
-    }
     //---------------------------------------------------------------
 
     render() {
@@ -189,79 +139,49 @@ class Signup2 extends React.Component {
               </View>
             )
         }    
-        if (this.state.profilePic !== null) {
-            return (
+        return (
 
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View 
-                        style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View 
+                    style={styles.container}>
 
-                        <View style={{flexDirection: 'row'}}>
-                            <Text style={styles.headerPartOneText}>trade</Text>
-                            <Text style={styles.headerPartTwoText}>rank</Text>
-                        </View>
-                        <TextInput
-                            style={styles.inputBox}
-                            value={this.state.username.trim().replace(/[^\w\s]/gi, "")}
-                            onChangeText={username => this.setState({ username })}
-                            placeholder='username'
-                            placeholderTextColor="#696969" 
-                            autoCapitalize='none'
-                            autoCorrect={false}
-                            maxLength={20}
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.headerPartOneText}>trade</Text>
+                        <Text style={styles.headerPartTwoText}>rank</Text>
+                    </View>
+
+                    <TextInput
+                        style={styles.inputBox}
+                        value={this.state.username.trim().replace(/[^\w\s]/gi, "")}
+                        onChangeText={username => this.setState({ username })}
+                        placeholder='username'
+                        placeholderTextColor="#696969" 
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                        maxLength={20}
+                    />
+
+                        {/* <Image
+                            source={{ uri: this.state.profilePic.uri }}
+                            style={styles.thumbnail}
                         />
 
-                            <Image
-                                source={{ uri: this.state.profilePic.uri }}
-                                style={styles.thumbnail}
-                            />
-
-                        <TouchableOpacity onPress={this.openImagePickerAsync} style={styles.button}>
-                                <Text style={styles.buttonText}>replace profile pic</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity onPress={this.openImagePickerAsync} style={styles.button}>
+                            <Text style={styles.buttonText}>replace profile pic</Text>
+                    </TouchableOpacity> */}
 
 
-                        <TouchableOpacity 
-                            style={styles.button} 
-                            onPress={this.checkUsername}>
-                                <Text style={styles.buttonText}>finish up</Text>
-                        </TouchableOpacity>
-                        <KeyboardSpacer />
-                    </View>
-                </TouchableWithoutFeedback>
-            )
-        }
-        else {
-            return (
-
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.container}>
-                        <View style={{flexDirection: 'row'}}>
-                            <Text style={styles.headerPartOneText}>trade</Text>
-                            <Text style={styles.headerPartTwoText}>rank</Text>
-                        </View>
-
-                        <TextInput
-                            style={styles.inputBox}
-                            value={this.state.username.trim().replace(/[^\w\s]/gi, "")}
-                            onChangeText={username => this.setState({ username })}
-                            placeholder='username'
-                            placeholderTextColor="#696969" 
-                            autoCapitalize='none'
-                            autoCorrect={false}
-                            maxLength={15}
-                        />
-
-                        <TouchableOpacity onPress={this.openImagePickerAsync} style={styles.button}>
-                                <Text style={styles.buttonText}>choose profile pic</Text>
-                        </TouchableOpacity>
-                        <KeyboardSpacer />
-                    </View>
-                </TouchableWithoutFeedback>
-            )
-        }
-
+                    <TouchableOpacity 
+                        style={styles.button} 
+                        onPress={this.checkUsername}>
+                            <Text style={styles.buttonText}>finish up</Text>
+                    </TouchableOpacity>
+                    <KeyboardSpacer />
+                </View>
+            </TouchableWithoutFeedback>
+        )
     }
+       
 }
 
 const styles = StyleSheet.create({

@@ -17,7 +17,7 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "23.0.0",
+      "buildNumber": "27.0.0",
       "supportsTablet": true,
       "bundleIdentifier": "com.yanniksood.traderank"
     },

@@ -48,6 +48,7 @@ import CommentCellClass from './screens/cells/commentCellClass';
 
 //Other pages
 import Settings from './screens/settings/settings.js'
+import EditProfile from './screens/settings/editProfile'
 import Search from './screens/search/search'
 import Notification from './screens/notifications/Notifications.js'
 import ClickedPostPage from './screens/misc/clickedPostPage'
@@ -126,6 +127,21 @@ class App extends React.Component {
               component={Settings} 
               options=  {{
                 title: "settings",
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  color: '#FFFFFF'
+                },
+                headerStyle: {
+                  backgroundColor: '#121212',
+                  shadowColor: 'transparent'
+                },
+                headerBackTitle: ""
+            }}/>
+            <Stack.Screen name="EditProfile" 
+              component={EditProfile} 
+              options=  {{
+                title: "edit profile",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 20,

@@ -9,7 +9,6 @@ import CommentComponent from '../cells/FFCcomponents/commentComponent'
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 
-import { Ionicons } from '@expo/vector-icons';
 
 class ClickedPostPage extends React.Component { 
     
@@ -31,6 +30,7 @@ class ClickedPostPage extends React.Component {
             date_created: this.props.route.params.date_created,
             commentsArray: [],
             modalOpen: false,
+            currentViewsCount: 0,
         }
 
         this.firestoreRef = 
@@ -41,7 +41,29 @@ class ClickedPostPage extends React.Component {
         .orderBy("date_created", "asc");
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .doc(this.state.postID)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+                this.setState({
+                    currentViewsCount: doc.data().viewsCount
+                })
+            }
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .doc(this.state.postID)
+        .set({
+            viewsCount: this.state.currentViewsCount + 1
+        }, { merge: true })
+
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
     }
     
