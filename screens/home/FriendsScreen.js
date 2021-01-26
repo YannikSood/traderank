@@ -36,7 +36,7 @@ class FriendsScreen extends React.Component {
         try {
           const result = await Share.share({
            title: 'traderank invite',
-            message: 'join traderank, the social network for traders!', 
+            message: 'join traderank, the social network for stock traders!', 
             url: 'https://testflight.apple.com/join/eHiBK1S3'
           });
           if (result.action === Share.sharedAction) {

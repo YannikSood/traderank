@@ -30,7 +30,7 @@ class Create extends React.Component {
                     onPress={() => this.props.navigation.navigate('YoloScreenshot')}
                     style={styles.yoloButton}>
 
-                        <Text style={styles.buttonText}>post yolo 🙏</Text>
+                        <Text style={styles.buttonText}>post trade 🙏</Text>
 
                 </TouchableOpacity>
 

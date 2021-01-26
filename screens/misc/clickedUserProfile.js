@@ -52,13 +52,15 @@ class ClickedUserProfile extends React.Component {
             notificationUID: "",
             modalOpen: false,
             dateJoined: null,
+            followsYou: false
         }
 
         this.firestoreRef = 
         Firebase.firestore()
         .collection('globalPosts')
         .where("uid", "==", this.state.posterUID)
-        .orderBy("date_created", "desc");
+        .orderBy("date_created", "desc")
+        .limit(5);
         
     }
 
@@ -206,6 +208,56 @@ class ClickedUserProfile extends React.Component {
 
     }
 
+    getMore = async() => {
+
+        const lastItemIndex = this.state.userPostsArray.length - 1
+
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .where("uid", "==", this.state.posterUID)
+        .orderBy("date_created", "desc")
+        .startAfter(this.state.userPostsArray[lastItemIndex].date_created)
+        .limit(5)
+        .onSnapshot(querySnapshot => {
+            const newPostsArray = []
+            querySnapshot.forEach((res) => {
+                const { 
+                    username,
+                    uid,
+                    image,
+                    ticker,
+                    security,
+                    description,
+                    percent_gain_loss,
+                    profit_loss,
+                    gain_loss,
+                    date_created,
+                    viewsCount
+                    } = res.data();
+    
+                    newPostsArray.push({
+                        key: res.id,
+                        username,
+                        uid,
+                        image,
+                        ticker,
+                        security,
+                        description,
+                        percent_gain_loss,
+                        profit_loss,
+                        gain_loss,
+                        date_created,
+                        viewsCount
+                    });
+                });
+
+                this.setState({
+                    userPostsArray: this.state.userPostsArray.concat(newPostsArray)
+                });
+
+        })
+    }
+
     //If the current user is already following the poster, check here.
     isFollowing = async() => {
         await Firebase.firestore()
@@ -223,6 +275,28 @@ class ClickedUserProfile extends React.Component {
             else {
                 this.setState ({
                     isFollowing: false
+                })
+            }
+        }.bind(this));
+
+    }
+
+    followsYou = async() => {
+        await Firebase.firestore()
+        .collection('following')
+        .doc(this.state.posterUID)
+        .collection('following')
+        .doc(this.state.currentUserUID)
+        .get()
+        .then(function(doc){
+            if (doc.exists) {
+                this.setState ({
+                    followsYou: true
+                })
+            } 
+            else {
+                this.setState ({
+                    followsYou: false
                 })
             }
         }.bind(this));
@@ -339,6 +413,19 @@ class ClickedUserProfile extends React.Component {
         )
     }
 
+    renderFollowsYou = () => {
+        this.followsYou()
+
+        if(this.state.followsYou) {
+            return (
+                <View>
+                    <Text style={{color: '#FFFFFF'}}>{this.state.posterUsername} follows you</Text>
+                </View>
+            )
+        }
+        return
+    }
+
     openImageModal = () => {
         this.setState({modalOpen: true})
     }
@@ -403,9 +490,9 @@ class ClickedUserProfile extends React.Component {
                         <Text style={styles.bioText}> {this.state.posterBio} </Text>
                     </View> 
 
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{flexDirection: 'column', justifyContent: 'space-between'}}>
 
-                        <Text style={{flexDirection: 'row', color: '#FFFFFF', paddingBottom: 25}}>
+                        <Text style={{flexDirection: 'row', color: '#FFFFFF', paddingBottom: 15}}>
 
                             <Text>{this.state.posterUsername} joined </Text>
                             <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
@@ -414,8 +501,10 @@ class ClickedUserProfile extends React.Component {
 
                         </Text>
 
-                    </View>
 
+                        { this.renderFollowsYou() }
+
+                    </View>
                     { this.renderFollowButton() }
 
             </View>
@@ -455,7 +544,7 @@ class ClickedUserProfile extends React.Component {
         } 
 
         return (
-            <View style={{backgroundColor: '#0000000'}}>
+            <View style={{backgroundColor: '#000000'}}>
                 <FlatList
                     data={this.state.userPostsArray}
                     renderItem={renderItem}
@@ -466,8 +555,10 @@ class ClickedUserProfile extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
+                    onEndReachedThreshold={0.5}
+                    onEndReached={() => {this.getMore()}}
                 />
-                </View>   
+            </View>   
         )
         
         
@@ -482,7 +573,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingBottom: 20,
-        backgroundColor: '#000000'
+        backgroundColor: '#000000',
     },
     tradeText: {
         fontSize: 16,

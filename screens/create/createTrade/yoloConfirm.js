@@ -234,7 +234,7 @@ class YoloConfirm extends React.Component {
                     
                     <Text style = {styles.textContainer}>
                         <Text style = {styles.boldText}>{this.state.username}'s</Text>
-                        <Text style = {styles.labelText}> yolo on </Text> 
+                        <Text style = {styles.labelText}> trade on </Text> 
                         <Text style = {styles.boldText}>${this.state.ticker} </Text>
                         <Text style = {styles.boldText}>[{this.state.security}]</Text>
 
@@ -257,7 +257,7 @@ class YoloConfirm extends React.Component {
 
                     <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                        <Text style={styles.labelText}>lastly, caption your yolo:</Text>
+                        <Text style={styles.labelText}>lastly, caption your trade:</Text>
                        <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 
                             <TextInput

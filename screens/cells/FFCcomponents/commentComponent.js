@@ -199,7 +199,7 @@ class CommentComponent extends React.Component {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View
-                    style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}>
+                    style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 30 }}>
 
                     <TextInput
                         style={styles.inputBox}

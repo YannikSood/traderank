@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback, ActivityIndicator } from 'react-native'
 import Firebase from '../../firebase'
 import { Ionicons } from '@expo/vector-icons';
+import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 //Redux
 import { connect } from 'react-redux';
@@ -69,7 +70,7 @@ class Settings extends React.Component {
             <View style={styles.container}>
                 <TouchableOpacity 
                     onPress={this.logOut}>
-                    <Text>Sign out 🤷{this.state.user.username}</Text>
+                     <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Sign out 🤷{this.state.user.username}</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -80,7 +81,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: '#121212'
     },
     inputBox: {
         width: '85%',

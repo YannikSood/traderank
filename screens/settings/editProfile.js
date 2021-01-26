@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Image } from 'react-native'
 import Firebase from '../../firebase'
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 //Redux
 import { connect } from 'react-redux';
@@ -159,44 +160,43 @@ class EditProfile extends React.Component {
         }    
         if (this.state.profilePic == null) {
             return (
-                <View style={styles.container}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.container}>
     
-                    <Image
-                        source={{ uri: this.state.oldProfilePic }}
-                        style={styles.thumbnail}
-                    />
+                        <Image
+                            source={{ uri: this.state.oldProfilePic }}
+                            style={styles.thumbnail}
+                        />
 
-                    <TouchableOpacity 
-                    onPress={this.openImagePickerAsync} 
-                    style={styles.button}>
-                       <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>change profile picture</Text>
-                    </TouchableOpacity>
-
-                    <TextInput
-                        style={styles.inputBox}
-                        value={this.state.newBio}
-                        onChangeText={newBio => this.setState({ newBio })}
-                        placeholder={this.state.oldBio}
-                        autoCapitalize='none'
-                    />
-
-                    <TouchableOpacity 
-                        onPress={() => { this.changeBio() }}
+                        <TouchableOpacity 
+                        onPress={this.openImagePickerAsync} 
                         style={styles.button}>
-                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Bio</Text>    
-                    </TouchableOpacity>
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>change profile picture</Text>
+                        </TouchableOpacity>
 
-                    
+                        <TextInput
+                            style={styles.inputBox}
+                            value={this.state.newBio}
+                            onChangeText={newBio => this.setState({ newBio })}
+                            placeholder={this.state.oldBio}
+                            autoCapitalize='none'
+                        />
 
-                    
-    
-                    
-                </View>
+                        <TouchableOpacity 
+                            onPress={() => { this.changeBio() }}
+                            style={styles.button}>
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Bio</Text>    
+                        </TouchableOpacity>
+
+                        <KeyboardSpacer />
+                    </View>
+                </TouchableWithoutFeedback>
             )
         }
         else {
             return (
-                <View style={styles.container}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.container}>
 
                     <Image
                         source={{ uri: this.state.profilePic.uri }}
@@ -224,7 +224,10 @@ class EditProfile extends React.Component {
                         <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Bio</Text>    
                     </TouchableOpacity>
 
-                </View>
+
+                    <KeyboardSpacer />
+                    </View>
+                </TouchableWithoutFeedback>
             )
         }
     }

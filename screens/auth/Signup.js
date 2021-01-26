@@ -24,49 +24,62 @@ class Signup extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: '',
-            password: '',
+            username: '',
             user: this.props.user,
         }
     }
 
     //Check username is in use/register user as a new user in the db
     handleSignUp = async() => {
-        const { email, password } = this.state
         
-        if(email != '' && password != '') {
-            try { 
-                this.props.navigation.navigate('Register', 
-                {
-                    email: email,
-                    password: password,
-                    
-                })
-                }
-            catch(error) {
-                console.log(error);
-            }
+        try { 
+            this.props.navigation.navigate('Register', {
+                username: this.state.username
+                
+            })
         }
-        else {
+        catch(error) {
+            console.log(error);
+        }
+        
+        
+    }
+
+    checkUsername = async() => {
+        this.setState({ isLoading: true})
+        //Check for minimum length reached
+        if(this.state.username.length < 3) {
             Alert.alert(
-                'please fill out the fields',
-                'you need an email and password!',
+                'username too short',
+                'minimum username length is 3 characters, only letters, numbers, and underscores allowed',
                 [
                   { text: 'OK', onPress: () => console.log('OK Pressed') }
                 ],
                 { cancelable: false }
               );
+              this.setState({ isLoading: false})
         }
-    }
-
-    toggleTOSBox = () => {
-        this.setState({ tosAgreed: !this.state.tosAgreed })
-    }
-
-    togglePrivacyBoxTrue = () => {
-        this.setState({ 
-            privacyAgreed: !this.state.privacyAgreed,
-        })
+        else {
+            await Firebase.firestore()
+            .collection('usernames')
+            .doc(this.state.username.trim().replace(/[^\w\s]/gi, ""))
+            .get()
+            .then(function(doc) {
+                if (doc.exists) {
+                    Alert.alert(
+                        'username is taken',
+                        'please choose another username',
+                        [
+                          { text: 'OK', onPress: () => console.log('OK Pressed') }
+                        ],
+                        { cancelable: false }
+                      );
+                      this.setState({ isLoading: false})
+                } else {
+                    this.handleSignUp()
+                }
+            }.bind(this));
+        }
     }
 
 
@@ -84,44 +97,21 @@ class Signup extends React.Component {
 
                     <TextInput
                         style={styles.inputBox}
-                        value={this.state.email}
-                        onChangeText={email => this.setState({ email })}
-                        placeholder='email'
+                        value={this.state.username.trim().replace(/[^\w\s]/gi, "")}
+                        onChangeText={username => this.setState({ username })}
+                        placeholder='username'
                         placeholderTextColor="#696969" 
                         autoCapitalize='none'
+                        autoCorrect={false}
+                        maxLength={20}
                     />
 
-                    <TextInput
-                        style={styles.inputBox}
-                        value={this.state.password}
-                        onChangeText={password => this.setState({ password })}
-                        placeholder='password'
-                        placeholderTextColor="#696969" 
-                        secureTextEntry={true}
-                    />
-
-                    
                     <TouchableOpacity 
                         style={styles.button} 
-                        onPress={this.handleSignUp}>
-                            <Text style={styles.buttonText}>sign up</Text>
+                        onPress={this.checkUsername}>
+                            <Text style={styles.buttonText}>next</Text>
                     </TouchableOpacity>
 
-
-                        <Text style={{color: '#FFFFFF', paddingTop: 5, paddingBottom: 5}}>
-                                clicking signup means you agree to our
-                        </Text>
-
-                        <Text style={{color: '#5233FF', padding: 4}}
-                            onPress={() => Linking.openURL('http://socialtradinginc.com/#tos')}> 
-                            Terms of Service
-                        </Text>
-
-                        <Text style={{color: '#5233FF', padding: 4}}
-                            onPress={() => Linking.openURL('http://socialtradinginc.com/#privacy')}> 
-                            Privacy Policy
-                        </Text>
-                    <KeyboardSpacer />
                 </View>
             </TouchableWithoutFeedback>
         )

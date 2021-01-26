@@ -25,10 +25,10 @@ class Signup2 extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            username: '',
+            username: this.props.route.params.username,
+            email: '',
+            password: '',
             user: this.props.user,
-            email: this.props.route.params.email,
-            password: this.props.route.params.password,
             profilePic: null,
             storage_image_uri: '',
             isLoading: false
@@ -42,7 +42,6 @@ class Signup2 extends React.Component {
                 //Username, uid, email, [following, followers, post all 0] and profile pic
                 await Firebase.auth()
                 .createUserWithEmailAndPassword(this.state.email.trim().toLowerCase(), this.state.password)
-
 
                 await Firebase.firestore()
                 .collection('users')
@@ -64,9 +63,6 @@ class Signup2 extends React.Component {
                 .catch(function(error) {
                     console.error("Error writing document to user collection: ", error);
                 })
-                // .then(() => this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.uid, this.state.username))
-                // .then(() => this.props.navigation.navigate('Tabs'))
-                // .then(() => this.setState({ isLoading: false}))
 
                 //Now add a reference to the usernames so you can check n shit
                 await Firebase.firestore()
@@ -89,46 +85,18 @@ class Signup2 extends React.Component {
                 
            }
            catch(error) {
-               console.log(error);
-           }
-    }
-
-    checkUsername = async() => {
-        this.setState({ isLoading: true})
-        //Check for minimum length reached
-        if(this.state.username.length < 3) {
-            Alert.alert(
-                'username too short',
-                'minimum username length is 3 characters, only letters, numbers, and underscores allowed',
+               Alert.alert(
+                'error',
+                error,
                 [
-                  { text: 'OK', onPress: () => console.log('OK Pressed') }
+                    { text: 'OK', onPress: () => console.log('OK Pressed') }
                 ],
                 { cancelable: false }
-              );
-              this.setState({ isLoading: false})
-        }
-        else {
-            await Firebase.firestore()
-            .collection('usernames')
-            .doc(this.state.username.trim().replace(/[^\w\s]/gi, ""))
-            .get()
-            .then(function(doc) {
-                if (doc.exists) {
-                    Alert.alert(
-                        'username is taken',
-                        'please choose another username',
-                        [
-                          { text: 'OK', onPress: () => console.log('OK Pressed') }
-                        ],
-                        { cancelable: false }
-                      );
-                      this.setState({ isLoading: false})
-                } else {
-                    this.handleSignUp()
-                }
-            }.bind(this));
-        }
+                );
+                this.setState({ isLoading: false})
+           }
     }
+    
     //---------------------------------------------------------------
 
     render() {
@@ -152,30 +120,43 @@ class Signup2 extends React.Component {
 
                     <TextInput
                         style={styles.inputBox}
-                        value={this.state.username.trim().replace(/[^\w\s]/gi, "")}
-                        onChangeText={username => this.setState({ username })}
-                        placeholder='username'
+                        value={this.state.email}
+                        onChangeText={email => this.setState({ email })}
+                        placeholder='email'
                         placeholderTextColor="#696969" 
                         autoCapitalize='none'
-                        autoCorrect={false}
-                        maxLength={20}
                     />
 
-                        {/* <Image
-                            source={{ uri: this.state.profilePic.uri }}
-                            style={styles.thumbnail}
-                        />
+                    <TextInput
+                        style={styles.inputBox}
+                        value={this.state.password}
+                        onChangeText={password => this.setState({ password })}
+                        placeholder='password'
+                        placeholderTextColor="#696969" 
+                        secureTextEntry={true}
+                    />
 
-                    <TouchableOpacity onPress={this.openImagePickerAsync} style={styles.button}>
-                            <Text style={styles.buttonText}>replace profile pic</Text>
-                    </TouchableOpacity> */}
-
-
+                    
                     <TouchableOpacity 
                         style={styles.button} 
-                        onPress={this.checkUsername}>
-                            <Text style={styles.buttonText}>finish up</Text>
+                        onPress={this.handleSignUp}>
+                            <Text style={styles.buttonText}>sign up</Text>
                     </TouchableOpacity>
+
+
+                        <Text style={{color: '#FFFFFF', paddingTop: 5, paddingBottom: 5}}>
+                                clicking signup means you agree to our
+                        </Text>
+
+                        <Text style={{color: '#5233FF', padding: 4}}
+                            onPress={() => Linking.openURL('http://socialtradinginc.com/#tos')}> 
+                            Terms of Service
+                        </Text>
+
+                        <Text style={{color: '#5233FF', padding: 4}}
+                            onPress={() => Linking.openURL('http://socialtradinginc.com/#privacy')}> 
+                            Privacy Policy
+                        </Text>
                     <KeyboardSpacer />
                 </View>
             </TouchableWithoutFeedback>

@@ -125,7 +125,6 @@ class GlobalScreen extends React.Component {
     }
 
     getMore = async() => {
-        const newPostsArray = []
 
         const lastItemIndex = this.state.globalPostsArray.length - 1
 
@@ -135,6 +134,7 @@ class GlobalScreen extends React.Component {
         .startAfter(this.state.globalPostsArray[lastItemIndex].date_created)
         .limit(5)
         .onSnapshot(querySnapshot => {
+            const newPostsArray = []
             querySnapshot.forEach((res) => {
                 const { 
                     username,

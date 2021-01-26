@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, FlatList, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, FlatList, Image, Share } from 'react-native'
 import Firebase from '../../firebase'
 import { Ionicons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
@@ -52,7 +52,8 @@ class Profile extends React.Component {
         Firebase.firestore()
         .collection('globalPosts')
         .where("uid", "==", this.state.userUID)
-        .orderBy("date_created", "desc");
+        .orderBy("date_created", "desc")
+        .limit(5);
         
     }
 
@@ -69,6 +70,27 @@ class Profile extends React.Component {
         this.setState({ isLoading: true });
         this.pullUserInfo()
     };
+
+    onShare = async () => {
+        try {
+          const result = await Share.share({
+           title: 'traderank invite',
+            message: 'join traderank, the social network for stock traders!', 
+            url: 'https://testflight.apple.com/join/eHiBK1S3'
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
     
 
     getCollection = (querySnapshot) => {
@@ -108,7 +130,57 @@ class Profile extends React.Component {
             userPostsArray,
         });
 
-        // console.log(this.state.userPostsArray)
+    }
+
+    getMore = async() => {
+
+        const lastItemIndex = this.state.userPostsArray.length - 1
+
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .where("uid", "==", this.state.userUID)
+        .orderBy("date_created", "desc")
+        .startAfter(this.state.userPostsArray[lastItemIndex].date_created)
+        .limit(5)
+        .onSnapshot(querySnapshot => {
+            const newPostsArray = []
+            querySnapshot.forEach((res) => {
+                const { 
+                    username,
+                    uid,
+                    image,
+                    ticker,
+                    security,
+                    description,
+                    percent_gain_loss,
+                    profit_loss,
+                    gain_loss,
+                    date_created,
+                    viewsCount
+                    } = res.data();
+    
+                    newPostsArray.push({
+                        key: res.id,
+                        username,
+                        uid,
+                        image,
+                        ticker,
+                        security,
+                        description,
+                        percent_gain_loss,
+                        profit_loss,
+                        gain_loss,
+                        date_created,
+                        viewsCount
+                    });
+                });
+
+                
+                this.setState({
+                    userPostsArray: this.state.userPostsArray.concat(newPostsArray)
+                });
+
+        })
     }
 
     pullUserInfo = async() => {
@@ -220,9 +292,14 @@ class Profile extends React.Component {
                             <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>settings</Text>
                         </TouchableOpacity>
 
-                        
 
                 </View>
+
+                <TouchableOpacity  
+                    style = {styles.shareButton} 
+                    onPress={() => this.onShare()} >
+                        <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>invite friends to traderank</Text>
+                </TouchableOpacity>
 
             </View>
 
@@ -331,6 +408,8 @@ class Profile extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
+                    onEndReachedThreshold={0.5}
+                    onEndReached={() => {this.getMore()}}
                 />
             </View>   
         )
@@ -342,7 +421,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#000000'
+        backgroundColor: '#000000',
+        // height: Dimensions.get('window').height
     },
     emptyContainer: {
         flex: 1,
@@ -386,6 +466,16 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 10,
     },
+    shareButton: {
+        marginTop: 15,
+        paddingVertical: 5,
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        borderRadius: 5,
+        borderColor: '#FFFFFF',
+        borderWidth: 1,
+        width: 320
+    }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

@@ -54,11 +54,6 @@ class FeedCellClass extends React.Component{
                     <Text style={styles.gainText}>${this.state.profit_loss}</Text>
                     <Text style={styles.regularTradeText}>  🚀  </Text>
                     <Text style={styles.gainText}>{this.state.percent_gain_loss}%</Text>
-                    <View style={styles.timeContainer}>
-
-                        <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                        
-                    </View>
                 </Text>
                 
             )
@@ -69,20 +64,13 @@ class FeedCellClass extends React.Component{
                     <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
                     <Text style={styles.tradeText}>  🥴  </Text>
                     <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
-                    <View style={styles.timeContainer}>
-
-                        <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                            
-                    </View>
                 </Text>
             )
         }
         return (
             <Text style={styles.pnlContainer}>
-                <Text style={styles.yoloText}>${this.state.profit_loss} yolo 🙏</Text>
-                <View style={styles.timeContainer}>
-                    <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                </View>
+                <Text style={styles.yoloText}>${this.state.profit_loss}  🙏  trade</Text>
+                {/* <Text style={styles.yoloText}>    </Text> */}
             </Text>
         )
     }
@@ -216,24 +204,37 @@ class FeedCellClass extends React.Component{
                 <TouchableOpacity   
                     
                     onPress={() => this.showPostPage()} >
-                    <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                                <UserComponent 
-                                    postID={this.state.postID} 
-                                    navigation={this.props.navigation} 
-                                />
+                    {/* <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}> */}
+                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
 
-                                <Text style={styles.securityContainer}>
-                                    <Text style={styles.regularTradeText}> traded </Text>
-                                    <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                                    <Text style={styles.tradeText}> [{this.state.security}] </Text>
-                                </Text>
+                                <View style={{flexDirection: 'column', paddingTop: 25, paddingLeft: 4}}>
+                                    <View style ={{flexDirection: 'row'}}>
+                                            <UserComponent 
+                                                postID={this.state.postID} 
+                                                navigation={this.props.navigation} 
+                                            />
+                                     <TimeAgo style={{color: '#696969', paddingLeft: 10, paddingTop: 17}} time = {this.state.date_created} />
+                                    </View>
+                                    
+                                </View>
+
+                                <View style={{flexDirection: 'column', paddingTop: 10}}>
+                                    {/* <Text style={styles.securityContainer}> */}
+                                        <Text style={styles.tradeText}>${this.state.ticker}</Text>
+                                        <Text style={{fontSize: 20, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
+                                    {/* </Text> */}
+                                </View>
+                                
+
+                                
                                 
                         </View>
+                    {/* </View> */}
+
                         { this.renderGainLoss() }
-                    </View>
 
                     </TouchableOpacity>
+
 
                     
                     
@@ -288,13 +289,14 @@ const styles = StyleSheet.create({
         // width: Dimensions.get('window').width - 20,
         flex: 1/3,
         backgroundColor: '#121212',
-        color: '#FFFFFF'
+        color: '#FFFFFF',
+        // alignItems: 'center'
     },
     tradeText: {
         fontSize: 20,
         fontWeight: 'bold',
         alignContent: 'center',
-        paddingBottom: 10,
+        padding: 10,
         color: '#FFFFFF',
         // paddingTop: 20
     },
@@ -337,13 +339,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center', 
         alignItems: 'center',
-        paddingBottom: 10,
-        paddingLeft: 10,
+        paddingBottom: 15,
+        paddingLeft: Dimensions.get('window').width * 0.3,
         paddingRight: 10,
         borderTopWidth: StyleSheet.hairlineWidth,
         // backgroundColor: '#121212'
     },
     securityContainer: {
+        flexDirection: 'column',
         alignContent: 'center',
         borderTopWidth: StyleSheet.hairlineWidth,
         paddingTop: 12,
@@ -353,11 +356,11 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#121212'
     },
-    timeContainer: {
-        paddingLeft: 20,
-        color: '#FFFFFF',
-        // backgroundColor: '#696969'
-    },
+    // timeContainer: {
+    //     paddingLeft: 20,
+    //     color: '#FFFFFF',
+    //     // backgroundColor: '#696969'
+    // },
     buttonContainer: {
         flexDirection: 'row', 
         flex: 1, 

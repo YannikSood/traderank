@@ -8,6 +8,7 @@ import CommentCellClass from '../cells/commentCellClass'
 import CommentComponent from '../cells/FFCcomponents/commentComponent'
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
+import { Ionicons } from '@expo/vector-icons';
 
 
 class ClickedPostPage extends React.Component { 
@@ -142,7 +143,7 @@ class ClickedPostPage extends React.Component {
         }
         return (
             <Text style={styles.pnlContainer}>
-                <Text style={styles.yoloText}>${this.state.profit_loss} yolo 🙏</Text>
+                 <Text style={styles.yoloText}>${this.state.profit_loss}  🙏  trade</Text>
                 <View style={styles.timeContainer}>
                     <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
                 </View>
@@ -152,7 +153,7 @@ class ClickedPostPage extends React.Component {
 
     renderListHeader = () => {
         return (
-            <View style={styles.container} >
+            <View style= {this.getContainerStyle()} >
 
             <Modal
                 isVisible={this.state.modalOpen}
@@ -218,11 +219,38 @@ class ClickedPostPage extends React.Component {
                          <CommentIconComponent postID = {this.state.postID} />
 
                     </View>
+
+                    <View style={styles.buttonContainer}>
+
+
+                        <Ionicons name="eye-sharp" size={30} color="white" />
+                        <Text style = {{color: '#FFFFFF', paddingLeft: 4}}>{this.state.currentViewsCount}</Text>
+
+
+                    </View>
                 </View>
                 
 
             </View>
         )
+    }
+
+    getContainerStyle = () => {
+        if (this.state.commentsArray == []) {
+            return {
+                paddingTop: 20,
+                paddingBottom: 20,
+                backgroundColor: '#000000',
+                color: '#000000',
+                height: Dimensions.get('window').height
+            }
+        }
+        return {
+            paddingTop: 20,
+            paddingBottom: 20,
+            backgroundColor: '#000000',
+            color: '#000000',
+        }
     }
 
     renderCommentComponent = () => {
@@ -254,103 +282,6 @@ class ClickedPostPage extends React.Component {
                 postID = {this.state.postID}
             />
         );
-
-        if(this.state.commentsArray.length == 0) {
-            return (
-               
-                
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                
-
-                    <View style={styles.noCommentsContainer} >
-                        
-                            <Modal
-                                isVisible={this.state.modalOpen}
-                                animationIn='fadeIn'
-                                onSwipeComplete={() => this.closeImageModal()}
-                                swipeDirection="down"
-                            >
-                                    
-                                <View  style={{flex: 1, backgroundColor: '#121212', justifyContent: 'center', alignItems: 'center'}}>
-
-                                    <Image
-                                        source={{ uri: this.state.image }}
-                                        style={styles.fullScreenImage}
-                                    />
-                                </View>
-                            </Modal>
-                            
-                    
-
-                    <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                                <UserComponent 
-                                    postID={this.state.postID} 
-                                    navigation={this.props.navigation} 
-                                />
-
-                                <Text style={styles.securityContainer}>
-                                    <Text style={styles.regularTradeText}> traded </Text>
-                                    <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                                    <Text style={styles.tradeText}> [{this.state.security}] </Text>
-                                </Text>
-                                
-                        </View>
-                        { this.renderGainLoss() }
-                        </View>
-
-                        <TouchableOpacity   
-                            onPress={() => this.openImageModal()} 
-                            style={{alignItems: "center", marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2}}>
-
-                                <Image
-                                    source={{ uri: this.state.image }}
-                                    style={styles.thumbnail}
-                                />
-                        </TouchableOpacity>
-                        
-                    
-
-                        <View style={styles.descriptionContainer}>
-
-                            <Text style = {styles.regularText}> {this.state.description}</Text> 
-
-                        </View>
-
-
-
-                        <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
-                            <View style={styles.buttonContainer}>
-
-                                <LikeComponent postID = {this.state.postID} />
-
-                            </View>
-
-                            <View style={styles.buttonContainer}>
-
-                                <CommentIconComponent postID = {this.state.postID} />
-
-                            </View>
-
-                            
-                        </View>
-
-
-
-                        {/* <Text style={{paddingTop: 20, color: '#FFFFFF', }}>No comments yet. Say something!</Text> */}
-
-                        <KeyboardAvoidingView style={styles.noCommentsFooter}
-                            behavior="padding" enabled   
-                            keyboardVerticalOffset={100}>
-                                <CommentComponent postID = {this.state.postID}/>
-                            </KeyboardAvoidingView>
-
-                    </View>
-                    
-
-                </TouchableWithoutFeedback>
-            )
-        }
 
         return (
             <View style ={{backgroundColor: '#000000'}}> 
@@ -388,9 +319,10 @@ const styles = StyleSheet.create({
     },
     noCommentsContainer: {
         paddingTop: 20,
-        paddingBottom: 100,
+        paddingBottom: 20,
         backgroundColor: '#000000',
         color: '#000000',
+        height: Dimensions.get('window').height
     },
     tradeText: {
         fontSize: 20,

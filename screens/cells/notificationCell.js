@@ -89,6 +89,8 @@ class NotificationCellClass extends React.Component{
         })
     }
 
+
+
     determineFormat = () => {
         if (this.state.type == 0) {
             return (
@@ -97,7 +99,12 @@ class NotificationCellClass extends React.Component{
                     onPress={() => this.showPostPage()} >
                         <View style={{flexDirection: 'row'}}>
 
-                            <Text style={{color: '#FFFFFF', padding: 20, fontWeight: 'bold'}}>{this.state.senderUsername} liked your post</Text>
+                            <TouchableOpacity   
+                                onPress={() => this.showUserProfile()}>
+                                    <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                            </TouchableOpacity>
+
+                            <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> liked your post</Text>
                             
                             <View style={styles.timeContainer}>
 
@@ -117,8 +124,14 @@ class NotificationCellClass extends React.Component{
                     style={styles.feedCell}
                     onPress={() => this.showPostPage()} >
                         <View style={{flexDirection: 'row'}}>
+  
+                                <TouchableOpacity   
+                                onPress={() => this.showUserProfile()}>
+                                    <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                                </TouchableOpacity>
 
-                            <Text style={{color: '#FFFFFF', padding: 20, fontWeight: 'bold'}}>{this.state.senderUsername} commented on your post</Text>
+                                 <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> commented on your post</Text>
+
                             
                             <View style={styles.timeContainer}>
 
@@ -138,7 +151,12 @@ class NotificationCellClass extends React.Component{
                     onPress={() => this.showPostPage()} >
                         <View style={{flexDirection: 'row'}}>
 
-                            <Text style={{color: '#FFFFFF', padding: 20, fontWeight: 'bold'}}>{this.state.senderUsername} liked your comment</Text>
+                            <TouchableOpacity   
+                                onPress={() => this.showUserProfile()}>
+                                    <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                            </TouchableOpacity>
+
+                            <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> liked your comment</Text>
                             
                             <View style={styles.timeContainer}>
 
@@ -151,12 +169,19 @@ class NotificationCellClass extends React.Component{
                 </TouchableOpacity>
             )
         }
+
+       
         
         return (
-            <View>
+            <View style={styles.feedCell}>
                 <View style={{flexDirection: 'row'}}>
 
-                        <Text style={{color: '#FFFFFF', padding: 20, fontWeight: 'bold'}}>{this.state.senderUsername} followed you</Text>
+                        <TouchableOpacity   
+                                onPress={() => this.showUserProfile()}>
+                                <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                        </TouchableOpacity>
+
+                        <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> followed you</Text>
                             
                         <View style={styles.timeContainer}>
 
@@ -170,6 +195,13 @@ class NotificationCellClass extends React.Component{
                 
         )
         
+    }
+
+    showUserProfile = () => {
+        this.state.navigation.push('ClickedUserProfile', 
+        {
+            posterUID: this.state.senderUID,
+        })
     }
 
     render() {
@@ -188,7 +220,7 @@ const styles = StyleSheet.create({
     
     feedCell: {
         // backgroundColor: '#3F3F41',
-        marginTop: 10,
+        margin: 20,
         color: '#FFFFFF',
         flex: 1,
         width: Dimensions.get('window').width - 20,
@@ -211,7 +243,7 @@ const styles = StyleSheet.create({
    },
    timeContainer: {
         paddingLeft: 10,
-        paddingTop: 20
+        // paddingTop: 20
     },
     
 })
