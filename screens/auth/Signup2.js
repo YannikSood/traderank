@@ -75,6 +75,8 @@ class Signup2 extends React.Component {
                     console.error("Error writing document to user collection: ", error);
                 })
 
+                
+
                 //Now add a reference to the usernames so you can check n shit
                 await Firebase.firestore()
                 .collection('usernames')
@@ -109,6 +111,19 @@ class Signup2 extends React.Component {
     }
 
     //---------------------------------------------------------------
+
+    addUsername = () => {
+        const addUsername = Firebase.functions().httpsCallable('addUsername');
+        addUsername({ 
+            username: this.state.username,
+        })
+        .then((result) => {
+            console.log(result)
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
 
     render() {
         if(this.state.isLoading){

@@ -216,6 +216,7 @@ class EditProfile extends React.Component {
                         onChangeText={newBio => this.setState({ newBio })}
                         placeholder={this.state.oldBio}
                         autoCapitalize='none'
+                        placeholderTextColor="#696969" 
                     />
 
                     <TouchableOpacity 
@@ -247,6 +248,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderColor: '#d3d3d3',
         borderWidth: 1,
+        color: '#FFFFFF'
         // textAlign: 'center'
     },
     thumbnail: {

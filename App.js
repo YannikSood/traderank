@@ -438,17 +438,7 @@ function createFlowStack() {
               name="GainTradeConfirm" 
               component={GainTradeConfirm} 
               options={({ navigation }) => ({
-                headerRight: () => (
-                  <Button 
-                      onPress={() => 
-                        navigation.reset({
-                          index: 0,
-                          routes: [{ name: 'Create' }],
-                        })}
-                      title="Cancel"
-                      color="red" />
-                  ),
-                  headerBackTitle: "",
+                  headerLeft: null,
                   headerStyle: {
                     backgroundColor: '#000000',
                     shadowColor: 'transparent'
@@ -530,17 +520,7 @@ function createFlowStack() {
               name="LossTradeConfirm" 
               component={LossTradeConfirm} 
               options={({ navigation }) => ({
-                headerRight: () => (
-                  <Button 
-                      onPress={() => 
-                        navigation.reset({
-                          index: 0,
-                          routes: [{ name: 'Create' }],
-                        })}
-                      title="Cancel"
-                      color="red" />
-                  ),
-                  headerBackTitle: "",
+                  headerLeft: null,
                   headerStyle: {
                     backgroundColor: '#000000',
                     shadowColor: 'transparent'
@@ -621,17 +601,7 @@ function createFlowStack() {
               name="YoloConfirm" 
               component={YoloConfirm} 
               options={({ navigation }) => ({
-                headerRight: () => (
-                  <Button 
-                      onPress={() => 
-                        navigation.reset({
-                          index: 0,
-                          routes: [{ name: 'Create' }],
-                        })}
-                      title="Cancel"
-                      color="red" />
-                  ),
-                  headerBackTitle: "",
+                  headerLeft: null,
                   headerStyle: {
                     backgroundColor: '#000000',
                     shadowColor: 'transparent'

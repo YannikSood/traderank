@@ -1,6 +1,12 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
+const algoliasearch = require('algoliasearch');
+
+
+const client = algoliasearch('5BS4R91W97', '1dd2a5427b3daed5059c1dc62bdd2197');
+const index = client.initIndex('usernames');
+
 admin.initializeApp();
 
 // // Create and Deploy Your First Cloud Functions
@@ -364,3 +370,14 @@ exports.writeNotification = functions.https.onCall((data, context) => {
         true
     )
 });
+
+exports.addUsername = functions.https.onCall((data, context) => {
+    // Get the username document
+    const username = data.username;
+  
+    // Add an 'objectID' field which Algolia requires
+    username.objectID = data.username;
+  
+    // Write to the algolia index
+    return index.saveObject(username);
+  });

@@ -221,7 +221,7 @@ class FeedCellClass extends React.Component{
                                 <View style={{flexDirection: 'column', paddingTop: 10}}>
                                     {/* <Text style={styles.securityContainer}> */}
                                         <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                                        <Text style={{fontSize: 20, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
+                                        <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
                                     {/* </Text> */}
                                 </View>
                                 
@@ -293,10 +293,11 @@ const styles = StyleSheet.create({
         // alignItems: 'center'
     },
     tradeText: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         alignContent: 'center',
         padding: 10,
+        paddingTop: 15,
         color: '#FFFFFF',
         // paddingTop: 20
     },
@@ -308,7 +309,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0
     },
     regularTradeText: {
-        fontSize: 20,
+        fontSize: 18,
         alignContent: 'center',
         paddingBottom: 10,
         color: '#FFFFFF'
@@ -340,7 +341,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center',
         paddingBottom: 15,
-        paddingLeft: Dimensions.get('window').width * 0.3,
+        paddingLeft: 25,
         paddingRight: 10,
         borderTopWidth: StyleSheet.hairlineWidth,
         // backgroundColor: '#121212'

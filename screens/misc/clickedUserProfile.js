@@ -333,7 +333,7 @@ class ClickedUserProfile extends React.Component {
         .set  ({
             followingCount: this.state.currentFollowingCount + 1
         }, { merge: true })
-        .then(() => this.setState({currentFollowerCount: this.state.currentFollowingCount + 1}))
+        .then(() => this.setState({currentFollowingCount: this.state.currentFollowingCount + 1}))
         
 
         //Update the follower count for the poster user
@@ -371,7 +371,7 @@ class ClickedUserProfile extends React.Component {
         .collection('users')
         .doc(this.state.currentUserUID)
         .set  ({
-            followingCount: this.state.currentFollowerCount - 1
+            followingCount: this.state.currentFollowingCount - 1
         }, { merge: true })
         .then(() => this.setState({currentFollowingCount: this.state.currentFollowingCount - 1}))
 
@@ -423,7 +423,9 @@ class ClickedUserProfile extends React.Component {
     //             </View>
     //         )
     //     }
-    //     return
+    //     return ( 
+    //         <View><Text style={{color: '#FFFFFF'}}> </Text></View>
+    //     )
     // }
 
     openImageModal = () => {
@@ -502,9 +504,10 @@ class ClickedUserProfile extends React.Component {
                         </Text>
 
 
-                        {/* { this.renderFollowsYou() } */}
 
                     </View>
+
+                    {/* { this.renderFollowsYou() } */}
                     { this.renderFollowButton() }
 
             </View>

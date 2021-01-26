@@ -4,6 +4,7 @@ import { GiftedChat } from 'react-native-gifted-chat'
 import Firebase from '../../firebase'
 import Moment from 'moment'
 import { Ionicons } from '@expo/vector-icons';
+import dayjs from 'dayjs' 
 
 
 class Chat extends React.Component {
@@ -62,9 +63,15 @@ class Chat extends React.Component {
                         _id,
                         user,
                         text,
-                        createdAt,
+                        createdAt
                     });
             })
+
+            messages.forEach((message) => {
+                message.createdAt = Moment(message.createdAt.toDate()).format('LLL')
+            })
+
+
 
             this.setState({
                 messages,
@@ -77,7 +84,6 @@ class Chat extends React.Component {
     //Load 50 more messages when the user scrolls
     //Add a message to firestore
     onSend = async(message) => {
-
         this.setState({isTyping: true})
         await Firebase.firestore().collection("chat")
         .add({
@@ -95,9 +101,9 @@ class Chat extends React.Component {
         .set({
             _id: this.state.messageID,
             text: message[0].text,
-            createdAt: Moment(message[0].createdAt).format('LLL')
+            createdAt: new Date(message[0].createdAt)
         }, { merge: true })
-        .then(() => this.getCurrentMessages())
+        // .then(() => this.getCurrentMessages())
 
     }
 
@@ -117,6 +123,12 @@ class Chat extends React.Component {
         }
     }
 
+    user () {
+        return {
+            
+        }
+    }
+
     render() { 
         return (
             <View style={{backgroundColor: '#000000', flex: 1}}>
@@ -127,14 +139,11 @@ class Chat extends React.Component {
                     messages={this.state.messages}
                     onSend={message => this.onSend(message)}
                     scrollToBottom
-                    // renderSystemMessage = {() => this.customSystemMessage()}
-                    // user = {{
-                    //     _id: this.state.currentUser.id,
-                    //     name: this.state.currentUser.name,
-                    //     avatar: this.state.currentUser.avatar,
+                    // user = { {
+                    //     _id: 1
                     // }}
+                    // locale = { dayjs.locale('en-ca') }
                     showAvatarForEveryMessage = {false}
-                    showUserAvatar= {true}
                     dateFormat = 'll'
                     timeFormat = 'LT'
                     placeholder = "Talk to the traderank mafia..."

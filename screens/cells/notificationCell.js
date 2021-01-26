@@ -101,10 +101,10 @@ class NotificationCellClass extends React.Component{
 
                             <TouchableOpacity   
                                 onPress={() => this.showUserProfile()}>
-                                    <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                                    <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
                             </TouchableOpacity>
 
-                            <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> liked your post</Text>
+                            <Text style={styles.textStyle2}> liked your post</Text>
                             
                             <View style={styles.timeContainer}>
 
@@ -127,10 +127,10 @@ class NotificationCellClass extends React.Component{
   
                                 <TouchableOpacity   
                                 onPress={() => this.showUserProfile()}>
-                                    <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                                    <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
                                 </TouchableOpacity>
 
-                                 <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> commented on your post</Text>
+                                 <Text style={styles.textStyle2}> commented on your post</Text>
 
                             
                             <View style={styles.timeContainer}>
@@ -153,10 +153,10 @@ class NotificationCellClass extends React.Component{
 
                             <TouchableOpacity   
                                 onPress={() => this.showUserProfile()}>
-                                    <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                                    <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
                             </TouchableOpacity>
 
-                            <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> liked your comment</Text>
+                            <Text style={styles.textStyle2}> liked your comment</Text>
                             
                             <View style={styles.timeContainer}>
 
@@ -178,10 +178,10 @@ class NotificationCellClass extends React.Component{
 
                         <TouchableOpacity   
                                 onPress={() => this.showUserProfile()}>
-                                <Text style={{color: '#FFFFFF', paddingLeft: 20, paddingTop: 5, fontWeight: 'bold'}}>{this.state.senderUsername} </Text>
+                                <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
                         </TouchableOpacity>
 
-                        <Text style={{color: '#FFFFFF', paddingLeft: 1, paddingTop: 5, fontWeight: 'bold'}}> followed you</Text>
+                        <Text style={styles.textStyle2}> followed you</Text>
                             
                         <View style={styles.timeContainer}>
 
@@ -238,14 +238,27 @@ const styles = StyleSheet.create({
     lineStyle:{
         borderWidth: 0.5,
         borderColor:'white',
-        width: Dimensions.get('window').width,
+        width: Dimensions.get('window').width - 70,
         margin: 10
    },
    timeContainer: {
         paddingLeft: 10,
-        // paddingTop: 20
+        paddingTop: 7
     },
-    
+    textStyle: {
+        color: '#FFFFFF', 
+        paddingLeft: 20, 
+        paddingTop: 5, 
+        fontWeight: 'bold', 
+        fontSize: 16
+    },
+    textStyle2: {
+        color: '#FFFFFF', 
+        paddingTop: 5, 
+        fontWeight: 'bold', 
+        fontSize: 16
+    },
+
 })
 
 export default NotificationCellClass;
