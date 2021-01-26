@@ -42,6 +42,17 @@ class Signup2 extends React.Component {
                 //Username, uid, email, [following, followers, post all 0] and profile pic
                 await Firebase.auth()
                 .createUserWithEmailAndPassword(this.state.email.trim().toLowerCase(), this.state.password)
+                .catch(function(error) {
+                    Alert.alert(
+                        'error',
+                        String(error),
+                        [
+                          { text: 'OK', onPress: () => console.log('OK Pressed') }
+                        ],
+                        { cancelable: false }
+                      );
+                      this.setState({ isLoading: false})
+                })
 
                 await Firebase.firestore()
                 .collection('users')
@@ -96,7 +107,7 @@ class Signup2 extends React.Component {
                 this.setState({ isLoading: false})
            }
     }
-    
+
     //---------------------------------------------------------------
 
     render() {

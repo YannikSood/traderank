@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions
 import Firebase from '../../firebase'
 
 import FeedCellClass from '../cells/feedCellClass.js';
-import { ThemeConsumer } from 'react-native-elements';
 
 
 
@@ -15,12 +14,32 @@ class FriendsScreen extends React.Component {
         this.state = {
           isLoading: false,
           followingPosts: [],
+          followingUsers: []
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // this.setState({isLoading: true})
-        this.getCollection()
+
+        // const followingUsers = []
+        // await Firebase.firestore()
+        // .collection('following')
+        // .doc(Firebase.auth().currentUser.uid)
+        // .collection('following')
+        // .get()
+        // .then((doc) => {
+        //     doc.forEach((item) => {
+        //         this.state.followingUsers.push(item.id)
+        //     })
+            
+        // })
+        // .then(() => this.setState({
+        //     followingUsers: followingUsers
+        // }))
+        // .then(console.log(this.state.followingUsers))
+        
+
+        // this.getCollection()
     }
     
     componentWillUnmount(){

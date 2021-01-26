@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, ActivityIndicator, TouchableWithoutFeedback, Keyboard, } from 'react-native'
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native'
 import Firebase from '../../firebase'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 
@@ -75,6 +75,17 @@ class Login extends React.Component {
         try {
              await Firebase.auth()
             .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
+            .catch(function(error) {
+                Alert.alert(
+                    'error',
+                    String(error),
+                    [
+                      { text: 'OK', onPress: () => console.log('OK Pressed') }
+                    ],
+                    { cancelable: false }
+                  );
+                  this.setState({ isLoading: false})
+            })
             .then(() => this.getLoginInfo())
             .then(() => this.props.navigation.navigate('Tabs'))
             .then(() =>

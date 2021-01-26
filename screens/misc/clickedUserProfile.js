@@ -281,27 +281,27 @@ class ClickedUserProfile extends React.Component {
 
     }
 
-    followsYou = async() => {
-        await Firebase.firestore()
-        .collection('following')
-        .doc(this.state.posterUID)
-        .collection('following')
-        .doc(this.state.currentUserUID)
-        .get()
-        .then(function(doc){
-            if (doc.exists) {
-                this.setState ({
-                    followsYou: true
-                })
-            } 
-            else {
-                this.setState ({
-                    followsYou: false
-                })
-            }
-        }.bind(this));
+    // followsYou = async() => {
+    //     await Firebase.firestore()
+    //     .collection('following')
+    //     .doc(this.state.posterUID)
+    //     .collection('following')
+    //     .doc(this.state.currentUserUID)
+    //     .get()
+    //     .then(function(doc){
+    //         if (doc.exists) {
+    //             this.setState ({
+    //                 followsYou: true
+    //             })
+    //         } 
+    //         else {
+    //             this.setState ({
+    //                 followsYou: false
+    //             })
+    //         }
+    //     }.bind(this));
 
-    }
+    // }
 
     //Follow a user
     followUser = async() => {
@@ -413,18 +413,18 @@ class ClickedUserProfile extends React.Component {
         )
     }
 
-    renderFollowsYou = () => {
-        this.followsYou()
+    // renderFollowsYou = () => {
+    //     this.followsYou()
 
-        if(this.state.followsYou) {
-            return (
-                <View>
-                    <Text style={{color: '#FFFFFF'}}>{this.state.posterUsername} follows you</Text>
-                </View>
-            )
-        }
-        return
-    }
+    //     if(this.state.followsYou) {
+    //         return (
+    //             <View>
+    //                 <Text style={{color: '#FFFFFF'}}>{this.state.posterUsername} follows you</Text>
+    //             </View>
+    //         )
+    //     }
+    //     return
+    // }
 
     openImageModal = () => {
         this.setState({modalOpen: true})
@@ -502,7 +502,7 @@ class ClickedUserProfile extends React.Component {
                         </Text>
 
 
-                        { this.renderFollowsYou() }
+                        {/* { this.renderFollowsYou() } */}
 
                     </View>
                     { this.renderFollowButton() }

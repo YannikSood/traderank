@@ -152,7 +152,7 @@ class Notification extends React.Component {
         }
 
         return (
-            <View style={styles.container}>
+            <View style={styles.listContainer}>
                 <FlatList
                     data={this.state.notificationsArray}
                     renderItem={renderItem}
@@ -173,6 +173,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#000000'
+    },
+    listContainer: {
         backgroundColor: '#000000'
     },
     button: {

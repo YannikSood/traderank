@@ -220,10 +220,10 @@ const styles = StyleSheet.create({
     
     feedCell: {
         // backgroundColor: '#3F3F41',
-        margin: 20,
+        padding: 20,
         color: '#FFFFFF',
         flex: 1,
-        width: Dimensions.get('window').width - 20,
+        width: Dimensions.get('window').width,
         
     },
     commentTextColor: {
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor:'white',
         width: Dimensions.get('window').width,
-        // margin: 10
+        margin: 10
    },
    timeContainer: {
         paddingLeft: 10,
