@@ -171,22 +171,31 @@ class ClickedPostPage extends React.Component {
                 </View>
             </Modal>
 
-            <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                <View style={{flexDirection: 'row', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                        <UserComponent 
-                            postID={this.state.postID} 
-                            navigation={this.props.navigation} 
-                        />
+            <View>
+                <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
 
-                        <Text style={styles.securityContainer}>
-                            <Text style={styles.regularTradeText}> traded </Text>
-                            <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                            <Text style={styles.tradeText}> [{this.state.security}] </Text>
-                        </Text>
+                    <View style={{flexDirection: 'column', paddingTop: 25, paddingLeft: 4}}>
+
+                        <View style ={{flexDirection: 'row'}}>
+                                <UserComponent 
+                                    postID={this.state.postID} 
+                                    navigation={this.props.navigation} 
+                                />
+                        </View>
                         
+                    </View>
+
+                    <View style={{flexDirection: 'column', paddingTop: 30}}>
+                            <Text style={styles.tradeText}>${this.state.ticker}</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
+                        
+                    </View>
+
+
                 </View>
                 { this.renderGainLoss() }
-                </View>
+            </View>
+            
 
 
                 <TouchableOpacity   
@@ -325,7 +334,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height
     },
     tradeText: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         alignContent: 'center',
         paddingBottom: 10,

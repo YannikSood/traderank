@@ -97,21 +97,23 @@ class NotificationCellClass extends React.Component{
                 <TouchableOpacity   
                     style={styles.feedCell}
                     onPress={() => this.showPostPage()} >
+                        <View style={{flexDirection: 'column'}}>
                         <View style={{flexDirection: 'row'}}>
 
                             <TouchableOpacity   
                                 onPress={() => this.showUserProfile()}>
-                                    <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
+                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
                             </TouchableOpacity>
 
                             <Text style={styles.textStyle2}> liked your post</Text>
                             
-                            <View style={styles.timeContainer}>
-
-                                <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
-
                             </View>
-                        </View>
+                                <View style={styles.timeContainer}>
+
+                                        <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
+
+                                </View>
+                            </View>
 
                         <View style = {styles.lineStyle} />
                 </TouchableOpacity>
@@ -123,22 +125,24 @@ class NotificationCellClass extends React.Component{
                 <TouchableOpacity   
                     style={styles.feedCell}
                     onPress={() => this.showPostPage()} >
+                        <View style={{flexDirection: 'column'}}>
                         <View style={{flexDirection: 'row'}}>
   
                                 <TouchableOpacity   
                                 onPress={() => this.showUserProfile()}>
-                                    <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
+                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
                                 </TouchableOpacity>
 
                                  <Text style={styles.textStyle2}> commented on your post</Text>
 
                             
-                            <View style={styles.timeContainer}>
+                                 </View>
+                                <View style={styles.timeContainer}>
 
-                                <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
+                                        <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
 
+                                </View>
                             </View>
-                        </View>
 
                         <View style = {styles.lineStyle} />
                 </TouchableOpacity>
@@ -149,18 +153,21 @@ class NotificationCellClass extends React.Component{
                 <TouchableOpacity   
                     style={styles.feedCell}
                     onPress={() => this.showPostPage()} >
+                         <View style={{flexDirection: 'column'}}>
+                             
                         <View style={{flexDirection: 'row'}}>
 
                             <TouchableOpacity   
                                 onPress={() => this.showUserProfile()}>
-                                    <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
+                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
                             </TouchableOpacity>
 
                             <Text style={styles.textStyle2}> liked your comment</Text>
                             
+                            </View>
                             <View style={styles.timeContainer}>
 
-                                <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
+                                    <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
 
                             </View>
                         </View>
@@ -174,20 +181,24 @@ class NotificationCellClass extends React.Component{
         
         return (
             <View style={styles.feedCell}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'column'}}>
+                    <View style={{flexDirection: 'row'}}>
 
-                        <TouchableOpacity   
-                                onPress={() => this.showUserProfile()}>
-                                <Text style={styles.textStyle}>{this.state.senderUsername} </Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity   
+                                    onPress={() => this.showUserProfile()}>
+                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
+                            </TouchableOpacity>
 
-                        <Text style={styles.textStyle2}> followed you</Text>
+                            <Text style={styles.textStyle2}> followed you</Text>
+                                
                             
-                        <View style={styles.timeContainer}>
+
+                    </View>
+                    <View style={styles.timeContainer}>
 
                             <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
 
-                        </View>
+                    </View>
                 </View>
 
                 <View style = {styles.lineStyle} />
@@ -220,7 +231,7 @@ const styles = StyleSheet.create({
     
     feedCell: {
         // backgroundColor: '#3F3F41',
-        padding: 20,
+        padding: 10,
         color: '#FFFFFF',
         flex: 1,
         width: Dimensions.get('window').width,
@@ -247,16 +258,16 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         color: '#FFFFFF', 
-        paddingLeft: 20, 
+        // paddingLeft: 20, 
         paddingTop: 5, 
         fontWeight: 'bold', 
-        fontSize: 16
+        fontSize: 14
     },
     textStyle2: {
         color: '#FFFFFF', 
         paddingTop: 5, 
         fontWeight: 'bold', 
-        fontSize: 16
+        fontSize: 14
     },
 
 })

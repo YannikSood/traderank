@@ -213,7 +213,6 @@ class FeedCellClass extends React.Component{
                                                 postID={this.state.postID} 
                                                 navigation={this.props.navigation} 
                                             />
-                                     <TimeAgo style={{color: '#696969', paddingLeft: 10, paddingTop: 17}} time = {this.state.date_created} />
                                     </View>
                                     
                                 </View>
@@ -251,6 +250,8 @@ class FeedCellClass extends React.Component{
                 
                     <TouchableOpacity
                     onPress={() => this.showPostPage()} >
+
+                    <TimeAgo style={{color: '#696969', paddingLeft: 25, paddingTop: 17}} time = {this.state.date_created} />
 
                     <View style={styles.descriptionContainer}>
 

@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     tradeText: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
         alignContent: 'center',
         paddingBottom: 10,
@@ -136,24 +136,24 @@ const styles = StyleSheet.create({
         // paddingTop: 20
     },
     regularText: {
-        fontSize: 18,
+        fontSize: 16,
         alignContent: 'center',
         paddingBottom: 10,
         color: '#FFFFFF'
     },
     regularTradeText: {
-        fontSize: 20,
+        fontSize: 16,
         alignContent: 'center',
         paddingBottom: 10,
         color: '#FFFFFF'
     },
     gainText: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#00cc00',
     },
     lossText: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#cc0000',
     },

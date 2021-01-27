@@ -313,7 +313,7 @@ class CommentLikeComponent extends React.Component {
                     <TouchableOpacity onPress={() => {
                             this.removeFromLikedDB()
                         }}> 
-                        <Ionicons name="ios-heart-dislike" size={20} color="white" />
+                        <Ionicons name="ios-heart" size={20} color='#00cc00' />
                         
                     </TouchableOpacity>
                     <Text style={{color: '#FFFFFF', paddingTop: 2}}>  {this.state.commentLikes}</Text>

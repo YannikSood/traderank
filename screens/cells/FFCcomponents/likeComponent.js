@@ -303,7 +303,7 @@ class LikeComponent extends React.Component {
                     <TouchableOpacity onPress={() => {
                             this.removeFromLikedDB()
                         }}> 
-                        <Ionicons name="ios-heart-dislike" size={30} color="white" />
+                        <Ionicons name="ios-heart" size={30} color='#00cc00' />
                         
                     </TouchableOpacity>
                     <Text style={{color: 'white'}}>  {this.state.likesCount}</Text>
