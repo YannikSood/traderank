@@ -366,18 +366,13 @@ exports.writeNotification = functions.https.onCall((data, context) => {
         console.error("Error finding user: ", error);
     });
 
+    admin.firestore()
+    .collection('users')
+    .doc(data.recieverUID)
+    .set({ hasNotifications: true }, {merge: true})
+
     return (
         true
     )
 });
 
-exports.addUsername = functions.https.onCall((data, context) => {
-    // Get the username document
-    const username = data.username;
-  
-    // Add an 'objectID' field which Algolia requires
-    username.objectID = data.username;
-  
-    // Write to the algolia index
-    return index.saveObject(username);
-  });

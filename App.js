@@ -235,22 +235,22 @@ class App extends React.Component {
                     color: '#FFFFFF'
                   },
                   headerStyle: {
-                    backgroundColor: '#121212',
+                    backgroundColor: '#000000',
                     shadowColor: 'transparent'
                   },
                   headerRight: () => (
                     <View style={{flexDirection: "row"}}>
 
-                      <TouchableOpacity 
+                      {/* <TouchableOpacity 
                         style={{paddingRight: 20}}
                         onPress={() => navigation.navigate('Search')}>
                         <Ionicons name="ios-search" size={25} color="white" />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
 
                       <TouchableOpacity 
                           style={{paddingRight: 20}}
                           onPress={() => navigation.navigate('Leaderboard')}>
-                          <Ionicons name="ios-trophy" size={25} color="white" />
+                          <Ionicons name="ios-trophy" size={25} color="#FFD700" />
                       </TouchableOpacity>
 
                     </View>
@@ -268,8 +268,11 @@ class App extends React.Component {
   } 
 }
 
+
+ 
 //Bottom Tabs
 function Tabs() {
+  
   return (
 
     <Tab.Navigator

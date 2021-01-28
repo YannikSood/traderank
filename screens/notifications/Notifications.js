@@ -74,6 +74,12 @@ class Notification extends React.Component {
     // security: this.state.security,
     // postID: this.state.postID
     getCollection = (querySnapshot) => {
+
+            Firebase.firestore()
+            .collection('users')
+            .doc(Firebase.auth().currentUser.uid)
+            .set({hasNotifications: false}, {merge: true})
+            
             const notificationsArray = [];
 
             querySnapshot.forEach((res) => {
