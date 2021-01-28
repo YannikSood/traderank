@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     lineStyle:{
         borderWidth: 0.5,
         borderColor:'white',
-        width: Dimensions.get('window').width - 70,
+        width: Dimensions.get('window').width - 50,
         margin: 10
    },
    timeContainer: {

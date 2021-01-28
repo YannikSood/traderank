@@ -285,7 +285,7 @@ function Tabs() {
 
       <Tab.Screen 
         name="Home" 
-        component={HomeTopTabs} 
+        component={globalFeedStackView}
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
@@ -638,13 +638,13 @@ function HomeTopTabs() {
               }}
           />
 
-          <TopTab.Screen 
+          {/* <TopTab.Screen 
             name="FriendScreen" 
             component={friendFeedStackView} 
             options={{
               tabBarLabel: '👥'
             }}
-          />
+          /> */}
 
         </TopTab.Navigator>
       </View>
@@ -659,8 +659,8 @@ function LBTopTabs() {
       <LBTopTab.Navigator
         initialRouteName="LBGains"
         tabBarOptions={{
-          activeTintColor:"#161F3D",
-          inactiveTintColor:"#B8BBC4",
+          activeTintColor:"#FFFFFF",
+          inactiveTintColor:"#FFFFFF",
           style: {
             backgroundColor: '#121212'
             
@@ -671,7 +671,7 @@ function LBTopTabs() {
             name="LBGains" 
             component={leaderboardGainStackView} 
               options={{
-                tabBarLabel: '📈'
+                tabBarLabel: 'GAINS 📈'
               }}
           />
 
@@ -679,7 +679,7 @@ function LBTopTabs() {
             name="LBLosses" 
             component={leaderboardLossStackView} 
             options={{
-              tabBarLabel: '📉'
+              tabBarLabel: 'LOSSES 📉'
             }}
           />
 

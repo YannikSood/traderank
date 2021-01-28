@@ -341,6 +341,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center', 
         alignItems: 'center',
+        paddingTop: 10,
         paddingBottom: 15,
         paddingLeft: 25,
         paddingRight: 10,
@@ -355,6 +356,7 @@ const styles = StyleSheet.create({
     },
     descriptionContainer: {
         alignItems: 'flex-start',
+        paddingLeft: 22,
         padding: 10,
         backgroundColor: '#121212'
     },

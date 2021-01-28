@@ -10,36 +10,37 @@ class FriendsScreen extends React.Component {
 
     constructor() {
         super();
-       
+        
         this.state = {
           isLoading: false,
           followingPosts: [],
-          followingUsers: []
-        };
+          followingUsers: [""],
+          isFollowingSomeone: false,
+
+        }
     }
 
     async componentDidMount() {
-        // this.setState({isLoading: true})
+        this.setState({ isLoading: true, followingUsers: [""] })
 
-        // const followingUsers = []
-        // await Firebase.firestore()
-        // .collection('following')
-        // .doc(Firebase.auth().currentUser.uid)
-        // .collection('following')
-        // .get()
-        // .then((doc) => {
-        //     doc.forEach((item) => {
-        //         this.state.followingUsers.push(item.id)
-        //     })
-            
-        // })
-        // .then(() => this.setState({
-        //     followingUsers: followingUsers
-        // }))
-        // .then(console.log(this.state.followingUsers))
         
+        await Firebase.firestore()
+        .collection('following')
+        .doc(Firebase.auth().currentUser.uid)
+        .collection('following')
+        .get()
+        .then(following => {
+            const followingUsers = []
+            following.forEach((user) => {
 
-        // this.getCollection()
+                followingUsers.push(user.id)
+
+            })
+            followingUsers.push(Firebase.auth().currentUser.uid)
+            this.setState({ followingUsers })
+        })
+        .then(() => this.getCollection())
+
     }
     
     componentWillUnmount(){
@@ -47,7 +48,7 @@ class FriendsScreen extends React.Component {
     }
 
     _refresh = () => {
-        this.setState({ isLoading: true });
+        this.setState({isLoading: true})
         this.getCollection();
     };
 
@@ -84,120 +85,125 @@ class FriendsScreen extends React.Component {
     // percent_gain_loss: this.state.percent_gain_loss,
     // security: this.state.security,
     // postID: this.state.postID
-    getCollection = async () => {
-
-        // const followingPosts = [];
-
-        // await Firebase.firestore()
-        // .collection('following')
-        // .doc(Firebase.auth().currentUser.uid)
-        // .collection('following')
-        // .get()
-        // .then(querySnapshot => {
-        //     querySnapshot.forEach((res) => {
-        //         Firebase.firestore()
-        //         .collection('globalPosts')
-        //         .where("uid", "==", res.data().uid)
-        //         .onSnapshot(function(query) {
-        //             query.forEach((doc) =>  {
-        //                 const { 
-        //                     username,
-        //                     uid,
-        //                     image,
-        //                     ticker,
-        //                     security,
-        //                     description,
-        //                     percent_gain_loss,
-        //                     profit_loss,
-        //                     gain_loss,
-        //                     date_created
-        //                     } = doc.data();
-
-                
-        //                     followingPosts.push({
-        //                         key: doc.id,
-        //                         username,
-        //                         uid,
-        //                         image,
-        //                         ticker,
-        //                         security,
-        //                         description,
-        //                         percent_gain_loss,
-        //                         profit_loss,
-        //                         gain_loss,
-        //                         date_created
-        //                     });
-
-
-                        
-        //             })
-
-        //             followingPosts.sort(function(a,b){ 
-
-        //                 return b.date_created.toDate() - a.date_created.toDate()
-                
-        //             })
-
-        //         })
-
-        //     })
-
-        //     this.setState({
-        //         followingPosts,
-        //         isLoading: false, 
-        //     })
-
-        //     console.log(this.state.followingPosts.length)
-        // })
-
-
-
+    getCollection = async() => {
+        this.setState({ isLoading: true, followingUsers: [""] })
 
         
+        await Firebase.firestore()
+        .collection('following')
+        .doc(Firebase.auth().currentUser.uid)
+        .collection('following')
+        .get()
+        .then(following => {
+            const followingUsers = []
+            following.forEach((user) => {
+
+                followingUsers.push(user.id)
+
+            })
+            followingUsers.push(Firebase.auth().currentUser.uid)
+            this.setState({ followingUsers })
+        })
+        
+        const followingPosts = []
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .where("uid", "in", this.state.followingUsers)
+        .orderBy("date_created", "desc")
+        .limit(5)
+        .onSnapshot((querysnapshot) => {
+            querysnapshot.forEach((post) => {
+                const { 
+                    username,
+                    uid,
+                    image,
+                    ticker,
+                    security,
+                    description,
+                    percent_gain_loss,
+                    profit_loss,
+                    gain_loss,
+                    date_created,
+                    viewsCount
+                    } = post.data();
 
         
+                followingPosts.push({
+                    key: post.id,
+                    username,
+                    uid,
+                    image,
+                    ticker,
+                    security,
+                    description,
+                    percent_gain_loss,
+                    profit_loss,
+                    gain_loss,
+                    date_created,
+                    viewsCount
+                })
 
-        // await Firebase.firestore()
-        // .collection('globalPosts')
-        // .where("uid", "==", Firebase.auth().currentUser.uid)
-        // .onSnapshot(function(query) {
-        //     query.forEach((doc) =>  {
-        //         const { 
-        //             username,
-        //             uid,
-        //             image,
-        //             ticker,
-        //             security,
-        //             description,
-        //             percent_gain_loss,
-        //             profit_loss,
-        //             gain_loss,
-        //             date_created
-        //             } = doc.data();
+            })
+
+            console.log(followingPosts)
+
+            this.setState({
+                followingPosts,
+                isLoading: false
+            })
+        })
         
-        //             followingPosts.push({
-        //                 key: doc.id,
-        //                 username,
-        //                 uid,
-        //                 image,
-        //                 ticker,
-        //                 security,
-        //                 description,
-        //                 percent_gain_loss,
-        //                 profit_loss,
-        //                 gain_loss,
-        //                 date_created
-        //             });
+    }
 
-        //     })
-
-        //     
+    getMore = async() => {
+        const lastItemIndex = this.state.followingPosts.length - 1
         
-        // }.bind(this))
-
-
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .where("uid", "in", this.state.followingUsers)
+        .orderBy("date_created", "desc")
+        .startAfter(this.state.followingPosts[lastItemIndex].date_created)
+        .limit(5)
+        .onSnapshot((querysnapshot) => {
+            const newPostsArray = []
+            querysnapshot.forEach((post) => {
+                const { 
+                    username,
+                    uid,
+                    image,
+                    ticker,
+                    security,
+                    description,
+                    percent_gain_loss,
+                    profit_loss,
+                    gain_loss,
+                    date_created,
+                    viewsCount
+                    } = post.data();
 
         
+                newPostsArray.push({
+                    key: post.id,
+                    username,
+                    uid,
+                    image,
+                    ticker,
+                    security,
+                    description,
+                    percent_gain_loss,
+                    profit_loss,
+                    gain_loss,
+                    date_created,
+                    viewsCount
+                })
+
+            })
+
+            this.setState({
+                followingPosts: this.state.followingPosts.concat(newPostsArray),
+                isLoading: false
+            })
+        })
 
     }
 
@@ -218,6 +224,7 @@ class FriendsScreen extends React.Component {
                 navigation={navigation}
                 date_created={item.date_created.toDate()}
                 uid={item.uid}
+                viewsCount={item.viewsCount}
             />
         );
         if(this.state.isLoading){
@@ -254,6 +261,8 @@ class FriendsScreen extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
+                    onEndReachedThreshold={0.5}
+                    onEndReached={() => {this.getMore()}}
                 />
             </View>   
         )
@@ -285,7 +294,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height,
     },
     view: {
-        alignItems: 'center',
+        // alignItems: 'center',
         backgroundColor: '#000000'
     },
     thumbnail: {

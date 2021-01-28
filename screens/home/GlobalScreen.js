@@ -64,7 +64,7 @@ class GlobalScreen extends React.Component {
     _refresh = () => {
         this.setState({ isLoading: true });
         this.firestoreRef.onSnapshot(this.getCollection);
-      };
+    };
 
     //username: this.state.username,
     // description: this.state.description,
