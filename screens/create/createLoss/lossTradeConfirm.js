@@ -5,6 +5,8 @@ import { getUser } from '../../../redux/app-redux';
 import Modal from 'react-native-modal';
 
 import Firebase from '../../../firebase'
+import Segment from '../../../segment'
+
 
 const mapStateToProps = (state) => {
     return {
@@ -57,7 +59,6 @@ class LossTradeConfirm extends React.Component {
     }
 
     onSubmit = async() => {
-
         //create a new document in firestore with the path posts/uid/posts/postID
         //get the newly created post ID (docRef.id)
         //pass it to the upload to storagefunction

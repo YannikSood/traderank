@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity } from 'react-native'
+import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Firebase from '../../firebase'
 import LikeComponent from '../cells/FFCcomponents/likeComponent'
 import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent'
@@ -9,7 +9,7 @@ import CommentComponent from '../cells/FFCcomponents/commentComponent'
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
-
+import Segment from '../../segment'
 
 class ClickedPostPage extends React.Component { 
     
@@ -43,6 +43,9 @@ class ClickedPostPage extends React.Component {
     }
 
     async componentDidMount() {
+
+        Segment.track({ event: "Post Clicked" })
+
         await Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
@@ -71,12 +74,6 @@ class ClickedPostPage extends React.Component {
     componentWillUnmount(){
         this.unsubscribe();
     }
-
-    _refresh = () => {
-        this.setState({ isLoading: true });
-        this.firestoreRef.onSnapshot(this.getCollection);
-    };
-
     
     
 
@@ -133,25 +130,29 @@ class ClickedPostPage extends React.Component {
                     <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
                     <Text style={styles.tradeText}>  🥴  </Text>
                     <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
-                    <View style={styles.timeContainer}>
-
-                        <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                            
-                    </View>
                 </Text>
             )
         }
         return (
             <Text style={styles.pnlContainer}>
                  <Text style={styles.yoloText}>${this.state.profit_loss}  🙏  trade</Text>
-                <View style={styles.timeContainer}>
-                    <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                </View>
             </Text>
         )
     }
 
+    _refresh = () => {
+        this.setState({ isLoading: true });
+        this.firestoreRef.onSnapshot(this.getCollection);
+    };
+
     renderListHeader = () => {
+        if (this.state.isLoading) {
+            return (
+                <View style= {styles.noCommentsContainer} >
+                        <ActivityIndicator size="large" color="#9E9E9E"/>
+                </View>
+            )
+        }
         return (
             <View style= {this.getContainerStyle()} >
 
@@ -172,27 +173,28 @@ class ClickedPostPage extends React.Component {
             </Modal>
 
             <View>
-                <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
+            <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
 
-                    <View style={{flexDirection: 'column', paddingTop: 25, paddingLeft: 4}}>
-
-                        <View style ={{flexDirection: 'row'}}>
-                                <UserComponent 
-                                    postID={this.state.postID} 
-                                    navigation={this.props.navigation} 
-                                />
-                        </View>
-                        
+                <View style={{flexDirection: 'column', paddingTop: 10, paddingLeft: 4}}>
+                    <View style ={{flexDirection: 'row', paddingLeft: 12,}}>
+                            <UserComponent 
+                                postID={this.state.postID} 
+                                navigation={this.props.navigation} 
+                            />
                     </View>
+                    
+                </View>
 
-                    <View style={{flexDirection: 'column', paddingTop: 30}}>
-                            <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
-                        
-                    </View>
+                <View style={{flexDirection: 'column', paddingTop: 10, paddingRight: 10}}>
+                        <Text style={styles.tradeText}>${this.state.ticker}</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10}}>#{this.state.security} </Text>
+                </View>
+
+
 
 
                 </View>
+                {/* </View> */}
                 { this.renderGainLoss() }
             </View>
             
@@ -208,6 +210,10 @@ class ClickedPostPage extends React.Component {
                         />
                 </TouchableOpacity>
 
+
+                <View style={styles.timeContainer}>
+                    <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
+                </View>
                 <View style={styles.descriptionContainer}>
 
                     <Text style = {styles.regularText}> {this.state.description}</Text> 
@@ -294,17 +300,18 @@ class ClickedPostPage extends React.Component {
 
         return (
             <View style ={{backgroundColor: '#000000'}}> 
-                <FlatList
-                    data={this.state.commentsArray}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.key}
-                    ListHeaderComponent={this.renderListHeader}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}
-                    onRefresh={this._refresh}
-                    refreshing={this.state.isLoading}
-                />
+
+                    <FlatList
+                        data={this.state.commentsArray}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.key}
+                        ListHeaderComponent={this.renderListHeader}
+                        contentContainerStyle={{ paddingBottom: 100 }}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        onRefresh={this._refresh}
+                        refreshing={this.state.isLoading}
+                    />
 
                     <KeyboardAvoidingView style={styles.commentFooter}
                     behavior="padding" enabled   
@@ -337,7 +344,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         alignContent: 'center',
-        paddingBottom: 10,
         color: '#FFFFFF',
         // paddingTop: 20
     },
@@ -377,13 +383,14 @@ const styles = StyleSheet.create({
     },
     pnlContainer: {
         flex: 1,
-        // justifyContent: 'left', 
-        // alignContent: 'left',
-        paddingBottom: 25,
-        paddingLeft: 10,
+        justifyContent: 'center', 
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 15,
+        paddingLeft: 25,
+        paddingRight: 10,
         borderTopWidth: StyleSheet.hairlineWidth,
-
-        backgroundColor: '#000000'
+        // backgroundColor: '#121212'
     },
     securityContainer: {
         alignContent: 'center',
@@ -393,11 +400,12 @@ const styles = StyleSheet.create({
     },
     descriptionContainer: {
         alignItems: 'flex-start',
+        paddingLeft: 22,
         padding: 10,
         backgroundColor: '#000000'
     },
     timeContainer: {
-        paddingLeft: 20,
+        paddingLeft: 25,
         // color: '#FFFFFF',
         // backgroundColor: '#FFFFFF'
     },

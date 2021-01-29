@@ -44,7 +44,6 @@ class Login extends React.Component {
                 .then(async function (doc) {
                     if (doc.exists) {
                         this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username)
-                        this.props.navigation.navigate('Tabs')
                         this.props.navigation.reset({
                             index: 0,
                             routes: [{ name: 'Tabs' }],

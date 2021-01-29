@@ -214,7 +214,7 @@ exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('00 21 * * 
         if (globalPostsArray.length > 0) {
             for (i = 0; i < globalPostsArray.length; i++) {
                 
-                globalPostsArray[i].score = parseInt(globalPostsArray[i].profit_loss) * parseInt(globalPostsArray[i].percent_gain_loss)
+                globalPostsArray[i].score = parseInt(globalPostsArray[i].profit_loss) + parseInt(globalPostsArray[i].percent_gain_loss)
 
                 admin.firestore()
                 .collection('leaderboard')

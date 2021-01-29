@@ -79,7 +79,7 @@ class Notification extends React.Component {
             .collection('users')
             .doc(Firebase.auth().currentUser.uid)
             .set({hasNotifications: false}, {merge: true})
-            
+
             const notificationsArray = [];
 
             querySnapshot.forEach((res) => {
@@ -139,18 +139,32 @@ class Notification extends React.Component {
         if(this.state.notificationsArray.length == 0) {
             return (
                 <View style={styles.container}>
-                    <Text style = {styles.buttonText}>no notifications!</Text>
-                    <TouchableOpacity  
-                    style = {styles.button} 
-                    onPress={() => this.onShare()} >
-                        <Text style = {styles.buttonText}>invite friends</Text>
+                    <Text style = {styles.buttonText}>no notifications yet! do something:</Text>
+                    
+                    <TouchableOpacity 
+                        style = {styles.button} 
+                        onPress={() => this.props.navigation.navigate('Chat')} >
+                        <Text style = {styles.buttonText}>start chatting</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity 
+                        style = {styles.button} 
+                        onPress={() => this.props.navigation.navigate('EditProfile')} >
+                        <Text style = {styles.buttonText}>edit profile</Text>
+                    </TouchableOpacity>
                     
                     <TouchableOpacity 
                         style = {styles.button} 
                         onPress={() => this.props.navigation.navigate('Create')} >
-                        <Text style = {styles.buttonText}>post something!</Text>
+                        <Text style = {styles.buttonText}>post something</Text>
+                    </TouchableOpacity>
+
+                   
+
+                    <TouchableOpacity  
+                    style = {styles.button} 
+                    onPress={() => this.onShare()} >
+                        <Text style = {styles.buttonText}>invite friends</Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -188,7 +202,9 @@ const styles = StyleSheet.create({
         marginTop: 30,
         paddingVertical: 5,
         alignItems: 'center',
-        backgroundColor: '#5233FF',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#FFFFFF',
         borderRadius: 5,
         width: 300
     },

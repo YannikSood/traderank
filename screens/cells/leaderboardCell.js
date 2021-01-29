@@ -38,7 +38,6 @@ class LeaderboardCell extends React.Component{
                     <Text style={styles.gainText}>${this.state.profit_loss}</Text>
                     <Text style={styles.regularTradeText}>  💵  </Text>
                     <Text style={styles.gainText}>{this.state.percent_gain_loss}%</Text>
-                        <Text style={styles.rankText}>          #{this.state.index}🏆</Text>
                 </Text>
                 
             )
@@ -48,7 +47,6 @@ class LeaderboardCell extends React.Component{
                 <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
                 <Text style={styles.tradeText}>  🥴  </Text>
                 <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
-                <Text style={styles.rankText}>          #{this.state.index}🏆</Text>
             </Text>
         )
     }
@@ -72,39 +70,42 @@ class LeaderboardCell extends React.Component{
 
     render() {
         return (
-            <View style={{flex:1, 
-                alignItems: 'center',
-                justifyContent: 'center'}}>
                 <TouchableOpacity   
                     style={ styles.gainFeedCell }
                     onPress={() => this.showPostPage()} >
-                    <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'center', alignItems: 'center' }}>
-                                <UserComponent 
-                                    postID={this.state.postID} 
-                                    navigation={this.props.navigation} 
-                                />
+                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
 
-                                <Text style={styles.securityContainer}>
-                                    <Text style={styles.regularTradeText}> traded </Text>
-                                    <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                                    <Text style={styles.tradeText}> [{this.state.security}] </Text>
-                                </Text>
-
-
+                            <View style={{flexDirection: 'column', paddingTop: 10, paddingLeft: 4}}>
+                                <View style ={{flexDirection: 'row'}}>
+                                        <UserComponent 
+                                            postID={this.state.postID} 
+                                            navigation={this.props.navigation} 
+                                        />
+                                </View>
                                 
-                                
+                            </View>
+
+                        <View style={{flexDirection: 'column'}}>
+                            {/* <Text style={styles.securityContainer}> */}
+                                <Text style={styles.tradeText}>${this.state.ticker}</Text>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
+                            {/* </Text> */}
                         </View>
 
+
+
+
+                        </View>
+                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
+                        
                         { this.renderGainLoss() }
+                        <Text style={styles.rankText}>#{this.state.index}🏆</Text>
 
-
+                         </View>
                     
                         <View style = {styles.lineStyle} />
-                    </View>
 
                 </TouchableOpacity>
-            </View>
         )
     }
 };
@@ -124,8 +125,8 @@ const styles = StyleSheet.create({
         flex: 1/3,
         backgroundColor: '#121212',
         color: '#FFFFFF',
-        alignItems: 'center',
-        justifyContent: 'center'
+        // alignItems: 'center',
+        justifyContent: 'space-between'
     },
     tradeText: {
         fontSize: 16,
@@ -148,12 +149,12 @@ const styles = StyleSheet.create({
         color: '#FFFFFF'
     },
     gainText: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#00cc00',
     },
     lossText: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#cc0000',
     },
@@ -212,6 +213,7 @@ const styles = StyleSheet.create({
     },
     rankText: {
         fontSize: 30,
+        paddingRight: 20,
         fontWeight: 'bold',
         alignContent: 'center',
         color: '#FFFFFF',

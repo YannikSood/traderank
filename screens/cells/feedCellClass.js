@@ -31,7 +31,7 @@ class FeedCellClass extends React.Component{
             navigation: this.props.navigation,
             date_created: this.props.date_created,
             viewsCount: this.props.viewsCount,
-            isLoading: false,
+            isLoading: true,
             currentUser: Firebase.auth().currentUser.uid,
             posterUID: this.props.uid,
             currentUserPosted: false,
@@ -40,10 +40,19 @@ class FeedCellClass extends React.Component{
     }
 
     componentDidMount() {
-        if (this.state.posterUID == this.state.currentUser) {
-            this.setState({ currentUserPosted: true })
+        if (this.state.isLoading) {
+
+            this.setState({isLoading: false})
+            return (
+                <View style= {{flexDirection: 'row', color: '#FFFFFF'}} >
+                        <ActivityIndicator size="large" color="#9E9E9E"/>
+                </View>
+            )
         }
-        this.setState({isLoading: true})
+
+        if (this.state.posterUID == this.state.currentUser) {
+            this.setState({isLoading: false})
+        }
         this.setState({isLoading: false})
     }
 
@@ -93,6 +102,7 @@ class FeedCellClass extends React.Component{
     }
 
     renderCellComponents = () => {
+
         if(this.state.currentUserPosted) {
             return (
                 <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
@@ -131,6 +141,7 @@ class FeedCellClass extends React.Component{
         }
         else {
             return (
+                
                 <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
 
                             <View style={styles.buttonContainer}>
@@ -207,8 +218,8 @@ class FeedCellClass extends React.Component{
                     {/* <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}> */}
                         <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
 
-                                <View style={{flexDirection: 'column', paddingTop: 25, paddingLeft: 4}}>
-                                    <View style ={{flexDirection: 'row'}}>
+                                <View style={{flexDirection: 'column', paddingTop: 10, paddingLeft: 4}}>
+                                    <View style ={{flexDirection: 'row', paddingLeft: 12,}}>
                                             <UserComponent 
                                                 postID={this.state.postID} 
                                                 navigation={this.props.navigation} 
@@ -217,10 +228,10 @@ class FeedCellClass extends React.Component{
                                     
                                 </View>
 
-                                <View style={{flexDirection: 'column', paddingTop: 10}}>
+                                <View style={{flexDirection: 'column', paddingTop: 10, paddingRight: 10}}>
                                     {/* <Text style={styles.securityContainer}> */}
                                         <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                                        <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
+                                        <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10}}>#{this.state.security} </Text>
                                     {/* </Text> */}
                                 </View>
                                 
@@ -297,7 +308,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         alignContent: 'center',
-        padding: 10,
+        paddingRight: 10,
         paddingTop: 15,
         color: '#FFFFFF',
         // paddingTop: 20

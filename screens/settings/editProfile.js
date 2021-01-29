@@ -28,7 +28,7 @@ class EditProfile extends React.Component {
         super(props)
         this.state = {
             user: this.props.user,
-            oldBio: "",
+            oldBio: "No Bio!",
             newBio: "",
             profilePic: null,
             newProfilePicURL: '',
@@ -180,6 +180,7 @@ class EditProfile extends React.Component {
                             onChangeText={newBio => this.setState({ newBio })}
                             placeholder={this.state.oldBio}
                             autoCapitalize='none'
+                            placeholderTextColor="#FFFFFF" 
                         />
 
                         <TouchableOpacity 
@@ -216,7 +217,7 @@ class EditProfile extends React.Component {
                         onChangeText={newBio => this.setState({ newBio })}
                         placeholder={this.state.oldBio}
                         autoCapitalize='none'
-                        placeholderTextColor="#696969" 
+                        placeholderTextColor="#FFFFFF" 
                     />
 
                     <TouchableOpacity 

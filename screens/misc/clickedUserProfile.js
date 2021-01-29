@@ -8,6 +8,7 @@ import TimeAgo from 'react-native-timeago';
 import { FontAwesome } from '@expo/vector-icons';
 
 import FeedCellClass from '../cells/feedCellClass';
+import Segment from '../../segment'
 
 const mapStateToProps = (state) => {
     return {
@@ -305,7 +306,7 @@ class ClickedUserProfile extends React.Component {
 
     //Follow a user
     followUser = async() => {
-        
+        Segment.track({event: 'User Followed'})
         //The current user now follows the poster with logic
         await Firebase.firestore()
         .collection('following')

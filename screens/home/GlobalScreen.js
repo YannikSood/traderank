@@ -5,7 +5,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import FeedCellClass from '../cells/feedCellClass.js';
 import * as Permissions from 'expo-permissions';
 import * as Notifications from "expo-notifications";
-
+import Segment from '../../segment'
 
 
 class GlobalScreen extends React.Component {
@@ -23,7 +23,7 @@ class GlobalScreen extends React.Component {
 
     async componentDidMount() {
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
-    
+        Segment.identify({userId: Firebase.auth().currentUser.uid})
         await Permissions.getAsync(Permissions.NOTIFICATIONS)
         .then((response) =>
             response.status === 'granted'
@@ -79,8 +79,8 @@ class GlobalScreen extends React.Component {
     // security: this.state.security,
     // postID: this.state.postID
     getCollection = (querySnapshot) => {
-
             const globalPostsArray = [];
+            Segment.track({event: "first 5 loaded"})
 
             querySnapshot.forEach((res) => {
                 const { 
@@ -125,8 +125,8 @@ class GlobalScreen extends React.Component {
     }
 
     getMore = async() => {
-
         const lastItemIndex = this.state.globalPostsArray.length - 1
+        Segment.track({event: "5 loaded more"})
 
         await Firebase.firestore()
         .collection('globalPosts')

@@ -19,6 +19,8 @@
     "algoliasearch": "^4.8.4",
     "dayjs": "^1.10.4",
     "expo": "^40.0.0",
+    "expo-analytics-segment": "~9.1.0",
+    "expo-firebase-analytics": "^3.0.0",
     "expo-image-picker": "~9.2.0",
     "expo-notifications": "~0.8.2",
     "expo-permissions": "~10.0.0",

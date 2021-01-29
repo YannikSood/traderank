@@ -34,6 +34,13 @@ class CommentCellClass extends React.Component{
     }
 
     render() {
+        if (this.state.isLoading) {
+            return (
+                <View style= {styles.commentFeedCell} >
+                        <ActivityIndicator size="large" color="#9E9E9E"/>
+                </View>
+            )
+        }
         if (this.state.showDeleteComponent) {
             return (
                 <View style={ styles.commentFeedCell }>
