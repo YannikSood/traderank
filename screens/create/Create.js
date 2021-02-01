@@ -65,7 +65,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         paddingVertical: 5,
         alignItems: 'center',
-        backgroundColor: '#5233FF',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#5233FF',
         borderRadius: 5,
         width: 200
     },
@@ -74,7 +76,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         paddingVertical: 5,
         alignItems: 'center',
-        backgroundColor: '#00cc00',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#00cc00',
         borderRadius: 5,
         width: 200
     },
@@ -83,7 +87,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         paddingVertical: 5,
         alignItems: 'center',
-        backgroundColor: '#cc0000',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#cc0000',
         borderRadius: 5,
         width: 200
     },

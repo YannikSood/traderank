@@ -5,8 +5,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import FeedCellClass from '../cells/feedCellClass.js';
 import * as Permissions from 'expo-permissions';
 import * as Notifications from "expo-notifications";
-import Segment from '../../segment'
-
+import * as Analytics from 'expo-firebase-analytics';
 
 class GlobalScreen extends React.Component {
 
@@ -23,7 +22,7 @@ class GlobalScreen extends React.Component {
 
     async componentDidMount() {
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
-        Segment.identify({userId: Firebase.auth().currentUser.uid})
+        Analytics.setUserId(Firebase.auth().currentUser.uid)
         await Permissions.getAsync(Permissions.NOTIFICATIONS)
         .then((response) =>
             response.status === 'granted'
@@ -80,7 +79,7 @@ class GlobalScreen extends React.Component {
     // postID: this.state.postID
     getCollection = (querySnapshot) => {
             const globalPostsArray = [];
-            Segment.track({event: "first 5 loaded"})
+            Analytics.logEvent("First_5_Loaded")
 
             querySnapshot.forEach((res) => {
                 const { 
@@ -126,7 +125,7 @@ class GlobalScreen extends React.Component {
 
     getMore = async() => {
         const lastItemIndex = this.state.globalPostsArray.length - 1
-        Segment.track({event: "5 loaded more"})
+        Analytics.logEvent("More_5_Loaded")
 
         await Firebase.firestore()
         .collection('globalPosts')
@@ -213,7 +212,6 @@ class GlobalScreen extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
-                    onEndReachedThreshold={0.5}
                     onEndReached={() => {this.getMore()}}
                 />
                 <KeyboardSpacer />

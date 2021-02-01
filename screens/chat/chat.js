@@ -5,7 +5,8 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import Firebase from '../../firebase'
 import Moment from 'moment'
 import { Ionicons } from '@expo/vector-icons';
-// import Segment from '../../segment'
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -52,7 +53,7 @@ class Chat extends React.Component {
         .limit(50)
         .onSnapshot(querySnapshot => {
             const messages = []
-
+            var i = 0
             querySnapshot.forEach((res) => {
                 const { 
                     _id,
@@ -61,6 +62,7 @@ class Chat extends React.Component {
                     createdAt,
                     } = res.data();
     
+                    
                     messages.push({
                         key: res._id,
                         _id,
@@ -68,23 +70,23 @@ class Chat extends React.Component {
                         text,
                         createdAt
                     });
-            })
 
-            messages.forEach((message) => {
-                message.createdAt = Moment(message.createdAt.toDate()).format('LLL')
+                    messages[i].createdAt = Moment(messages[i].createdAt.toDate()).format('LLL')
 
-
-                if (message.user._id == this.state.currentUser.id) {
-                    message.user.avatar = this.state.currentUser.avatar
-                    Firebase.firestore().collection('chat').doc(message._id).set({
-                        user: {
-                            _id: this.state.currentUser.id,
-                            name: this.state.currentUser.name,
-                            avatar: this.state.currentUser.avatar,
+                    if (messages[i].user._id == this.state.currentUser.id) {
+                        if (messages[i].user.avatar !== this.state.currentUser.avatar) {
+                            Firebase.firestore().collection('chat').doc(messages[i]._id).set({
+                                user: {
+                                    _id: this.state.currentUser.id,
+                                    name: this.state.currentUser.name,
+                                    avatar: this.state.currentUser.avatar,
+                                }
+                            }, { merge: true})
                         }
-                    }, { merge: true})
-                }
+                    }
+                    i++
             })
+
 
 
 
@@ -99,9 +101,17 @@ class Chat extends React.Component {
     //Load 50 more messages when the user scrolls
     //Add a message to firestore
     onSend = async(message) => {
-        this.setState({isTyping: true})
-        await Firebase.firestore().collection("chat")
-        .add({
+
+        this.setState({isTyping: true,})
+        const messageID = uuidv4()
+        await Firebase.firestore()
+        .collection("chat")
+        .doc(messageID)
+        .set({
+            _id: messageID,
+            text: message[0].text,
+            // image: message[0].image,
+            createdAt: new Date(message[0].createdAt),
             user: {
                 _id: this.state.currentUser.id,
                 name: this.state.currentUser.name,
@@ -109,17 +119,7 @@ class Chat extends React.Component {
             },
             
         })
-        .then(ref => this.setState({messageID: ref.id}))
         
-        // Segment.track({event: 'message sent'})
-        await Firebase.firestore().collection("chat")
-        .doc(this.state.messageID)
-        .set({
-            _id: this.state.messageID,
-            text: message[0].text,
-            // image: message[0].image,
-            createdAt: new Date(message[0].createdAt)
-        }, { merge: true })
         // .then(() => this.getCurrentMessages())
 
     }
@@ -204,33 +204,41 @@ class Chat extends React.Component {
     //     })
     //   }
 
-    renderComposer = (props) => {
-        return (
-            <View style={styles.composerContainer}>
-              <View >
-                <TextInput {...props}
-                  placeholder={'Type something...'}
-                  ref={(input) => { this.msgInput = input; }}
-                  onChangeText={(value) => this.onTextChange(value, props)}
-                  style={styles.inputContainer}
-                  value={props.text}
-                  multiline={true}
-                />
-              </View>
-                <View>
-                    <Ionicons name="ios-search" size={25} color="black" />
-                </View>
-            </View>
-          )
-    }
+    // renderComposer = (props) => {
+    //     return (
+    //         <View style={styles.composerContainer}>
+    //           <View >
+    //             <TextInput {...props}
+    //               placeholder={'Type something...'}
+    //               ref={(input) => { this.msgInput = input; }}
+    //               onChangeText={(value) => this.onTextChange(value, props)}
+    //               style={styles.inputContainer}
+    //               value={props.text}
+    //               multiline={true}
+    //             />
+    //           </View>
+    //             <View>
+    //                 <Ionicons name="ios-search" size={25} color="black" />
+    //             </View>
+    //         </View>
+    //       )
+    // }
 
     render() { 
+        if(this.state.isLoading){
+            return(
+              <View style={{backgroundColor: '#000000', flex: 1}}>
+                <ActivityIndicator size="large" color="#9E9E9E"/>
+              </View>
+            )
+        }   
         return (
             <View style={{backgroundColor: '#000000', flex: 1}}>
                 <GiftedChat
                     showUserAvatar={true}
                     isTyping={this.state.isTyping}
                     // renderComposer={this.renderComposer}
+                    
                     renderUsernameOnMessage={true}
                     messages={this.state.messages}
                     // onInputTextChanged={message => this.onTextChange(message)}

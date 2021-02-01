@@ -5,8 +5,6 @@ import { getUser } from '../../../redux/app-redux';
 import Modal from 'react-native-modal';
 
 import Firebase from '../../../firebase'
-import Segment from '../../../segment'
-
 
 const mapStateToProps = (state) => {
     return {

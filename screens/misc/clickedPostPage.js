@@ -9,7 +9,6 @@ import CommentComponent from '../cells/FFCcomponents/commentComponent'
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
-import Segment from '../../segment'
 
 class ClickedPostPage extends React.Component { 
     
@@ -44,7 +43,6 @@ class ClickedPostPage extends React.Component {
 
     async componentDidMount() {
 
-        Segment.track({ event: "Post Clicked" })
 
         await Firebase.firestore()
         .collection('globalPosts')
@@ -115,11 +113,6 @@ class ClickedPostPage extends React.Component {
                     <Text style={styles.gainText}>${this.state.profit_loss}</Text>
                     <Text style={styles.regularTradeText}>  🚀  </Text>
                     <Text style={styles.gainText}>{this.state.percent_gain_loss}%</Text>
-                    <View style={styles.timeContainer}>
-
-                        <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                        
-                    </View>
                 </Text>
                 
             )

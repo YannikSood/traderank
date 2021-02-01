@@ -148,6 +148,36 @@ class NotificationCellClass extends React.Component{
                 </TouchableOpacity>
             )
         }
+        
+        if (this.state.type == 2) {
+            return (
+                <View style={styles.feedCell}>
+                    <View style={{flexDirection: 'column'}}>
+                        <View style={{flexDirection: 'row'}}>
+
+                                <TouchableOpacity   
+                                        onPress={() => this.showUserProfile()}>
+                                        <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
+                                </TouchableOpacity>
+
+                                <Text style={styles.textStyle2}> followed you</Text>
+                                    
+                                
+
+                        </View>
+                        <View style={styles.timeContainer}>
+
+                                <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
+
+                        </View>
+                    </View>
+
+                    <View style = {styles.lineStyle} />
+                </View>
+                    
+            )
+        }
+
         if (this.state.type == 3) {
             return (
                 <TouchableOpacity   
@@ -177,34 +207,56 @@ class NotificationCellClass extends React.Component{
             )
         }
 
-       
-        
-        return (
-            <View style={styles.feedCell}>
-                <View style={{flexDirection: 'column'}}>
-                    <View style={{flexDirection: 'row'}}>
+        if (this.state.type == 4) {
+            return (
+                <TouchableOpacity   
+                    style={styles.feedCell}
+                    onPress={() => this.props.navigation.navigate('Leaderboard')} >
+                         <View style={{flexDirection: 'column'}}>
+                             
+                            <View style={{flexDirection: 'row'}}>
 
-                            <TouchableOpacity   
-                                    onPress={() => this.showUserProfile()}>
-                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
-                            </TouchableOpacity>
+                                    <Text style={styles.textStyle}>you ranked on the gains leaderboard!</Text>
 
-                            <Text style={styles.textStyle2}> followed you</Text>
-                                
                             
+                            </View>
+                            <View style={styles.timeContainer}>
 
-                    </View>
-                    <View style={styles.timeContainer}>
+                                    <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
 
-                            <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
+                            </View>
+                        </View>
 
-                    </View>
-                </View>
+                        <View style = {styles.lineStyle} />
+                </TouchableOpacity>
+            )
+        }
 
-                <View style = {styles.lineStyle} />
-            </View>
-                
-        )
+        if (this.state.type == 5) {
+            return (
+                <TouchableOpacity   
+                    style={styles.feedCell}
+                    onPress={() => this.props.navigation.navigate('Leaderboard')} >
+                         <View style={{flexDirection: 'column'}}>
+                             
+                            <View style={{flexDirection: 'row'}}>
+
+                                    <Text style={styles.textStyle}>you ranked on the loss leaderboard!</Text>
+
+                            
+                            </View>
+                            <View style={styles.timeContainer}>
+
+                                    <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
+
+                            </View>
+                        </View>
+
+                        <View style = {styles.lineStyle} />
+                </TouchableOpacity>
+            )
+        }
+        return
         
     }
 

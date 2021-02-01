@@ -51,7 +51,7 @@ class FeedCellClass extends React.Component{
         }
 
         if (this.state.posterUID == this.state.currentUser) {
-            this.setState({isLoading: false})
+            this.setState({currentUserPosted: true})
         }
         this.setState({isLoading: false})
     }
@@ -103,7 +103,7 @@ class FeedCellClass extends React.Component{
 
     renderCellComponents = () => {
 
-        if(this.state.currentUserPosted) {
+        if(this.state.posterUID == this.state.currentUser) {
             return (
                 <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
                             <View style={styles.buttonContainer}>

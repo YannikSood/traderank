@@ -221,6 +221,91 @@ class Profile extends React.Component {
     }
 
     renderListHeader = () => {
+        if (this.state.userPostsArray.length === 0) {
+            return (
+                <View style = {styles.noPostContainer}>
+                        <Modal
+                            isVisible={this.state.modalOpen}
+                            animationIn='fadeIn'
+                            onSwipeComplete={() => this.closeImageModal()}
+                            swipeDirection="down"
+                        >
+                    
+                        <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
+    
+                            <Image
+                                source={{ uri: this.state.storage_image_uri }}
+                                style={styles.fullScreenImage}
+                            />
+                        </View>
+                    </Modal>
+    
+                    <View style={{ flexDirection: "row", padding: 20 }}>
+                        <Text style = {styles.subheader}> {this.state.user.username} </Text>
+                    </View>
+                    
+                    <View style={{ flex: 1, flexDirection: "row", alignItems: 'center',
+                        justifyContent: 'center',}}>
+    
+                        <TouchableOpacity   
+                        onPress={() => this.openImageModal()} >
+    
+                            <ProfilePic storage_image_uri = {this.state.storage_image_uri} /> 
+    
+                        </TouchableOpacity>
+                        
+    
+                        <View style={{paddingLeft:30}}> 
+                            <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
+                        </View>
+                        
+                    </View>
+    
+    
+                    <ProfileBio bio = {this.state.bio}/>
+    
+    
+                    <View style={{flexDirection: 'row'}}>
+    
+                        <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
+    
+                            <Text>{this.state.user.username} joined </Text>
+                            <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
+                            <Text> </Text>
+                            <FontAwesome name="birthday-cake" size={14} color="white" />
+    
+                        </Text>
+    
+                    </View>
+                    
+    
+                    <View style={{flexDirection: 'row'}}>
+    
+                            <TouchableOpacity 
+                                onPress={() => this.goToEditProfile()}
+                                style={styles.button}>
+                                <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>edit profile</Text>
+                            </TouchableOpacity>
+    
+                            <TouchableOpacity 
+                                onPress={() => this.gotToSettings()}
+                                style={styles.button}>
+                                <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>settings</Text>
+                            </TouchableOpacity>
+    
+    
+                    </View>
+    
+                    <TouchableOpacity  
+                        style = {styles.shareButton} 
+                        onPress={() => this.onShare()} >
+                            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>invite friends to traderank</Text>
+                    </TouchableOpacity>
+    
+                </View>
+    
+            )
+        }
         return (
             <View style = {styles.container}>
                     <Modal
@@ -335,67 +420,6 @@ class Profile extends React.Component {
               </View>
             )
         }    
-        // if(this.state.userPostsArray.length == 0) {
-        //     return (
-        //         <View style = {styles.emptyContainer}>
-    
-        //             <Modal
-        //                 isVisible={this.state.modalOpen}
-        //                 animationIn='fadeIn'
-        //                 onSwipeComplete={() => this.closeImageModal()}
-        //                 swipeDirection="down"
-        //             >
-                
-        //                 <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
-
-        //                     <Image
-        //                         source={{ uri: this.state.storage_image_uri }}
-        //                         style={styles.fullScreenImage}
-        //                     />
-        //                 </View>
-        //             </Modal>
-
-        //             <View style={{ flexDirection: "row", padding: 20 }}>
-        //                 <Text style = {styles.subheader}> {this.state.user.username} </Text>
-        //             </View>
-                    
-        //             <View style={{ flex: 1, flexDirection: "row", alignItems: 'center',
-        //                 justifyContent: 'center',}}>
-    
-        //             <TouchableOpacity   
-        //             onPress={() => this.openImageModal()} >
-
-        //                 <ProfilePic storage_image_uri = {this.state.storage_image_uri} /> 
-
-        //             </TouchableOpacity>
-    
-        //                 <View style={{paddingLeft:30}}> 
-        //                     <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
-        //                 </View>
-                        
-        //             </View>
-    
-    
-        //             <ProfileBio bio = {this.state.bio}/>
-
-        //             <View style={{flexDirection: 'row'}}>
-        //                 <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
-        //                 <Text>{this.state.user.username} joined </Text>
-        //                 <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
-        //                 <Text> </Text>
-        //                 <FontAwesome name="birthday-cake" size={14} color="white" />
-        //                 </Text>
-        //             </View>
-                    
-                    
-
-                    
-                    
-    
-        //         </View>
-    
-        //     )
-        // }
         return (
             <View style= {{backgroundColor: '#000000'}}>
                 <FlatList
@@ -408,7 +432,6 @@ class Profile extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
-                    onEndReachedThreshold={0.5}
                     onEndReached={() => {this.getMore()}}
                 />
             </View>   
@@ -422,14 +445,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#000000',
-        // height: Dimensions.get('window').height
+        
+    },
+    noPostContainer: {
+        paddingTop: 20,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingBottom: 20,
+        backgroundColor: '#000000',
+        paddingBottom: Dimensions.get("window").height * 0.5
     },
     emptyContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#000000',
-        paddingBottom: Dimensions.get("window").height * 0.5
+        
     },
     profileInfoContainer: {
         flex: 1,

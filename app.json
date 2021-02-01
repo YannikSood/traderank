@@ -17,12 +17,25 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "42.0.0",
+      "buildNumber": "46.0.0",
       "supportsTablet": true,
-      "bundleIdentifier": "com.yanniksood.traderank"
+      "bundleIdentifier": "com.yanniksood.traderank",
+      "googleServicesFile": "./GoogleService-Info-5.plist"
     },
     "web": {
       "favicon": "./assets/favicon.png",
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyBQ8dx9bkh9MHUbq5qeEKWlRYFHYAJD-uY",
+          "authDomain": "traderank-288df.firebaseapp.com",
+          "databaseURL": "https://traderank-288df.firebaseio.com",
+          "projectId": "traderank-288df",
+          "storageBucket": "traderank-288df.appspot.com",
+          "messagingSenderId": "763046292820",
+          "appId": "1:763046292820:web:fcc9a159f42abb83eeacc1",
+          "measurementId": "G-XVT6SG0SP8"
+        }
+      }
     }
   }
 }

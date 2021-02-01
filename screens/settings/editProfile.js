@@ -180,7 +180,7 @@ class EditProfile extends React.Component {
                             onChangeText={newBio => this.setState({ newBio })}
                             placeholder={this.state.oldBio}
                             autoCapitalize='none'
-                            placeholderTextColor="#FFFFFF" 
+                            placeholderTextColor="#696969" 
                         />
 
                         <TouchableOpacity 
@@ -217,7 +217,7 @@ class EditProfile extends React.Component {
                         onChangeText={newBio => this.setState({ newBio })}
                         placeholder={this.state.oldBio}
                         autoCapitalize='none'
-                        placeholderTextColor="#FFFFFF" 
+                        placeholderTextColor="#696969" 
                     />
 
                     <TouchableOpacity 

@@ -35,11 +35,13 @@ admin.initializeApp();
 //Update device info in device table on logout/login/deletion
 
 //Cloud function to perform gains leaderboard calculation
-exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('00 21 * * *')
+exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('59 23 * * *')
   .timeZone('America/New_York') 
   .onRun(async (context) => {
 
     const globalPostsArray = []
+    const gainsUID = []
+    var sortedGainsUID = []
 
     await admin.firestore().collection('gain').orderBy("date_created", "desc")
     .get()
@@ -84,6 +86,8 @@ exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('00 21 * * 
                     postType
                 });
 
+                gainsUID.push(uid)
+
             });
 
             // console.log(globalPostsArray)
@@ -100,6 +104,7 @@ exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('00 21 * * 
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
         var newToday = mm + dd + yyyy;
+        sortedGainsUID = [...new Set(gainsUID)]
 
         if (globalPostsArray.length > 0) {
             for (i = 0; i < globalPostsArray.length; i++) {
@@ -137,19 +142,62 @@ exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('00 21 * * 
         }
         return null;
     })
-    
-    
+    .then(() => {
+        for (i = 0; i < sortedGainsUID.length; i++) {
+            var currentUID = sortedGainsUID[i]
+            console.log(currentUID)
+            admin.firestore()
+            .collection('users')
+            .doc(currentUID)
+            .get()
+            .then(function(doc) {
+                console.log(doc.exists)
+                if (doc.data().pushStatus) {
+                    console.log("push status true")
+                    console.log(currentUID + " push status true, writing notification")
+                        var messages = []
+                        console.log(currentUID + " notification written, sending notification")
+                        
+                        messages.push({
+                            "to": doc.data().token,
+                            "sound": "default",
+                            "title":"you got ranked!",
+                            "body": "you made it on the gains leaderboard!"
+
+                        });
+
+                        fetch('https://exp.host/--/api/v2/push/send', {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(messages)
+                        });
+                        return
+                }
+                return
+            })
+            .catch(error => {
+                console.error("Error getting user push status etc: ", error);
+            });
+
+        }
+        return null
+    })
     
     return null
 
 });
 
 //Cloud function to perform loss leaderboard calculation
-exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('00 21 * * *')
+exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('59 23 * * *')
   .timeZone('America/New_York') 
   .onRun(async (context) => {
 
     const globalPostsArray = []
+    const lossesUID = []
+    var sortedLossesUID = []
 
     await admin.firestore().collection('loss').orderBy("date_created", "desc")
     .get()
@@ -194,6 +242,9 @@ exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('00 21 * * 
                     postType
                 });
 
+
+                lossesUID.push(uid)
+
             });
 
             // console.log(globalPostsArray)
@@ -210,6 +261,7 @@ exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('00 21 * * 
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
         var newToday = mm + dd + yyyy;
+        sortedLossesUID = [...new Set(lossesUID)]
 
         if (globalPostsArray.length > 0) {
             for (i = 0; i < globalPostsArray.length; i++) {
@@ -246,6 +298,50 @@ exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('00 21 * * 
             throw new Error("length not greater than 0")
         }
         return null;
+    })
+    .then(() => {
+
+        for (i = 0; i < sortedLossesUID.length; i++) {
+            var currentUID = sortedLossesUID[i]
+            console.log(currentUID)
+            admin.firestore()
+            .collection('users')
+            .doc(currentUID)
+            .get()
+            .then(function(doc) {
+                console.log(doc.exists)
+                if (doc.data().pushStatus) {
+                    console.log("push status true")
+                    console.log(currentUID + " push status true, writing notification")
+                    var messages = []
+                    console.log(currentUID + " notification written, sending notification")
+                    
+                    messages.push({
+                        "to": doc.data().token,
+                        "sound": "default",
+                        "title":"you got ranked!",
+                        "body": "you made it on the losses leaderboard!"
+
+                    });
+
+                    fetch('https://exp.host/--/api/v2/push/send', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(messages)
+                    });
+                    return
+                }
+                return
+            })
+            .catch(error => {
+                console.error("Error getting user push status etc: ", error);
+            });
+
+        }
+        return null
     })
     
     

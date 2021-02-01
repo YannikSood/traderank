@@ -36,7 +36,7 @@ class LeaderboardCell extends React.Component{
             return (
                 <Text style={styles.pnlContainer}>
                     <Text style={styles.gainText}>${this.state.profit_loss}</Text>
-                    <Text style={styles.regularTradeText}>  💵  </Text>
+                    <Text style={styles.regularTradeText}>  🚀  </Text>
                     <Text style={styles.gainText}>{this.state.percent_gain_loss}%</Text>
                 </Text>
                 
@@ -73,34 +73,42 @@ class LeaderboardCell extends React.Component{
                 <TouchableOpacity   
                     style={ styles.gainFeedCell }
                     onPress={() => this.showPostPage()} >
-                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
+                        <View style={{flexDirection: 'row', padding: 6, paddingTop: 10, justifyContent: 'space-between',  alignItems: 'center' }}>
 
-                            <View style={{flexDirection: 'column', paddingTop: 10, paddingLeft: 4}}>
-                                <View style ={{flexDirection: 'row'}}>
-                                        <UserComponent 
-                                            postID={this.state.postID} 
-                                            navigation={this.props.navigation} 
-                                        />
-                                </View>
+                            <View style={{flexDirection: 'column',}}>
+
+                            <View style = {{paddingTop: 10, paddingLeft: 15}}>
+                                <UserComponent 
+                                    postID={this.state.postID} 
+                                    navigation={this.props.navigation} 
+                                />
+                            </View>
+
                                 
                             </View>
 
-                        <View style={{flexDirection: 'column'}}>
-                            {/* <Text style={styles.securityContainer}> */}
-                                <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                                <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingRight: 10}}>#{this.state.security} </Text>
-                            {/* </Text> */}
+                            <View style={{flexDirection: 'column', paddingBottom: 5}}>
+                                {/* <Text style={styles.securityContainer}> */}
+                                    <Text style={styles.tradeText}>${this.state.ticker}</Text>
+                                    <Text style={{fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10}}>#{this.state.security} </Text>
+                                {/* </Text> */}
+                            </View>
                         </View>
-
-
-
-
-                        </View>
-                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
+                        <View style={{flexDirection: 'row', paddingBottom: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
                         
-                        { this.renderGainLoss() }
-                        <Text style={styles.rankText}>#{this.state.index}🏆</Text>
+                            
 
+                            <View style ={{flexDirection: 'row', paddingTop: 10, paddingLeft: 25}}>
+
+                                    
+                                    <Text style={styles.rankText}>🏆#{this.state.index}</Text>
+                                        
+                                        { this.renderGainLoss() }
+                                        
+                                </View>
+                            
+
+                            
                          </View>
                     
                         <View style = {styles.lineStyle} />
@@ -129,10 +137,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     tradeText: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         alignContent: 'center',
-        paddingBottom: 10,
+        paddingRight: 10,
+        paddingTop: 15,
         color: '#FFFFFF',
         // paddingTop: 20
     },
@@ -166,13 +175,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#121212'
     },
     pnlContainer: {
-        flex: 1,
-        // justifyContent: 'left', 
-        // alignContent: 'left',
-        paddingBottom: 10,
-        paddingLeft: 10,
-        borderTopWidth: StyleSheet.hairlineWidth,
-        backgroundColor: '#121212'
+        // flex: 1,
+        // // justifyContent: 'left', 
+        // // alignContent: 'left',
+        paddingTop: 3, 
+        // paddingLeft: 10,
+        // borderTopWidth: StyleSheet.hairlineWidth,
+        // backgroundColor: '#121212'
     },
     securityContainer: {
         alignContent: 'center',
@@ -212,7 +221,7 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
     },
     rankText: {
-        fontSize: 30,
+        fontSize: 24,
         paddingRight: 20,
         fontWeight: 'bold',
         alignContent: 'center',
