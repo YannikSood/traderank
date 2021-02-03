@@ -23,6 +23,7 @@ class GlobalScreen extends React.Component {
     async componentDidMount() {
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
         Analytics.setUserId(Firebase.auth().currentUser.uid)
+        Analytics.setCurrentScreen("GlobalScreen")
         await Permissions.getAsync(Permissions.NOTIFICATIONS)
         .then((response) =>
             response.status === 'granted'

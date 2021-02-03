@@ -7,7 +7,7 @@ import Moment from 'moment'
 import { Ionicons } from '@expo/vector-icons';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-
+import * as Analytics from 'expo-firebase-analytics';
 
 
 class Chat extends React.Component {
@@ -27,6 +27,7 @@ class Chat extends React.Component {
     async componentDidMount (){
         // get user info from firestore
         let userUID = Firebase.auth().currentUser.uid
+        Analytics.setCurrentScreen("ChatScreen")
 
         await Firebase.firestore().collection("users").doc(userUID).get()
         .then(doc => {
@@ -119,6 +120,8 @@ class Chat extends React.Component {
             },
             
         })
+
+         Analytics.logEvent("Chat_Message_Sent")
         
         // .then(() => this.getCurrentMessages())
 

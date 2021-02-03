@@ -1,5 +1,5 @@
 // import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState }from 'react';
 import { StyleSheet, Text, View, Container, Button, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -73,6 +73,7 @@ const FriendFeedStack = createStackNavigator();
 
 
 class App extends React.Component {
+
 
   render() {
     return (
@@ -268,6 +269,27 @@ class App extends React.Component {
   } 
 }
 
+function renderBadge () {
+
+  const [badge, setBadge] = useState(null);
+
+  Firebase.firestore()
+  .collection('users')
+  .doc(Firebase.auth().currentUser.uid)
+  .onSnapshot(function(doc) { 
+
+      if (doc.data().hasNotifications) {
+
+          setBadge(true)
+      }
+      else {
+          setBadge(null)
+      }
+  })
+
+  return badge
+
+}
 
  
 //Bottom Tabs
@@ -316,7 +338,7 @@ function Tabs() {
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-add-circle" size={size} color={color} />
+            <Ionicons name="md-add-circle" size={35} color={color} />
           ),
         }}
         
@@ -330,6 +352,8 @@ function Tabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-notifications" size={size} color={color} />
           ),
+          tabBarBadge: renderBadge()
+
         }}
       />  
 

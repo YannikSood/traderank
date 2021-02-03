@@ -19,7 +19,9 @@ class YoloScreenshot extends React.Component {
           return;
         }
 
-        let pickerResult = await ImagePicker.launchImageLibraryAsync()
+        let pickerResult = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+        })
         
         try {
             if (pickerResult.cancelled === true) {

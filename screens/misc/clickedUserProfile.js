@@ -8,6 +8,7 @@ import TimeAgo from 'react-native-timeago';
 import { FontAwesome } from '@expo/vector-icons';
 
 import FeedCellClass from '../cells/feedCellClass';
+import * as Analytics from 'expo-firebase-analytics';
 
 const mapStateToProps = (state) => {
     return {
@@ -67,6 +68,8 @@ class ClickedUserProfile extends React.Component {
     //Do this every time the component mounts
     //----------------------------------------------------------
     componentDidMount() {
+        Analytics.logEvent("Profile_Clicked")
+        Analytics.setCurrentScreen("ClickedProfileScreen")
         this.getPosterInfo()
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
     }

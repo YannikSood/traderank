@@ -11,6 +11,7 @@ import ProfileStats from './profileComponents/profileStats.js'
 import ProfileBio from './profileComponents/profileBio.js'
 import FeedCellClass from '../cells/feedCellClass'
 import TimeAgo from 'react-native-timeago';
+import * as Analytics from 'expo-firebase-analytics';
 
 //Redux
 import { connect } from 'react-redux';
@@ -60,6 +61,8 @@ class Profile extends React.Component {
     componentDidMount() {
         this.pullUserInfo()
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        Analytics.logEvent("Profile_Clicked")
+        Analytics.setCurrentScreen("MyProfileScreen")
     }
     
     componentWillUnmount(){

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Share, Fla
 import Firebase from '../../firebase'
 
 import NotificationCellClass from '../cells/notificationCell';
+import * as Analytics from 'expo-firebase-analytics';
 
 class Notification extends React.Component {
     constructor(props) {
@@ -28,6 +29,8 @@ class Notification extends React.Component {
 
     componentDidMount() {
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        Analytics.logEvent("Notifications_Clicked")
+        Analytics.setCurrentScreen("NotificationScreen")
     }
     
     componentWillUnmount(){

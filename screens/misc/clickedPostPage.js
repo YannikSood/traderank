@@ -9,6 +9,7 @@ import CommentComponent from '../cells/FFCcomponents/commentComponent'
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 
 class ClickedPostPage extends React.Component { 
     
@@ -43,7 +44,8 @@ class ClickedPostPage extends React.Component {
 
     async componentDidMount() {
 
-
+        Analytics.logEvent("Post_Clicked")
+        Analytics.setCurrentScreen("PostDetailsScreen")
         await Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)

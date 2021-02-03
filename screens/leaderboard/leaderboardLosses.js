@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions
 import Firebase from '../../firebase'
 
 import LeaderboardCell from '../cells/leaderboardCell';
+import * as Analytics from 'expo-firebase-analytics';
 
 class LeaderboardLosses extends React.Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class LeaderboardLosses extends React.Component {
     }
 
     componentDidMount() {
+        Analytics.logEvent("Leaderboard_Losses_Clicked")
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
     }
     

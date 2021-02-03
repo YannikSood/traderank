@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import * as Analytics from 'expo-firebase-analytics';
 
 class Create extends React.Component {
 
@@ -15,7 +16,9 @@ class Create extends React.Component {
         }
     }
 
-    
+    componentDidMount () {
+        Analytics.setCurrentScreen("CreateScreen")
+    }
 
     
     render() {
@@ -24,7 +27,7 @@ class Create extends React.Component {
 
                 <Text style={styles.headerText}>get ranked</Text>
 
-                <Text style={styles.subheaderText}>open postions [unrealized]</Text>
+                <Text style={styles.subheaderText}>holding?</Text>
 
                 <TouchableOpacity 
                     onPress={() => this.props.navigation.navigate('YoloScreenshot')}
@@ -34,7 +37,7 @@ class Create extends React.Component {
 
                 </TouchableOpacity>
 
-                <Text style={styles.subheaderText}>closed postions [realized]</Text>
+                <Text style={styles.subheaderText}>sold!</Text>
                 <TouchableOpacity 
                     onPress={() => this.props.navigation.navigate('GainScreenshot')}
                     style={styles.gainButton}>
