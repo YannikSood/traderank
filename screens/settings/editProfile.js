@@ -34,6 +34,9 @@ class EditProfile extends React.Component {
             newProfilePicURL: '',
             oldProfilePic: "",
             isLoading: false,
+            twitter: "@",
+            instagram: "@",
+
         }
         
     }
@@ -53,7 +56,9 @@ class EditProfile extends React.Component {
             if (doc.exists) {
                 this.setState ({
                     oldBio: doc.data().bio,
-                    oldProfilePic: doc.data().profilePic
+                    oldProfilePic: doc.data().profilePic,
+                    twitter: doc.data().twitter,
+                    instagram: doc.data().instagram
                 })
             } else {
                 // doc.data() will be undefined in this case
@@ -77,6 +82,40 @@ class EditProfile extends React.Component {
         }))
         .catch(function(error) {
             console.error("Error storing and retrieving image url: ", error);
+        });
+    }
+
+    changeTwitter = async() => {
+        this.setState({ isLoading: true })
+        // This should take us to the right place, adding a temp uid where we need it
+        await Firebase.firestore()
+        .collection('users')
+        .doc(Firebase.auth().currentUser.uid)
+        .set({
+            twitter: this.state.twitter
+        }, { merge: true })
+        .then(() => this.setState ({
+            isLoading: false
+        }))
+        .catch(function(error) {
+            console.error("Error changing twitter: ", error);
+        });
+    }
+
+    changeInstagram = async() => {
+        this.setState({ isLoading: true })
+        // This should take us to the right place, adding a temp uid where we need it
+        await Firebase.firestore()
+        .collection('users')
+        .doc(Firebase.auth().currentUser.uid)
+        .set({
+            instagram: this.state.instagram
+        }, { merge: true })
+        .then(() => this.setState ({
+            isLoading: false
+        }))
+        .catch(function(error) {
+            console.error("Error changing twitter: ", error);
         });
     }
 
@@ -179,6 +218,7 @@ class EditProfile extends React.Component {
                             value={this.state.newBio}
                             onChangeText={newBio => this.setState({ newBio })}
                             placeholder={this.state.oldBio}
+                            multiline= {true}
                             autoCapitalize='none'
                             placeholderTextColor="#696969" 
                         />
@@ -188,6 +228,37 @@ class EditProfile extends React.Component {
                             style={styles.button}>
                             <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Bio</Text>    
                         </TouchableOpacity>
+
+                        <TextInput
+                            style={styles.socialInputBox}
+                            value={this.state.twitter}
+                            onChangeText={twitter => this.setState({ twitter })}
+                            placeholder={this.state.twitter}
+                            autoCapitalize='none'
+                            placeholderTextColor="#696969" 
+                        />
+
+                        <TouchableOpacity 
+                            onPress={() => { this.changeTwitter() }}
+                            style={styles.button}>
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Twitter</Text>    
+                        </TouchableOpacity>
+
+                        <TextInput
+                            style={styles.socialInputBox}
+                            value={this.state.instagram}
+                            onChangeText={instagram => this.setState({ instagram })}
+                            placeholder={this.state.instagram}
+                            autoCapitalize='none'
+                            placeholderTextColor="#696969" 
+                        />
+
+                        <TouchableOpacity 
+                            onPress={() => { this.changeInstagram() }}
+                            style={styles.button}>
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Instagram</Text>    
+                        </TouchableOpacity>
+                        
 
                         <KeyboardSpacer />
                     </View>
@@ -268,6 +339,23 @@ const styles = StyleSheet.create({
         width: 200,
         marginRight: 10,
         marginLeft: 10,
+    },
+    socialInputBoxText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: 10,
+        paddingTop: 15,
+        color: '#FFFFFF'
+    },
+    socialInputBox: {
+        width: '50%',
+        margin: 10,
+        padding: 15,
+        fontSize: 16,
+        borderColor: '#d3d3d3',
+        borderBottomWidth: 1,
+        textAlign: 'center',
+        color: '#FFFFFF'
     },
 })
 

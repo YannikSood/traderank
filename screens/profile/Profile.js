@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, FlatList, Image, Share } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, FlatList, Image, Share, Linking } from 'react-native'
 import Firebase from '../../firebase'
 import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -46,7 +47,9 @@ class Profile extends React.Component {
             userUID: Firebase.auth().currentUser.uid,
             userPostsArray: [],
             modalOpen: false,
-            dateJoined: null
+            dateJoined: null,
+            twitter: "",
+            instagram: ""
         }
 
         this.firestoreRef = 
@@ -199,6 +202,8 @@ class Profile extends React.Component {
                 storage_image_uri: doc.data().profilePic,
                 bio: doc.data().bio,
                 dateJoined: doc.data().signupDate.toDate(),
+                twitter: doc.data().twitter,
+                instagram: doc.data().instagram,
                 isLoading: false
             })
 
@@ -243,7 +248,7 @@ class Profile extends React.Component {
                         </View>
                     </Modal>
     
-                    <View style={{ flexDirection: "row", padding: 20 }}>
+                    <View style={{ flexDirection: "row", padding: 20, alignItems: 'center', justifyContent: 'center'}}>
                         <Text style = {styles.subheader}> {this.state.user.username} </Text>
                     </View>
                     
@@ -264,25 +269,40 @@ class Profile extends React.Component {
                         
                     </View>
     
+                    <View style = {{ alignItems: 'center', justifyContent: 'center'}} >
+                        <ProfileBio bio = {this.state.bio}/>
+                    </View>
     
-                    <ProfileBio bio = {this.state.bio}/>
     
-    
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{flexDirection: 'row', paddingLeft: 25, paddingTop: 15}}>
     
                         <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
     
-                            <Text>{this.state.user.username} joined </Text>
+                            <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
+                            <Text>  {this.state.user.username} joined </Text>
                             <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
                             <Text> </Text>
-                            <FontAwesome name="birthday-cake" size={14} color="white" />
     
                         </Text>
     
                     </View>
+
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                        <Text 
+                        style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <AntDesign name="instagram" size={18} color="#E1306C" />
+                        <Text style ={{color: '#FFFFFF'}}
+                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.twitter)}> @{this.state.instagram} </Text>
+                    </View>
                     
     
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
     
                             <TouchableOpacity 
                                 onPress={() => this.goToEditProfile()}
@@ -298,12 +318,14 @@ class Profile extends React.Component {
     
     
                     </View>
-    
-                    <TouchableOpacity  
-                        style = {styles.shareButton} 
-                        onPress={() => this.onShare()} >
-                            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>invite friends to traderank</Text>
-                    </TouchableOpacity>
+                    <View style = {{ alignItems: 'center', justifyContent: 'center'}} >
+                        <TouchableOpacity  
+                            style = {styles.shareButton} 
+                            onPress={() => this.onShare()} >
+                                <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>invite friends to traderank</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
     
                 </View>
     
@@ -312,84 +334,102 @@ class Profile extends React.Component {
         return (
             <View style = {styles.container}>
                     <Modal
-                        isVisible={this.state.modalOpen}
-                        animationIn='fadeIn'
-                        onSwipeComplete={() => this.closeImageModal()}
-                        swipeDirection="down"
-                    >
-                
-                    <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
-
-                        <Image
-                            source={{ uri: this.state.storage_image_uri }}
-                            style={styles.fullScreenImage}
-                        />
-                    </View>
-                </Modal>
-
-                <View style={{ flexDirection: "row", padding: 20 }}>
-                    <Text style = {styles.subheader}> {this.state.user.username} </Text>
-                </View>
-                
-                <View style={{ flex: 1, flexDirection: "row", alignItems: 'center',
-                    justifyContent: 'center',}}>
-
-                    <TouchableOpacity   
-                    onPress={() => this.openImageModal()} >
-
-                        <ProfilePic storage_image_uri = {this.state.storage_image_uri} /> 
-
-                    </TouchableOpacity>
+                            isVisible={this.state.modalOpen}
+                            animationIn='fadeIn'
+                            onSwipeComplete={() => this.closeImageModal()}
+                            swipeDirection="down"
+                        >
                     
-
-                    <View style={{paddingLeft:30}}> 
-                        <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
+                        <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
+    
+                            <Image
+                                source={{ uri: this.state.storage_image_uri }}
+                                style={styles.fullScreenImage}
+                            />
+                        </View>
+                    </Modal>
+    
+                    <View style={{ flexDirection: "row", padding: 20, alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style = {styles.subheader}> {this.state.user.username} </Text>
                     </View>
                     
-                </View>
-
-
-                <ProfileBio bio = {this.state.bio}/>
-
-
-                <View style={{flexDirection: 'row'}}>
-
-                    <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
-
-                        <Text>{this.state.user.username} joined </Text>
-                        <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
-                        <Text> </Text>
-                        <FontAwesome name="birthday-cake" size={14} color="white" />
-
-                    </Text>
-
-                </View>
-                
-
-                <View style={{flexDirection: 'row'}}>
-
-                        <TouchableOpacity 
-                            onPress={() => this.goToEditProfile()}
-                            style={styles.button}>
-                            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>edit profile</Text>
+                    <View style={{ flex: 1, flexDirection: "row", alignItems: 'center',
+                        justifyContent: 'center',}}>
+    
+                        <TouchableOpacity   
+                        onPress={() => this.openImageModal()} >
+    
+                            <ProfilePic storage_image_uri = {this.state.storage_image_uri} /> 
+    
                         </TouchableOpacity>
+                        
+    
+                        <View style={{paddingLeft:30}}> 
+                            <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
+                        </View>
+                        
+                    </View>
+    
+                    <View style = {{ alignItems: 'center', justifyContent: 'center'}} >
+                        <ProfileBio bio = {this.state.bio}/>
+                    </View>
+    
+    
+                    <View style={{flexDirection: 'row', paddingLeft: 25, paddingTop: 15}}>
+    
+                        <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
+    
+                            <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
+                            <Text>  {this.state.user.username} joined </Text>
+                            <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
+                            <Text> </Text>
+    
+                        </Text>
+    
+                    </View>
 
-                        <TouchableOpacity 
-                            onPress={() => this.gotToSettings()}
-                            style={styles.button}>
-                            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>settings</Text>
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                        <Text 
+                        style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <AntDesign name="instagram" size={18} color="#E1306C" />
+                        <Text style ={{color: '#FFFFFF'}}
+                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.twitter)}> @{this.state.instagram} </Text>
+                    </View>
+                    
+    
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+    
+                            <TouchableOpacity 
+                                onPress={() => this.goToEditProfile()}
+                                style={styles.button}>
+                                <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>edit profile</Text>
+                            </TouchableOpacity>
+    
+                            <TouchableOpacity 
+                                onPress={() => this.gotToSettings()}
+                                style={styles.button}>
+                                <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>settings</Text>
+                            </TouchableOpacity>
+    
+    
+                    </View>
+                    
+                    <View style = {{ alignItems: 'center', justifyContent: 'center'}} >
+                        <TouchableOpacity  
+                            style = {styles.shareButton} 
+                            onPress={() => this.onShare()} >
+                                <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>invite friends to traderank</Text>
                         </TouchableOpacity>
-
-
+                    </View>
+                    
+    
                 </View>
-
-                <TouchableOpacity  
-                    style = {styles.shareButton} 
-                    onPress={() => this.onShare()} >
-                        <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>invite friends to traderank</Text>
-                </TouchableOpacity>
-
-            </View>
 
         )
     }
@@ -445,16 +485,16 @@ class Profile extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // alignItems: 'center',
+        // justifyContent: 'center',
         backgroundColor: '#000000',
         
     },
     noPostContainer: {
         paddingTop: 20,
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // alignItems: 'center',
+        // justifyContent: 'center',
         paddingBottom: 20,
         backgroundColor: '#000000',
         paddingBottom: Dimensions.get("window").height * 0.5

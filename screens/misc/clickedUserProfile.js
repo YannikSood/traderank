@@ -1,11 +1,12 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions,  Image, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions,  Image, ActivityIndicator, Linking } from 'react-native'
 import Firebase from '../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
 import Modal from 'react-native-modal';
 import TimeAgo from 'react-native-timeago';
 import { FontAwesome } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 import FeedCellClass from '../cells/feedCellClass';
 import * as Analytics from 'expo-firebase-analytics';
@@ -36,6 +37,8 @@ class ClickedUserProfile extends React.Component {
             posterPostCount: "",
             posterBio: "",
             storage_image_uri: '',
+            posterTwitter: '',
+            posterInstagram: '',
             //Current user information
             currentUserUID: Firebase.auth().currentUser.uid,
             currentUserUsername: "",
@@ -146,6 +149,8 @@ class ClickedUserProfile extends React.Component {
                     posterBio: doc.data().bio,
                     storage_image_uri: doc.data().profilePic,
                     dateJoined: doc.data().signupDate.toDate(),
+                    posterTwitter: doc.data().twitter,
+                    posterInstagram: doc.data().instagram,
                     isLoading: false
                 })
             } else {
@@ -393,17 +398,22 @@ class ClickedUserProfile extends React.Component {
 
         if(this.state.isFollowing) {
             return (
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                 <TouchableOpacity
-                            style={ styles.button }
-                            onPress={() => {
-                                this.unfollowUser();
-                            }}>
+                                style={ styles.button2 }
+                                onPress={() => {
+                                    this.unfollowUser();
+                                }}>
 
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>unfollow</Text>
-                </TouchableOpacity>
+                                <Text style={{color: '#000000', fontWeight: 'bold', fontSize: 18}}>unfollow</Text>
+                    </TouchableOpacity>
+            
+                </View>
             )
+                
         }
         return (
+            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity
                         style={ styles.button }
                         onPress={() => {
@@ -412,6 +422,7 @@ class ClickedUserProfile extends React.Component {
 
                         <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>follow</Text>
             </TouchableOpacity>
+            </View>
         )
     }
 
@@ -443,82 +454,6 @@ class ClickedUserProfile extends React.Component {
             return (
                 <View style = {styles.noPostContainer}>
                         <Modal
-                            isVisible={this.state.modalOpen}
-                            animationIn='fadeIn'
-                            onSwipeComplete={() => this.closeImageModal()}
-                            swipeDirection="down"
-                        >
-                    
-                        <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
-    
-                            <Image
-                                source={{ uri: this.state.storage_image_uri }}
-                                style={styles.fullScreenImage}
-                            />
-                        </View>
-                    </Modal>
-                        
-                        <View style={{ flexDirection: "row", paddingBottom: 20 }}>
-                            <Text style = {styles.subheader}> {this.state.posterUsername}'s profile </Text>
-                        </View>
-    
-                            <View style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}>
-                            <TouchableOpacity   
-                            onPress={() => this.openImageModal()} >
-    
-                                <Image
-                                    source={{ uri: this.state.storage_image_uri }}
-                                    style={styles.thumbnail}
-                                />
-    
-                            </TouchableOpacity>
-                                
-                                <View style={{flexDirection: 'row', paddingLeft:30}}> 
-                                    <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                                        <Text style = {styles.tradeText}>{this.state.posterPostCount}</Text>
-                                        <Text style={{color: '#FFFFFF'}}> posts </Text>
-                                    </View>
-    
-                                    <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                                        <Text style = {styles.tradeText}>{this.state.posterFollowerCount}</Text>
-                                        <Text style={{color: '#FFFFFF'}}> followers </Text>
-                                    </View>
-    
-                                    <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                                        <Text style = {styles.tradeText}>{this.state.posterFollowingCount}</Text>
-                                        <Text style={{color: '#FFFFFF'}}> following </Text>
-                                    </View>
-                                </View>  
-                            </View>
-    
-                        <View style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', padding: 15 }}>
-                            <Text style={styles.bioText}> {this.state.posterBio} </Text>
-                        </View> 
-    
-                        <View style={{flexDirection: 'column', justifyContent: 'space-between'}}>
-    
-                            <Text style={{flexDirection: 'row', color: '#FFFFFF', paddingBottom: 15}}>
-    
-                                <Text>{this.state.posterUsername} joined </Text>
-                                <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
-                                <Text> </Text>
-                                <FontAwesome name="birthday-cake" size={14} color="white" />
-    
-                            </Text>
-    
-    
-    
-                        </View>
-    
-                        {/* { this.renderFollowsYou() } */}
-                        { this.renderFollowButton() }
-    
-                </View>
-            )
-        }
-        return (
-            <View style = {styles.container}>
-                    <Modal
                         isVisible={this.state.modalOpen}
                         animationIn='fadeIn'
                         onSwipeComplete={() => this.closeImageModal()}
@@ -534,11 +469,11 @@ class ClickedUserProfile extends React.Component {
                     </View>
                 </Modal>
                     
-                    <View style={{ flexDirection: "row", paddingBottom: 20 }}>
+                    <View style={{ flexDirection: "row", paddingBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
                         <Text style = {styles.subheader}> {this.state.posterUsername}'s profile </Text>
                     </View>
 
-                        <View style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}>
+                        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity   
                         onPress={() => this.openImageModal()} >
 
@@ -567,23 +502,121 @@ class ClickedUserProfile extends React.Component {
                             </View>  
                         </View>
 
-                    <View style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', padding: 15 }}>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 15 }}>
                         <Text style={styles.bioText}> {this.state.posterBio} </Text>
                     </View> 
 
-                    <View style={{flexDirection: 'column', justifyContent: 'space-between'}}>
+                    <View style={{flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15}}>
+    
+                        <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
 
-                        <Text style={{flexDirection: 'row', color: '#FFFFFF', paddingBottom: 15}}>
-
-                            <Text>{this.state.posterUsername} joined </Text>
+                            <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
+                            <Text>  {this.state.posterUsername} joined </Text>
                             <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
                             <Text> </Text>
-                            <FontAwesome name="birthday-cake" size={14} color="white" />
 
                         </Text>
 
+                    </View>
 
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                        <Text 
+                        style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.posterTwitter)}> @{this.state.posterTwitter} </Text>
+                    </View>
 
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <AntDesign name="instagram" size={18} color="#E1306C" />
+                        <Text style ={{color: '#FFFFFF'}}
+                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.posterInstagram)}> @{this.state.posterInstagram} </Text>
+                    </View>
+
+                    {/* { this.renderFollowsYou() } */}
+                    { this.renderFollowButton() }
+
+            </View>
+            )
+        }
+        return (
+            <View style = {styles.container}>
+                    <Modal
+                        isVisible={this.state.modalOpen}
+                        animationIn='fadeIn'
+                        onSwipeComplete={() => this.closeImageModal()}
+                        swipeDirection="down"
+                    >
+                
+                    <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
+
+                        <Image
+                            source={{ uri: this.state.storage_image_uri }}
+                            style={styles.fullScreenImage}
+                        />
+                    </View>
+                </Modal>
+                    
+                    <View style={{ flexDirection: "row", paddingBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style = {styles.subheader}> {this.state.posterUsername}'s profile </Text>
+                    </View>
+
+                        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity   
+                        onPress={() => this.openImageModal()} >
+
+                            <Image
+                                source={{ uri: this.state.storage_image_uri }}
+                                style={styles.thumbnail}
+                            />
+
+                        </TouchableOpacity>
+                            
+                            <View style={{flexDirection: 'row', paddingLeft:30}}> 
+                                <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                                    <Text style = {styles.tradeText}>{this.state.posterPostCount}</Text>
+                                    <Text style={{color: '#FFFFFF'}}> posts </Text>
+                                </View>
+
+                                <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                                    <Text style = {styles.tradeText}>{this.state.posterFollowerCount}</Text>
+                                    <Text style={{color: '#FFFFFF'}}> followers </Text>
+                                </View>
+
+                                <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                                    <Text style = {styles.tradeText}>{this.state.posterFollowingCount}</Text>
+                                    <Text style={{color: '#FFFFFF'}}> following </Text>
+                                </View>
+                            </View>  
+                        </View>
+
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 15 }}>
+                        <Text style={styles.bioText}> {this.state.posterBio} </Text>
+                    </View> 
+
+                    <View style={{flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15}}>
+    
+                        <Text style={{flexDirection: 'row', color: '#FFFFFF'}}>
+
+                            <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
+                            <Text>  {this.state.posterUsername} joined </Text>
+                            <TimeAgo style={{color: '#FFFFFF'}} time = {this.state.dateJoined} />
+                            <Text> </Text>
+
+                        </Text>
+
+                    </View>
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                        <Text 
+                        style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.posterTwitter)}> @{this.state.posterTwitter} </Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <AntDesign name="instagram" size={18} color="#E1306C" />
+                        <Text style ={{color: '#FFFFFF'}}
+                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.posterInstagram)}> @{this.state.posterInstagram} </Text>
                     </View>
 
                     {/* { this.renderFollowsYou() } */}
@@ -651,16 +684,12 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 20,
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         paddingBottom: 20,
         backgroundColor: '#000000',
     },
     noPostContainer: {
         paddingTop: 20,
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         paddingBottom: 20,
         backgroundColor: '#000000',
         paddingBottom: Dimensions.get("window").height * 0.5
@@ -720,6 +749,18 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         alignItems: 'center',
         backgroundColor: 'transparent',
+        borderColor: '#FFFFFF',
+        borderWidth: 1,
+        borderRadius: 5,
+        width: 150,
+        marginRight: 10,
+        marginLeft: 10,
+    },
+    button2: {
+        marginTop: 30,
+        paddingVertical: 5,
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
         borderColor: '#FFFFFF',
         borderWidth: 1,
         borderRadius: 5,

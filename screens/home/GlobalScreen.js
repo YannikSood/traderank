@@ -21,7 +21,7 @@ class GlobalScreen extends React.Component {
     }
 
     async componentDidMount() {
-        this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        this.getCollection()
         Analytics.setUserId(Firebase.auth().currentUser.uid)
         Analytics.setCurrentScreen("GlobalScreen")
         await Permissions.getAsync(Permissions.NOTIFICATIONS)
@@ -57,13 +57,10 @@ class GlobalScreen extends React.Component {
         });
     }
     
-    componentWillUnmount(){
-        this.unsubscribe();
-    }
 
     _refresh = () => {
         this.setState({ isLoading: true });
-        this.firestoreRef.onSnapshot(this.getCollection);
+        this.getCollection()
     };
 
     //username: this.state.username,
@@ -78,10 +75,16 @@ class GlobalScreen extends React.Component {
     // percent_gain_loss: this.state.percent_gain_loss,
     // security: this.state.security,
     // postID: this.state.postID
-    getCollection = (querySnapshot) => {
-            const globalPostsArray = [];
-            Analytics.logEvent("First_5_Loaded")
+    getCollection = async() => {
+        const globalPostsArray = [];
+        Analytics.logEvent("First_5_Loaded")
 
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .orderBy("date_created", "desc")
+        .limit(5)
+        .get()
+        .then(function(querySnapshot) {
             querySnapshot.forEach((res) => {
                 const { 
                     username,
@@ -112,13 +115,14 @@ class GlobalScreen extends React.Component {
                         viewsCount
                     });
 
-            });
+                })
 
+                this.setState({
+                    globalPostsArray,
+                    isLoading: false, 
+                });
 
-            this.setState({
-                globalPostsArray,
-                isLoading: false, 
-            });
+        }.bind(this))
 
 
 
@@ -133,7 +137,8 @@ class GlobalScreen extends React.Component {
         .orderBy("date_created", "desc")
         .startAfter(this.state.globalPostsArray[lastItemIndex].date_created)
         .limit(5)
-        .onSnapshot(querySnapshot => {
+        .get()
+        .then(function(querySnapshot) {
             const newPostsArray = []
             querySnapshot.forEach((res) => {
                 const { 
@@ -171,7 +176,7 @@ class GlobalScreen extends React.Component {
                     globalPostsArray: this.state.globalPostsArray.concat(newPostsArray)
                 });
 
-        })
+        }.bind(this))
     }
 
     render() {

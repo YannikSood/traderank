@@ -8,6 +8,8 @@ import TimeAgo from 'react-native-timeago';
 import { FontAwesome } from '@expo/vector-icons';
 
 import FeedCellClass from '../cells/feedCellClass';
+import { ThemeConsumer } from 'react-native-elements';
+import console = require('console');
 
 const mapStateToProps = (state) => {
     return {
@@ -47,7 +49,7 @@ class ClickedFollowPage extends React.Component {
     //Do this every time the component mounts
     //----------------------------------------------------------
     componentDidMount() {
-        this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        this.unsubscribe = this.firestoreRef.get().then(this.getCollection);
     }
 
     componentWillUnmount(){
@@ -62,20 +64,23 @@ class ClickedFollowPage extends React.Component {
     
     getCollection = (querySnapshot) => {
         const userFollowerFollowingArray = [];
+        
         querySnapshot.forEach((res) => {
-        const { 
-            uid
-            } = res.data();
+            console.log(res)
+        // const { 
+        //     uid
+        //     } = res.data();
 
-            userFollowerFollowingArray.push({
-                key: res.id,
-                uid,
-            });
-        });
+        //     userFollowerFollowingArray.push({
+        //         key: res.id,
+        //         uid,
+        //     });
+        // });
 
-        this.setState({
-            userFollowerFollowingArray,
-        });
+        // this.setState({
+        //     userFollowerFollowingArray,
+        // });
+        })
 
     }
 
