@@ -28,14 +28,14 @@ class EditProfile extends React.Component {
         super(props)
         this.state = {
             user: this.props.user,
-            oldBio: "No Bio!",
+            oldBio: "Enter Bio",
             newBio: "",
             profilePic: null,
             newProfilePicURL: '',
-            oldProfilePic: "",
+            oldProfilePic: "oldProfilePic", //was getting warning that this (source:uri) cannot be blank
             isLoading: false,
-            twitter: "@",
-            instagram: "@",
+            twitter: "",
+            instagram: "",
 
         }
         
@@ -98,7 +98,7 @@ class EditProfile extends React.Component {
             isLoading: false
         }))
         .catch(function(error) {
-            console.error("Error changing twitter: ", error);
+            console.error("Error changing twitter handle: ", error);
         });
     }
 
@@ -115,7 +115,7 @@ class EditProfile extends React.Component {
             isLoading: false
         }))
         .catch(function(error) {
-            console.error("Error changing twitter: ", error);
+            console.error("Error changing instagram handle: ", error);
         });
     }
 
@@ -187,7 +187,18 @@ class EditProfile extends React.Component {
         }
         
     };
-
+    //Function to update all profile info at once excpet image
+    saveChanges = () => {
+        if(this.state.newBio !== ""){
+            this.changeBio();
+        }
+        if(this.state.twitter !== ""){
+            this.changeTwitter();
+        }
+        if(this.state.instagram !== ""){
+            this.changeInstagram();
+        }
+    }
 
     render() {
         if(this.state.isLoading){
@@ -197,7 +208,7 @@ class EditProfile extends React.Component {
               </View>
             )
         }    
-        if (this.state.profilePic == null) {
+        if (this.state.profilePic == null) { //while I have not selected a new profile photo to change? 
             return (
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.container}>
@@ -212,6 +223,8 @@ class EditProfile extends React.Component {
                         style={styles.button}>
                         <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>change profile picture</Text>
                         </TouchableOpacity>
+        
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Bio</Text>  
 
                         <TextInput
                             style={styles.inputBox}
@@ -223,40 +236,35 @@ class EditProfile extends React.Component {
                             placeholderTextColor="#696969" 
                         />
 
-                        <TouchableOpacity 
-                            onPress={() => { this.changeBio() }}
-                            style={styles.button}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Bio</Text>    
-                        </TouchableOpacity>
-
+                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Twitter</Text>    
                         <TextInput
                             style={styles.socialInputBox}
                             value={this.state.twitter}
                             onChangeText={twitter => this.setState({ twitter })}
-                            placeholder={this.state.twitter}
+                            placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
                             autoCapitalize='none'
                             placeholderTextColor="#696969" 
                         />
 
-                        <TouchableOpacity 
-                            onPress={() => { this.changeTwitter() }}
-                            style={styles.button}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Twitter</Text>    
-                        </TouchableOpacity>
+
+
+                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Instagram</Text>   
 
                         <TextInput
                             style={styles.socialInputBox}
                             value={this.state.instagram}
                             onChangeText={instagram => this.setState({ instagram })}
-                            placeholder={this.state.instagram}
+                            placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
                             autoCapitalize='none'
                             placeholderTextColor="#696969" 
                         />
 
+    
+
                         <TouchableOpacity 
-                            onPress={() => { this.changeInstagram() }}
+                            onPress={() => { this.saveChanges() }}
                             style={styles.button}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Instagram</Text>    
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Save changes</Text>    
                         </TouchableOpacity>
                         
 
@@ -266,6 +274,7 @@ class EditProfile extends React.Component {
             )
         }
         else {
+            //TODO: Exaplin this chunk. Why is change bio code here?
             return (
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.container}>
@@ -281,21 +290,48 @@ class EditProfile extends React.Component {
                             <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>pick another photo</Text>
                     </TouchableOpacity>
 
+                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Bio</Text>  
 
-                    <TextInput
-                        style={styles.inputBox}
-                        value={this.state.newBio}
-                        onChangeText={newBio => this.setState({ newBio })}
-                        placeholder={this.state.oldBio}
-                        autoCapitalize='none'
-                        placeholderTextColor="#696969" 
-                    />
+<TextInput
+    style={styles.inputBox}
+    value={this.state.newBio}
+    onChangeText={newBio => this.setState({ newBio })}
+    placeholder={this.state.oldBio}
+    multiline= {true}
+    autoCapitalize='none'
+    placeholderTextColor="#696969" 
+/>
 
-                    <TouchableOpacity 
-                        onPress={() => { this.changeBio() }}
-                        style={styles.button}>
-                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Change Bio</Text>    
-                    </TouchableOpacity>
+<Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Twitter</Text>    
+<TextInput
+    style={styles.socialInputBox}
+    value={this.state.twitter}
+    onChangeText={twitter => this.setState({ twitter })}
+    placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
+    autoCapitalize='none'
+    placeholderTextColor="#696969" 
+/>
+
+
+
+<Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Instagram</Text>   
+
+<TextInput
+    style={styles.socialInputBox}
+    value={this.state.instagram}
+    onChangeText={instagram => this.setState({ instagram })}
+    placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
+    autoCapitalize='none'
+    placeholderTextColor="#696969" 
+/>
+
+
+
+<TouchableOpacity 
+    onPress={() => { this.saveChanges() }}
+    style={styles.button}>
+    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Save changes</Text>    
+</TouchableOpacity>
 
 
                     <KeyboardSpacer />
@@ -310,7 +346,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         backgroundColor: '#121212'
     },
     inputBox: {
@@ -349,9 +385,9 @@ const styles = StyleSheet.create({
     },
     socialInputBox: {
         width: '50%',
-        margin: 10,
-        padding: 15,
-        fontSize: 16,
+        marginTop: 10,
+        padding: 10,
+        fontSize: 14,
         borderColor: '#d3d3d3',
         borderBottomWidth: 1,
         textAlign: 'center',
