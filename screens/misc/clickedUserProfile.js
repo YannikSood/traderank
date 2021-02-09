@@ -289,6 +289,22 @@ class ClickedUserProfile extends React.Component {
 
     }
 
+    openFollowingList = () => {
+        this.props.navigation.navigate('ClickedFollowPage', {
+            clickedUID: this.state.posterUID,
+            followers_following: 'following',
+            navigation: this.state.navigation
+        })
+    }
+
+    openFollowerList = () => {
+        this.props.navigation.navigate('ClickedFollowPage', {
+            clickedUID: this.state.posterUID,
+            followers_following: 'followers',
+            navigation: this.state.navigation
+        })
+    }
+
     // followsYou = async() => {
     //     await Firebase.firestore()
     //     .collection('following')
@@ -490,15 +506,22 @@ class ClickedUserProfile extends React.Component {
                                     <Text style={{color: '#FFFFFF'}}> posts </Text>
                                 </View>
 
-                                <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                                    <Text style = {styles.tradeText}>{this.state.posterFollowerCount}</Text>
-                                    <Text style={{color: '#FFFFFF'}}> followers </Text>
-                                </View>
+                                <TouchableOpacity 
+                                    onPress={() => this.openFollowerList()}>
+                                    <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                                        <Text style = {styles.tradeText}>{this.state.posterFollowerCount}</Text>
+                                        <Text style={{color: '#FFFFFF'}}> followers </Text>
+                                    </View>
+                                </TouchableOpacity>
 
-                                <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                                    <Text style = {styles.tradeText}>{this.state.posterFollowingCount}</Text>
-                                    <Text style={{color: '#FFFFFF'}}> following </Text>
-                                </View>
+                                <TouchableOpacity 
+                                    onPress={() => this.openFollowingList()}>
+                                    <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                                        <Text style = {styles.tradeText}>{this.state.posterFollowingCount}</Text>
+                                        <Text style={{color: '#FFFFFF'}}> following </Text>
+                                    </View>
+                                </TouchableOpacity>
+
                             </View>  
                         </View>
 
@@ -577,15 +600,21 @@ class ClickedUserProfile extends React.Component {
                                     <Text style={{color: '#FFFFFF'}}> posts </Text>
                                 </View>
 
-                                <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                                    <Text style = {styles.tradeText}>{this.state.posterFollowerCount}</Text>
-                                    <Text style={{color: '#FFFFFF'}}> followers </Text>
-                                </View>
+                                <TouchableOpacity 
+                                    onPress={() => this.openFollowerList()}>
+                                    <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                                        <Text style = {styles.tradeText}>{this.state.posterFollowerCount}</Text>
+                                        <Text style={{color: '#FFFFFF'}}> followers </Text>
+                                    </View>
+                                </TouchableOpacity>
 
-                                <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                                    <Text style = {styles.tradeText}>{this.state.posterFollowingCount}</Text>
-                                    <Text style={{color: '#FFFFFF'}}> following </Text>
-                                </View>
+                                <TouchableOpacity 
+                                    onPress={() => this.openFollowingList()}>
+                                    <View style = {{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                                        <Text style = {styles.tradeText}>{this.state.posterFollowingCount}</Text>
+                                        <Text style={{color: '#FFFFFF'}}> following </Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>  
                         </View>
 

@@ -53,6 +53,7 @@ import Search from './screens/search/search'
 import Notification from './screens/notifications/Notifications.js'
 import ClickedPostPage from './screens/misc/clickedPostPage'
 import ClickedUserProfile from './screens/misc/clickedUserProfile'
+import ClickedFollowPage from './screens/misc/clickedFollowPage'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -213,6 +214,22 @@ class App extends React.Component {
               component={ClickedUserProfile}
               options=  {{
                   title: "profile details",
+                  headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                    color: '#FFFFFF'
+                  },
+                  headerStyle: {
+                    backgroundColor: '#121212',
+                    shadowColor: 'transparent'
+                  },
+                  headerTitle: null,
+                  headerBackTitle: ""
+            }}/>
+            <Stack.Screen name="ClickedFollowPage" 
+              component={ClickedFollowPage}
+              options=  {{
+                  title: " ",
                   headerTitleStyle: {
                     fontWeight: 'bold',
                     fontSize: 20,

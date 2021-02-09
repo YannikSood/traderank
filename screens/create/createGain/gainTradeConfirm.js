@@ -5,6 +5,7 @@ import { getUser } from '../../../redux/app-redux';
 import Modal from 'react-native-modal';
 
 import Firebase from '../../../firebase'
+import * as Analytics from 'expo-firebase-analytics';
 
 const mapStateToProps = (state) => {
     return {
@@ -61,6 +62,9 @@ class GainTradeConfirm extends React.Component {
         //get the newly created post ID (docRef.id)
         //pass it to the upload to storagefunction
         //now we have the screenshot stored baby
+
+        Analytics.logEvent("Gain_Posted")
+
         await Firebase.firestore()
         .collection('globalPosts')
         .add({

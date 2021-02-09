@@ -61,7 +61,7 @@ class Profile extends React.Component {
         
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.pullUserInfo()
         this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
         Analytics.logEvent("Profile_Clicked")
@@ -228,19 +228,6 @@ class Profile extends React.Component {
         this.setState({modalOpen: false})
     }
 
-    openFollowingList = () => {
-        this.state.navigation.navigate('ClickedFollowPage', {
-            clickedUID: this.state.userUID,
-            followers_following: 'following'
-        })
-    }
-
-    openFollowerList = () => {
-        this.state.navigation.navigate('ClickedFollowPage', {
-            clickedUID: this.state.userUID,
-            followers_following: 'followers'
-        })
-    }
 
     renderListHeader = () => {
         if (this.state.userPostsArray.length === 0) {
@@ -278,7 +265,7 @@ class Profile extends React.Component {
                         
     
                         <View style={{paddingLeft:30}}> 
-                            <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
+                            <ProfileStats navigation = {this.props.navigation} userUID = {this.state.userUID} postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
                         </View>
                         
                     </View>
@@ -379,7 +366,7 @@ class Profile extends React.Component {
                         
     
                         <View style={{paddingLeft:30}}> 
-                            <ProfileStats postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
+                            <ProfileStats navigation = {this.props.navigation} userUID = {this.state.userUID} postCount = {this.state.postCount} followerCount = {this.state.followerCount} followingCount = {this.state.followingCount}/>
                         </View>
                         
                     </View>

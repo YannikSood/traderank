@@ -4,6 +4,7 @@ import Firebase from '../../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 
 const mapStateToProps = (state) => {
     return {
@@ -84,6 +85,7 @@ class CommentComponent extends React.Component {
     //Add loading, text validation, and a small popup at the bottom that says comment successfully added or something.
     //Also look into comment replies etc
     addCommentToDB = async() => {
+        
         if (this.state.commentText.trim().length == 0 || this.state.commentText.trim() == "") {
             Alert.alert(
                 'no empty comments!',
@@ -96,6 +98,9 @@ class CommentComponent extends React.Component {
               return
         } 
         else {
+
+            Analytics.logEvent("User_Posted_Comment")
+
             //This should take us to the right place, adding a temp uid where we need it
             await Firebase.firestore()
             .collection('comments')

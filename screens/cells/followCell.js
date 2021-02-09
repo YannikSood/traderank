@@ -1,12 +1,7 @@
 import React, { useState } from 'react'
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
 import Firebase from '../../firebase'
-import LikeComponent from './FFCcomponents/likeComponent'
-import UserComponent from './FFCcomponents/userComponent'
-import CommentIconComponent from './FFCcomponents/commentIconComponent'
-import TimeAgo from 'react-native-timeago';
-import Search from '../search/search';
-
+import MiscUserComponent from '../cells/FollowCellComps/userComponent'
 
 
 
@@ -17,17 +12,8 @@ class FollowCell extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            // username: this.props.username,
-            // image: this.props.image,
-            // ticker: this.props.ticker,
-            // security: this.props.security,
-            // description: this.props.description,
-            // profit_loss: this.props.profit_loss,
-            // percent_gain_loss: this.props.percent_gain_loss,
-            // gain_loss: this.props.gain_loss,
-            // postID: this.props.postID,
-            // navigation: this.props.navigation,
-            // date_created: this.props.date_created,
+            uid: this.props.uid,
+            navigation: this.props.navigation,
             isLoading: false,
             currentUser: Firebase.auth().currentUser.uid,
         }
@@ -39,7 +25,7 @@ class FollowCell extends React.Component{
     // }
 
 
-    // showPostPage = () => {
+    // showProfile = () => {
     //     console.log(this.state.date_created)
     //     this.state.navigation.push('ClickedUserPage', 
     //     {
@@ -64,30 +50,9 @@ class FollowCell extends React.Component{
         
         return (
             <View style={{flex:1, color: '#FFFFFF'}}>
-                <TouchableOpacity   
-                    style={styles.gainFeedCell}
-                    onPress={() => this.showPostPage()} >
-                    <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                        <View style={{flexDirection: 'row', padding: 6, justifyContent: 'center', alignItems: 'left' }}>
-                                <UserComponent 
-                                    postID={this.state.postID} 
-                                    navigation={this.props.navigation} 
-                                />
 
-                                <Text style={styles.securityContainer}>
-                                    <Text style={styles.regularTradeText}> traded </Text>
-                                    <Text style={styles.tradeText}>${this.state.ticker}</Text>
-                                    <Text style={styles.tradeText}> [{this.state.security}] </Text>
-                                </Text>
-                                
-                        </View>
-                        { this.renderGainLoss() }
-                    </View>
-                    
-                    
-                    
-
-                </TouchableOpacity>
+                <MiscUserComponent uid = {this.state.uid} navigation = {this.state.navigation} />      
+                
             </View>
         )
     }

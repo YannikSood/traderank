@@ -4,6 +4,7 @@ import Firebase from '../../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 
 const mapStateToProps = (state) => {
     return {
@@ -124,6 +125,9 @@ class CommentLikeComponent extends React.Component {
 
     //Add to like count, for both the global and user post references
     addToLikeCount = async() => {
+
+        Analytics.logEvent("Comment_Liked")
+        
         await Firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)

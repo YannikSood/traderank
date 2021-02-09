@@ -3,12 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions,  Image,
 import Firebase from '../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
-import Modal from 'react-native-modal';
-import TimeAgo from 'react-native-timeago';
-import { FontAwesome } from '@expo/vector-icons';
 
-import FeedCellClass from '../cells/feedCellClass';
-import { ThemeConsumer } from 'react-native-elements';
+import FollowCell from '../cells/followCell';
 
 const mapStateToProps = (state) => {
     return {
@@ -29,8 +25,9 @@ class ClickedFollowPage extends React.Component {
         super(props)
         this.state = {
             //Poster information from users collection
-            clickedUID: this.props.route.params.clickedUID,
-            followers_following: this.props.route.params.followers_following,
+            clickedUID: this.props.route.params.clickedUID, //Which user do we query for?
+            followers_following: this.props.route.params.followers_following, //Do we query the following or follower db?
+
             //Other Stuff
             isLoading: true,
             navigation: this.props.navigation,
@@ -42,44 +39,39 @@ class ClickedFollowPage extends React.Component {
         .collection(this.state.followers_following)
         .doc(this.state.clickedUID)
         .collection(this.state.followers_following)
-        
     }
 
     //Do this every time the component mounts
     //----------------------------------------------------------
     componentDidMount() {
-        this.unsubscribe = this.firestoreRef.get().then(this.getCollection);
+        this.setState({ isLoading: true });
+        this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection)
+
     }
 
-    componentWillUnmount(){
-        this.unsubscribe();
+    componentWillUnmount() {
+        this.unsubscribe()
     }
+
 
     _refresh = () => {
         this.setState({ isLoading: true });
-        this.getCollection()
+        this.firestoreRef.onSnapshot(this.getCollection)
     };
 
     
     getCollection = (querySnapshot) => {
         const userFollowerFollowingArray = [];
-        
+
+
         querySnapshot.forEach((res) => {
-            console.log(res)
-        // const { 
-        //     uid
-        //     } = res.data();
-
-        //     userFollowerFollowingArray.push({
-        //         key: res.id,
-        //         uid,
-        //     });
-        // });
-
-        // this.setState({
-        //     userFollowerFollowingArray,
-        // });
+            userFollowerFollowingArray.push({ key: res.id,
+            id: res.id})
         })
+
+        this.setState({userFollowerFollowingArray, isLoading: false})
+
+        
 
     }
 
@@ -133,31 +125,44 @@ class ClickedFollowPage extends React.Component {
     //     })
     // }
 
+    renderListHeader = () => {
+            if (this.state.userFollowerFollowingArray.length === 0) {
+                return (
+                    <View style = {styles.noPostContainer}>
+                            
+                            <Text style ={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 20}}>
+                                No {this.state.followers_following}
+                            </Text>
+                        
+        
+                    </View>
+        
+                )
+            }
+            return (
+                <View style = {styles.container}>
+                         <Text style ={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 20}}>
+                                {this.state.followers_following}
+                            </Text>
+                        
+        
+                    </View>
+    
+            )
+    }
+
     
 
     render() {
         const { navigation } = this.props;
         const renderItem = ({ item }) => (
     
-            <FeedCellClass 
-                username={item.username} 
-                description={item.description} 
-                image={item.image}
-                security={item.security}
-                ticker={item.ticker}
-                percent_gain_loss={item.percent_gain_loss}
-                profit_loss={item.profit_loss}
-                gain_loss={item.gain_loss}
-                postID={item.key}
+            <FollowCell 
+                uid={item.id} 
                 navigation={navigation}
-                date_created = {item.date_created.toDate()}
-                uid = {item.uid}
-                viewsCount={item.viewsCount}
             />
         );
-        //We want to render a profile pic and username side by side lookin nice and clickable. 
-        //When clicked, the modal opens with all the user info. 
-        //You can follow/unfollow from here.    
+
         if(this.state.isLoading){
             return(
               <View style = {styles.container}>
@@ -169,7 +174,7 @@ class ClickedFollowPage extends React.Component {
         return (
             <View style={{backgroundColor: '#000000'}}>
                 <FlatList
-                    data={this.state.userPostsArray}
+                    data={this.state.userFollowerFollowingArray}
                     renderItem={renderItem}
                     keyExtractor={item => item.key}
                     ListHeaderComponent={this.renderListHeader}
@@ -178,9 +183,8 @@ class ClickedFollowPage extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={() => {this.getMore()}}
                 />
+                
             </View>   
         )
         
@@ -259,6 +263,15 @@ const styles = StyleSheet.create({
         width: 150,
         marginRight: 10,
         marginLeft: 10,
+    },
+    noPostContainer: {
+        paddingTop: 20,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingBottom: 20,
+        backgroundColor: '#000000',
+        paddingBottom: Dimensions.get("window").height * 0.9
     },
 })
 
