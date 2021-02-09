@@ -9,7 +9,6 @@ import { FontAwesome } from '@expo/vector-icons';
 
 import FeedCellClass from '../cells/feedCellClass';
 import { ThemeConsumer } from 'react-native-elements';
-import console = require('console');
 
 const mapStateToProps = (state) => {
     return {
@@ -31,7 +30,7 @@ class ClickedFollowPage extends React.Component {
         this.state = {
             //Poster information from users collection
             clickedUID: this.props.route.params.clickedUID,
-            followers_following: this.props.route.params.follower_following,
+            followers_following: this.props.route.params.followers_following,
             //Other Stuff
             isLoading: true,
             navigation: this.props.navigation,

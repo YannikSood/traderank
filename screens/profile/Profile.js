@@ -228,6 +228,20 @@ class Profile extends React.Component {
         this.setState({modalOpen: false})
     }
 
+    openFollowingList = () => {
+        this.state.navigation.navigate('ClickedFollowPage', {
+            clickedUID: this.state.userUID,
+            followers_following: 'following'
+        })
+    }
+
+    openFollowerList = () => {
+        this.state.navigation.navigate('ClickedFollowPage', {
+            clickedUID: this.state.userUID,
+            followers_following: 'followers'
+        })
+    }
+
     renderListHeader = () => {
         if (this.state.userPostsArray.length === 0) {
             return (

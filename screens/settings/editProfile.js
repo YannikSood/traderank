@@ -223,48 +223,56 @@ class EditProfile extends React.Component {
                         style={styles.button}>
                         <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>change profile picture</Text>
                         </TouchableOpacity>
-        
-                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Bio</Text>  
 
-                        <TextInput
-                            style={styles.inputBox}
-                            value={this.state.newBio}
-                            onChangeText={newBio => this.setState({ newBio })}
-                            placeholder={this.state.oldBio}
-                            multiline= {true}
-                            autoCapitalize='none'
-                            placeholderTextColor="#696969" 
-                        />
+                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 5}}>bio   </Text>  
 
-                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Twitter</Text>    
-                        <TextInput
-                            style={styles.socialInputBox}
-                            value={this.state.twitter}
-                            onChangeText={twitter => this.setState({ twitter })}
-                            placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
-                            autoCapitalize='none'
-                            placeholderTextColor="#696969" 
-                        />
+                            <TextInput
+                                style={styles.inputBox}
+                                value={this.state.newBio}
+                                onChangeText={newBio => this.setState({ newBio })}
+                                placeholder={this.state.oldBio}
+                                multiline= {true}
+                                autoCapitalize='none'
+                                placeholderTextColor="#696969" 
+                            />
+                        </View>
+                        
+
+                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>twitter   </Text>    
+
+                            <TextInput
+                                style={styles.socialInputBox}
+                                value={this.state.twitter}
+                                onChangeText={twitter => this.setState({ twitter })}
+                                placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
+                                autoCapitalize='none'
+                                placeholderTextColor="#696969" 
+                            />
+                        </View>
+                    
 
 
+                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>instagram   </Text>   
 
-                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Instagram</Text>   
-
-                        <TextInput
-                            style={styles.socialInputBox}
-                            value={this.state.instagram}
-                            onChangeText={instagram => this.setState({ instagram })}
-                            placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
-                            autoCapitalize='none'
-                            placeholderTextColor="#696969" 
-                        />
-
+                            <TextInput
+                                style={styles.socialInputBox}
+                                value={this.state.instagram}
+                                onChangeText={instagram => this.setState({ instagram })}
+                                placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
+                                autoCapitalize='none'
+                                placeholderTextColor="#696969" 
+                            />
+                        </View>
+                    
     
 
                         <TouchableOpacity 
                             onPress={() => { this.saveChanges() }}
                             style={styles.button}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Save changes</Text>    
+                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>save changes</Text>    
                         </TouchableOpacity>
                         
 
@@ -292,46 +300,46 @@ class EditProfile extends React.Component {
 
                     <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Bio</Text>  
 
-<TextInput
-    style={styles.inputBox}
-    value={this.state.newBio}
-    onChangeText={newBio => this.setState({ newBio })}
-    placeholder={this.state.oldBio}
-    multiline= {true}
-    autoCapitalize='none'
-    placeholderTextColor="#696969" 
-/>
+                    <TextInput
+                        style={styles.inputBox}
+                        value={this.state.newBio}
+                        onChangeText={newBio => this.setState({ newBio })}
+                        placeholder={this.state.oldBio}
+                        multiline= {true}
+                        autoCapitalize='none'
+                        placeholderTextColor="#696969" 
+                    />
 
-<Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Twitter</Text>    
-<TextInput
-    style={styles.socialInputBox}
-    value={this.state.twitter}
-    onChangeText={twitter => this.setState({ twitter })}
-    placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
-    autoCapitalize='none'
-    placeholderTextColor="#696969" 
-/>
-
-
-
-<Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Instagram</Text>   
-
-<TextInput
-    style={styles.socialInputBox}
-    value={this.state.instagram}
-    onChangeText={instagram => this.setState({ instagram })}
-    placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
-    autoCapitalize='none'
-    placeholderTextColor="#696969" 
-/>
+                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Twitter</Text>    
+                    <TextInput
+                        style={styles.socialInputBox}
+                        value={this.state.twitter}
+                        onChangeText={twitter => this.setState({ twitter })}
+                        placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
+                        autoCapitalize='none'
+                        placeholderTextColor="#696969" 
+                    />
 
 
 
-<TouchableOpacity 
-    onPress={() => { this.saveChanges() }}
-    style={styles.button}>
-    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Save changes</Text>    
-</TouchableOpacity>
+                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>Instagram</Text>   
+
+                    <TextInput
+                        style={styles.socialInputBox}
+                        value={this.state.instagram}
+                        onChangeText={instagram => this.setState({ instagram })}
+                        placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
+                        autoCapitalize='none'
+                        placeholderTextColor="#696969" 
+                    />
+
+
+
+                    <TouchableOpacity 
+                        onPress={() => { this.saveChanges() }}
+                        style={styles.button}>
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>save changes</Text>    
+                    </TouchableOpacity>
 
 
                     <KeyboardSpacer />
@@ -346,12 +354,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         backgroundColor: '#121212'
     },
     inputBox: {
         width: '85%',
-        margin: 10,
+        // margin: 10,
         padding: 15,
         fontSize: 16,
         borderColor: '#d3d3d3',
@@ -360,12 +368,14 @@ const styles = StyleSheet.create({
         // textAlign: 'center'
     },
     thumbnail: {
-        width: 200,
-        height: 200,
-        borderRadius: 100
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        marginTop: 40,
+        marginBottom: 30,
     },
     button: {
-        marginTop: 30,
+        // marginTop: 10,
         paddingVertical: 5,
         alignItems: 'center',
         backgroundColor: 'transparent',
@@ -375,6 +385,7 @@ const styles = StyleSheet.create({
         width: 200,
         marginRight: 10,
         marginLeft: 10,
+        marginBottom: 30
     },
     socialInputBoxText: {
         fontSize: 16,
@@ -384,12 +395,12 @@ const styles = StyleSheet.create({
         color: '#FFFFFF'
     },
     socialInputBox: {
-        width: '50%',
-        marginTop: 10,
+        width: '35%',
+        // marginTop: 10,
         padding: 10,
         fontSize: 14,
         borderColor: '#d3d3d3',
-        borderBottomWidth: 1,
+        borderWidth: 1,
         textAlign: 'center',
         color: '#FFFFFF'
     },
