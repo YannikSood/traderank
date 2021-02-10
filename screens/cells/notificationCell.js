@@ -3,6 +3,7 @@ import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Im
 import Firebase from '../../firebase'
 import UserComponent from './FFCcomponents/userComponent'
 import TimeAgo from 'react-native-timeago';
+import MiscUserComponent from '../cells/FollowCellComps/userComponent'
 
 class NotificationCellClass extends React.Component{ 
     
@@ -100,10 +101,7 @@ class NotificationCellClass extends React.Component{
                         <View style={{flexDirection: 'column'}}>
                         <View style={{flexDirection: 'row'}}>
 
-                            <TouchableOpacity   
-                                onPress={() => this.showUserProfile()}>
-                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
-                            </TouchableOpacity>
+                             <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
 
                             <Text style={styles.textStyle2}> liked your post</Text>
                             
@@ -128,10 +126,7 @@ class NotificationCellClass extends React.Component{
                         <View style={{flexDirection: 'column'}}>
                         <View style={{flexDirection: 'row'}}>
   
-                                <TouchableOpacity   
-                                onPress={() => this.showUserProfile()}>
-                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
-                                </TouchableOpacity>
+                                <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
 
                                  <Text style={styles.textStyle2}> commented on your post</Text>
 
@@ -155,10 +150,7 @@ class NotificationCellClass extends React.Component{
                     <View style={{flexDirection: 'column'}}>
                         <View style={{flexDirection: 'row'}}>
 
-                                <TouchableOpacity   
-                                        onPress={() => this.showUserProfile()}>
-                                        <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
-                                </TouchableOpacity>
+                                <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
 
                                 <Text style={styles.textStyle2}> followed you</Text>
                                     
@@ -187,10 +179,7 @@ class NotificationCellClass extends React.Component{
                              
                         <View style={{flexDirection: 'row'}}>
 
-                            <TouchableOpacity   
-                                onPress={() => this.showUserProfile()}>
-                                    <Text style={styles.textStyle}>{this.state.senderUsername}</Text>
-                            </TouchableOpacity>
+                            <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
 
                             <Text style={styles.textStyle2}> liked your comment</Text>
                             
@@ -317,7 +306,7 @@ const styles = StyleSheet.create({
     },
     textStyle2: {
         color: '#FFFFFF', 
-        paddingTop: 5, 
+        paddingTop: 16, 
         fontWeight: 'bold', 
         fontSize: 14
     },

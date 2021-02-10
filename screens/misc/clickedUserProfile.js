@@ -290,7 +290,7 @@ class ClickedUserProfile extends React.Component {
     }
 
     openFollowingList = () => {
-        this.props.navigation.navigate('ClickedFollowPage', {
+        this.props.navigation.push('ClickedFollowPage', {
             clickedUID: this.state.posterUID,
             followers_following: 'following',
             navigation: this.state.navigation
@@ -298,7 +298,7 @@ class ClickedUserProfile extends React.Component {
     }
 
     openFollowerList = () => {
-        this.props.navigation.navigate('ClickedFollowPage', {
+        this.props.navigation.push('ClickedFollowPage', {
             clickedUID: this.state.posterUID,
             followers_following: 'followers',
             navigation: this.state.navigation

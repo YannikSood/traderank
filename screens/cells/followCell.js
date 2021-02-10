@@ -51,7 +51,8 @@ class FollowCell extends React.Component{
         return (
             <View style={{flex:1, color: '#FFFFFF'}}>
 
-                <MiscUserComponent uid = {this.state.uid} navigation = {this.state.navigation} />      
+                <MiscUserComponent uid = {this.state.uid} navigation = {this.state.navigation} />   
+                <View style = {styles.lineStyle} />   
                 
             </View>
         )
@@ -161,6 +162,12 @@ const styles = StyleSheet.create({
         height: 250,
         resizeMode: "contain",
     },
+    lineStyle:{
+        borderWidth: 0.5,
+        borderColor:'white',
+        width: Dimensions.get('window').width,
+        marginBottom: 10
+   },
 })
 
 export default FollowCell;

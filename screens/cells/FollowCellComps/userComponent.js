@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },  
     tradeText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         alignContent: 'center',
         color: '#FFFFFF'
