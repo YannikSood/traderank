@@ -155,7 +155,7 @@ class App extends React.Component {
                 },
                 headerBackTitle: ""
             }}/>
-            <Stack.Screen name="Leaderboard" 
+            {/* <Stack.Screen name="Leaderboard" 
               component={LBTopTabs} 
               options=  {{
                 title: "leaderboard",
@@ -169,7 +169,7 @@ class App extends React.Component {
                   shadowColor: 'transparent'
                 },
                 headerBackTitle: ""
-            }}/>
+            }}/> */}
             <Stack.Screen name="Search" 
               component={Search} 
               options=  {{
@@ -256,24 +256,24 @@ class App extends React.Component {
                     backgroundColor: '#000000',
                     shadowColor: 'transparent'
                   },
-                  headerRight: () => (
-                    <View style={{flexDirection: "row"}}>
+              //     headerRight: () => (
+              //       <View style={{flexDirection: "row"}}>
 
-                      {/* <TouchableOpacity 
-                        style={{paddingRight: 20}}
-                        onPress={() => navigation.navigate('Search')}>
-                        <Ionicons name="ios-search" size={25} color="white" />
-                      </TouchableOpacity> */}
+              //          <TouchableOpacity 
+              //           style={{paddingRight: 20}}
+              //           onPress={() => navigation.navigate('Search')}>
+              //           <Ionicons name="ios-search" size={25} color="white" />
+              //         </TouchableOpacity> 
 
-                      <TouchableOpacity 
-                          style={{paddingRight: 20}}
-                          onPress={() => navigation.navigate('Leaderboard')}>
-                          <Ionicons name="ios-trophy" size={25} color="#FFD700" />
-                      </TouchableOpacity>
+              //          <TouchableOpacity 
+              //             style={{paddingRight: 20}}
+              //             onPress={() => navigation.navigate('Leaderboard')}>
+              //             <Ionicons name="ios-trophy" size={25} color="#FFD700" />
+              //         </TouchableOpacity> 
 
-                    </View>
+              //       </View>
                     
-                  ),
+              //     ),
 
               })}/>
           </Stack.Navigator>
@@ -337,12 +337,12 @@ function Tabs() {
       />
 
       <Tab.Screen 
-        name="Chat" 
-        component={Chat} 
+        name="Leaderboard" 
+        component={LBTopTabs} 
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="users" size={size} color={color} />
+            <Ionicons name="ios-trophy" size={25} color="#FFD700" />
           ),
         }}
       />

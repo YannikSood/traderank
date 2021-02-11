@@ -24,31 +24,62 @@ class Create extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                {/* <Text style={styles.headerText}>get ranked</Text> */}
 
-                <Text style={styles.headerText}>get ranked</Text>
+                <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <View style = {{flexDirection: 'column', paddingLeft: 25}}>
+                        <Text style={styles.subheaderText}>holding?</Text>
 
-                <Text style={styles.subheaderText}>holding?</Text>
+                        <TouchableOpacity 
+                            onPress={() => this.props.navigation.navigate('YoloScreenshot')}
+                            style={styles.yoloButton}>
 
-                <TouchableOpacity 
-                    onPress={() => this.props.navigation.navigate('YoloScreenshot')}
-                    style={styles.yoloButton}>
+                                <Text style={styles.buttonText}>post trade 🙏</Text>
 
-                        <Text style={styles.buttonText}>post trade 🙏</Text>
+                        </TouchableOpacity>
 
-                </TouchableOpacity>
+                        <Text style={styles.subheaderText}>sold!</Text>
+                        <TouchableOpacity 
+                            onPress={() => this.props.navigation.navigate('GainScreenshot')}
+                            style={styles.gainButton}>
+                                <Text style={styles.buttonText}>post gains 🚀</Text>
+                        </TouchableOpacity>
 
-                <Text style={styles.subheaderText}>sold!</Text>
-                <TouchableOpacity 
-                    onPress={() => this.props.navigation.navigate('GainScreenshot')}
-                    style={styles.gainButton}>
-                        <Text style={styles.buttonText}>post gains 🚀</Text>
-                </TouchableOpacity>
+                        <TouchableOpacity 
+                            onPress={() => this.props.navigation.navigate('LossScreenshot')}
+                            style={styles.lossButton}>
+                                <Text style={styles.buttonText}>post losses 🤡</Text>
+                        </TouchableOpacity>
+                    </View>
 
-                <TouchableOpacity 
-                    onPress={() => this.props.navigation.navigate('LossScreenshot')}
-                    style={styles.lossButton}>
-                        <Text style={styles.buttonText}>post losses 🤡</Text>
-                </TouchableOpacity>
+                    <View style = {{flexDirection: 'column', paddingRight: 25}}>
+                        <Text style={styles.subheaderText}>memes [soon]</Text>
+
+                        <TouchableOpacity 
+                            // onPress={() => this.props.navigation.navigate('YoloScreenshot')}
+                            style={styles.memeButton}>
+
+                                <Text style={styles.buttonText}>post meme 😂</Text>
+
+                        </TouchableOpacity>
+
+                        <Text style={styles.subheaderText}>research [soon]</Text>
+                        <TouchableOpacity 
+                            // onPress={() => this.props.navigation.navigate('GainScreenshot')}
+                            style={styles.researchButton}>
+                                <Text style={styles.buttonText}>post dd 🧪</Text>
+                        </TouchableOpacity>
+
+                        {/* <Text style={styles.subheaderText}>ideas</Text>
+                        <TouchableOpacity 
+                            onPress={() => this.props.navigation.navigate('LossScreenshot')}
+                            style={styles.lossButton}>
+                                <Text style={styles.buttonText}>post losses 🤡</Text>
+                        </TouchableOpacity> */}
+                    </View>
+
+                </View>
+                
 
             </View>
         )
@@ -59,7 +90,7 @@ class Create extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        // alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#000000'
     },
@@ -72,7 +103,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#5233FF',
         borderRadius: 5,
-        width: 200
+        width: 150
     },
     gainButton: {
         marginTop: 20,
@@ -83,7 +114,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#00cc00',
         borderRadius: 5,
-        width: 200
+        width: 150
     },
     lossButton: {
         marginTop: 10,
@@ -94,7 +125,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#cc0000',
         borderRadius: 5,
-        width: 200
+        width: 150
     },
     buttonText: {
         fontSize: 20,
@@ -112,6 +143,28 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignContent: 'center',
         color: '#696969'
+    },
+    researchButton: {
+        marginTop: 20,
+        marginBottom: 20,
+        paddingVertical: 5,
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#F77737',
+        borderRadius: 5,
+        width: 150,
+    },
+    memeButton: {
+        marginTop: 20,
+        marginBottom: 20,
+        paddingVertical: 5,
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#833AB4',
+        borderRadius: 5,
+        width: 150
     },
 })
 

@@ -120,8 +120,7 @@ class CommentComponent extends React.Component {
                 console.error("Error storing and retrieving image url: ", error);
             });
 
-            //We set the docref.id to this.state.commentUID, so we can access that document directly and add the remaining fields.
-            //The remaining fields are 
+            
             await Firebase.firestore()
             .collection('globalPosts')
             .doc(this.state.postID)
@@ -216,6 +215,7 @@ class CommentComponent extends React.Component {
                         multiline={true}
                         maxLength={400}
                     />
+
                     <TouchableOpacity onPress={() => { this.addCommentToDB() }}> 
                         <MaterialCommunityIcons name="message" size={30} color="white" />
                         

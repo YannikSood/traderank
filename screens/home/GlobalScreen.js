@@ -6,6 +6,7 @@ import FeedCellClass from '../cells/feedCellClass.js';
 import * as Permissions from 'expo-permissions';
 import * as Notifications from "expo-notifications";
 import * as Analytics from 'expo-firebase-analytics';
+import { useScrollToTop } from '@react-navigation/native';
 
 class GlobalScreen extends React.Component {
 
@@ -210,6 +211,7 @@ class GlobalScreen extends React.Component {
         return (
             <View style={styles.view}>
                 <FlatList
+                    ref={this.props.scrollRef}
                     data={this.state.globalPostsArray}
                     renderItem={renderItem}
                     keyExtractor={item => item.key}
@@ -328,4 +330,10 @@ const styles = StyleSheet.create({
     },
 })
 
-export default GlobalScreen
+export default function(props) {
+    const ref = React.useRef(null);
+  
+    useScrollToTop(ref);
+  
+    return <GlobalScreen {...props} scrollRef={ref} />;
+}
