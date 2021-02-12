@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, Alert , ActivityIndicator} from 'react-native'
 import Firebase from '../../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
@@ -31,7 +31,8 @@ class CommentComponent extends React.Component {
             commentText: "",
             commentUID: " ",
             commentsCount: 0,
-            userCommentsCount: 0
+            userCommentsCount: 0,
+            isLoading:false
 
         }
         
@@ -41,6 +42,24 @@ class CommentComponent extends React.Component {
     //----------------------------------------------------------
     componentDidMount() {
         this.getPosterUID()
+
+    }
+    updateCommentCount = async() => {
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .doc(this.state.postID)
+        .get()
+        .then(function(doc) {
+            if (doc.exists) {
+                this.setState ({
+                    commentsCount: doc.data().commentsCount
+                })
+            } else {
+                // doc.data() will be undefined in this case
+                    console.log("No such document!");
+            }
+        }.bind(this));
+
     }
 
     //Get the poster userID
@@ -85,7 +104,7 @@ class CommentComponent extends React.Component {
     //Add loading, text validation, and a small popup at the bottom that says comment successfully added or something.
     //Also look into comment replies etc
     addCommentToDB = async() => {
-        
+
         if (this.state.commentText.trim().length == 0 || this.state.commentText.trim() == "") {
             Alert.alert(
                 'no empty comments!',
@@ -98,8 +117,9 @@ class CommentComponent extends React.Component {
               return
         } 
         else {
-
+            this.setState({isLoading:true});
             Analytics.logEvent("User_Posted_Comment")
+
 
             //This should take us to the right place, adding a temp uid where we need it
             await Firebase.firestore()
@@ -119,8 +139,10 @@ class CommentComponent extends React.Component {
             .catch(function(error) {
                 console.error("Error storing and retrieving image url: ", error);
             });
+            
 
             
+
             await Firebase.firestore()
             .collection('globalPosts')
             .doc(this.state.postID)
@@ -139,9 +161,10 @@ class CommentComponent extends React.Component {
             }, { merge: true })
             .then(() =>
                 this.setState ({
-                    userCommentsCount: this.state.userCommentsCount + 1
+                    userCommentsCount: this.state.userCommentsCount + 1,
+                    isLoading:false
                 })
-            )
+            ).then(() => this.updateCommentCount())
         }
 
     }
@@ -200,6 +223,13 @@ class CommentComponent extends React.Component {
 
     render() {
         //Allow a user to post a comment. First, take a text input, then submit it with the comment button. 
+        if(this.state.isLoading) {
+            return (
+                <View style={styles.inputBox}>
+                    <ActivityIndicator size="large" color="#9E9E9E"/>
+                </View>
+            )
+        }
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View
