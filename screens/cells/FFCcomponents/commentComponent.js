@@ -28,7 +28,8 @@ class CommentComponent extends React.Component {
             commentorUsername: this.props.user.username,
             postID: this.props.postID,
             posterUID: " ",
-            commentText: "",
+            posterUsername:"",
+            commentText: this.props.textValue,
             commentUID: " ",
             commentsCount: 0,
             userCommentsCount: 0,
@@ -43,6 +44,12 @@ class CommentComponent extends React.Component {
     componentDidMount() {
         this.getPosterUID()
 
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(this.props.textValue !== prevProps.textValue){
+            this.setState({textValue:this.props.textValue});
+        }
     }
     updateCommentCount = async() => {
         await Firebase.firestore()

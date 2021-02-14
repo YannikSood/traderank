@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native'
+import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button } from 'react-native'
 import Firebase from '../../firebase'
 import LikeComponent from '../cells/FFCcomponents/likeComponent'
 import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent'
@@ -32,6 +32,7 @@ class ClickedPostPage extends React.Component {
             commentsArray: [],
             modalOpen: false,
             currentViewsCount: 0,
+            textValue: "" //value for text when replying to a comment
         }
 
         this.firestoreRef = 
@@ -280,7 +281,7 @@ class ClickedPostPage extends React.Component {
     render() {
         const { navigation } = this.props;
         const renderItem = ({ item }) => (
-    
+
             <CommentCellClass 
                 commentLikes= {item.commentLikes}
                 commentText = {item.commentText}
@@ -290,6 +291,18 @@ class ClickedPostPage extends React.Component {
                 date_created = {item.date_created.toDate()}
                 commentID = {item.key}
                 postID = {this.state.postID}
+                button = {<Button
+                //this.setState({textValue: `@${item.commentorUsername}`})
+                    onPress={() =>{
+                        this.setState({textValue:`@${item.commentorUsername}`});
+                         console.log(`Replying:@${item.commentorUsername}`)
+                }}
+                    title="Reply"
+                    color="white"
+                    accessibilityLabel="Learn more about this purple button"
+                  />}
+                //pass a reply button as a prop
+
             />
         );
 
@@ -311,7 +324,7 @@ class ClickedPostPage extends React.Component {
                     <KeyboardAvoidingView style={styles.commentFooter}
                     behavior="padding" enabled   
                     keyboardVerticalOffset={100}>
-                        <CommentComponent postID = {this.state.postID}/>
+                        <CommentComponent postID = {this.state.postID} textValue={this.state.textValue} />
                     </KeyboardAvoidingView>
             </View>
             
