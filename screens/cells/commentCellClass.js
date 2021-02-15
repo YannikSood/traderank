@@ -101,20 +101,23 @@ class CommentCellClass extends React.Component{
 
                             </View>
 
-                            <View>
-                                {this.props.button}
-                                {/* <Text style={styles.reply} onPress={()=>console.log(`Reply to: ${this.state.commentorUsername} Comment Id: ${this.state.commentID} Post Id: ${this.state.postID}`)}>reply</Text> */}
-                            </View>
+                            
                         </View>
                         
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
-                        <CommentLikeComponent  
-                            postID={this.state.postID} 
-                            commentID={this.state.commentID}
-                            navigation={this.props.navigation} 
-                        />
+                        <View style={{flexDirection: 'row'}}>
+
+                            <CommentLikeComponent  
+                                postID={this.state.postID} 
+                                commentID={this.state.commentID}
+                                navigation={this.props.navigation} 
+                            />
+
+                            {this.props.button} 
+
+                        </View>
 
 
                     <View style = {styles.lineStyle} />

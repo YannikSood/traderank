@@ -33,7 +33,8 @@ class CommentComponent extends React.Component {
             commentUID: " ",
             commentsCount: 0,
             userCommentsCount: 0,
-            isLoading:false
+            isLoading:false,
+            replyingTo: "",
 
         }
         
@@ -46,11 +47,12 @@ class CommentComponent extends React.Component {
 
     }
 
-    componentDidUpdate(prevProps, prevState){
+    componentDidUpdate(prevProps){
         if(this.props.textValue !== prevProps.textValue){
             this.setState({textValue:this.props.textValue});
-        }
+        } 
     }
+ 
     updateCommentCount = async() => {
         await Firebase.firestore()
         .collection('globalPosts')
@@ -159,7 +161,7 @@ class CommentComponent extends React.Component {
             .catch(function(error) {
                 console.error("Error writing document to user posts: ", error);
             });
-
+            
             await Firebase.firestore()
             .collection('users')
             .doc(this.state.commentorUID)
@@ -245,7 +247,10 @@ class CommentComponent extends React.Component {
                     <TextInput
                         style={styles.inputBox}
                         value={this.state.commentText}
-                        onChangeText={commentText => this.setState({ commentText })}
+                        onChangeText={commentText => {
+                            console.log(this.state.commentText);
+                            this.setState({ commentText })
+                        }}
                         placeholder='Add a comment...'
                         autoCapitalize='none'
                         autoCorrect={false}
