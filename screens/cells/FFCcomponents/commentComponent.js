@@ -35,7 +35,8 @@ class CommentComponent extends React.Component {
             commentsCount: 0,
             userCommentsCount: 0,
             isLoading:false,
-            replyTo:this.props.replyTo
+            replyTo:this.props.replyTo,
+            replyData: this.props.replyData
         }
         
     }
@@ -50,17 +51,31 @@ class CommentComponent extends React.Component {
     componentDidUpdate(prevProps, prevState){
         //Gets replyTo from props as it changes
        if((prevState.replyTo !== this.state.replyTo) || (prevProps.replyTo !== this.props.replyTo)){
-        const getData = async () => {
+
+        const getReplyTo = async () => {
             try {
               const value = await AsyncStorage.getItem('replyTo')
               if(value !== null) {
                 this.setState({commentText: `@${value}`});
+                // console.log(this.props.replyTo);
               }
             } catch(e) {
               // error reading value
             }
           }
-          getData();
+          getReplyTo();
+
+          const getReplyData = async () => {
+            try {
+              const jsonValue = await AsyncStorage.getItem('replyData')
+              this.setState({replyData:jsonValue});
+              console.log(jsonValue);
+              return jsonValue != null ? JSON.parse(jsonValue) : null;
+            } catch(e) {
+              // error reading value
+            }
+          }
+          getReplyData();
        }
     }
 
@@ -162,6 +177,35 @@ class CommentComponent extends React.Component {
             .catch(function(error) {
                 console.error("Error storing and retrieving image url: ", error);
             });
+
+            //Reply Data
+            // {"postID":"oKG0MswTDVCN8mH27UL4",
+            // "commentId":"PLZ12W8t4hJ9kdhkHrPU",
+            // "replyingToUsername":"kingfahd",
+            // "replyingToUID":"5XCPW8frRIdoJeXFfV9iPhFiGr43",
+            // "replierAuthorUID":"vei3naWuMqY9qXPo9YuQFOUcqmx1",
+            // "replierUsername":"kal"}
+            if(this.state.replyTo.length > 0){ //isReplying
+                console.log(this.state.replyData);
+                await Firebase.firestore()
+                .collection('comments') // collection comments
+                .doc(this.state.replyData.postID) // Which post?
+                .collection('comments') //Get comments for this post
+                .doc(this.state.replyData.commentID) //Get the specific comment we want to reply to
+                .collection('replies') //Create a collection for said comment
+                .add({ //Add to this collection, and automatically generate iD for this new comment
+                    postID: this.state.replyData.postID,
+                    commentId: this.state.replyData.commentId,
+                    replyingToUsername: this.state.replyData.replyingToUsername,
+                    replyingToUID: this.state.replyData.replyingToUID,
+                    replierAuthorUID: this.state.replyData.replierAuthorUID,
+                    replierUsername:this.state.replyData.replierUsername,
+                    date_created: new Date(),
+                })
+                .catch(function(error) {
+                    console.error("Error storing and retrieving image url: ", error);
+                });
+            }
             
 
             

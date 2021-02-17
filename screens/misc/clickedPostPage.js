@@ -11,6 +11,20 @@ import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { connect } from 'react-redux';
+import { clearUser } from '../../redux/app-redux';
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        clearUser: (temp) => { dispatch(clearUser(temp))}
+     };
+}
 
 class ClickedPostPage extends React.Component { 
     
@@ -33,7 +47,8 @@ class ClickedPostPage extends React.Component {
             commentsArray: [],
             modalOpen: false,
             currentViewsCount: 0,
-            replyTo:""
+            replyTo:"",
+            replyData:{}
         }
 
         this.firestoreRef = 
@@ -296,28 +311,42 @@ class ClickedPostPage extends React.Component {
                 button = {<Button
               
                     onPress={() =>{
-                       //sotre who to reply to
-                       let replyData = {
-                        postID: `${this.state.postID}`,
-                        commentId: `${item.key}`, //Id of the comment I am replying to 
-                        replyingToUsername: `${item.commentorUsername}`,
-                        commentorUID: `${item.commentorUID}`, //person who made the comment I am replying to
-                        replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
-                        replierUsername: `fill in`
-                        //may need to change
-            
-
-                    }
-                    console.log(replyData);
-                       const storeData = async (value) => {
+                        //StoreReplyTo
+                       const storeReplyTo = async (value) => {
                         try {
                           await AsyncStorage.setItem('replyTo', value)
                         } catch (e) {
                           // saving error
                         }
                       }
-                      storeData(`${item.commentorUsername}`);
-                      this.setState({replyTo:`@${item.commentorUsername}`})
+                      storeReplyTo(`${item.commentorUsername}`);
+                      this.setState({replyTo:`${item.commentorUsername}`})
+
+                      //sotre who to reply to
+                      let replyData = {
+                        postID: `${this.state.postID}`, //post the comment I am replying to 
+                        commentId: `${item.key}`, //Id of the comment I am replying to 
+                        replyingToUsername: `${item.commentorUsername}`,
+                        replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
+                        replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
+                        replierUsername: `${this.props.user.username}`
+                        //may need to change
+                        }
+                      
+                        //replyData that will be stored in the DB
+                      const storeReplyData = async (value) => {
+                        try {
+                          const jsonValue = JSON.stringify(value)
+                          await AsyncStorage.setItem('replyData', jsonValue)
+                        } catch (e) {
+                          // saving error
+                        }
+                      }
+                      this.setState({replyData:replyData});
+                      storeReplyData(replyData);
+
+
+
                          
                 }}
                     title="Reply"
@@ -347,7 +376,7 @@ class ClickedPostPage extends React.Component {
                     <KeyboardAvoidingView style={styles.commentFooter}
                     behavior="padding" enabled   
                     keyboardVerticalOffset={100}>
-                        <CommentComponent postID = {this.state.postID} replyTo={this.state.replyTo}/>
+                        <CommentComponent postID = {this.state.postID} replyTo={this.state.replyTo} replyData={this.state.replyData}/>
                     </KeyboardAvoidingView>
             </View>
             
@@ -492,4 +521,4 @@ const styles = StyleSheet.create({
    }
 })
 
-export default ClickedPostPage;
+export default connect(mapStateToProps, mapDispatchToProps)(ClickedPostPage);

@@ -115,7 +115,7 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {this.props.button} 
+                            {/* {this.props.button}  */}
 
                         </View>
 
