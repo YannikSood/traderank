@@ -24,6 +24,7 @@ class CommentCellClass extends React.Component{
             navigation: this.props.navigation,
             currentUser: Firebase.auth().currentUser.uid,
             showDeleteComponent: false,
+            button: this.props.button
         }
     }
 
@@ -99,23 +100,33 @@ class CommentCellClass extends React.Component{
                                 <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
 
                             </View>
+
+                            
                         </View>
                         
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
-                        <CommentLikeComponent  
-                            postID={this.state.postID} 
-                            commentID={this.state.commentID}
-                            navigation={this.props.navigation} 
-                        />
+                        <View style={{flexDirection: 'row'}}>
+
+                            <CommentLikeComponent  
+                                postID={this.state.postID} 
+                                commentID={this.state.commentID}
+                                navigation={this.props.navigation} 
+                            />
+
+                            {/* {this.props.button}  */}
+
+                        </View>
 
 
                     <View style = {styles.lineStyle} />
                     
                     
                 </View>
+                
         )
+
     }
 };
 
@@ -149,6 +160,10 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingTop: 1
     },
+    reply:{
+        color: 'white',
+        marginLeft: 10
+    }
     
 })
 

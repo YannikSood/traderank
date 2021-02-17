@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native'
+import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button } from 'react-native'
 import Firebase from '../../firebase'
 import LikeComponent from '../cells/FFCcomponents/likeComponent'
 import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent'
@@ -10,6 +10,21 @@ import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { connect } from 'react-redux';
+import { clearUser } from '../../redux/app-redux';
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        clearUser: (temp) => { dispatch(clearUser(temp))}
+     };
+}
 
 class ClickedPostPage extends React.Component { 
     
@@ -32,6 +47,8 @@ class ClickedPostPage extends React.Component {
             commentsArray: [],
             modalOpen: false,
             currentViewsCount: 0,
+            replyTo:"",
+            replyData:{}
         }
 
         this.firestoreRef = 
@@ -43,6 +60,8 @@ class ClickedPostPage extends React.Component {
     }
 
     async componentDidMount() {
+        //Not replying ot anyone
+       //update replyingTo storage variable here?
 
         Analytics.logEvent("Post_Clicked")
         Analytics.setCurrentScreen("PostDetailsScreen")
@@ -74,8 +93,6 @@ class ClickedPostPage extends React.Component {
     componentWillUnmount(){
         this.unsubscribe();
     }
-    
-    
 
     getCollection = (querySnapshot) => {
             const commentsArray = [];
@@ -279,9 +296,10 @@ class ClickedPostPage extends React.Component {
 
     render() {
         const { navigation } = this.props;
-        const renderItem = ({ item }) => (
-    
+        const renderItem = ({ item}) => (
+
             <CommentCellClass 
+                key = {item.key}
                 commentLikes= {item.commentLikes}
                 commentText = {item.commentText}
                 commentorUID = {item.commentorUID}
@@ -290,6 +308,53 @@ class ClickedPostPage extends React.Component {
                 date_created = {item.date_created.toDate()}
                 commentID = {item.key}
                 postID = {this.state.postID}
+                button = {<Button
+              
+                    onPress={() =>{
+                        //StoreReplyTo
+                       const storeReplyTo = async (value) => {
+                        try {
+                          await AsyncStorage.setItem('replyTo', value)
+                        } catch (e) {
+                          // saving error
+                        }
+                      }
+                      storeReplyTo(`${item.commentorUsername}`);
+                      this.setState({replyTo:`${item.commentorUsername}`})
+
+                      //sotre who to reply to
+                      let replyData = {
+                        postID: `${this.state.postID}`, //post the comment I am replying to 
+                        commentId: `${item.key}`, //Id of the comment I am replying to 
+                        replyingToUsername: `${item.commentorUsername}`,
+                        replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
+                        replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
+                        replierUsername: `${this.props.user.username}`
+                        //may need to change
+                        }
+                      
+                        //replyData that will be stored in the DB
+                      const storeReplyData = async (value) => {
+                        try {
+                          const jsonValue = JSON.stringify(value)
+                          await AsyncStorage.setItem('replyData', jsonValue)
+                        } catch (e) {
+                          // saving error
+                        }
+                      }
+                      this.setState({replyData:replyData});
+                      storeReplyData(replyData);
+
+
+
+                         
+                }}
+                    title="Reply"
+                    color="white"
+                    accessibilityLabel="Learn more about this purple button"
+                  />}
+                //pass a reply button as a prop
+
             />
         );
 
@@ -311,7 +376,7 @@ class ClickedPostPage extends React.Component {
                     <KeyboardAvoidingView style={styles.commentFooter}
                     behavior="padding" enabled   
                     keyboardVerticalOffset={100}>
-                        <CommentComponent postID = {this.state.postID}/>
+                        <CommentComponent postID = {this.state.postID} replyTo={this.state.replyTo} replyData={this.state.replyData}/>
                     </KeyboardAvoidingView>
             </View>
             
@@ -456,4 +521,4 @@ const styles = StyleSheet.create({
    }
 })
 
-export default ClickedPostPage;
+export default connect(mapStateToProps, mapDispatchToProps)(ClickedPostPage);

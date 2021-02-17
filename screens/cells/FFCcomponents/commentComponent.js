@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const mapStateToProps = (state) => {
     return {
@@ -28,12 +29,14 @@ class CommentComponent extends React.Component {
             commentorUsername: this.props.user.username,
             postID: this.props.postID,
             posterUID: " ",
+            posterUsername:"",
             commentText: "",
             commentUID: " ",
             commentsCount: 0,
             userCommentsCount: 0,
-            isLoading:false
-
+            isLoading:false,
+            replyTo:this.props.replyTo,
+            replyData: this.props.replyData
         }
         
     }
@@ -41,9 +44,41 @@ class CommentComponent extends React.Component {
     //Do this every time the component mounts
     //----------------------------------------------------------
     componentDidMount() {
+        //Reset replyTo to be blank?
         this.getPosterUID()
 
     }
+    componentDidUpdate(prevProps, prevState){
+        //Gets replyTo from props as it changes
+       if((prevState.replyTo !== this.state.replyTo) || (prevProps.replyTo !== this.props.replyTo)){
+
+        const getReplyTo = async () => {
+            try {
+              const value = await AsyncStorage.getItem('replyTo')
+              if(value !== null) {
+                this.setState({commentText: `@${value}`});
+                // console.log(this.props.replyTo);
+              }
+            } catch(e) {
+              // error reading value
+            }
+          }
+          getReplyTo();
+
+          const getReplyData = async () => {
+            try {
+              const jsonValue = await AsyncStorage.getItem('replyData')
+              this.setState({replyData:jsonValue});
+              console.log(jsonValue);
+              return jsonValue != null ? JSON.parse(jsonValue) : null;
+            } catch(e) {
+              // error reading value
+            }
+          }
+          getReplyData();
+       }
+    }
+
     updateCommentCount = async() => {
         await Firebase.firestore()
         .collection('globalPosts')
@@ -94,7 +129,7 @@ class CommentComponent extends React.Component {
                 // doc.data() will be undefined in this case
                     console.log("No such document!");
             }
-        }.bind(this));
+        }.bind(this)); 
 
 
     }
@@ -120,6 +155,9 @@ class CommentComponent extends React.Component {
             this.setState({isLoading:true});
             Analytics.logEvent("User_Posted_Comment")
 
+            //Replying to a comment
+            
+
 
             //This should take us to the right place, adding a temp uid where we need it
             await Firebase.firestore()
@@ -139,6 +177,35 @@ class CommentComponent extends React.Component {
             .catch(function(error) {
                 console.error("Error storing and retrieving image url: ", error);
             });
+
+            //Reply Data
+            // {"postID":"oKG0MswTDVCN8mH27UL4",
+            // "commentId":"PLZ12W8t4hJ9kdhkHrPU",
+            // "replyingToUsername":"kingfahd",
+            // "replyingToUID":"5XCPW8frRIdoJeXFfV9iPhFiGr43",
+            // "replierAuthorUID":"vei3naWuMqY9qXPo9YuQFOUcqmx1",
+            // "replierUsername":"kal"}
+            if(this.state.replyTo.length > 0){ //isReplying
+                console.log(this.state.replyData);
+                await Firebase.firestore()
+                .collection('comments') // collection comments
+                .doc(this.state.replyData.postID) // Which post?
+                .collection('comments') //Get comments for this post
+                .doc(this.state.replyData.commentID) //Get the specific comment we want to reply to
+                .collection('replies') //Create a collection for said comment
+                .add({ //Add to this collection, and automatically generate iD for this new comment
+                    postID: this.state.replyData.postID,
+                    commentId: this.state.replyData.commentId,
+                    replyingToUsername: this.state.replyData.replyingToUsername,
+                    replyingToUID: this.state.replyData.replyingToUID,
+                    replierAuthorUID: this.state.replyData.replierAuthorUID,
+                    replierUsername:this.state.replyData.replierUsername,
+                    date_created: new Date(),
+                })
+                .catch(function(error) {
+                    console.error("Error storing and retrieving image url: ", error);
+                });
+            }
             
 
             
@@ -152,7 +219,7 @@ class CommentComponent extends React.Component {
             .catch(function(error) {
                 console.error("Error writing document to user posts: ", error);
             });
-
+            
             await Firebase.firestore()
             .collection('users')
             .doc(this.state.commentorUID)
@@ -222,6 +289,10 @@ class CommentComponent extends React.Component {
     }
 
     render() {
+        //check replyTo then set to commentText
+     
+        
+  
         //Allow a user to post a comment. First, take a text input, then submit it with the comment button. 
         if(this.state.isLoading) {
             return (
@@ -238,7 +309,10 @@ class CommentComponent extends React.Component {
                     <TextInput
                         style={styles.inputBox}
                         value={this.state.commentText}
-                        onChangeText={commentText => this.setState({ commentText })}
+                        onChangeText={commentText => {
+                           // console.log("comment from commentComponent: " + this.state.commentText);
+                            this.setState({ commentText })
+                        }}
                         placeholder='Add a comment...'
                         autoCapitalize='none'
                         autoCorrect={false}
