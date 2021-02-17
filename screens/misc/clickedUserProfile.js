@@ -658,9 +658,10 @@ class ClickedUserProfile extends React.Component {
 
     render() {
         const { navigation } = this.props;
-        const renderItem = ({ item }) => (
+        const renderItem = ({ item, index }) => (
     
             <FeedCellClass 
+                key = {item.key}
                 username={item.username} 
                 description={item.description} 
                 image={item.image}

@@ -14,8 +14,8 @@ const initialUserState = {
     isLoggedIn: false
 }
 
-const initalReplyState = {
-    replyToUsername: ''
+const initialReplyState = {
+    reply: ''
 }
 //
 //Reducer
@@ -58,18 +58,18 @@ const userReducer = (state = initialUserState, action) => {
 };
 
 //reply reducer
-const replyReducer = (state = initialReplyState , action) => {
+const replyReducer = (state = initialReplyState, action) => {
     switch(action.type){
         case "setReply": 
             return {
                 ...state,
-                replyToUsername,
+                reply,
                 isReplying:true
             }
         case "clearReply":
             return {
                 ...state,
-                replyToUsername,
+                reply,
                 isReplying: false
             }
         case "getReply":

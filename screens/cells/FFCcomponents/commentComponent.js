@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const mapStateToProps = (state) => {
     return {
@@ -29,13 +30,12 @@ class CommentComponent extends React.Component {
             postID: this.props.postID,
             posterUID: " ",
             posterUsername:"",
-            commentText: this.props.textValue,
+            commentText: "",
             commentUID: " ",
             commentsCount: 0,
             userCommentsCount: 0,
             isLoading:false,
-            replyingTo: "",
-
+            replyTo:this.props.replyTo
         }
         
     }
@@ -43,16 +43,28 @@ class CommentComponent extends React.Component {
     //Do this every time the component mounts
     //----------------------------------------------------------
     componentDidMount() {
+        //Reset replyTo to be blank
+        console.log("commentComponent: mounted");
         this.getPosterUID()
 
     }
-
-    componentDidUpdate(prevProps){
-        if(this.props.textValue !== prevProps.textValue){
-            this.setState({textValue:this.props.textValue});
-        } 
+    componentDidUpdate(prevProps, prevState){
+        //Gets replyTo from props as it changes
+       if((prevState.replyTo !== this.state.replyTo) || (prevProps.replyTo !== this.props.replyTo)){
+        const getData = async () => {
+            try {
+              const value = await AsyncStorage.getItem('replyTo')
+              if(value !== null) {
+                this.setState({commentText: `@${value}`});
+              }
+            } catch(e) {
+              // error reading value
+            }
+          }
+          getData();
+       }
     }
- 
+
     updateCommentCount = async() => {
         await Firebase.firestore()
         .collection('globalPosts')
@@ -103,7 +115,7 @@ class CommentComponent extends React.Component {
                 // doc.data() will be undefined in this case
                     console.log("No such document!");
             }
-        }.bind(this));
+        }.bind(this)); 
 
 
     }
@@ -128,6 +140,9 @@ class CommentComponent extends React.Component {
         else {
             this.setState({isLoading:true});
             Analytics.logEvent("User_Posted_Comment")
+
+            //Replying to a comment
+            
 
 
             //This should take us to the right place, adding a temp uid where we need it
@@ -231,6 +246,10 @@ class CommentComponent extends React.Component {
     }
 
     render() {
+        //check replyTo then set to commentText
+     
+        
+  
         //Allow a user to post a comment. First, take a text input, then submit it with the comment button. 
         if(this.state.isLoading) {
             return (
@@ -248,7 +267,7 @@ class CommentComponent extends React.Component {
                         style={styles.inputBox}
                         value={this.state.commentText}
                         onChangeText={commentText => {
-                            console.log(this.state.commentText);
+                            console.log("comment from commentComponent: " + this.state.commentText);
                             this.setState({ commentText })
                         }}
                         placeholder='Add a comment...'

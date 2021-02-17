@@ -10,6 +10,7 @@ import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class ClickedPostPage extends React.Component { 
     
@@ -32,7 +33,7 @@ class ClickedPostPage extends React.Component {
             commentsArray: [],
             modalOpen: false,
             currentViewsCount: 0,
-            textValue: "" //value for text when replying to a comment
+            replyTo:""
         }
 
         this.firestoreRef = 
@@ -44,6 +45,8 @@ class ClickedPostPage extends React.Component {
     }
 
     async componentDidMount() {
+        //Not replying ot anyone
+       //update replyingTo storage variable here?
 
         Analytics.logEvent("Post_Clicked")
         Analytics.setCurrentScreen("PostDetailsScreen")
@@ -75,8 +78,6 @@ class ClickedPostPage extends React.Component {
     componentWillUnmount(){
         this.unsubscribe();
     }
-    
-    
 
     getCollection = (querySnapshot) => {
             const commentsArray = [];
@@ -280,9 +281,10 @@ class ClickedPostPage extends React.Component {
 
     render() {
         const { navigation } = this.props;
-        const renderItem = ({ item }) => (
+        const renderItem = ({ item}) => (
 
             <CommentCellClass 
+                key = {item.key}
                 commentLikes= {item.commentLikes}
                 commentText = {item.commentText}
                 commentorUID = {item.commentorUID}
@@ -292,10 +294,19 @@ class ClickedPostPage extends React.Component {
                 commentID = {item.key}
                 postID = {this.state.postID}
                 button = {<Button
-                //this.setState({textValue: `@${item.commentorUsername}`})
+            
                     onPress={() =>{
-                        this.setState({textValue:`@${item.commentorUsername}`});
-                         console.log(`Replying:@${item.commentorUsername}`)
+                       //sotre who to reply to
+                       const storeData = async (value) => {
+                        try {
+                          await AsyncStorage.setItem('replyTo', value)
+                        } catch (e) {
+                          // saving error
+                        }
+                      }
+                      storeData(`${item.commentorUsername}`);
+                      this.setState({replyTo:`@${item.commentorUsername}`})
+                         
                 }}
                     title="Reply"
                     color="white"
@@ -324,7 +335,7 @@ class ClickedPostPage extends React.Component {
                     <KeyboardAvoidingView style={styles.commentFooter}
                     behavior="padding" enabled   
                     keyboardVerticalOffset={100}>
-                        <CommentComponent postID = {this.state.postID} textValue={this.state.textValue} />
+                        <CommentComponent postID = {this.state.postID} replyTo={this.state.replyTo}/>
                     </KeyboardAvoidingView>
             </View>
             
