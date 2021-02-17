@@ -43,8 +43,7 @@ class CommentComponent extends React.Component {
     //Do this every time the component mounts
     //----------------------------------------------------------
     componentDidMount() {
-        //Reset replyTo to be blank
-        console.log("commentComponent: mounted");
+        //Reset replyTo to be blank?
         this.getPosterUID()
 
     }
@@ -267,7 +266,7 @@ class CommentComponent extends React.Component {
                         style={styles.inputBox}
                         value={this.state.commentText}
                         onChangeText={commentText => {
-                            console.log("comment from commentComponent: " + this.state.commentText);
+                           // console.log("comment from commentComponent: " + this.state.commentText);
                             this.setState({ commentText })
                         }}
                         placeholder='Add a comment...'

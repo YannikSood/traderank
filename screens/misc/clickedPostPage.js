@@ -294,9 +294,21 @@ class ClickedPostPage extends React.Component {
                 commentID = {item.key}
                 postID = {this.state.postID}
                 button = {<Button
-            
+              
                     onPress={() =>{
                        //sotre who to reply to
+                       let replyData = {
+                        postID: `${this.state.postID}`,
+                        commentId: `${item.key}`, //Id of the comment I am replying to 
+                        replyingToUsername: `${item.commentorUsername}`,
+                        commentorUID: `${item.commentorUID}`, //person who made the comment I am replying to
+                        replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
+                        replierUsername: `fill in`
+                        //may need to change
+            
+
+                    }
+                    console.log(replyData);
                        const storeData = async (value) => {
                         try {
                           await AsyncStorage.setItem('replyTo', value)
