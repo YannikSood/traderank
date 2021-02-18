@@ -49,6 +49,7 @@ class CommentComponent extends React.Component {
 
     }
     componentDidUpdate(prevProps, prevState){
+        this.updateCommentCount();
         //Gets replyTo from props as it changes
        if((prevState.replyTo !== this.state.replyTo) || (prevProps.replyTo !== this.props.replyTo)){
 
@@ -208,7 +209,8 @@ class CommentComponent extends React.Component {
             }
             
 
-            
+            console.log(`commentsCount: ${this.state.commentsCount}`);
+            console.log(`postId: ${this.state.postID}`);
 
             await Firebase.firestore()
             .collection('globalPosts')

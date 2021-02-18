@@ -35,6 +35,9 @@ class CommentDeleteComponent extends React.Component {
     componentDidMount() {
         this.getCurrentCommentsCount()
     }
+    componentDidUpdate(){
+        this.getCurrentCommentsCount();
+    }
 
     getCurrentCommentsCount = async() => {
         await Firebase.firestore()
@@ -46,8 +49,8 @@ class CommentDeleteComponent extends React.Component {
                 this.setState ({
                     currentCommentCount: doc.data().commentsCount
                 })
-                console.log(this.state.currentCommentCount)
-                console.log(this.state.postID)
+                // console.log(this.state.currentCommentCount)
+                // console.log(this.state.postID)
             }
         }.bind(this))
     }
@@ -67,17 +70,16 @@ class CommentDeleteComponent extends React.Component {
 
     //Delete comment itself from comments/postid/comment
     deleteCommentFromCommentsDB = async() => {
-        console.log(this.state.currentCommentCount)
         await Firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')
         .doc(this.state.commentID)
-        .delete()  
+        .delete()
+        .then(() => this.lowerCommentCountGlobalPosts())
         .catch(function(error) {
             console.error("Error writing document to user posts: ", error);
         })
-        .then(() => this.lowerCommentCountGlobalPosts())
         
     }
 
