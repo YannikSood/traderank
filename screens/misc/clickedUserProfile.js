@@ -37,8 +37,8 @@ class ClickedUserProfile extends React.Component {
             posterPostCount: "",
             posterBio: "",
             storage_image_uri: '',
-            posterTwitter: '',
-            posterInstagram: '',
+            posterTwitter: "",
+            posterInstagram: "",
             //Current user information
             currentUserUID: Firebase.auth().currentUser.uid,
             currentUserUsername: "",
@@ -175,6 +175,8 @@ class ClickedUserProfile extends React.Component {
                 console.log("No such document!");
             }
         }.bind(this));
+
+        console.log(this.state.posterTwitter + " twitter")
     }
 
     getCollection = (querySnapshot) => {
@@ -465,6 +467,50 @@ class ClickedUserProfile extends React.Component {
         this.setState({modalOpen: false})
     }
 
+    renderTwitterAndInstagram = () => {
+        if (this.state.posterTwitter == undefined && this.state.posterInstagram == undefined) {
+            return (
+                <View></View>
+            )
+        }
+        else if (this.state.posterTwitter != undefined && this.state.posterInstagram == undefined){
+            return (
+                <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                    <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                    <Text 
+                    style ={{color: '#FFFFFF'}}
+                    onPress={() => Linking.openURL('http://twitter.com/' + this.state.posterTwitter)}> @{this.state.posterTwitter} </Text>
+                </View>
+            )
+        }
+        else if (this.state.posterTwitter == undefined && this.state.posterInstagram != undefined) {
+            return (
+                <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                    <AntDesign name="instagram" size={18} color="#E1306C" />
+                    <Text style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://instagram.com/' + this.state.posterInstagram)}> @{this.state.posterInstagram} </Text>
+                </View>
+            )
+        }
+        else {
+            return (
+                <View>
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                        <Text 
+                        style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.posterTwitter)}> @{this.state.posterTwitter} </Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <AntDesign name="instagram" size={18} color="#E1306C" />
+                        <Text style ={{color: '#FFFFFF'}}
+                            onPress={() => Linking.openURL('http://instagram.com/' + this.state.posterInstagram)}> @{this.state.posterInstagram} </Text>
+                    </View>
+                </View>
+            )
+        }
+    }
     renderListHeader = () => {
         if (this.state.userPostsArray.length === 0) {
             return (
@@ -542,18 +588,7 @@ class ClickedUserProfile extends React.Component {
 
                     </View>
 
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-                        <Text 
-                        style ={{color: '#FFFFFF'}}
-                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.posterTwitter)}> @{this.state.posterTwitter} </Text>
-                    </View>
-
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <AntDesign name="instagram" size={18} color="#E1306C" />
-                        <Text style ={{color: '#FFFFFF'}}
-                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.posterInstagram)}> @{this.state.posterInstagram} </Text>
-                    </View>
+                    { this.renderTwitterAndInstagram() }
 
                     {/* { this.renderFollowsYou() } */}
                     { this.renderFollowButton() }
@@ -635,18 +670,7 @@ class ClickedUserProfile extends React.Component {
 
                     </View>
 
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-                        <Text 
-                        style ={{color: '#FFFFFF'}}
-                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.posterTwitter)}> @{this.state.posterTwitter} </Text>
-                    </View>
-
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <AntDesign name="instagram" size={18} color="#E1306C" />
-                        <Text style ={{color: '#FFFFFF'}}
-                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.posterInstagram)}> @{this.state.posterInstagram} </Text>
-                    </View>
+                    { this.renderTwitterAndInstagram() }
 
                     {/* { this.renderFollowsYou() } */}
                     { this.renderFollowButton() }

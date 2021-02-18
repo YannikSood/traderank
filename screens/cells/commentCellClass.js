@@ -46,7 +46,7 @@ class CommentCellClass extends React.Component{
             return (
                 <View style={ styles.commentFeedCell }>
                     
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
                                 key={this.state.commentID}
                                 posterUID={this.state.commentorUID} 
@@ -79,7 +79,7 @@ class CommentCellClass extends React.Component{
                         </View>
 
 
-                    <View style = {styles.lineStyle} />
+                    {/* <View style = {styles.lineStyle} /> */}
                     
                     
                 </View>
@@ -91,7 +91,7 @@ class CommentCellClass extends React.Component{
 
                 <View  style={ styles.commentFeedCell }>
                     
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
                                 key={this.state.commentID}
                                 posterUID={this.state.commentorUID} 
@@ -123,7 +123,7 @@ class CommentCellClass extends React.Component{
                         </View>
 
 
-                    <View style = {styles.lineStyle} />
+                    {/* <View style = {styles.lineStyle} /> */}
                     
                     
                 </View>
@@ -142,6 +142,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#121212',
         flex: 1,
         width: Dimensions.get('window').width,
+        marginTop: 5,
+        borderBottomWidth: 1,
+        borderRadius: 15,
         
     },
     commentTextColor: {

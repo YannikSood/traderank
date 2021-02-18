@@ -49,7 +49,7 @@ class GainTrade extends React.Component {
         return (
 
             <KeyboardAvoidingView 
-                style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212'}} 
+                style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000'}} 
                 behavior="padding" enabled   
                 keyboardVerticalOffset={200}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -74,7 +74,7 @@ class GainTrade extends React.Component {
                             </Modal>
 
 
-                            <TouchableOpacity   
+                            {/* <TouchableOpacity   
                                 onPress={() => this.openImageModal()} >
                                     <View style={styles.thumbnailContainer}>
                                         <Image
@@ -82,11 +82,11 @@ class GainTrade extends React.Component {
                                             style={styles.thumbnail}
                                         />
                                     </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
                             <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                                <Text style={styles.labelText}>is this a stock, option, or crypto trade?</Text>
+                                <Text style={styles.labelText}>💡what did you trade?</Text>
 
                                 <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 
@@ -96,6 +96,7 @@ class GainTrade extends React.Component {
                                         style={styles.twoPickers} itemStyle={styles.twoPickerItems}
                                         >
                                         <Picker.Item label="stocks" value="stocks" />
+                                        <Picker.Item label="spacs" value="spacs" />
                                         <Picker.Item label="options" value="options" />
                                         <Picker.Item label="cryptos" value="cryptos" />
                                     </Picker>
@@ -108,7 +109,7 @@ class GainTrade extends React.Component {
 
                             <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                                <Text style={styles.labelText}>type the ticker, stock or crypto</Text>
+                                <Text style={styles.labelText}>type the ticker</Text>
 
                             <View style={{flexDirection: 'row', justifyContent: 'center' }}>
 

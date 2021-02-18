@@ -35,7 +35,9 @@ class EditProfile extends React.Component {
             oldProfilePic: "oldProfilePic", //was getting warning that this (source:uri) cannot be blank
             isLoading: false,
             twitter: "",
+            // oldTwitter: "Enter Twitter",
             instagram: "",
+            // oldInstagram: "Enter Instagram",
 
         }
         
@@ -189,13 +191,13 @@ class EditProfile extends React.Component {
     };
     //Function to update all profile info at once excpet image
     saveChanges = () => {
-        if(this.state.newBio !== ""){
+        if(this.state.newBio !== " "){
             this.changeBio();
         }
-        if(this.state.twitter !== ""){
+        if(this.state.twitter !== " "){
             this.changeTwitter();
         }
-        if(this.state.instagram !== ""){
+        if(this.state.instagram !== " "){
             this.changeInstagram();
         }
     }
@@ -208,153 +210,77 @@ class EditProfile extends React.Component {
               </View>
             )
         }    
-        if (this.state.profilePic == null) { //while I have not selected a new profile photo to change? 
-            return (
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.container}>
-    
-                        <Image
-                            source={{ uri: this.state.oldProfilePic }}
-                            style={styles.thumbnail}
+        return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+
+                    <Image
+                        source={{ uri: this.state.oldProfilePic }}
+                        style={styles.thumbnail}
+                    />
+
+                    <TouchableOpacity 
+                    onPress={this.openImagePickerAsync} 
+                    style={styles.button}>
+                    <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>change profile picture</Text>
+                    </TouchableOpacity>
+
+                    <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 5}}>bio   </Text>  
+
+                        <TextInput
+                            style={styles.inputBox}
+                            value={this.state.newBio}
+                            onChangeText={newBio => this.setState({ newBio })}
+                            placeholder={this.state.oldBio}
+                            multiline= {true}
+                            autoCapitalize='none'
+                            placeholderTextColor="#696969" 
                         />
-
-                        <TouchableOpacity 
-                        onPress={this.openImagePickerAsync} 
-                        style={styles.button}>
-                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>change profile picture</Text>
-                        </TouchableOpacity>
-
-                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 5}}>bio   </Text>  
-
-                            <TextInput
-                                style={styles.inputBox}
-                                value={this.state.newBio}
-                                onChangeText={newBio => this.setState({ newBio })}
-                                placeholder={this.state.oldBio}
-                                multiline= {true}
-                                autoCapitalize='none'
-                                placeholderTextColor="#696969" 
-                            />
-                        </View>
-                        
-
-                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>twitter   </Text>    
-
-                            <TextInput
-                                style={styles.socialInputBox}
-                                value={this.state.twitter}
-                                onChangeText={twitter => this.setState({ twitter })}
-                                placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
-                                autoCapitalize='none'
-                                placeholderTextColor="#696969" 
-                            />
-                        </View>
+                    </View>
                     
 
+                    <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>twitter   </Text>    
 
-                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>instagram   </Text>   
-
-                            <TextInput
-                                style={styles.socialInputBox}
-                                value={this.state.instagram}
-                                onChangeText={instagram => this.setState({ instagram })}
-                                placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
-                                autoCapitalize='none'
-                                placeholderTextColor="#696969" 
-                            />
-                        </View>
-                    
-    
-
-                        <TouchableOpacity 
-                            onPress={() => { this.saveChanges() }}
-                            style={styles.button}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>save changes</Text>    
-                        </TouchableOpacity>
-                        
-
-                        <KeyboardSpacer />
-                    </View>
-                </TouchableWithoutFeedback>
-            )
-        }
-        else {
-            //TODO: Exaplin this chunk. Why is change bio code here?
-            return (
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.container}>
-    
-                        <Image
-                            source={{ uri: this.state.oldProfilePic }}
-                            style={styles.thumbnail}
+                        <TextInput
+                            style={styles.socialInputBox}
+                            value={this.state.twitter}
+                            onChangeText={twitter => this.setState({ twitter })}
+                            placeholder={this.state.twitter === null ? "Enter Twitter username" : this.state.twitter}
+                            autoCapitalize='none'
+                            placeholderTextColor="#696969" 
                         />
-
-                        <TouchableOpacity 
-                        onPress={this.openImagePickerAsync} 
-                        style={styles.button}>
-                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>change profile picture</Text>
-                        </TouchableOpacity>
-
-                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 5}}>bio   </Text>  
-
-                            <TextInput
-                                style={styles.inputBox}
-                                value={this.state.newBio}
-                                onChangeText={newBio => this.setState({ newBio })}
-                                placeholder={this.state.oldBio}
-                                multiline= {true}
-                                autoCapitalize='none'
-                                placeholderTextColor="#696969" 
-                            />
-                        </View>
-                        
-
-                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>twitter   </Text>    
-
-                            <TextInput
-                                style={styles.socialInputBox}
-                                value={this.state.twitter}
-                                onChangeText={twitter => this.setState({ twitter })}
-                                placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
-                                autoCapitalize='none'
-                                placeholderTextColor="#696969" 
-                            />
-                        </View>
-
-
-
-                        <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>instagram   </Text>   
-
-                            <TextInput
-                                style={styles.socialInputBox}
-                                value={this.state.instagram}
-                                onChangeText={instagram => this.setState({ instagram })}
-                                placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
-                                autoCapitalize='none'
-                                placeholderTextColor="#696969" 
-                            />
-                        </View>
-
-
-
-                        <TouchableOpacity 
-                            onPress={() => { this.saveChanges() }}
-                            style={styles.button}>
-                            <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>save changes</Text>    
-                        </TouchableOpacity>
-                        
-
-                        <KeyboardSpacer />
                     </View>
-                </TouchableWithoutFeedback>
-            )
-        }
+                
+
+
+                    <View style = {{flexDirection: 'row', justifyContent: "space-between", padding: 20}}>
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7}}>instagram   </Text>   
+
+                        <TextInput
+                            style={styles.socialInputBox}
+                            value={this.state.instagram}
+                            onChangeText={instagram => this.setState({ instagram })}
+                            placeholder={this.state.instagram === null ? "Enter Instagram username" : this.state.instagram}
+                            autoCapitalize='none'
+                            placeholderTextColor="#696969" 
+                        />
+                    </View>
+                
+
+
+                    <TouchableOpacity 
+                        onPress={() => { this.saveChanges() }}
+                        style={styles.button}>
+                        <Text style={{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18}}>save changes</Text>    
+                    </TouchableOpacity>
+                    
+
+                    <KeyboardSpacer />
+                </View>
+            </TouchableWithoutFeedback>
+        )
     }
 }
 

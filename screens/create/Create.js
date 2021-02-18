@@ -26,8 +26,8 @@ class Create extends React.Component {
             <View style={styles.container}>
                 {/* <Text style={styles.headerText}>get ranked</Text> */}
 
-                <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <View style = {{flexDirection: 'column', paddingLeft: 25}}>
+                {/* <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}> */}
+                    <View style = {{flexDirection: 'column'}}>
                         <Text style={styles.subheaderText}>holding?</Text>
 
                         <TouchableOpacity 
@@ -52,7 +52,7 @@ class Create extends React.Component {
                         </TouchableOpacity>
                     </View>
 
-                    <View style = {{flexDirection: 'column', paddingRight: 25}}>
+                    {/* <View style = {{flexDirection: 'column', paddingRight: 25}}>
                         <Text style={styles.subheaderText}>memes [soon]</Text>
 
                         <TouchableOpacity 
@@ -76,9 +76,9 @@ class Create extends React.Component {
                             style={styles.lossButton}>
                                 <Text style={styles.buttonText}>post losses 🤡</Text>
                         </TouchableOpacity> */}
-                    </View>
+                    {/* </View> */} 
 
-                </View>
+                {/* </View> */}
                 
 
             </View>
@@ -90,7 +90,7 @@ class Create extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // alignItems: 'center',
+        alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#000000'
     },

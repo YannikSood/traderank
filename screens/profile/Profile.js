@@ -228,6 +228,51 @@ class Profile extends React.Component {
         this.setState({modalOpen: false})
     }
 
+    renderTwitterAndInstagram = () => {
+        if (this.state.twitter == undefined && this.state.instagram == undefined) {
+            return (
+                <View></View>
+            )
+        }
+        else if (this.state.twitter != undefined && this.state.instagram == undefined){
+            return (
+                <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                    <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                    <Text 
+                    style ={{color: '#FFFFFF'}}
+                    onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
+                </View>
+            )
+        }
+        else if (this.state.twitter == undefined && this.state.instagram != undefined) {
+            return (
+                <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                    <AntDesign name="instagram" size={18} color="#E1306C" />
+                    <Text style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://instagram.com/' + this.state.instagram)}> @{this.state.instagram} </Text>
+                </View>
+            )
+        }
+        else {
+            return (
+                <View>
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+                        <Text 
+                        style ={{color: '#FFFFFF'}}
+                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
+                        <AntDesign name="instagram" size={18} color="#E1306C" />
+                        <Text style ={{color: '#FFFFFF'}}
+                            onPress={() => Linking.openURL('http://instagram.com/' + this.state.instagram)}> @{this.state.instagram} </Text>
+                    </View>
+                </View>
+            )
+        }
+    }
+
 
     renderListHeader = () => {
         if (this.state.userPostsArray.length === 0) {
@@ -287,21 +332,8 @@ class Profile extends React.Component {
                         </Text>
     
                     </View>
-
-
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-                        <Text 
-                        style ={{color: '#FFFFFF'}}
-                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
-                    </View>
-
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <AntDesign name="instagram" size={18} color="#E1306C" />
-                        <Text style ={{color: '#FFFFFF'}}
-                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.twitter)}> @{this.state.instagram} </Text>
-                    </View>
                     
+                    {this.renderTwitterAndInstagram()}
     
                     <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
     
@@ -388,21 +420,8 @@ class Profile extends React.Component {
                         </Text>
     
                     </View>
-
-
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-                        <Text 
-                        style ={{color: '#FFFFFF'}}
-                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
-                    </View>
-
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <AntDesign name="instagram" size={18} color="#E1306C" />
-                        <Text style ={{color: '#FFFFFF'}}
-                         onPress={() => Linking.openURL('http://instagram.com/' + this.state.twitter)}> @{this.state.instagram} </Text>
-                    </View>
                     
+                    {this.renderTwitterAndInstagram()}
     
                     <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
     

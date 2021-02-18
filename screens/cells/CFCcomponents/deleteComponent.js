@@ -80,7 +80,6 @@ class CommentDeleteComponent extends React.Component {
         .catch(function(error) {
             console.error("Error writing document to user posts: ", error);
         })
-
         
     }
 

@@ -140,7 +140,9 @@ class GlobalScreen extends React.Component {
         .limit(5)
         .get()
         .then(function(querySnapshot) {
+
             const newPostsArray = []
+            
             querySnapshot.forEach((res) => {
                 const { 
                     username,

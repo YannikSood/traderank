@@ -428,7 +428,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                     messages.push({
                         "to": doc.data().token,
                         "sound": "default",
-                        "title":"you got a comment like!",
+                        "title":"your comment got a like!",
                         "body": data.senderUsername + " liked your comment!"
                     });
     
