@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
+import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Button } from 'react-native'
 import Firebase from '../../firebase'
 import CommentUserComponent from './CFCcomponents/userCommentComponent'
 import CommentLikeComponent from './CFCcomponents/likeComponent'
@@ -75,6 +75,7 @@ class CommentCellClass extends React.Component{
                                 commentID={this.state.commentID}
                                 navigation={this.props.navigation} 
                             />
+                                {this.props.button} 
                         </View>
 
 
@@ -117,7 +118,7 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {/* {this.props.button}  */}
+                            {this.props.button} 
 
                         </View>
 
