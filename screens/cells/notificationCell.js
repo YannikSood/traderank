@@ -139,7 +139,7 @@ class NotificationCellClass extends React.Component{
                                 </View>
                             </View>
 
-                        <View style = {styles.lineStyle} />
+                        {/* <View style = {styles.lineStyle} /> */}
                 </TouchableOpacity>
             )
         }
@@ -163,8 +163,8 @@ class NotificationCellClass extends React.Component{
 
                         </View>
                     </View>
-
-                    <View style = {styles.lineStyle} />
+{/* 
+                    <View style = {styles.lineStyle} /> */}
                 </View>
                     
             )
@@ -191,7 +191,7 @@ class NotificationCellClass extends React.Component{
                             </View>
                         </View>
 
-                        <View style = {styles.lineStyle} />
+                        {/* <View style = {styles.lineStyle} /> */}
                 </TouchableOpacity>
             )
         }
@@ -216,7 +216,7 @@ class NotificationCellClass extends React.Component{
                             </View>
                         </View>
 
-                        <View style = {styles.lineStyle} />
+                        {/* <View style = {styles.lineStyle} /> */}
                 </TouchableOpacity>
             )
         }
@@ -241,7 +241,7 @@ class NotificationCellClass extends React.Component{
                             </View>
                         </View>
 
-                        <View style = {styles.lineStyle} />
+                        {/* <View style = {styles.lineStyle} /> */}
                 </TouchableOpacity>
             )
         }
@@ -272,10 +272,13 @@ const styles = StyleSheet.create({
     
     feedCell: {
         // backgroundColor: '#3F3F41',
-        padding: 10,
-        color: '#FFFFFF',
+        paddingTop: 10,
+        backgroundColor: '#121212',
         flex: 1,
         width: Dimensions.get('window').width,
+        marginTop: 5,
+        borderBottomWidth: 1,
+        borderRadius: 15,
         
     },
     commentTextColor: {
