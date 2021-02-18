@@ -67,7 +67,7 @@ class CommentDeleteComponent extends React.Component {
 
     //Delete comment itself from comments/postid/comment
     deleteCommentFromCommentsDB = async() => {
-        console.log(this.state.globalPostCommentsCount)
+        console.log(this.state.currentCommentCount)
         await Firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
@@ -78,7 +78,6 @@ class CommentDeleteComponent extends React.Component {
             console.error("Error writing document to user posts: ", error);
         })
         .then(() => this.lowerCommentCountGlobalPosts())
-
         
     }
 

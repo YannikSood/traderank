@@ -35,7 +35,9 @@ class EditProfile extends React.Component {
             oldProfilePic: "oldProfilePic", //was getting warning that this (source:uri) cannot be blank
             isLoading: false,
             twitter: "",
+            // oldTwitter: "Enter Twitter",
             instagram: "",
+            // oldInstagram: "Enter Instagram",
 
         }
         
@@ -189,13 +191,13 @@ class EditProfile extends React.Component {
     };
     //Function to update all profile info at once excpet image
     saveChanges = () => {
-        if(this.state.newBio !== ""){
+        if(this.state.newBio !== " "){
             this.changeBio();
         }
-        if(this.state.twitter !== ""){
+        if(this.state.twitter !== " "){
             this.changeTwitter();
         }
-        if(this.state.instagram !== ""){
+        if(this.state.instagram !== " "){
             this.changeInstagram();
         }
     }
@@ -246,7 +248,7 @@ class EditProfile extends React.Component {
                                 style={styles.socialInputBox}
                                 value={this.state.twitter}
                                 onChangeText={twitter => this.setState({ twitter })}
-                                placeholder={this.state.twitter === undefined ? "Enter Twitter username" : this.state.twitter}
+                                placeholder={this.state.twitter === null ? "Enter Twitter username" : this.state.twitter}
                                 autoCapitalize='none'
                                 placeholderTextColor="#696969" 
                             />
@@ -261,7 +263,7 @@ class EditProfile extends React.Component {
                                 style={styles.socialInputBox}
                                 value={this.state.instagram}
                                 onChangeText={instagram => this.setState({ instagram })}
-                                placeholder={this.state.instagram === undefined ? "Enter Instagram username" : this.state.instagram}
+                                placeholder={this.state.instagram === null ? "Enter Instagram username" : this.state.instagram}
                                 autoCapitalize='none'
                                 placeholderTextColor="#696969" 
                             />
