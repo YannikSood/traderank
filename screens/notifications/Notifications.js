@@ -226,7 +226,7 @@ class Notification extends React.Component {
                 <FlatList
                     data={this.state.notificationsArray}
                     renderItem={renderItem}
-                    keyExtractor={item => item.key}
+                    keyExtractor={(item, index) => String(index)}
                     contentContainerStyle={{ paddingBottom: 50 }}
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
