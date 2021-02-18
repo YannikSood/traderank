@@ -229,12 +229,12 @@ class Profile extends React.Component {
     }
 
     renderTwitterAndInstagram = () => {
-        if (this.state.twitter == "" && this.state.instagram == "") {
+        if (this.state.twitter == undefined && this.state.instagram == undefined) {
             return (
                 <View></View>
             )
         }
-        else if (this.state.twitter != "" && this.state.instagram == ""){
+        else if (this.state.twitter != undefined && this.state.instagram == undefined){
             return (
                 <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
                     <FontAwesome name="twitter" size={19} color="#1DA1F2" />
@@ -244,7 +244,7 @@ class Profile extends React.Component {
                 </View>
             )
         }
-        else if (this.state.twitter == "" && this.state.instagram != "") {
+        else if (this.state.twitter == undefined && this.state.instagram != undefined) {
             return (
                 <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
                     <AntDesign name="instagram" size={18} color="#E1306C" />
