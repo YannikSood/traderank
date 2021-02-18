@@ -50,7 +50,7 @@ class LossTrade extends React.Component {
         return (
 
             <KeyboardAvoidingView 
-                style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', }} 
+                style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000'}} 
                 behavior="padding" enabled   
                 keyboardVerticalOffset={200}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
