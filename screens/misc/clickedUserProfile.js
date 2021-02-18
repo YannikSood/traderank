@@ -37,8 +37,8 @@ class ClickedUserProfile extends React.Component {
             posterPostCount: "",
             posterBio: "",
             storage_image_uri: '',
-            posterTwitter: '',
-            posterInstagram: '',
+            posterTwitter: "",
+            posterInstagram: "",
             //Current user information
             currentUserUID: Firebase.auth().currentUser.uid,
             currentUserUsername: "",
@@ -175,6 +175,8 @@ class ClickedUserProfile extends React.Component {
                 console.log("No such document!");
             }
         }.bind(this));
+
+        console.log(this.state.posterTwitter + " twitter")
     }
 
     getCollection = (querySnapshot) => {
@@ -466,12 +468,12 @@ class ClickedUserProfile extends React.Component {
     }
 
     renderTwitterAndInstagram = () => {
-        if (this.state.posterTwitter == "" && this.state.posterInstagram == "") {
+        if (this.state.posterTwitter == undefined && this.state.posterInstagram == undefined) {
             return (
                 <View></View>
             )
         }
-        else if (this.state.posterTwitter != "" && this.state.posterInstagram == ""){
+        else if (this.state.posterTwitter != undefined && this.state.posterInstagram == undefined){
             return (
                 <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
                     <FontAwesome name="twitter" size={19} color="#1DA1F2" />
@@ -481,7 +483,7 @@ class ClickedUserProfile extends React.Component {
                 </View>
             )
         }
-        else if (this.state.posterTwitter == "" && this.state.posterInstagram != "") {
+        else if (this.state.posterTwitter == undefined && this.state.posterInstagram != undefined) {
             return (
                 <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
                     <AntDesign name="instagram" size={18} color="#E1306C" />

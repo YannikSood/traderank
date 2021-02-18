@@ -64,7 +64,7 @@ class LossTradeConfirm extends React.Component {
         //now we have the screenshot stored baby
 
         Analytics.logEvent("Loss_Posted")
-        
+
         await Firebase.firestore()
         .collection('globalPosts')
         .add({
@@ -200,7 +200,7 @@ class LossTradeConfirm extends React.Component {
         return (
 
             <KeyboardAvoidingView 
-            style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', }} 
+            style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000'}} 
             behavior="padding" enabled   
             keyboardVerticalOffset={100}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -225,7 +225,7 @@ class LossTradeConfirm extends React.Component {
                         </Modal>
 
                     
-                    <Text style = {styles.textContainer}>
+                    {/* <Text style = {styles.textContainer}>
                         <Text style = {styles.boldText}>{this.state.username}</Text>
                         <Text style = {styles.labelText}> traded </Text> 
                         <Text style = {styles.boldText}>${this.state.ticker} </Text>
@@ -247,7 +247,7 @@ class LossTradeConfirm extends React.Component {
                                     style={styles.thumbnail}
                                 />
                             </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
 
                     <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
