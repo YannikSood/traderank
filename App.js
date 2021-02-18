@@ -667,7 +667,7 @@ function HomeTopTabs() {
       <TopTab.Navigator
         initialRouteName="GlobalScreen"
         tabBarOptions={{
-          activeTintColor:"#121212",
+          activeTintColor:"#FFFFFF",
           inactiveTintColor:"#696969",
           style: {
             backgroundColor: '#000000'
@@ -678,7 +678,7 @@ function HomeTopTabs() {
             name="GlobalScreen" 
             component={globalFeedStackView} 
               options={{
-                tabBarLabel: '🌍'
+                tabBarLabel: 'GLOBAL 🌍'
               }}
           />
 
@@ -686,7 +686,7 @@ function HomeTopTabs() {
             name="FriendScreen" 
             component={friendFeedStackView} 
             options={{
-              tabBarLabel: '👥'
+              tabBarLabel: 'FOLLOWING 👥'
             }}
           />
 
@@ -704,9 +704,9 @@ function LBTopTabs() {
         initialRouteName="LBGains"
         tabBarOptions={{
           activeTintColor:"#FFFFFF",
-          inactiveTintColor:"#FFFFFF",
+          inactiveTintColor:"#696969",
           style: {
-            backgroundColor: '#121212'
+            backgroundColor: '#000000'
             
           }
         }}>
