@@ -48,6 +48,7 @@ class CommentCellClass extends React.Component{
                     
                         <View style={{flexDirection: 'row'}}>
                             <CommentUserComponent  
+                                key={this.state.commentID}
                                 posterUID={this.state.commentorUID} 
                                 navigation={this.props.navigation} 
                             />
@@ -91,6 +92,7 @@ class CommentCellClass extends React.Component{
                     
                         <View style={{flexDirection: 'row'}}>
                             <CommentUserComponent  
+                                key={this.state.commentID}
                                 posterUID={this.state.commentorUID} 
                                 navigation={this.props.navigation} 
                             />

@@ -693,7 +693,7 @@ class ClickedUserProfile extends React.Component {
                 <FlatList
                     data={this.state.userPostsArray}
                     renderItem={renderItem}
-                    keyExtractor={item => item.key}
+                    keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
                     ListHeaderComponent={this.renderListHeader}
                     contentContainerStyle={{ paddingBottom: 50 }}
                     showsHorizontalScrollIndicator={false}

@@ -364,7 +364,7 @@ class ClickedPostPage extends React.Component {
                     <FlatList
                         data={this.state.commentsArray}
                         renderItem={renderItem}
-                        keyExtractor={item => item.key}
+                        keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
                         ListHeaderComponent={this.renderListHeader}
                         contentContainerStyle={{ paddingBottom: 100 }}
                         showsHorizontalScrollIndicator={false}
