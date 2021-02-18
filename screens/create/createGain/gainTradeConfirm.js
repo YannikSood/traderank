@@ -226,7 +226,7 @@ class GainTradeConfirm extends React.Component {
                         </Modal>
 
                     
-                    <Text style = {styles.textContainer}>
+                    {/* <Text style = {styles.textContainer}>
                         <Text style = {styles.boldText}>{this.state.username}</Text>
                         <Text style = {styles.labelText}> traded </Text> 
                         <Text style = {styles.boldText}>${this.state.ticker} </Text>
@@ -248,7 +248,7 @@ class GainTradeConfirm extends React.Component {
                                     style={styles.thumbnail}
                                 />
                             </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
 
                     <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>

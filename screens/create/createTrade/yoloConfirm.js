@@ -235,7 +235,7 @@ class YoloConfirm extends React.Component {
                         </Modal>
 
                     
-                    <Text style = {styles.textContainer}>
+                    {/* <Text style = {styles.textContainer}>
                         <Text style = {styles.boldText}>{this.state.username}'s</Text>
                         <Text style = {styles.labelText}> trade on </Text> 
                         <Text style = {styles.boldText}>${this.state.ticker} </Text>
@@ -255,7 +255,7 @@ class YoloConfirm extends React.Component {
                                     style={styles.thumbnail}
                                 />
                             </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
 
                     <View style={{flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
