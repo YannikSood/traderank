@@ -9,16 +9,7 @@ class Notification extends React.Component {
     constructor(props) {
         super(props);
 
-        // var today = new Date()
-        // console.log(today)
-        // var dd = String(today.getDate()).padStart(2, '0');
-        // var mm = String(today.getMonth() + 1).padStart(2, '0');
-        // var yyyy = today.getFullYear();
-        // today = mm + dd + yyyy;
-
-        // console.log(today)
-
-        this.firestoreRef = Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc").limit(50)
+        // this.firestoreRef = Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc").limit(5)
 
         this.state = {
           isLoading: true,
@@ -28,18 +19,18 @@ class Notification extends React.Component {
     }
 
     componentDidMount() {
-        this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        this.getCollection()
         Analytics.logEvent("Notifications_Clicked")
         Analytics.setCurrentScreen("NotificationScreen")
     }
     
-    componentWillUnmount(){
-        this.unsubscribe();
-    }
+    // componentDidUpdate() {
+    //     this.getCollection()
+    // }
 
     _refresh = () => {
         this.setState({ isLoading: true });
-        this.firestoreRef.onSnapshot(this.getCollection);
+        this.getCollection()
     };
 
     onShare = async () => {
@@ -76,28 +67,78 @@ class Notification extends React.Component {
     // percent_gain_loss: this.state.percent_gain_loss,
     // security: this.state.security,
     // postID: this.state.postID
-    getCollection = (querySnapshot) => {
+    getCollection = async() => {
 
             Firebase.firestore()
             .collection('users')
             .doc(Firebase.auth().currentUser.uid)
-            .set({hasNotifications: false}, {merge: true})
+            .set({
+                hasNotifications: false
+            }, {merge: true})
 
             const notificationsArray = [];
 
-            querySnapshot.forEach((res) => {
-            const { 
-                type,
-                senderUID,
-                recieverUID,
-                postID,
-                read,
-                recieverToken,
-                date_created,
-                } = res.data();
 
-                notificationsArray.push({
-                    key: res.id,
+            await Firebase.firestore()
+            .collection('users')
+            .doc(Firebase.auth().currentUser.uid)
+            .collection('notifications')
+            .orderBy("date_created", "desc")
+            .limit(10)
+            .get()
+            .then(function(querySnapshot) {
+
+                querySnapshot.forEach((res) => {
+                    const { 
+                        type,
+                        senderUID,
+                        recieverUID,
+                        postID,
+                        read,
+                        recieverToken,
+                        date_created,
+                        } = res.data();
+
+                        notificationsArray.push({
+                            key: res.id,
+                            type,
+                            senderUID,
+                            recieverUID,
+                            postID,
+                            read,
+                            recieverToken,
+                            date_created,
+                        });
+
+                });
+
+                this.setState({
+                    notificationsArray,
+                    isLoading: false,   
+                });
+
+            }.bind(this))
+
+    }
+
+    getMore = async() => {
+        const lastItemIndex = this.state.notificationsArray.length - 1
+
+        await Firebase
+        .firestore()
+        .collection('users')
+        .doc(Firebase.auth().currentUser.uid)
+        .collection('notifications')
+        .orderBy("date_created", "desc")
+        .startAfter(this.state.notificationsArray[lastItemIndex].date_created)
+        .limit(10)
+        .get()
+        .then(function(querySnapshot) {
+
+            const newNotificationsArray = []
+
+            querySnapshot.forEach((res) => {
+                const { 
                     type,
                     senderUID,
                     recieverUID,
@@ -105,15 +146,27 @@ class Notification extends React.Component {
                     read,
                     recieverToken,
                     date_created,
+                    } = res.data();
+
+                    newNotificationsArray.push({
+                        key: res.id,
+                        type,
+                        senderUID,
+                        recieverUID,
+                        postID,
+                        read,
+                        recieverToken,
+                        date_created,
+                    });
                 });
 
-            });
-
+                
             this.setState({
-                notificationsArray,
-                isLoading: false,   
+                notificationsArray: [...new Set(this.state.notificationsArray.concat(newNotificationsArray))]
             });
 
+
+        }.bind(this))
     }
 
     render() {
@@ -143,12 +196,6 @@ class Notification extends React.Component {
             return (
                 <View style={styles.container}>
                     <Text style = {styles.buttonText}>no notifications yet! do something:</Text>
-                    
-                    <TouchableOpacity 
-                        style = {styles.button} 
-                        onPress={() => this.props.navigation.navigate('Chat')} >
-                        <Text style = {styles.buttonText}>start chatting</Text>
-                    </TouchableOpacity>
 
                     <TouchableOpacity 
                         style = {styles.button} 
@@ -185,6 +232,7 @@ class Notification extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
+                    onEndReached={() => {this.getMore()}}
                 />
               </View>   
         )
