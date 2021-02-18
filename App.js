@@ -327,7 +327,7 @@ function Tabs() {
 
       <Tab.Screen 
         name="Home" 
-        component={globalFeedStackView}
+        component={HomeTopTabs}
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
@@ -667,10 +667,10 @@ function HomeTopTabs() {
       <TopTab.Navigator
         initialRouteName="GlobalScreen"
         tabBarOptions={{
-          activeTintColor:"#FFFFFF",
+          activeTintColor:"#121212",
           inactiveTintColor:"#696969",
           style: {
-            backgroundColor: '#121212'
+            backgroundColor: '#000000'
           }
         }}>
 
@@ -682,13 +682,13 @@ function HomeTopTabs() {
               }}
           />
 
-          {/* <TopTab.Screen 
+          <TopTab.Screen 
             name="FriendScreen" 
             component={friendFeedStackView} 
             options={{
               tabBarLabel: '👥'
             }}
-          /> */}
+          />
 
         </TopTab.Navigator>
       </View>
