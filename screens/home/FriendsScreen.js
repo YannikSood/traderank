@@ -210,12 +210,12 @@ class FriendsScreen extends React.Component {
 
                 })
 
-                newPostsArray.sort(function(a,b) { 
-                    return b.date_created.toDate() - a.date_created.toDate()
-                })
+                // newPostsArray.sort(function(a,b) { 
+                //     return b.date_created.toDate() - a.date_created.toDate()
+                // })
 
                 this.setState({
-                    followingPosts: this.state.followingPosts.concat(newPostsArray),
+                    followingPosts: [...new Set(this.state.followingPosts.concat(newPostsArray))],
                     isLoading: false
                 })
 
@@ -286,7 +286,7 @@ class FriendsScreen extends React.Component {
                     showsVerticalScrollIndicator={false}
                     onRefresh={this._refresh}
                     refreshing={this.state.isLoading}
-                    onEndReachedThreshold={0.5}
+                    // onEndReachedThreshold={0.5}
                     onEndReached={() => {this.getMore()}}
                 />
             </View>   
