@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Button } from 'react-native'
+import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, Button } from 'react-native'
 import Firebase from '../../firebase'
 import CommentUserComponent from './CFCcomponents/userCommentComponent'
 import CommentLikeComponent from './CFCcomponents/likeComponent'
 import CommentDeleteComponent from './CFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
 import { Ionicons } from '@expo/vector-icons';
+import CommentReplyCellClass from './commentReplyCell'
 
 
 class CommentCellClass extends React.Component{ 
@@ -25,7 +26,8 @@ class CommentCellClass extends React.Component{
             currentUser: Firebase.auth().currentUser.uid,
             showDeleteComponent: false,
             button: this.props.button,
-            replyCount: this.props.replyCount
+            replyCount: this.props.replyCount,
+            repliesArray: []
             //count of replies 
         }
     }
@@ -34,6 +36,78 @@ class CommentCellClass extends React.Component{
         if (this.state.commentorUID == Firebase.auth().currentUser.uid) {
             this.setState({ showDeleteComponent: true })
         }
+    }
+
+    getFirstFiveReplies = async() => {
+        repliesArray = []
+        await Firebase.firestore()
+        .collection('comments') // collection comments
+        .doc(this.state.postID) // Which post?
+        .collection('comments') //Get comments for this post
+        .doc(this.state.commentID) //Get the specific comment we want to reply to
+        .collection('replies') //Create a collection for said comment
+        .orderBy("date_created", "desc")
+        .limit(5)
+        .get()
+        .then(function(response) {
+            response.forEach((res) => {
+            const { 
+                commentID,
+                commentText,
+                date_created,
+                postID,
+                replierAuthorUID,
+                replierUsername,
+                replyingToUID,
+                replyingToUsername
+                } = res.data();
+
+                repliesArray.push({
+                    key: res.id,
+                    commentID,
+                    commentText,
+                    date_created,
+                    postID,
+                    replierAuthorUID,
+                    replierUsername,
+                    replyingToUID,
+                    replyingToUsername
+                });
+            });
+
+            console.log(repliesArray)
+            this.setState({repliesArray})
+        
+
+            const renderItem = ({ item }) => (
+        
+                <CommentReplyCellClass
+                    commentID= {item.commentID}
+                    commentText = {item.commentText}
+                    date_created = {item.date_created.toDate()}
+                    postID = {item.postID}
+                    replierAuthorUID = {item.replierAuthorUID}
+                    replierUsername = {item.replierUsername}
+                    replyingToUID = {item.replyingToUID}
+                    replyingToUsername = {item.replyingToUsername}
+                    navigation = {this.state.navigation}
+                />
+            );
+
+            return (
+                <View style={styles.view}>
+                    <FlatList
+                        ref={this.props.scrollRef}
+                        data={this.state.repliesArray}
+                        renderItem={this.renderItem}
+                        keyExtractor={item => item.key}
+                        contentContainerStyle={{ paddingBottom: 50 }}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                    />
+                </View>
+            )
+        }.bind(this))
     }
 
     render() {
@@ -78,17 +152,19 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {this.props.button} 
+                            {/* {this.props.button} 
+
+                            {this.state.replyCount > 0  &&
+                                <TouchableOpacity
+                                onPress={() => this.getFirstFiveReplies()}
+                                style={styles.showRepliesButton}
+                                >
+                                    <Text style = {{color: '#FFFFFF'}}>Show Replies</Text>
+                                </TouchableOpacity>
+                            } */}
 
                         </View>
-                      {this.state.replyCount > 0  &&
-                               <Button 
-                               style={styles.showRepliesButton}
-                               title="Show Replies"
-                                color="white" 
-                                accessibilityLabel="Show replies"
-                               />
-                      }
+                      
 
 
 
@@ -131,27 +207,18 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {this.props.button} 
+                            {/* {this.props.button} 
+
+                            {this.state.replyCount > 0  &&
+                                <TouchableOpacity
+                                onPress={() => this.getFirstFiveReplies()}
+                                style={styles.showRepliesButton}
+                                >
+                                    <Text style = {{color: '#FFFFFF'}}>Show Replies</Text>
+                                </TouchableOpacity>
+                            } */}
 
                         </View>
-                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                    
-                    {this.state.replyCount > 0 &&
-                               <Button 
-                               style={styles.showRepliesButton}
-                               title="Show Replies"
-                                color="white" 
-                                accessibilityLabel="Show replies"
-                               />
-                      }
-                    </View>
-                   
-
-
-
-
-                    {/* <View style = {styles.lineStyle} /> */}
-                    
                     
                 </View>
                 
@@ -198,7 +265,7 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     showRepliesButton:{
-
+        color: '#FFFFFF'
     }
     
 })
