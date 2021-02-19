@@ -48,7 +48,7 @@ class CommentReplyCellClass extends React.Component{
                         <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
                                 key={this.state.commentID}
-                                posterUID={this.state.commentorUID} 
+                                posterUID={this.state.replierAuthorUID} 
                                 navigation={this.props.navigation} 
                             />
                             
@@ -91,7 +91,7 @@ class CommentReplyCellClass extends React.Component{
                         <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
                                 key={this.state.commentID}
-                                posterUID={this.state.commentorUID} 
+                                posterUID={this.state.replierAuthorUID} 
                                 navigation={this.props.navigation} 
                             />
                             
