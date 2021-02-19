@@ -1,8 +1,9 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList, Share } from 'react-native'
 import Firebase from '../../firebase'
-
+import { useScrollToTop } from '@react-navigation/native';
 import FeedCellClass from '../cells/feedCellClass.js';
+import * as Analytics from 'expo-firebase-analytics';
 
 
 
@@ -23,6 +24,7 @@ class FriendsScreen extends React.Component {
     async componentDidMount() {
         this.setState({ isLoading: true, followingUsers: [""] })
 
+        Analytics.setCurrentScreen("FollowingScreen")
         
         await Firebase.firestore()
         .collection('following')
@@ -87,6 +89,7 @@ class FriendsScreen extends React.Component {
     // postID: this.state.postID
     getCollection = async() => {
         this.setState({ isLoading: true, followingUsers: [""] })
+        Analytics.logEvent("First_5_Following_Loaded")
 
         
         await Firebase.firestore()
@@ -166,6 +169,7 @@ class FriendsScreen extends React.Component {
 
     getMore = async() => {
         const lastItemIndex = this.state.followingPosts.length - 1
+        Analytics.logEvent("More_5_Following_Loaded")
         
         this.state.followingUsers.forEach((res) => {
             Firebase.firestore()
@@ -278,6 +282,7 @@ class FriendsScreen extends React.Component {
         return (
             <View style={styles.view}>
                 <FlatList
+                    ref={this.props.scrollRef}
                     data={this.state.followingPosts}
                     renderItem={renderItem}
                     keyExtractor={item => item.key}
@@ -409,4 +414,10 @@ const styles = StyleSheet.create({
     },
 })
 
-export default FriendsScreen
+export default function(props) {
+    const ref = React.useRef(null);
+  
+    useScrollToTop(ref);
+  
+    return <FriendsScreen {...props} scrollRef={ref} />;
+}
