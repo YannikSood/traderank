@@ -266,7 +266,7 @@ class FeedCellClass extends React.Component{
 
                     <View style={styles.descriptionContainer}>
 
-                        <Text style = {styles.regularText}> {this.state.description}</Text> 
+                        <Text style = {styles.descriptionText}> {this.state.description}</Text> 
 
                     </View>
 
@@ -340,6 +340,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#0066CC',
+    },
+    descriptionText: {
+        fontSize: 15,
+        color: '#FFFFFF',
+        alignContent: 'center',
+        paddingRight: 10,
     },
     textContainer: {
         alignContent: 'center',
