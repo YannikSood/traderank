@@ -36,7 +36,8 @@ class CommentComponent extends React.Component {
             userCommentsCount: 0,
             isLoading:false,
             replyTo:this.props.replyTo,
-            replyData: this.props.replyData
+            replyData: this.props.replyData,
+            replyCount: 0
         }
         
     }
@@ -45,12 +46,14 @@ class CommentComponent extends React.Component {
     //----------------------------------------------------------
     componentDidMount() {
         //Reset replyTo to be blank?
+        this.setState({replyTo:""});
         this.getPosterUID()
 
     }
     componentDidUpdate(prevProps, prevState){
         this.updateCommentCount();
         //Gets replyTo from props as it changes
+        //&& prev state ReplyTo !== ""
        if((prevState.replyTo !== this.state.replyTo) || (prevProps.replyTo !== this.props.replyTo)){
 
         const getReplyTo = async () => {
@@ -59,6 +62,7 @@ class CommentComponent extends React.Component {
               if(value !== null) {
                 this.setState({commentText: `@${value}`});
                 // console.log(this.props.replyTo);
+                this.setState({replyTo:value});
               }
             } catch(e) {
               // error reading value
@@ -69,8 +73,7 @@ class CommentComponent extends React.Component {
           const getReplyData = async () => {
             try {
               const jsonValue = await AsyncStorage.getItem('replyData')
-              this.setState({replyData:jsonValue});
-              console.log(jsonValue);
+              this.setState({replyData:JSON.parse(jsonValue)});
               return jsonValue != null ? JSON.parse(jsonValue) : null;
             } catch(e) {
               // error reading value
@@ -133,6 +136,33 @@ class CommentComponent extends React.Component {
         }.bind(this)); 
 
 
+
+    }
+    //get number of replies associated with the comment
+    getReplyCount = async() => {
+        await Firebase.firestore()
+        .collection('comments')
+        .doc(this.state.postID)
+        .collection('comments')
+        .doc(this.state.replyData.commentID) 
+        .get()
+        .then(function(doc){
+            if(doc.exists){
+                this.setState({
+                    replyCount: doc.data().replyCount
+                })
+            } else{
+                console.log("No such document for getting replyCount.");
+            }
+        }.bind(this));
+    }
+
+    addComment = () => {
+        if(this.state.replyTo.length > 0){
+            this.addReplyComment();
+        } else{
+            this.addCommentToDB(); //regular comment 
+        }
     }
 
     //First, find the post that we are referring to "posts"/posterID/"posts"/postID/"comments"/commentUID->commentorUID
@@ -179,38 +209,7 @@ class CommentComponent extends React.Component {
                 console.error("Error storing and retrieving image url: ", error);
             });
 
-            //Reply Data
-            // {"postID":"oKG0MswTDVCN8mH27UL4",
-            // "commentId":"PLZ12W8t4hJ9kdhkHrPU",
-            // "replyingToUsername":"kingfahd",
-            // "replyingToUID":"5XCPW8frRIdoJeXFfV9iPhFiGr43",
-            // "replierAuthorUID":"vei3naWuMqY9qXPo9YuQFOUcqmx1",
-            // "replierUsername":"kal"}
-            if(this.state.replyTo.length > 0){ //isReplying
-                console.log(this.state.replyData);
-                await Firebase.firestore()
-                .collection('comments') // collection comments
-                .doc(this.state.replyData.postID) // Which post?
-                .collection('comments') //Get comments for this post
-                .doc(this.state.replyData.commentID) //Get the specific comment we want to reply to
-                .collection('replies') //Create a collection for said comment
-                .add({ //Add to this collection, and automatically generate iD for this new comment
-                    postID: this.state.replyData.postID,
-                    commentId: this.state.replyData.commentId,
-                    replyingToUsername: this.state.replyData.replyingToUsername,
-                    replyingToUID: this.state.replyData.replyingToUID,
-                    replierAuthorUID: this.state.replyData.replierAuthorUID,
-                    replierUsername:this.state.replyData.replierUsername,
-                    date_created: new Date(),
-                })
-                .catch(function(error) {
-                    console.error("Error storing and retrieving image url: ", error);
-                });
-            }
-            
-
-            console.log(`commentsCount: ${this.state.commentsCount}`);
-            console.log(`postId: ${this.state.postID}`);
+         
 
             await Firebase.firestore()
             .collection('globalPosts')
@@ -237,6 +236,82 @@ class CommentComponent extends React.Component {
         }
 
     }
+
+    addReplyComment = async() =>{
+        //TODO: ADD error checking from addCommentToDB for blank comments 
+        /* Replying ot the same person multiple times does not work yet , 
+        make sure wehn go back it reloads commentComponents and that should fix it
+        */
+            //increment replyCOunt to comments -> postId -> comments
+            if(this.state.replyTo.length > 0){ //isReplying
+              
+
+                //Send reply
+                await Firebase.firestore()
+                .collection('comments') // collection comments
+                .doc(this.state.replyData.postID) // Which post?
+                .collection('comments') //Get comments for this post
+                .doc(this.state.replyData.commentID) //Get the specific comment we want to reply to
+                .collection('replies') //Create a collection for said comment
+                .add({ //Add to this collection, and automatically generate iD for this new comment
+                    postID: this.state.replyData.postID,
+                    commentID: this.state.replyData.commentID,
+                    commentText: this.state.commentText,
+                    replyingToUsername: this.state.replyData.replyingToUsername,
+                    replyingToUID: this.state.replyData.replyingToUID,
+                    replierAuthorUID: this.state.replyData.replierAuthorUID,
+                    replierUsername:this.state.replyData.replierUsername,
+                    date_created: new Date(),
+                })
+                .then(() => {
+                    this.setState({
+                        commentText:""
+                    })
+                })
+                .catch(function(error) {
+                    console.error("Error: ", error);
+                });
+
+                /*
+                 TODO: 
+                */
+
+                  //get reply count first from calling async function
+                  this.getReplyCount();
+
+                  //increase replyCount in Db
+                  await Firebase.firestore()
+                  .collection('comments')
+                  .doc(this.state.replyData.postID)
+                  .collection('comments') 
+                  .doc(this.state.replyData.commentID) 
+                  .set ({
+                      replyCount: this.state.replyCount+ 1
+                  }, { merge: true })
+                  .then(() => {
+                      this.setState({
+                          replyCount: this.state.replyCount + 1
+                      })
+                  })
+                  .catch(function(error) {
+                      console.error("Error writing document to comments when updating replyCount: ", error);
+                  });
+  
+                  //Update Post global CommentCount
+                  await Firebase.firestore()
+                  .collection('globalPosts')
+                  .doc(this.state.postID)
+                  .set ({
+                      commentsCount: this.state.commentsCount + 1
+                  }, { merge: true })
+                  .catch(function(error) {
+                      console.error("Error writing document to user posts: ", error);
+                  });
+            }
+            
+    }
+
+
 
     writeToUserNotifications = async() => {
         if (this.state.commentorUID != this.state.posterUID) { 
@@ -322,7 +397,7 @@ class CommentComponent extends React.Component {
                         maxLength={400}
                     />
 
-                    <TouchableOpacity onPress={() => { this.addCommentToDB() }}> 
+                    <TouchableOpacity onPress={() => { this.addComment() }}> 
                         <MaterialCommunityIcons name="message" size={30} color="white" />
                         
                     </TouchableOpacity>

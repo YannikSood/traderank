@@ -127,8 +127,6 @@ class YoloNumbers extends React.Component {
 
 const styles = StyleSheet.create({
     scroller: {
-        // flex: 1,
-        // marginBottom: 100,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -238,4 +236,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default YoloNumbers
+export default YoloNumbers;

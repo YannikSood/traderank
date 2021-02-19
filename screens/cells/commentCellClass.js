@@ -24,7 +24,9 @@ class CommentCellClass extends React.Component{
             navigation: this.props.navigation,
             currentUser: Firebase.auth().currentUser.uid,
             showDeleteComponent: false,
-            button: this.props.button
+            button: this.props.button,
+            replyCount: this.props.replyCount
+            //count of replies 
         }
     }
 
@@ -75,8 +77,19 @@ class CommentCellClass extends React.Component{
                                 commentID={this.state.commentID}
                                 navigation={this.props.navigation} 
                             />
-                                {this.props.button} 
+
+                            {this.props.button} 
+
                         </View>
+                      {this.state.replyCount > 0  &&
+                               <Button 
+                               style={styles.showRepliesButton}
+                               title="Show Replies"
+                                color="white" 
+                                accessibilityLabel="Show replies"
+                               />
+                      }
+
 
 
                     {/* <View style = {styles.lineStyle} /> */}
@@ -121,6 +134,20 @@ class CommentCellClass extends React.Component{
                             {this.props.button} 
 
                         </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                    
+                    {this.state.replyCount > 0 &&
+                               <Button 
+                               style={styles.showRepliesButton}
+                               title="Show Replies"
+                                color="white" 
+                                accessibilityLabel="Show replies"
+                               />
+                      }
+                    </View>
+                   
+
+
 
 
                     {/* <View style = {styles.lineStyle} /> */}
@@ -169,6 +196,9 @@ const styles = StyleSheet.create({
     reply:{
         color: 'white',
         marginLeft: 10
+    },
+    showRepliesButton:{
+
     }
     
 })
