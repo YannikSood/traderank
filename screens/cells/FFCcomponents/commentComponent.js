@@ -381,7 +381,7 @@ class CommentComponent extends React.Component {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View
-                    style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 30 }}>
+                    style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 15 }}>
 
                     <TextInput
                         style={styles.inputBox}
@@ -390,7 +390,8 @@ class CommentComponent extends React.Component {
                            // console.log("comment from commentComponent: " + this.state.commentText);
                             this.setState({ commentText })
                         }}
-                        placeholder='Add a comment...'
+                        placeholder=' Add a comment...'
+                        placeholderTextColor="#696969" 
                         autoCapitalize='none'
                         autoCorrect={false}
                         multiline={true}
@@ -417,9 +418,11 @@ const styles = StyleSheet.create({
     inputBox: {
         width: '80%',
         margin: 10,
+        padding: 7,
         fontSize: 16,
         borderColor: '#d3d3d3',
         borderWidth: 1,
+        borderRadius: 15,
         // textAlign: 'center',
         color: '#FFFFFF'
     },

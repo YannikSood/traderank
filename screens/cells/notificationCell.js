@@ -113,7 +113,7 @@ class NotificationCellClass extends React.Component{
                                 </View>
                             </View>
 
-                        <View style = {styles.lineStyle} />
+                        {/* <View style = {styles.lineStyle} /> */}
                 </TouchableOpacity>
             )
         }
