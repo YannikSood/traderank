@@ -102,7 +102,8 @@ class ClickedPostPage extends React.Component {
                 commentText,
                 commentorUID,
                 commentorUsername,
-                date_created} = res.data();
+                date_created,
+                replyCount} = res.data();
 
                 commentsArray.push({
                     key: res.id,
@@ -110,7 +111,8 @@ class ClickedPostPage extends React.Component {
                     commentText,
                     commentorUID,
                     commentorUsername,
-                    date_created
+                    date_created,
+                    replyCount
                     
                 });
             });
@@ -308,8 +310,8 @@ class ClickedPostPage extends React.Component {
                 date_created = {item.date_created.toDate()}
                 commentID = {item.key}
                 postID = {this.state.postID}
+                replyCount={item.replyCount}
                 button = {<Button
-              
                     onPress={() =>{
                         //StoreReplyTo
                        const storeReplyTo = async (value) => {
@@ -323,9 +325,9 @@ class ClickedPostPage extends React.Component {
                       this.setState({replyTo:`${item.commentorUsername}`})
 
                       //sotre who to reply to
-                      let replyData = {
+                      let replyDataObj = {
                         postID: `${this.state.postID}`, //post the comment I am replying to 
-                        commentId: `${item.key}`, //Id of the comment I am replying to 
+                        commentID: `${item.key}`, //Id of the comment I am replying to 
                         replyingToUsername: `${item.commentorUsername}`,
                         replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
                         replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
@@ -342,8 +344,8 @@ class ClickedPostPage extends React.Component {
                           // saving error
                         }
                       }
-                      this.setState({replyData:replyData});
-                      storeReplyData(replyData);
+                      this.setState({replyData:replyDataObj});
+                      storeReplyData(replyDataObj);
 
 
 
@@ -351,7 +353,7 @@ class ClickedPostPage extends React.Component {
                 }}
                     title="Reply"
                     color="white"
-                    accessibilityLabel="Learn more about this purple button"
+                    accessibilityLabel="Reply to comment"
                   />}
                 //pass a reply button as a prop
 
@@ -519,6 +521,6 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         margin: 10
    }
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClickedPostPage);
