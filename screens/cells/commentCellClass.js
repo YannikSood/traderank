@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, Button } from 'react-native'
+import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, Button} from 'react-native'
 import Firebase from '../../firebase'
 import CommentUserComponent from './CFCcomponents/userCommentComponent'
 import CommentLikeComponent from './CFCcomponents/likeComponent'
@@ -27,7 +27,9 @@ class CommentCellClass extends React.Component{
             showDeleteComponent: false,
             button: this.props.button,
             replyCount: this.props.replyCount,
-            repliesArray: []
+            repliesArray: [],
+            hasReplies: false
+
             //count of replies 
         }
     }
@@ -76,31 +78,30 @@ class CommentCellClass extends React.Component{
             });
 
             console.log(repliesArray)
-            this.setState({repliesArray})
+
+            if (repliesArray.length > 0) {
+                this.setState({
+                    repliesArray:repliesArray,
+                    hasReplies: true
+                })
+            }
+            else {
+                this.setState({
+                    repliesArray:repliesArray,
+                    hasReplies: false
+                })
+            }
+            
         
 
-            const renderItem = ({ item }) => (
-        
-                <CommentReplyCellClass
-                    commentID= {item.commentID}
-                    commentText = {item.commentText}
-                    date_created = {item.date_created.toDate()}
-                    postID = {item.postID}
-                    replierAuthorUID = {item.replierAuthorUID}
-                    replierUsername = {item.replierUsername}
-                    replyingToUID = {item.replyingToUID}
-                    replyingToUsername = {item.replyingToUsername}
-                    navigation = {this.state.navigation}
-                />
-            );
-
+            
             return (
                 <View style={styles.view}>
                     <FlatList
                         ref={this.props.scrollRef}
                         data={this.state.repliesArray}
                         renderItem={this.renderItem}
-                        keyExtractor={item => item.key}
+                        keyExtractor={(item, index) => String(index)}
                         contentContainerStyle={{ paddingBottom: 50 }}
                         showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
@@ -111,6 +112,22 @@ class CommentCellClass extends React.Component{
     }
 
     render() {
+
+        const renderItem = ({ item }) => (
+        
+            <CommentReplyCellClass
+                commentID= {item.commentID}
+                commentText = {item.commentText}
+                date_created = {item.date_created.toDate()}
+                postID = {item.postID}
+                replierAuthorUID = {item.replierAuthorUID}
+                replierUsername = {item.replierUsername}
+                replyingToUID = {item.replyingToUID}
+                replyingToUsername = {item.replyingToUsername}
+                navigation = {this.state.navigation}
+            />
+        );
+
         if (this.state.isLoading) {
             return (
                 <View style= {styles.commentFeedCell} >
@@ -152,7 +169,7 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {/* {this.props.button} 
+                            {this.props.button} 
 
                             {this.state.replyCount > 0  &&
                                 <TouchableOpacity
@@ -161,14 +178,28 @@ class CommentCellClass extends React.Component{
                                 >
                                     <Text style = {{color: '#FFFFFF'}}>Show Replies</Text>
                                 </TouchableOpacity>
-                            } */}
+                            }
 
                         </View>
                       
 
 
 
-                    {/* <View style = {styles.lineStyle} /> */}
+                    {this.state.hasReplies &&
+                        <View style = {styles.repliesList}>
+                            <Text style = {{color: '#FFFFFF'}}>Showing Replies...</Text>
+                            <FlatList
+                                data={this.state.repliesArray}
+                                renderItem={this.renderItem}
+                                keyExtractor={(item, index) => String(index)}
+                                contentContainerStyle={{ paddingBottom: 50 }}
+                                showsHorizontalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        </View>
+
+                    }
+             
                     
                     
                 </View>
@@ -207,7 +238,7 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {/* {this.props.button} 
+                            {this.props.button} 
 
                             {this.state.replyCount > 0  &&
                                 <TouchableOpacity
@@ -216,9 +247,28 @@ class CommentCellClass extends React.Component{
                                 >
                                     <Text style = {{color: '#FFFFFF'}}>Show Replies</Text>
                                 </TouchableOpacity>
-                            } */}
+                            }
 
                         </View>
+
+                        
+
+
+                    {this.state.hasReplies &&
+                            <View  style = {styles.repliesList}>
+                                <Text style = {{color: '#FFFFFF'}}>Showing Replies...</Text>
+                            <FlatList
+                                data={this.state.repliesArray}
+                                renderItem={this.renderItem}
+                                keyExtractor={(item, index) => String(index)}
+                                contentContainerStyle={{ paddingBottom: 50 }}
+                                showsHorizontalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        </View>
+
+                    }
+             
                     
                 </View>
                 
@@ -266,6 +316,10 @@ const styles = StyleSheet.create({
     },
     showRepliesButton:{
         color: '#FFFFFF'
+    },
+    repliesList:{
+        justifyContent: "center",
+        alignItems: "center"
     }
     
 })
