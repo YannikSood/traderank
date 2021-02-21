@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, Button } from 'react-native'
+import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, Button} from 'react-native'
 import Firebase from '../../firebase'
 import CommentUserComponent from './CFCcomponents/userCommentComponent'
 import CommentLikeComponent from './CFCcomponents/likeComponent'
 import CommentDeleteComponent from './CFCcomponents/deleteComponent'
+import CommentIconComponent from './FFCcomponents/commentIconComponent'
 import TimeAgo from 'react-native-timeago';
 import { Ionicons } from '@expo/vector-icons';
 import CommentReplyCellClass from './commentReplyCell'
@@ -27,7 +28,9 @@ class CommentCellClass extends React.Component{
             showDeleteComponent: false,
             button: this.props.button,
             replyCount: this.props.replyCount,
-            repliesArray: []
+            repliesArray: [],
+            hasReplies: false
+
             //count of replies 
         }
     }
@@ -37,6 +40,7 @@ class CommentCellClass extends React.Component{
             this.setState({ showDeleteComponent: true })
         }
     }
+
 
     getFirstFiveReplies = async() => {
         repliesArray = []
@@ -52,7 +56,7 @@ class CommentCellClass extends React.Component{
         .then(function(response) {
             response.forEach((res) => {
             const { 
-                commentID,
+                commentID, //TODO: needs to be changed to id
                 commentText,
                 date_created,
                 postID,
@@ -61,10 +65,9 @@ class CommentCellClass extends React.Component{
                 replyingToUID,
                 replyingToUsername
                 } = res.data();
-
                 repliesArray.push({
-                    key: res.id,
-                    commentID,
+                    key: res.id, 
+                    id:res.id,
                     commentText,
                     date_created,
                     postID,
@@ -76,41 +79,38 @@ class CommentCellClass extends React.Component{
             });
 
             console.log(repliesArray)
-            this.setState({repliesArray})
-        
 
-            const renderItem = ({ item }) => (
-        
-                <CommentReplyCellClass
-                    commentID= {item.commentID}
-                    commentText = {item.commentText}
-                    date_created = {item.date_created.toDate()}
-                    postID = {item.postID}
-                    replierAuthorUID = {item.replierAuthorUID}
-                    replierUsername = {item.replierUsername}
-                    replyingToUID = {item.replyingToUID}
-                    replyingToUsername = {item.replyingToUsername}
-                    navigation = {this.state.navigation}
-                />
-            );
-
-            return (
-                <View style={styles.view}>
-                    <FlatList
-                        ref={this.props.scrollRef}
-                        data={this.state.repliesArray}
-                        renderItem={this.renderItem}
-                        keyExtractor={item => item.key}
-                        contentContainerStyle={{ paddingBottom: 50 }}
-                        showsHorizontalScrollIndicator={false}
-                        showsVerticalScrollIndicator={false}
-                    />
-                </View>
-            )
+            if (repliesArray.length > 0) {
+                this.setState({
+                    repliesArray:repliesArray,
+                    hasReplies: true
+                })
+            }
+            else {
+                this.setState({
+                    repliesArray:repliesArray,
+                    hasReplies: false
+                })
+            }
         }.bind(this))
     }
 
     render() {
+        const renderItem = ({ item }) => (
+        
+            <CommentReplyCellClass
+                commentID = {item.key} //refers to the reply comment id not the top level comment id
+                commentText = {item.commentText}
+                date_created = {item.date_created.toDate()}
+                postID = {item.postID}
+                replierAuthorUID = {item.replierAuthorUID}
+                replierUsername = {item.replierUsername}
+                replyingToUID = {item.replyingToUID}
+                replyingToUsername = {item.replyingToUsername}
+                navigation = {this.state.navigation}
+            />
+        );
+
         if (this.state.isLoading) {
             return (
                 <View style= {styles.commentFeedCell} >
@@ -152,23 +152,43 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {/* {this.props.button} 
+                            {this.props.button} 
 
                             {this.state.replyCount > 0  &&
                                 <TouchableOpacity
                                 onPress={() => this.getFirstFiveReplies()}
                                 style={styles.showRepliesButton}
                                 >
-                                    <Text style = {{color: '#FFFFFF'}}>Show Replies</Text>
+                                {!this.state.hasReplies &&
+                                       <CommentIconComponent postID = {this.state.postID} replyCount={this.state.replyCount} />
+                                }
                                 </TouchableOpacity>
-                            } */}
+                            }
 
                         </View>
                       
 
 
 
-                    {/* <View style = {styles.lineStyle} /> */}
+                    {this.state.hasReplies &&
+                        <View style = {styles.repliesList}>
+
+                            <FlatList
+                               style={{
+                                flex: 1,
+                                width: Dimensions.get('window').width,
+                            }}
+                                data={this.state.repliesArray}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => String(index)}
+                                contentContainerStyle={{ paddingBottom: 50 }}
+                                showsHorizontalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        </View>
+
+                    }
+             
                     
                     
                 </View>
@@ -207,18 +227,42 @@ class CommentCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
 
-                            {/* {this.props.button} 
+                            {this.props.button} 
 
                             {this.state.replyCount > 0  &&
                                 <TouchableOpacity
                                 onPress={() => this.getFirstFiveReplies()}
                                 style={styles.showRepliesButton}
                                 >
-                                    <Text style = {{color: '#FFFFFF'}}>Show Replies</Text>
+                                    {!this.state.hasReplies &&
+                                       <CommentIconComponent postID = {this.state.postID} replyCount={this.state.replyCount} />
+                                }
                                 </TouchableOpacity>
-                            } */}
+                            }
 
                         </View>
+
+                        
+
+
+                    {this.state.hasReplies &&
+                            <View  style = {styles.repliesList}>
+                            <FlatList
+                                  style={{
+                                    flex: 1,
+                                    width: Dimensions.get('window').width,
+                                }}
+                                data={this.state.repliesArray}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => String(index)}
+                                contentContainerStyle={{ paddingBottom: 50 }}
+                                showsHorizontalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        </View>
+
+                    }
+             
                     
                 </View>
                 
@@ -266,6 +310,10 @@ const styles = StyleSheet.create({
     },
     showRepliesButton:{
         color: '#FFFFFF'
+    },
+    repliesList:{
+        justifyContent: "center",
+        alignItems: "center"
     }
     
 })

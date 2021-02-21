@@ -60,7 +60,11 @@ class CommentIconComponent extends React.Component {
             <View
                 style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF'}}>
                     <MaterialCommunityIcons name="message" size={30} color="white" />
-                    <Text style={{color: 'white'}}>  {this.state.postCommentsCount} </Text>
+                    {this.props.replyCount > 0
+                        ? <Text style={{color: 'white'}}>  {this.props.replyCount} </Text>
+                        :  <Text style={{color: 'white'}}>  {this.state.postCommentsCount} </Text>
+                    }
+                   
             </View>
         )
        
