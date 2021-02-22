@@ -25,6 +25,7 @@ import GlobalScreen from './screens/home/GlobalScreen.js'
 import LeaderboardGains from './screens/leaderboard/leaderboardGains'
 import LeaderboardLosses from './screens/leaderboard/leaderboardLosses'
 import Chat from './screens/chat/chat'
+import ChatRooms from './screens/chat/chatRooms'
 
 //Create a post flow
 import Create from './screens/create/Create.js'
@@ -338,7 +339,7 @@ function Tabs() {
 
       <Tab.Screen 
         name="Chat" 
-        component={Chat} 
+        component={createChatStack} 
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
@@ -390,7 +391,26 @@ function Tabs() {
     </Tab.Navigator>
   );
 }
+//Create chat stack 
+function createChatStack() {
+  return (
+      <CreateStack.Navigator 
+        initialRouteName="Chat"
+        >
 
+          <CreateStack.Screen 
+              name="Chat Rooms" 
+              component={ChatRooms} 
+              options={{
+                headerShown: false
+              }}
+              />
+
+         
+
+      </CreateStack.Navigator>
+  )
+}
 
 //Create flow stack
 function createFlowStack() {
