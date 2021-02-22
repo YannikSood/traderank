@@ -21,7 +21,7 @@ class Chat extends React.Component {
             messageID: "",
             isTyping: false,
             messageText: "",
-            roomName: this.props.route.params.roomName, //Lounge //Stocks //Cryptos //SPACS //Options //Ideas //Devs 
+            roomName: this.props.route.params.roomName, // Room names are exactly as follows: //lounge //stocks //options //crypto //spacs //ideas //devs 
         }
     }
     //---------------------------------------------------------------

@@ -231,7 +231,7 @@ class ClickedPostPage extends React.Component {
                 </View>
                 <View style={styles.descriptionContainer}>
 
-                    <Text style = {styles.regularText}> {this.state.description}</Text> 
+                    <Text style = {styles.descriptionText}> {this.state.description}</Text> 
 
                 </View>
 
@@ -491,6 +491,12 @@ const styles = StyleSheet.create({
         height: 300,
         borderRadius: 15,
         margin: 20
+    },
+    descriptionText: {
+        fontSize: 15,
+        color: '#FFFFFF',
+        alignContent: 'center',
+        paddingRight: 10,
     },
     fullScreenImage: {
         width:  Dimensions.get('window').width,
