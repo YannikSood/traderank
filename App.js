@@ -186,6 +186,21 @@ class App extends React.Component {
                 },
                 headerBackTitle: ""
             }}/>
+            <Stack.Screen name="Chat" 
+              component={Chat} 
+              options=  {{
+                title: " ", //Will be nice to add the name of the room eg stock, options, crypto, etc
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  color: '#FFFFFF'
+                },
+                headerStyle: {
+                  backgroundColor: '#121212',
+                  shadowColor: 'transparent'
+                },
+                headerBackTitle: ""
+            }}/>
             <Stack.Screen name="Cell" 
               component={FeedCellClass}
               options=  {{
@@ -338,8 +353,8 @@ function Tabs() {
       />
 
       <Tab.Screen 
-        name="Chat" 
-        component={createChatStack} 
+        name="ChatRooms" 
+        component={ChatRooms} 
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
@@ -390,26 +405,6 @@ function Tabs() {
 
     </Tab.Navigator>
   );
-}
-//Create chat stack 
-function createChatStack() {
-  return (
-      <CreateStack.Navigator 
-        initialRouteName="Chat"
-        >
-
-          <CreateStack.Screen 
-              name="Chat Rooms" 
-              component={ChatRooms} 
-              options={{
-                headerShown: false
-              }}
-              />
-
-         
-
-      </CreateStack.Navigator>
-  )
 }
 
 //Create flow stack

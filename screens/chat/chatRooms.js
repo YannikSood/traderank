@@ -20,64 +20,75 @@ class ChatRooms extends React.Component {
             <View style={styles.container}>
             
                     <View style = {{flexDirection: 'column'}}>
-                    <Text style={styles.headerText}>Chat Rooms</Text>
+                        {/* <Text style={styles.headerText}>Chat Rooms</Text> */}
+                        
+                        <TouchableOpacity 
+                            onPress={() => this.props.navigation.push('')}
+                            style={styles.button}>
+                                <Text style={styles.buttonText}>chill lounge 🚬</Text>
+                        </TouchableOpacity>
 
                         <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('Chat')}
+                            onPress={() =>
+                                this.props.navigation.push('Chat',
+                                {
+                                    roomName: "stocks"
+                                })
+                            }
                             style={styles.button}>
 
-                                <Text style={styles.buttonText}>Stocks</Text>
+                                <Text style={styles.buttonText}>stock talk 🤝</Text>
 
                         </TouchableOpacity>
 
 
                         <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
+                            onPress={() =>
+                                this.props.navigation.push('Chat',
+                                {
+                                    roomName: "options"
+                                })
+                            }
                             style={styles.button}>
-                                <Text style={styles.buttonText}>Options</Text>
+                                <Text style={styles.buttonText}>options chat 🚀</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
+                            onPress={() => this.props.navigation.push('')}
                             style={styles.button}>
-                                <Text style={styles.buttonText}>Cryptos</Text>
+                                <Text style={styles.buttonText}>crypto conference 💰</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
+                            onPress={() => this.props.navigation.push('')}
                             style={styles.button}>
-                                <Text style={styles.buttonText}>SPACS</Text>
+                                <Text style={styles.buttonText}>SPAC clack 🪄</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>Daily Discussion</Text>
-                        </TouchableOpacity>
 
                         <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
+                            onPress={() => this.props.navigation.push('')}
                             style={styles.button}>
-                                <Text style={styles.buttonText}>Questions</Text>
+                                <Text style={styles.buttonText}>ideas space 💡</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>Feedback</Text>
-                        </TouchableOpacity>
+
+                        
+
 
                         <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
+                            onPress={() => this.props.navigation.push('')}
                             style={styles.button}>
-                                <Text style={styles.buttonText}>Ideas</Text>
+                                <Text style={styles.buttonText}>talk to the developers 🤝</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('')}
+                        {/* <TouchableOpacity 
+                            onPress={() => this.props.navigation.push('')}
                             style={styles.button}>
-                                <Text style={styles.buttonText}>Lounge</Text>
-                        </TouchableOpacity>
+                                <Text style={styles.buttonText}>feedback and feature request</Text>
+                        </TouchableOpacity> */}
+
+
 
                     </View>
 
@@ -102,12 +113,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#FFFFFF',
         justifyContent: 'center',
-    },
-    headerText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        justifyContent:'center',
-        color: '#696969'
+        paddingLeft: 10,
     },
     button: {
         paddingTop: 10,
@@ -119,7 +125,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     headerText: {
-        fontSize: 30,
+        fontSize: 25,
         fontWeight: 'bold',
         paddingBottom: 10,
         color: '#FFFFFF'

@@ -21,14 +21,15 @@ class Chat extends React.Component {
             messageID: "",
             isTyping: false,
             messageText: "",
-            roomName: "" //Stocks //Cryptos //SPACS //Options //Daily Discussion //Questions //Ideas //Feedback //Lounge
+            roomName: this.props.route.params.roomName, //Lounge //Stocks //Cryptos //SPACS //Options //Ideas //Devs 
         }
     }
     //---------------------------------------------------------------
     async componentDidMount (){
+        console.log(this.state.roomName)
+
         // get user info from firestore
-        let userUID = Firebase.auth().currentUser.uid
-        Analytics.setCurrentScreen("ChatScreen")
+        Analytics.setCurrentScreen(`ChatRoom_${this.state.roomName}`)
 
         await Firebase.firestore().collection("users").doc(userUID).get()
         .then(doc => {
@@ -50,7 +51,11 @@ class Chat extends React.Component {
 
     getCurrentMessages = async() => {
 
-        await Firebase.firestore().collection("chat")
+        await Firebase
+        .firestore()
+        .collection("chat") //.collection("chatRooms")
+        //.doc(this.state.roomName)
+        //.collection("messages")
         .orderBy("createdAt", "desc")
         .limit(50)
         .onSnapshot(querySnapshot => {
@@ -107,7 +112,9 @@ class Chat extends React.Component {
         this.setState({isTyping: true,})
         const messageID = uuidv4()
         await Firebase.firestore()
-        .collection("chat")
+        .collection("chat")//.collection("chatRooms")
+        //.doc(this.state.roomName)
+        //.collection("messages")
         .doc(messageID)
         .set({
             _id: messageID,
@@ -122,7 +129,7 @@ class Chat extends React.Component {
             
         })
 
-         Analytics.logEvent("Chat_Message_Sent")
+         Analytics.logEvent(`ChatMessageSent_${this.state.roomName}`)
         
         // .then(() => this.getCurrentMessages())
 
