@@ -23,7 +23,6 @@ class CommentReplyCellClass extends React.Component{
             replyingToUsername: this.props.replyingToUsername,
             showDeleteComponent: false,
             // button: this.props.button,
-            //count of replies 
         }
     }
 

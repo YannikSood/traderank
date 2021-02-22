@@ -56,6 +56,7 @@ class CommentIconComponent extends React.Component {
 
     render() {
         //Allow a user to post a comment. First, take a text input, then submit it with the comment button. 
+        //Msg count for the replies or post
         return (
             <View
                 style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF'}}>
