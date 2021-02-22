@@ -100,6 +100,7 @@ class CommentCellClass extends React.Component{
         
             <CommentReplyCellClass
                 commentID = {item.key} //refers to the reply comment, id not the top level comment id
+                topCommentID = {this.state.commentID}
                 commentText = {item.commentText}
                 date_created = {item.date_created.toDate()}
                 postID = {item.postID}

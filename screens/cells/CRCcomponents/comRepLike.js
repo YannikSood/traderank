@@ -81,6 +81,7 @@ class CommentReplyLikeComponent extends React.Component {
             }
         }.bind(this));
     }
+
     //Check to see if a user has liked a post
     hasLiked = async() => {
         await Firebase.firestore()
@@ -149,17 +150,17 @@ class CommentReplyLikeComponent extends React.Component {
             })
         )
 
-        await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .set ({
-            likesCount: this.state.userLikesCount + 1
-        }, { merge: true })
-        .then(() =>
-            this.setState ({
-                userLikesCount: this.state.userLikesCount + 1
-            })
-        )
+        // await Firebase.firestore()
+        // .collection('users')
+        // .doc(this.state.likerUID)
+        // .set ({
+        //     likesCount: this.state.userLikesCount + 1
+        // }, { merge: true })
+        // .then(() =>
+        //     this.setState ({
+        //         userLikesCount: this.state.userLikesCount + 1
+        //     })
+        // )
     }
 
     subtractFromLikeCount = async() => {
@@ -179,17 +180,17 @@ class CommentReplyLikeComponent extends React.Component {
             })
         )
 
-        await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .set ({
-            likesCount: this.state.userLikesCount - 1
-        }, { merge: true })
-        .then(() =>
-            this.setState ({
-                userLikesCount: this.state.userLikesCount - 1
-            })
-        )
+        // await Firebase.firestore()
+        // .collection('users')
+        // .doc(this.state.likerUID)
+        // .set ({
+        //     likesCount: this.state.userLikesCount - 1
+        // }, { merge: true })
+        // .then(() =>
+        //     this.setState ({
+        //         userLikesCount: this.state.userLikesCount - 1
+        //     })
+        // )
     }
 
     //Add to the likes lists in the database

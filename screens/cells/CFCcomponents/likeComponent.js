@@ -55,7 +55,7 @@ class CommentLikeComponent extends React.Component {
         .then(function(doc) {
             if (doc.exists) {
                 this.setState ({
-                    posterUID: doc.data().commentorUID
+                    posterUID: doc.data().replierAuthorUID
                 })
             } else {
                 // doc.data() will be undefined in this case

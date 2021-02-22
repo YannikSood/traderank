@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Button } from 'react-native'
 import Firebase from '../../firebase'
 import CommentUserComponent from './CFCcomponents/userCommentComponent'
-import CommentLikeComponent from './CFCcomponents/likeComponent'
+import CommentReplyLikeComponent from './CRCcomponents/comRepLike'
 import CommentDeleteComponent from './CFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
 
@@ -20,6 +20,7 @@ class CommentReplyCellClass extends React.Component{
         this.state = {
             isLoading: false,
             commentID: this.props.commentID,
+            topCommentID: this.props.topCommentID,
             commentText: this.props.commentText,
             date_created: this.props.date_created,
             postID: this.props.postID,
@@ -68,9 +69,10 @@ class CommentReplyCellClass extends React.Component{
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
                         <View style={{flexDirection: 'row'}}>
-                            <CommentLikeComponent  
+                            <CommentReplyLikeComponent  
                                 postID={this.state.postID} 
-                                commentID={this.state.commentID}
+                                commentID= {this.state.topCommentID} //Top level comment ID
+                                commentReplyID= {this.state.commentID} //Sub level comment ID
                                 navigation={this.props.navigation} 
                             />
 
