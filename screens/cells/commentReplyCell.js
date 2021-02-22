@@ -7,6 +7,12 @@ import CommentDeleteComponent from './CFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
 
 
+//TODO
+//Comment reply like component
+//Comment reply delete component
+//Comment reply reply component
+
+
 class CommentReplyCellClass extends React.Component{ 
     
     constructor(props) {

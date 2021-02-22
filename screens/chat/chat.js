@@ -20,7 +20,8 @@ class Chat extends React.Component {
             isLoading: true,
             messageID: "",
             isTyping: false,
-            messageText: ""
+            messageText: "",
+            roomName: "" //Stocks //Cryptos //SPACS //Options //Daily Discussion //Questions //Ideas //Feedback //Lounge
         }
     }
     //---------------------------------------------------------------

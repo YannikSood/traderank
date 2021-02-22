@@ -331,7 +331,8 @@ class ClickedPostPage extends React.Component {
                         replyingToUsername: `${item.commentorUsername}`,
                         replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
                         replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
-                        replierUsername: `${this.props.user.username}`
+                        replierUsername: `${this.props.user.username}`,
+                        commentLikes: `0`
                         //may need to change
                         }
                       
