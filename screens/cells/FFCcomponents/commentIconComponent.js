@@ -59,8 +59,12 @@ class CommentIconComponent extends React.Component {
         //Msg count for the replies or post
         return (
             <View
-                style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF'}}>
-                    <MaterialCommunityIcons name="message" size={30} color="white" />
+                style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF', paddingTop: 2}}>
+                    {this.props.replyCount > 0
+                        ? <MaterialCommunityIcons name="message" size={19} color="white" />
+                        :  <MaterialCommunityIcons name="message" size={28} color="white" />
+                    }
+                    
                     {this.props.replyCount > 0
                         ? <Text style={{color: 'white'}}>  {this.props.replyCount} </Text>
                         :  <Text style={{color: 'white'}}>  {this.state.postCommentsCount} </Text>

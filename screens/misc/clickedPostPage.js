@@ -13,6 +13,7 @@ import * as Analytics from 'expo-firebase-analytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
+import { Entypo } from '@expo/vector-icons';
 
 const mapStateToProps = (state) => {
     return {
@@ -311,7 +312,7 @@ class ClickedPostPage extends React.Component {
                 commentID = {item.key}
                 postID = {this.state.postID}
                 replyCount={item.replyCount}
-                button = {<Button
+                button = {<TouchableOpacity
                     onPress={() =>{
                         //StoreReplyTo
                        const storeReplyTo = async (value) => {
@@ -347,15 +348,17 @@ class ClickedPostPage extends React.Component {
                       }
                       this.setState({replyData:replyDataObj});
                       storeReplyData(replyDataObj);
+                    }}>
 
+                        <View style={{paddingLeft: 15, paddingRight: 15}}>
 
-
+                            <Entypo name="reply" size={22} color="white" />
+                        
+                        </View>
+                    </TouchableOpacity>
                          
-                }}
-                    title="Reply"
-                    color="white"
-                    accessibilityLabel="Reply to comment"
-                  />}
+                }
+                    
                 //pass a reply button as a prop
 
             />

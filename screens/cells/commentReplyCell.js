@@ -68,7 +68,7 @@ class CommentReplyCellClass extends React.Component{
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
-                        <View style={{flexDirection: 'row'}}>
+                        {/* <View style={{flexDirection: 'row'}}>
                             <CommentReplyLikeComponent  
                                 postID={this.state.postID} 
                                 commentID= {this.state.topCommentID} //Top level comment ID
@@ -83,7 +83,7 @@ class CommentReplyCellClass extends React.Component{
                             />
 
 
-                        </View>
+                        </View> */}
                     
                     
                 </View>
@@ -114,14 +114,15 @@ class CommentReplyCellClass extends React.Component{
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
-                        <View style={{flexDirection: 'row'}}>
+                        {/* <View style={{flexDirection: 'row'}}>
 
-                            <CommentLikeComponent  
+                            <CommentReplyLikeComponent  
                                 postID={this.state.postID} 
-                                commentID={this.state.commentID}
+                                commentID= {this.state.topCommentID} //Top level comment ID
+                                commentReplyID= {this.state.commentID} //Sub level comment ID
                                 navigation={this.props.navigation} 
                             />
-                        </View>
+                        </View> */}
                     
                     
                 </View>
