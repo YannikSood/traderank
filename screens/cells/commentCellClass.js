@@ -43,7 +43,7 @@ class CommentCellClass extends React.Component{
 
 
     getFirstFiveReplies = async() => {
-        repliesArray = []
+        let repliesArray = []
         await Firebase.firestore()
         .collection('comments') // collection comments
         .doc(this.state.postID) // Which post?

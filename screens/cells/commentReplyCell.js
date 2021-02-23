@@ -5,6 +5,8 @@ import CommentUserComponent from './CFCcomponents/userCommentComponent'
 import CommentReplyLikeComponent from './CRCcomponents/comRepLike'
 import CommentDeleteComponent from './CFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
+import { Entypo } from '@expo/vector-icons';
+import CommentComponent from './FFCcomponents/commentComponent';
 
 
 //TODO
@@ -29,6 +31,7 @@ class CommentReplyCellClass extends React.Component{
             replyingToUID: this.props.replyingToUID,
             replyingToUsername: this.props.replyingToUsername,
             showDeleteComponent: false,
+            isReplying: false
             // button: this.props.button,
         }
     }
@@ -67,6 +70,16 @@ class CommentReplyCellClass extends React.Component{
                         
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
+
+                        <View style={{paddingLeft: 15, paddingRight: 15}}>
+                            <Text>Reply</Text>
+                            <Entypo name="reply" size={22} color="white" onPress={() => this.setState({isReplying: true})} />
+
+                        </View>
+
+                        {this.state.isReplying &&
+                            <CommentComponent postID={this.state.postID}  />
+                        }
 
                         {/* <View style={{flexDirection: 'row'}}>
                             <CommentReplyLikeComponent  
@@ -113,6 +126,19 @@ class CommentReplyCellClass extends React.Component{
                         
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
+
+                        <View style={{paddingLeft: 15, paddingRight: 15}}>
+                            <Text>Reply</Text>
+                            <Entypo name="reply" size={22} color="white" onPress={() => this.setState({isReplying: true})} />
+
+                        </View>
+
+
+                        {this.state.isReplying &&
+                            <CommentComponent postID={this.state.postID}  />
+                        }
+
+                        
 
                         {/* <View style={{flexDirection: 'row'}}>
 
