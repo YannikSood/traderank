@@ -256,7 +256,7 @@ class NotificationCellClass extends React.Component{
   
                                 <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
 
-                                 <Text style={styles.textStyle2}> replied to on your comment</Text>
+                                 <Text style={styles.textStyle2}> replied to your comment</Text>
 
                             
                                  </View>
