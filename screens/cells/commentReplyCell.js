@@ -7,6 +7,7 @@ import CommentDeleteComponent from './CFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
 import { Entypo } from '@expo/vector-icons';
 import CommentComponent from './FFCcomponents/commentComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //TODO
@@ -42,6 +43,8 @@ class CommentReplyCellClass extends React.Component{
         }
     }
 
+   
+
     render() {
         if (this.state.isLoading) {
             return (
@@ -72,14 +75,20 @@ class CommentReplyCellClass extends React.Component{
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
                         <View style={{paddingLeft: 15, paddingRight: 15}}>
-                            <Text>Reply</Text>
-                            <Entypo name="reply" size={22} color="white" onPress={() => this.setState({isReplying: true})} />
+                        <Entypo name="reply" size={22} color="white" onPress={() =>  {
+                                     this.setState({isReplying: true});
+                                     console.log(this.state.commentID);
+                                     console.log(this.state.postID);
+                                     console.log(this.state.replyingToUsername);
+                            }} />
+                         
+   
 
                         </View>
-
-                        {this.state.isReplying &&
-                            <CommentComponent postID={this.state.postID}  />
+                        {this.state.isReplying && 
+                            <CommentComponent/>
                         }
+
 
                         {/* <View style={{flexDirection: 'row'}}>
                             <CommentReplyLikeComponent  
@@ -128,15 +137,25 @@ class CommentReplyCellClass extends React.Component{
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
                         <View style={{paddingLeft: 15, paddingRight: 15}}>
-                            <Text>Reply</Text>
-                            <Entypo name="reply" size={22} color="white" onPress={() => this.setState({isReplying: true})} />
+
+                            
+                        <Entypo name="reply" size={22} color="white" onPress={() =>  {
+                                     this.setState({isReplying: true});
+                                     console.log(this.state.commentID);
+                                     console.log(this.state.postID);
+                                     console.log(this.state.replyingToUsername);
+                             
+                            }} />
+
 
                         </View>
 
-
-                        {this.state.isReplying &&
-                            <CommentComponent postID={this.state.postID}  />
+                        {this.state.isReplying && 
+                            <CommentComponent />
                         }
+
+
+              
 
                         
 
@@ -163,11 +182,11 @@ const styles = StyleSheet.create({
     
     commentFeedCell: {
         // backgroundColor: '#3F3F41',
-        paddingTop: 10,
+        // paddingTop: 10,
         backgroundColor: '#121212',
         flex: 1,
         width: Dimensions.get('window').width,
-        marginTop: 5,
+        // marginTop: 5,
         borderBottomWidth: 1,
         borderRadius: 15,
         paddingLeft: 50
