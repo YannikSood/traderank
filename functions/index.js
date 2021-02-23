@@ -472,3 +472,68 @@ exports.writeNotification = functions.https.onCall((data, context) => {
     )
 });
 
+//Function to write notifications to DB, and send push notifications
+exports.sendCommentReplyNotification = functions.https.onCall((data, context) => {
+
+    //Get the information of the user who is going to recieve the notification
+    admin.firestore()
+    .collection('users')
+    .doc(data.recieverUID)
+    .get()
+    .then(function(doc) {
+        if (doc.exists) {
+            //Find out if the user will accept push notifications
+            if (doc.data().pushStatus) {
+
+                var messages = []
+
+                //Write the notification and add it to messages
+
+                messages.push({
+                    "to": doc.data().token,
+                    "sound": "default",
+                    "title":"you got a reply!",
+                    "body": data.senderUsername + " replied to your comment!"
+                });
+
+                //Post it to expo
+                
+                fetch('https://exp.host/--/api/v2/push/send', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(messages)
+                });
+                
+                return (
+                    "notification written"
+                )
+            }
+            else {
+                console.log("doesnt accept push notifications: " + doc.data().username)
+                return
+            }
+        } else {
+            // doc.data() will be undefined in this case, so this wont even come up honestly
+            console.log("No such document!");
+            return
+        }
+    })
+    .catch(function(error) {
+        console.error("Error finding user: ", error);
+    });
+
+    admin.firestore()
+    .collection('users')
+    .doc(data.recieverUID)
+    .set({ hasNotifications: true }, {merge: true})
+
+    return (
+        true
+    )
+});
+
+
+

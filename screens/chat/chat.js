@@ -123,7 +123,7 @@ class Chat extends React.Component {
             // image: message[0].image,
             createdAt: new Date(message[0].createdAt),
             user: {
-                id: this.state.currentUser.id,
+                _id: this.state.currentUser.id,
                 name: this.state.currentUser.name,
                 avatar: this.state.currentUser.avatar,
             },

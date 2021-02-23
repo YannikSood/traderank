@@ -245,6 +245,32 @@ class NotificationCellClass extends React.Component{
                 </TouchableOpacity>
             )
         }
+
+        if (this.state.type == 6) {
+            return (
+                <TouchableOpacity   
+                    style={styles.feedCell}
+                    onPress={() => this.showPostPage()} >
+                        <View style={{flexDirection: 'column'}}>
+                        <View style={{flexDirection: 'row'}}>
+  
+                                <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
+
+                                 <Text style={styles.textStyle2}> replied to on your comment</Text>
+
+                            
+                                 </View>
+                                <View style={styles.timeContainer}>
+
+                                        <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
+
+                                </View>
+                            </View>
+
+                        {/* <View style = {styles.lineStyle} /> */}
+                </TouchableOpacity>
+            )
+        }
         return
         
     }
