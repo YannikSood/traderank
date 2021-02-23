@@ -188,8 +188,8 @@ class App extends React.Component {
             }}/>
             <Stack.Screen name="Chat" 
               component={Chat} 
-              options=  {{
-                title: " ", //Will be nice to add the name of the room eg stock, options, crypto, etc
+              options={({ route }) => ({
+                title: route.params.roomName, //Will be nice to add the name of the room eg stock, options, crypto, etc
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 20,
@@ -200,7 +200,7 @@ class App extends React.Component {
                   shadowColor: 'transparent'
                 },
                 headerBackTitle: ""
-            }}/>
+            })}/>
             <Stack.Screen name="Cell" 
               component={FeedCellClass}
               options=  {{

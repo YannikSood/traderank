@@ -348,6 +348,7 @@ class ClickedPostPage extends React.Component {
                       }
                       this.setState({replyData:replyDataObj});
                       storeReplyData(replyDataObj);
+
                     }}>
 
                         <View style={{paddingLeft: 15, paddingRight: 15}}>
