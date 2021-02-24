@@ -25,6 +25,7 @@ import GlobalScreen from './screens/home/GlobalScreen.js'
 import LeaderboardGains from './screens/leaderboard/leaderboardGains'
 import LeaderboardLosses from './screens/leaderboard/leaderboardLosses'
 import Chat from './screens/chat/chat'
+import ChatRooms from './screens/chat/chatRooms'
 
 //Create a post flow
 import Create from './screens/create/Create.js'
@@ -185,6 +186,21 @@ class App extends React.Component {
                 },
                 headerBackTitle: ""
             }}/>
+            <Stack.Screen name="Chat" 
+              component={Chat} 
+              options={({ route }) => ({
+                title: route.params.roomName, //Will be nice to add the name of the room eg stock, options, crypto, etc
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  color: '#FFFFFF'
+                },
+                headerStyle: {
+                  backgroundColor: '#121212',
+                  shadowColor: 'transparent'
+                },
+                headerBackTitle: ""
+            })}/>
             <Stack.Screen name="Cell" 
               component={FeedCellClass}
               options=  {{
@@ -337,8 +353,8 @@ function Tabs() {
       />
 
       <Tab.Screen 
-        name="Chat" 
-        component={Chat} 
+        name="ChatRooms" 
+        component={ChatRooms} 
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
@@ -390,7 +406,6 @@ function Tabs() {
     </Tab.Navigator>
   );
 }
-
 
 //Create flow stack
 function createFlowStack() {

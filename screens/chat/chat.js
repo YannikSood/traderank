@@ -21,18 +21,20 @@ class Chat extends React.Component {
             messageID: "",
             isTyping: false,
             messageText: "",
-            roomName: "" //Stocks //Cryptos //SPACS //Options //Daily Discussion //Questions //Ideas //Feedback //Lounge
+            roomName: this.props.route.params.roomName, // Room names are exactly as follows: //lounge //stocks //options //crypto //spacs //ideas //devs 
         }
     }
     //---------------------------------------------------------------
     async componentDidMount (){
-        // get user info from firestore
+        // console.log(this.state.roomName)
+
         let userUID = Firebase.auth().currentUser.uid
-        Analytics.setCurrentScreen("ChatScreen")
+        // get user info from firestore
+        Analytics.setCurrentScreen(`ChatRoom_${this.state.roomName}`)
 
         await Firebase.firestore().collection("users").doc(userUID).get()
         .then(doc => {
-            data = doc.data()
+            const data = doc.data()
             this.setState({
                 currentUser: {
                     name: data.username,
@@ -50,7 +52,11 @@ class Chat extends React.Component {
 
     getCurrentMessages = async() => {
 
-        await Firebase.firestore().collection("chat")
+        await Firebase
+        .firestore()
+        .collection("chatRooms")
+        .doc(this.state.roomName)
+        .collection("messages")
         .orderBy("createdAt", "desc")
         .limit(50)
         .onSnapshot(querySnapshot => {
@@ -107,7 +113,9 @@ class Chat extends React.Component {
         this.setState({isTyping: true,})
         const messageID = uuidv4()
         await Firebase.firestore()
-        .collection("chat")
+        .collection("chatRooms")
+        .doc(this.state.roomName)
+        .collection("messages")
         .doc(messageID)
         .set({
             _id: messageID,
@@ -115,14 +123,14 @@ class Chat extends React.Component {
             // image: message[0].image,
             createdAt: new Date(message[0].createdAt),
             user: {
-                _id: this.state.currentUser.id,
+                id: this.state.currentUser.id,
                 name: this.state.currentUser.name,
                 avatar: this.state.currentUser.avatar,
             },
             
         })
 
-         Analytics.logEvent("Chat_Message_Sent")
+         Analytics.logEvent(`ChatMessageSent_${this.state.roomName}`)
         
         // .then(() => this.getCurrentMessages())
 
@@ -255,7 +263,7 @@ class Chat extends React.Component {
                     showAvatarForEveryMessage = {false}
                     dateFormat = 'll'
                     timeFormat = 'LT'
-                    placeholder = "talk to the traderank mafia..."
+                    placeholder = "send a message..."
                     keyboardShouldPersistTaps='never'
                     onPressAvatar={user => this.getProfile(user)}
                     textInputStyle={styles.inputContainer}

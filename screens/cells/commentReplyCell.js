@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     commentTextColor: {
         padding: 20,
         color: '#FFFFFF',
-        fontSize: 16
+        fontSize: 15
     },
     commentorUsername: {
         color: '#3F3F41',
