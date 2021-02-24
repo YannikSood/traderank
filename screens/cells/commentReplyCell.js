@@ -6,7 +6,7 @@ import CommentReplyLikeComponent from './CRCcomponents/comRepLike'
 import CommentDeleteComponent from './CFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
 import { Entypo } from '@expo/vector-icons';
-import CommentComponent from './FFCcomponents/commentComponent';
+import ReplyCommentComponent from './CRCcomponents/commentReplyComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -46,6 +46,15 @@ class CommentReplyCellClass extends React.Component{
    
 
     render() {
+        let replyData = {
+            commentID: this.props.commentID,
+            topCommentID: this.props.topCommentID,
+            postID: this.props.postID,
+            replierAuthorUID: this.props.replierAuthorUID,
+            replierUsername: this.props.replierUsername,
+            replyingToUID: this.props.replyingToUID,
+            replyingToUsername: this.props.replyingToUsername,
+        }
         if (this.state.isLoading) {
             return (
                 <View style= {styles.commentFeedCell} >
@@ -77,16 +86,14 @@ class CommentReplyCellClass extends React.Component{
                         <View style={{paddingLeft: 15, paddingRight: 15}}>
                         <Entypo name="reply" size={22} color="white" onPress={() =>  {
                                      this.setState({isReplying: true});
-                                     console.log(this.state.commentID);
-                                     console.log(this.state.postID);
-                                     console.log(this.state.replyingToUsername);
                             }} />
                          
    
 
                         </View>
                         {this.state.isReplying && 
-                            <CommentComponent/>
+                                <ReplyCommentComponent replyData={replyData} />
+                                
                         }
 
 
@@ -140,18 +147,14 @@ class CommentReplyCellClass extends React.Component{
 
                             
                         <Entypo name="reply" size={22} color="white" onPress={() =>  {
-                                     this.setState({isReplying: true});
-                                     console.log(this.state.commentID);
-                                     console.log(this.state.postID);
-                                     console.log(this.state.replyingToUsername);
-                             
+                                     this.setState({isReplying: true});                
                             }} />
 
 
                         </View>
 
                         {this.state.isReplying && 
-                            <CommentComponent />
+                               <ReplyCommentComponent replyData={replyData} />
                         }
 
 

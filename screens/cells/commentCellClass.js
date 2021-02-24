@@ -40,6 +40,10 @@ class CommentCellClass extends React.Component{
             this.setState({ showDeleteComponent: true })
         }
     }
+    // componentDidUpdate(){
+    //     //trying to update on submit, may neeed to remove
+    //     this.getFirstFiveReplies();
+    // }
 
 
     getFirstFiveReplies = async() => {
@@ -50,7 +54,7 @@ class CommentCellClass extends React.Component{
         .collection('comments') //Get comments for this post
         .doc(this.state.commentID) //Get the specific comment we want to reply to
         .collection('replies') //Create a collection for said comment
-        .orderBy("date_created", "desc")
+        .orderBy("date_created", "asc")
         .limit(5)
         .get()
         .then(function(response) {
@@ -78,7 +82,7 @@ class CommentCellClass extends React.Component{
                 });
             });
 
-            console.log(repliesArray)
+            //console.log(repliesArray)
 
             if (repliesArray.length > 0) {
                 this.setState({
