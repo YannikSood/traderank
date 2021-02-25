@@ -22,11 +22,12 @@ class Chat extends React.Component {
             isTyping: false,
             messageText: "",
             roomName: this.props.route.params.roomName, // Room names are exactly as follows: //lounge //stocks //options //crypto //spacs //ideas //devs 
+            userLevel: 0
         }
     }
     //---------------------------------------------------------------
     async componentDidMount (){
-        // console.log(this.state.roomName)
+        console.log(this.state.roomName)
 
         let userUID = Firebase.auth().currentUser.uid
         // get user info from firestore
@@ -41,6 +42,7 @@ class Chat extends React.Component {
                     avatar: data.profilePic,
                     id: doc.id,
                 },
+                userLevel: data.userLevel
             })
         })
 
@@ -172,89 +174,12 @@ class Chat extends React.Component {
         }
     }
 
-    // onTextChange = (message) => {
-    //     const lastChar = this.state.messageText.substr(this.state.messageText.length - 1)
-    //     const currentChar = message.substr(message.length - 1)
-    //     const spaceCheck = /[^@A-Za-z_]/g
-    //     this.setState({
-    //         messageText: message
-    //       })
-
-    //     //Empty message, do nothing
-    //     if(message.length === 0) {
-    //         console.log("message length 0")
-    //     } 
-        
-    //     //Non Empty Message
-    //     else {
-
-    //       //No @ detected
-    //       if (spaceCheck.test(lastChar) && currentChar != '@') {
-    //         console.log("normal text")
-    //       } 
-          
-    //       //@ Detected
-    //       else {
-
-            
-    //         const checkSpecialChar = currentChar.match(/[^@]/)
-    //         //Make sure it is @
-    //         if (checkSpecialChar === null || currentChar === '@') {
-
-    //              console.log('last char @')
-
-    //             //If the characters following the @ are a username, ping that person
-
-    //         } else if (checkSpecialChar != null) {
-    //             console.log("no @")
-    //         }
-
-    //       }
-
-    //     }
-
-    // }
-    
-    // getUserSuggestions = (keyword) => {
-    //     this.setState({
-    //       isLoading: true
-    //     }, () => {
-    //       if(Array.isArray(userList)) {
-    //         if(keyword.slice(1) === '') {
-    //           this.setState({
-    //             userData: [...userList],
-    //             isLoading: false
-    //           })
-    //         } else {
-    //           const userDataList = userList.filter(obj => obj.name.indexOf(keyword.slice(1)) !== -1)
-    //           this.setState({
-    //             userData: [...userDataList],
-    //             isLoading: false
-    //           })
-    //         }
-    //       } 
-    //     })
-    //   }
-
-    // renderComposer = (props) => {
-    //     return (
-    //         <View style={styles.composerContainer}>
-    //           <View >
-    //             <TextInput {...props}
-    //               placeholder={'Type something...'}
-    //               ref={(input) => { this.msgInput = input; }}
-    //               onChangeText={(value) => this.onTextChange(value, props)}
-    //               style={styles.inputContainer}
-    //               value={props.text}
-    //               multiline={true}
-    //             />
-    //           </View>
-    //             <View>
-    //                 <Ionicons name="ios-search" size={25} color="black" />
-    //             </View>
-    //         </View>
-    //       )
-    // }
+    renderComposer = () => {
+        return (
+            <View style={{backgroundColor: '#000000'}} >
+            </View>
+          )
+    }
 
     render() { 
         if(this.state.isLoading){
@@ -264,6 +189,40 @@ class Chat extends React.Component {
               </View>
             )
         }   
+        if (this.state.userLevel < 1 && this.state.roomName == "announcements") {
+            return (
+                <View style={{backgroundColor: '#000000', flex: 1}}>
+                    <GiftedChat
+                        showUserAvatar={true}
+                        isTyping={this.state.isTyping}
+                        renderComposer={this.renderComposer}
+                        
+                        renderUsernameOnMessage={true}
+                        messages={this.state.messages}
+                        // onInputTextChanged={message => this.onTextChange(message)}
+                        onSend={message => this.onSend(message)}
+                        scrollToBottom
+                        // user = {{
+                        //     _id: 1
+                        // }}
+                        // locale = { dayjs.locale('en-ca') }
+                        showAvatarForEveryMessage = {false}
+                        dateFormat = 'll'
+                        timeFormat = 'LT'
+                        placeholder = "send a message..."
+                        keyboardShouldPersistTaps='never'
+                        onPressAvatar={user => this.getProfile(user)}
+                        textInputStyle={styles.inputContainer}
+                        isKeyboardInternallyHandled = {false}
+                        // alwaysShowSend = {true}
+                        maxInputLength = {240}
+                    />
+    
+                    <KeyboardSpacer />
+                </View>
+            )
+        }
+        
         return (
             <View style={{backgroundColor: '#000000', flex: 1}}>
                 <GiftedChat

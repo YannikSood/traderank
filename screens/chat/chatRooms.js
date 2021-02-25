@@ -27,69 +27,42 @@ class ChatRooms extends React.Component {
     //     // const hasLoungeNotifications
     // }
 
+    getUserSubscriptions = () => {
+
+    }
+
+    renderSubscriptionHeader = () => {
+        
+    }
+
     render() {
         return (
             <View style={styles.container}>
             
                     <View style = {{flexDirection: 'column'}}>
-                        {/* <Text style={styles.headerText}>Chat Rooms</Text> */}
 
                         <TouchableOpacity 
                             onPress={() =>
                                 this.props.navigation.push('Chat',
                                 {
-                                    roomName: "lounge"
+                                    roomName: "announcements"
                                 })
                             }
                             style={styles.button}>
-                                <Text style={styles.buttonText}>chill lounge 🚬</Text>
+                                <Text style={styles.buttonText}>announcements 📣</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
                             onPress={() =>
                                 this.props.navigation.push('Chat',
                                 {
-                                    roomName: "stocks"
+                                    roomName: "daily discussion"
                                 })
                             }
                             style={styles.button}>
 
-                                <Text style={styles.buttonText}>stock talk 💎</Text>
+                                <Text style={styles.buttonText}>daily discussion 🚀</Text>
 
-                        </TouchableOpacity>
-
-
-                        <TouchableOpacity 
-                            onPress={() =>
-                                this.props.navigation.push('Chat',
-                                {
-                                    roomName: "options"
-                                })
-                            }
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>options chat 🚀</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            onPress={() =>
-                                this.props.navigation.push('Chat',
-                                {
-                                    roomName: "crypto"
-                                })
-                            }
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>crypto conference 💰</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            onPress={() =>
-                                this.props.navigation.push('Chat',
-                                {
-                                    roomName: "spacs"
-                                })
-                            }
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>SPAC clack 🪄</Text>
                         </TouchableOpacity>
 
 
@@ -97,34 +70,12 @@ class ChatRooms extends React.Component {
                             onPress={() =>
                                 this.props.navigation.push('Chat',
                                 {
-                                    roomName: "ideas"
+                                    roomName: "feedback"
                                 })
                             }
                             style={styles.button}>
-                                <Text style={styles.buttonText}>ideas space 💡</Text>
+                                <Text style={styles.buttonText}>feedback 🧪</Text>
                         </TouchableOpacity>
-
-
-                        
-
-
-                        <TouchableOpacity 
-                            onPress={() =>
-                                this.props.navigation.push('Chat',
-                                {
-                                    roomName: "devs"
-                                })
-                            }
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>talk to the developers 🤝</Text>
-                        </TouchableOpacity>
-
-                        {/* <TouchableOpacity 
-                            onPress={() => this.props.navigation.push('')}
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>feedback and feature request</Text>
-                        </TouchableOpacity> */}
-
 
 
                     </View>
