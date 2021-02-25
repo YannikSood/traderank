@@ -2,8 +2,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 const algoliasearch = require('algoliasearch');
-
-
 const client = algoliasearch('5BS4R91W97', '1dd2a5427b3daed5059c1dc62bdd2197');
 const index = client.initIndex('usernames');
 
@@ -472,7 +470,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
     )
 });
 
-//Function to write notifications to DB, and send push notifications
+//Function to send notifications for comment replies
 exports.sendCommentReplyNotification = functions.https.onCall((data, context) => {
 
     //Get the information of the user who is going to recieve the notification
@@ -534,6 +532,75 @@ exports.sendCommentReplyNotification = functions.https.onCall((data, context) =>
         true
     )
 });
+
+
+// //Function to send notifications for comment replies
+// exports.sendChatNotifications = functions.https.onCall((data, context) => {
+
+//     admin.firestore()
+//     .collection('users')
+//     // .where("pushStatus", "==", true)
+//     // .where("uid", "!=", data.senderUID )
+//     .doc("JGIu18iWPof1IOYlJYpcRiBbkiE2")
+//     .get()
+//     .then((querySnapshot) => {
+//         // querySnapshot.forEach((doc) => {
+//             var messages = []
+
+//             //Write the notification and add it to messages
+
+//             messages.push({
+//                 "to": querySnapshot.data().token,
+//                 "sound": "default",
+//                 "title":"you have a message!",
+//                 "body": "go to " + data.roomName
+//             });
+
+//             //Post it to expo
+            
+//             fetch('https://exp.host/--/api/v2/push/send', {
+//                 method: 'POST',
+//                 headers: {
+//                     'Accept': 'application/json',
+//                     'Content-Type': 'application/json',
+//                 },
+//                 body: JSON.stringify(messages)
+//             });
+            
+            
+
+//             //Set has chat notifications to true
+//             admin.firestore()
+//             .collection('users')
+//             // .doc(doc.data().uid)
+//             .doc(querySnapshot.id)
+//             .set({ hasChatNotifications: true }, {merge: true})
+
+//             //Create a new collection and add it
+//             admin.firestore()
+//             .collection('users')
+//             // .doc(doc.data().uid)
+//             .doc(querySnapshot.id)
+//             .collection("chatNotifications")
+//             .doc(data.roomName)
+//             .set({ hasChatNotifications: true }, {merge: true})
+
+//             return (
+//                 "notification written"
+//             )
+            
+//         // })
+//     })
+//     .catch(function(error) {
+//         console.error("Error finding user: ", error);
+//     });
+
+//     return (
+//         true
+//     )
+// });
+
+
 
 
 

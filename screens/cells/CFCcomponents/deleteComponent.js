@@ -27,16 +27,19 @@ class CommentDeleteComponent extends React.Component {
             commentID: this.props.commentID,
             currentCommentCount: 0,
             posterUID: " ",
-            userLikesCount: 0
+            userLikesCount: 0,
+            replyCount: 0
         }
         
     }
 
     componentDidMount() {
         this.getCurrentCommentsCount()
+        this.getReplyCount();
     }
     componentDidUpdate(){
         this.getCurrentCommentsCount();
+        this.getReplyCount();
     }
 
     getCurrentCommentsCount = async() => {
@@ -54,6 +57,24 @@ class CommentDeleteComponent extends React.Component {
             }
         }.bind(this))
     }
+    //count of reply ocunt 
+    getReplyCount = async() => {
+        await Firebase.firestore()
+        .collection('comments')
+        .doc(this.state.postID)
+        .collection('comments')
+        .doc(this.state.commentID) 
+        .get()
+        .then(function(doc){
+            if(doc.exists){
+                this.setState({
+                    replyCount: doc.data().replyCount
+                })
+            } else{
+                console.log("No such document for getting replyCount.");
+            }
+        }.bind(this));
+    }
 
     //Lower comment count in global post
     //SOme fucking issue here that I cant sort out
@@ -62,7 +83,7 @@ class CommentDeleteComponent extends React.Component {
         .collection('globalPosts')
         .doc(this.state.postID)
         .set ({
-            commentsCount: this.state.currentCommentCount - 1
+            commentsCount: this.state.currentCommentCount - this.state.replyCount - 1
         }, { merge: true })
         
     }

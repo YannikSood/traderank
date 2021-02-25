@@ -5,6 +5,9 @@ import CommentUserComponent from './CFCcomponents/userCommentComponent'
 import CommentReplyLikeComponent from './CRCcomponents/comRepLike'
 import CommentDeleteComponent from './CFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
+import { Entypo } from '@expo/vector-icons';
+import ReplyCommentComponent from './CRCcomponents/commentReplyComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //TODO
@@ -29,6 +32,7 @@ class CommentReplyCellClass extends React.Component{
             replyingToUID: this.props.replyingToUID,
             replyingToUsername: this.props.replyingToUsername,
             showDeleteComponent: false,
+            isReplying: false
             // button: this.props.button,
         }
     }
@@ -39,7 +43,18 @@ class CommentReplyCellClass extends React.Component{
         }
     }
 
+   
+
     render() {
+        let replyData = {
+            commentID: this.props.commentID,
+            topCommentID: this.props.topCommentID,
+            postID: this.props.postID,
+            replierAuthorUID: this.props.replierAuthorUID,
+            replierUsername: this.props.replierUsername,
+            replyingToUID: this.props.replyingToUID,
+            replyingToUsername: this.props.replyingToUsername,
+        }
         if (this.state.isLoading) {
             return (
                 <View style= {styles.commentFeedCell} >
@@ -50,6 +65,8 @@ class CommentReplyCellClass extends React.Component{
         if (this.state.showDeleteComponent) {
             return (
                 <View style={ styles.commentFeedCell }>
+                    
+                    <View style = {styles.lineStyle} />
                     
                         <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
@@ -67,6 +84,20 @@ class CommentReplyCellClass extends React.Component{
                         
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
+
+                        <View style={{paddingLeft: 15, paddingRight: 15}}>
+                        <Entypo name="reply" size={22} color="white" onPress={() =>  {
+                                     this.setState({isReplying: true});
+                            }} />
+                         
+   
+
+                        </View>
+                        {this.state.isReplying && 
+                                <ReplyCommentComponent replyData={replyData} />
+                                
+                        }
+
 
                         {/* <View style={{flexDirection: 'row'}}>
                             <CommentReplyLikeComponent  
@@ -95,6 +126,8 @@ class CommentReplyCellClass extends React.Component{
 
                 <View  style={ styles.commentFeedCell }>
                     
+                    <View style = {styles.lineStyle} />
+                    
                         <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
                                 key={this.state.commentID}
@@ -114,6 +147,26 @@ class CommentReplyCellClass extends React.Component{
 
                         <Text style = {styles.commentTextColor}>{this.state.commentText}</Text>  
 
+                        <View style={{paddingLeft: 15, paddingRight: 15}}>
+
+                            
+                        <Entypo name="reply" size={22} color="white" onPress={() =>  {
+                                     this.setState({isReplying: true});                
+                            }} />
+
+
+                        </View>
+
+                        
+                        {this.state.isReplying && 
+                               <ReplyCommentComponent replyData={replyData} />
+                        }
+
+
+              
+
+                        
+
                         {/* <View style={{flexDirection: 'row'}}>
 
                             <CommentReplyLikeComponent  
@@ -123,7 +176,7 @@ class CommentReplyCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
                         </View> */}
-                    
+
                     
                 </View>
                 
@@ -137,12 +190,12 @@ const styles = StyleSheet.create({
     
     commentFeedCell: {
         // backgroundColor: '#3F3F41',
-        paddingTop: 10,
+        // paddingTop: 10,
         backgroundColor: '#121212',
         flex: 1,
         width: Dimensions.get('window').width,
-        marginTop: 5,
-        borderBottomWidth: 1,
+        // marginTop: 5,
+        // borderBottomWidth: 1,
         borderRadius: 15,
         paddingLeft: 50
         
@@ -158,9 +211,11 @@ const styles = StyleSheet.create({
     },
     lineStyle:{
         borderWidth: 0.5,
-        borderColor:'#696969',
+        borderColor:'white',
         width: Dimensions.get('window').width,
-        // margin: 10
+        marginBottom: 10,
+        marginTop: 10,
+        marginLeft: 16
    },
    timeContainer: {
         paddingLeft: 10,

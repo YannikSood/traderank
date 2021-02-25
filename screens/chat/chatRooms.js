@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import * as Analytics from 'expo-firebase-analytics';
+import Firebase from '../../firebase'
 
 class ChatRooms extends React.Component {
     constructor(props) {
@@ -11,10 +12,21 @@ class ChatRooms extends React.Component {
     }
 
     componentDidMount () {
+        this.setChatNotifications()
         Analytics.setCurrentScreen("ChatRooms")
     }
 
+    setChatNotifications = () => {
+        Firebase.firestore()
+        .collection('users')
+        .doc(Firebase.auth().currentUser.uid)
+        .set({ hasChatNotifications: false }, {merge: true})
+    }
     
+    // renderChatRoomBadge = () => {
+    //     // const hasLoungeNotifications
+    // }
+
     render() {
         return (
             <View style={styles.container}>

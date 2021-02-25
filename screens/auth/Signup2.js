@@ -112,6 +112,7 @@ class Signup2 extends React.Component {
 
     //---------------------------------------------------------------
 
+    //ADDING A USERNAME TO 
     addUsername = () => {
         const addUsername = Firebase.functions().httpsCallable('addUsername');
         addUsername({ 

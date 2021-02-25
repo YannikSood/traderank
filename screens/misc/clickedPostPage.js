@@ -10,10 +10,10 @@ import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
 import { Entypo } from '@expo/vector-icons';
+// import ReplyButton from './replyButton';
 
 const mapStateToProps = (state) => {
     return {
@@ -299,6 +299,21 @@ class ClickedPostPage extends React.Component {
 
     render() {
         const { navigation } = this.props;
+        /*
+                button = {
+                    <ReplyButton
+                     postID = {this.state.postID}
+                     commentID={item.key}
+                     replyingToUsername = {item.commentorUsername}
+                     replyTo={item.commentorUsername}
+                     replyingToUID={item.commentorUID}
+                     replierUsername={this.props.user.username}
+                     replierAuthorUID={this.state.currentUser}
+                     commentLikes={0}
+
+                    />
+                } 
+        */
         const renderItem = ({ item}) => (
 
             <CommentCellClass 
@@ -312,7 +327,8 @@ class ClickedPostPage extends React.Component {
                 commentID = {item.key}
                 postID = {this.state.postID}
                 replyCount={item.replyCount}
-                button = {<TouchableOpacity
+                button = {
+                    <TouchableOpacity
                     onPress={() =>{
                         //StoreReplyTo
                        const storeReplyTo = async (value) => {
@@ -394,8 +410,7 @@ class ClickedPostPage extends React.Component {
                         
                         </View>
                     </TouchableOpacity>
-                         
-                }
+                } 
                     
                 //pass a reply button as a prop
 

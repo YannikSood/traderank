@@ -51,6 +51,12 @@ class Chat extends React.Component {
     }
 
     getCurrentMessages = async() => {
+        Firebase.firestore()
+        .collection('users')
+        .doc(Firebase.auth().currentUser.uid)
+        .collection("chatNotifications")
+        .doc(this.state.roomName)
+        .set({ hasChatNotifications: false }, {merge: true})
 
         await Firebase
         .firestore()
@@ -130,10 +136,24 @@ class Chat extends React.Component {
             
         })
 
-         Analytics.logEvent(`ChatMessageSent_${this.state.roomName}`)
+        Analytics.logEvent(`ChatMessageSent_${this.state.roomName}`)
         
-        // .then(() => this.getCurrentMessages())
+        // this.sendChatNotification()
 
+    }
+
+    sendChatNotification = async() => {
+        const sendChatNotifications = Firebase.functions().httpsCallable('sendChatNotifications');
+        sendChatNotifications({
+            senderUID: this.state.currentUser.id,
+            roomName: this.state.roomName
+        })
+        .then((result) => {
+            console.log(result)
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     }
 
     getProfile = async(user) => {

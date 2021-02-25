@@ -275,11 +275,11 @@ class App extends React.Component {
                   headerRight: () => (
                     <View style={{flexDirection: "row"}}>
 
-                       {/* <TouchableOpacity 
+                       <TouchableOpacity 
                         style={{paddingRight: 20}}
                         onPress={() => navigation.navigate('Search')}>
                         <Ionicons name="ios-search" size={25} color="white" />
-                      </TouchableOpacity>  */}
+                      </TouchableOpacity> 
 
                        <TouchableOpacity 
                           style={{paddingRight: 20}}
@@ -312,6 +312,28 @@ function renderBadge () {
   .onSnapshot(function(doc) { 
 
       if (doc.data().hasNotifications) {
+
+          setBadge(true)
+      }
+      else {
+          setBadge(null)
+      }
+  })
+
+  return badge
+
+}
+
+function renderChatBadge () {
+
+  const [badge, setBadge] = useState(null);
+
+  Firebase.firestore()
+  .collection('users')
+  .doc(Firebase.auth().currentUser.uid)
+  .onSnapshot(function(doc) { 
+
+      if (doc.data().hasChatNotifications) {
 
           setBadge(true)
       }
@@ -360,6 +382,7 @@ function Tabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-chatbubbles" size={25} color={color} />
           ),
+          tabBarBadge: renderChatBadge()
         }}
       />
 

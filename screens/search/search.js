@@ -24,20 +24,20 @@ class Search extends React.Component {
     makeRequest = async() => {
         // this.setState({isLoading: true})
 
-        await Firebase.firestore()
-        .collection('usernames')
-        .doc(this.state.search.toLowerCase().trim()) 
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                console.log('user exists')
-                this.setState({isLoading: false})
-            }
-            else {
-                console.log('user doesnt exist')
-                this.setState({isLoading: false})
-            }
-        })
+        // await Firebase.firestore()
+        // .collection('usernames')
+        // .doc(this.state.search.toLowerCase().trim()) 
+        // .get()
+        // .then((doc) => {
+        //     if (doc.exists) {
+        //         console.log('user exists')
+        //         this.setState({isLoading: false})
+        //     }
+        //     else {
+        //         console.log('user doesnt exist')
+        //         this.setState({isLoading: false})
+        //     }
+        // })
     }
 
     render() {
