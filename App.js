@@ -275,11 +275,11 @@ class App extends React.Component {
                   headerRight: () => (
                     <View style={{flexDirection: "row"}}>
 
-                       {/* <TouchableOpacity 
+                       <TouchableOpacity 
                         style={{paddingRight: 20}}
                         onPress={() => navigation.navigate('Search')}>
                         <Ionicons name="ios-search" size={25} color="white" />
-                      </TouchableOpacity>  */}
+                      </TouchableOpacity> 
 
                        <TouchableOpacity 
                           style={{paddingRight: 20}}
