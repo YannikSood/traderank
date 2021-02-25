@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     },
   });
 
-const InfiniteHits = ({ hits, hasMore, refineNext }) => (
+const InfiniteHits = ({ hits, hasMore, refineNext, navigation, index }) => (
   <FlatList
     data={hits}
     keyExtractor={item => item.objectID}
@@ -26,7 +26,7 @@ const InfiniteHits = ({ hits, hasMore, refineNext }) => (
     onEndReached={() => hasMore && refineNext()}
     renderItem={({ item }) => (
       <View style={styles.item}>
-        <Highlight attribute="username" hit={item} />
+        <Highlight key={index} attribute="username" hit={item} navigation={navigation} />
       </View>
     )}
   />

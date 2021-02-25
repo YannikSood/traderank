@@ -22,7 +22,8 @@ class Search extends Component {
             search: '',
             isLoading: false,
             userUID: '',
-            searchState: {}
+            searchState: {},
+            navigation: this.props.navigation
         }
     }
     root = {
@@ -51,10 +52,10 @@ class Search extends Component {
                             indexName="usernames"
                             root={this.root}
                     >
-                         <VirtualRefinementList attribute="username" />
+                         {/* <VirtualRefinementList attribute="username" /> */}
                     <SearchBox />
                     <RefinementList attribute="username" limit={5} />
-                        <InfiniteHits />
+                        <InfiniteHits navigation={this.state.navigation} />
                      </InstantSearch>
                                         
                 </View>

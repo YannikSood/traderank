@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectHighlight } from 'react-instantsearch-native';
-
-const Highlight = ({ attribute, hit, highlight }) => {
+import MiscUserComponent from '../cells/FollowCellComps/userComponent';
+const Highlight = ({ attribute, hit, highlight, navigation }) => {
   const highlights = highlight({
     highlightProperty: '_highlightResult',
     attribute,
@@ -18,9 +18,9 @@ const Highlight = ({ attribute, hit, highlight }) => {
         };
 
         return (
-          <Text key={index} style={style}>
-            {value}
-          </Text>
+        <View>
+  <MiscUserComponent key={index} uid = {hit.uid} navigation = {navigation} />  
+        </View>
         );
       })}
     </Text>

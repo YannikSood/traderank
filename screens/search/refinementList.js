@@ -55,9 +55,6 @@ const RefinementList = ({ items, refine }) => (
             style={styles.item}
           >
             <Text style={labelStyle}>{item.username}</Text>
-            {/* <View style={styles.itemCount}>
-              <Text style={styles.itemCountText}>{item.count}</Text>
-            </View> */}
           </TouchableOpacity>
         );
       })}
