@@ -9,14 +9,6 @@ import firebase from 'firebase/app';
 import { connect } from 'react-redux';
 import { authUser } from './../../redux/app-redux';
 
-// const functions = require('../../firebase-functions');
-// const admin = require('../../firebase-admin');
-
-// const algoliasearch = require('algoliasearch');
-// const client = algoliasearch('5BS4R91W97', '1dd2a5427b3daed5059c1dc62bdd2197');
-// const ALGOLIA_INDEX_NAME = 'username';
-// const index = client.initIndex('usernames');
-
 const mapStateToProps = (state) => {
     return {
         user: state.user
@@ -120,34 +112,19 @@ class Signup2 extends React.Component {
                     routes: [{ name: 'Tabs' }],
                 }))
                 .then(() => this.setState({ isLoading: false}))
-
-                //Update algolia with new username  - METHOD 1:
-                // const database = firebase.database();
-                // const usersRef = database.ref('/usernames');
-                // usersRef.on('child_added', addOrUpdateIndexRecord);
-
-                // Update the search index every time a blog post is written.
-                //METHOD 2:
-
-                // exports.onNoteCreated = functions.firestore.document('usernames/{UID}').onCreate((snap, context) => {
-                //     // Get the note document
-                //     const username = snap.data();
                 
-                //     // Add an 'objectID' field which Algolia requires
-                //     note.objectID = context.params.noteId;
-                
-                //     // Write to the algolia index
-                //     const index = client.initIndex(ALGOLIA_INDEX_NAME);
-                //     return index.saveObject(username);
-                // });
-
-
-    
-
-                
-      
-                    
-                
+                //Add to algolia
+                const addUserToAlgolia = Firebase.functions().httpsCallable('addUserToAlgolia');
+                addUserToAlgolia({
+                    ussername: this.state.username.trim().replace(/[^\w\s]/gi, ""),
+                    uid:Firebase.auth().currentUser.uid
+                })
+                .then((result) => {
+                    console.log(result)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
            }
            catch(error) {
                Alert.alert(

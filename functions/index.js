@@ -533,6 +533,36 @@ exports.sendCommentReplyNotification = functions.https.onCall((data, context) =>
     )
 });
 
+//Function to add new user to algolio 
+exports.addUserToAlgolia = functions.https.onCall((data, context) => {
+    // admin.firestore()
+    // .collection('usernames')
+    // .doc(data.username)
+    // .get()
+    // .then(function(doc) {
+    //     if(doc.exists){
+
+    //     } else{
+    //         console.log("No such document!");
+    //         return
+    //     }
+    // }).catch(function(error){
+    //     console.error("Error finding user: ", error);
+    // })
+    const record = {
+        "username": data.username,
+        "uid": data.uid
+    };
+    index
+        .saveObject(record)
+        .then(() => {
+            console.log('Firebase object indexed in Algolia', data.username);
+        })
+        .catch(err => {
+            console.log('Error when indexing contact into Algolia', error);
+        })
+
+}
 
 
 // //Function to send notifications for comment replies
