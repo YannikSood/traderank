@@ -40,7 +40,7 @@ class ChatRooms extends React.Component {
         return (
             <View style={styles.container}>
             
-                    <View style = {{flexDirection: 'column'}}>
+                    <View style = {{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
 
                         <TouchableOpacity 
                             onPress={() =>
@@ -79,6 +79,8 @@ class ChatRooms extends React.Component {
                                 <Text style={styles.buttonText}>📌 feedback </Text>
                         </TouchableOpacity>
 
+                        <Text style={styles.tempText}> more rooms coming soon 😁 </Text>
+
 
                     </View>
 
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#000000',
-        paddingBottom: Dimensions.get('window').height - 100
+        paddingBottom: Dimensions.get('window').height - 450
     },
     buttonText: {
         fontSize: 20,
@@ -150,6 +152,13 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         paddingBottom: 20,
         paddingLeft: 10
+    },
+    tempText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        justifyContent: 'center',
+        paddingTop: 24,
     }
 })
 
