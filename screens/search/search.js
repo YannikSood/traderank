@@ -74,9 +74,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#000000'
     },
     searchContainer: {
-        backgroundColor: '#121212',
-        position: 'absolute',
-        top: 0
+        backgroundColor: '#121212'
+        // position: 'absolute',
+        // top: 0
     },
     bioText: {
         fontSize: 16,

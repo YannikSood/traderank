@@ -19,7 +19,7 @@ const Highlight = ({ attribute, hit, highlight, navigation }) => {
 
         return (
         <View>
-  <MiscUserComponent key={index} uid = {hit.uid} navigation = {navigation} />  
+            <MiscUserComponent uid = {hit.uid} navigation = {navigation} />  
         </View>
         );
       })}
