@@ -28,7 +28,6 @@ class CommentReplyDeleteComponent extends React.Component {
             commentReplyID: this.props.commentReplyID, //Sub level comment ID
             currentCommentCount: 0,
             posterUID: " ",
-            userLikesCount: 0
         }
         
     }

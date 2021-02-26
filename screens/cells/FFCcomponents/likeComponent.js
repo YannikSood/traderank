@@ -29,7 +29,7 @@ class LikeComponent extends React.Component {
             isAlreadyLiked: false,
             likesCount: 0,
             posterUID: " ",
-            userLikesCount: 0,
+            userScore: 0,
             notificationUID: ""
         }
         
@@ -67,7 +67,7 @@ class LikeComponent extends React.Component {
         .then(function(doc) {
             if (doc.exists) {
                 this.setState ({
-                    userLikesCount: doc.data().likesCount
+                    userScore: doc.data().score
                 })
             } else {
                 // doc.data() will be undefined in this case
@@ -134,15 +134,15 @@ class LikeComponent extends React.Component {
             })
         )
 
-        await Firebase.firestore()
+        Firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .set ({
-            likesCount: this.state.userLikesCount + 1
+            score: this.state.userScore + 1
         }, { merge: true })
         .then(() =>
             this.setState ({
-                userLikesCount: this.state.userLikesCount + 1
+                userScore: this.state.userScore + 1
             })
         )
     }
@@ -160,17 +160,6 @@ class LikeComponent extends React.Component {
             })
         )
 
-        await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .set ({
-            likesCount: this.state.userLikesCount - 1
-        }, { merge: true })
-        .then(() =>
-            this.setState ({
-                userLikesCount: this.state.userLikesCount - 1
-            })
-        )
     }
 
     //Add to the likes lists in the database

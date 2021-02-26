@@ -35,6 +35,8 @@ class Search extends Component {
         },
       };
 
+
+
     render() {
 
         if (this.state.isLoading) {

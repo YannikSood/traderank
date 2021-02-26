@@ -33,7 +33,7 @@ class CommentComponent extends React.Component {
             commentText: "",
             commentUID: " ",
             commentsCount: 0,
-            userCommentsCount: 0,
+            userScore: 0,
             isLoading:false,
             replyTo:this.props.replyTo,
             replyData: this.props.replyData,
@@ -127,7 +127,7 @@ class CommentComponent extends React.Component {
         .then(function(doc) {
             if (doc.exists) {
                 this.setState ({
-                    userCommentsCount: doc.data().commentsCount
+                    userScore: doc.data().score
                 })
             } else {
                 // doc.data() will be undefined in this case
@@ -225,11 +225,11 @@ class CommentComponent extends React.Component {
             .collection('users')
             .doc(this.state.commentorUID)
             .set ({
-                commentsCount: this.state.userCommentsCount + 1
+                score: this.state.userScore + 1
             }, { merge: true })
             .then(() =>
                 this.setState ({
-                    userCommentsCount: this.state.userCommentsCount + 1,
+                    userScore: this.state.userScore + 1,
                     isLoading:false
                 })
             ).then(() => this.updateCommentCount())
