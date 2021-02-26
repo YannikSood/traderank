@@ -5,6 +5,7 @@ import SearchBox from './searchBox';
 import InfiniteHits from './infiniteHits';
 import RefinementList from './refinementList';
 import algoliasearch from 'algoliasearch/lite';
+import Highlight from './highlight';
 
 const VirtualRefinementList = connectRefinementList(() => null);
 
@@ -56,9 +57,12 @@ class Search extends Component {
                     >
                          {/* <VirtualRefinementList attribute="username" /> */}
                     <SearchBox />
-                    <RefinementList attribute="username" limit={5} />
+                        {/* <RefinementList attribute="username" limit={5} /> */}
+
                         <InfiniteHits navigation={this.state.navigation} />
-                     </InstantSearch>
+
+                        {/* <Highlight key={index} attribute="username" hit={item} navigation={navigation} /> */}
+                     </InstantSearch> 
                                         
                 </View>
             </View>
@@ -70,14 +74,14 @@ class Search extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         justifyContent: 'center',
         alignItems: "center",
         backgroundColor: '#000000'
     },
     searchContainer: {
         backgroundColor: '#121212',
-        position: 'absolute',
+        // position: 'absolute',
         top: 0
     },
     bioText: {

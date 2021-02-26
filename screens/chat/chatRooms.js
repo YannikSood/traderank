@@ -1,6 +1,4 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
-import * as Analytics from 'expo-firebase-analytics';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, FlatList} from 'react-native';
 import * as Analytics from 'expo-firebase-analytics';
 import Firebase from '../../firebase'

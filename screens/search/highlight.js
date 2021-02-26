@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import { connectHighlight } from 'react-instantsearch-native';
 import MiscUserComponent from '../cells/FollowCellComps/userComponent';
 const Highlight = ({ attribute, hit, highlight, navigation }) => {
+
   const highlights = highlight({
     highlightProperty: '_highlightResult',
     attribute,
     hit,
   });
+
   return (
     <Text>
       {highlights.map(({ value, isHighlighted }, index) => {
@@ -19,7 +21,7 @@ const Highlight = ({ attribute, hit, highlight, navigation }) => {
 
         return (
         <View>
-  <MiscUserComponent key={index} uid = {hit.uid} navigation = {navigation} />  
+            <MiscUserComponent uid = {hit.uid} navigation = {navigation} />  
         </View>
         );
       })}
