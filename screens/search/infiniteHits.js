@@ -3,14 +3,16 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectInfiniteHits } from 'react-instantsearch-native';
 import Highlight from './highlight';
+import MiscUserComponent from '../cells/FollowCellComps/userComponent';
 
 const styles = StyleSheet.create({
-    separator: {
-      borderBottomWidth: 1,
-      borderColor: '#ddd',
-    },
+    // separator: {
+    //   borderBottomWidth: 1,
+    //   borderColor: '#ddd',
+    //   // paddingBottom: 5,
+    // },
     item: {
-      padding: 10,
+      paddingTop: 10,
       flexDirection: 'column',
     },
     titleText: {
@@ -20,13 +22,14 @@ const styles = StyleSheet.create({
 
 const InfiniteHits = ({ hits, hasMore, refineNext, navigation, index }) => (
   <FlatList
-    data={hits}
-    keyExtractor={item => item.objectID}
-    ItemSeparatorComponent={() => <View style={styles.separator} />}
-    onEndReached={() => hasMore && refineNext()}
-    renderItem={({ item }) => (
-      <View style={styles.item}>
-        <Highlight key={index} attribute="username" hit={item} navigation={navigation} />
+      data={hits}
+      keyExtractor={item => item.uid}
+      // ItemSeparatorComponent={() => <View style={styles.separator} />}
+      onEndReached={() => hasMore && refineNext()}
+      renderItem={({ item }) => (
+
+      <View>
+        <MiscUserComponent uid = {item.uid} navigation = {navigation} />  
       </View>
     )}
   />

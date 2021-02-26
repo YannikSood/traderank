@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, TextInput, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
-import { connectSearchBox } from 'react-instantsearch-native';
+import { connectSearchBox} from 'react-instantsearch-native';
 
 const styles = StyleSheet.create({
   container: {
