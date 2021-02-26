@@ -134,7 +134,7 @@ class LikeComponent extends React.Component {
             })
         )
 
-        await Firebase.firestore()
+        Firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .set ({
@@ -160,17 +160,6 @@ class LikeComponent extends React.Component {
             })
         )
 
-        await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .set ({
-            score: this.state.userScore - 1
-        }, { merge: true })
-        .then(() =>
-            this.setState ({
-                userScore: this.state.userScore - 1
-            })
-        )
     }
 
     //Add to the likes lists in the database
