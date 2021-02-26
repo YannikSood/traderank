@@ -10,6 +10,7 @@ import Firebase from './firebase.js'
 
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons';
 import { Provider } from 'react-redux'
 import { store } from './redux/app-redux.js'
 
@@ -60,6 +61,9 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const CreateStack = createStackNavigator();
 const TopTab = createMaterialTopTabNavigator();
+
+
+const ChatStack = createStackNavigator();
 
 
 const LBTopTab = createMaterialTopTabNavigator();
@@ -324,6 +328,28 @@ function renderBadge () {
 
 }
 
+function renderChatBadge () {
+
+  const [badge, setBadge] = useState(null);
+
+  Firebase.firestore()
+  .collection('users')
+  .doc(Firebase.auth().currentUser.uid)
+  .onSnapshot(function(doc) { 
+
+      if (doc.data().hasChatNotifications) {
+
+          setBadge(true)
+      }
+      else {
+          setBadge(null)
+      }
+  })
+
+  return badge
+
+}
+
  
 //Bottom Tabs
 function Tabs() {
@@ -354,14 +380,16 @@ function Tabs() {
 
       <Tab.Screen 
         name="ChatRooms" 
-        component={ChatRooms} 
+        component={chatRoomsStackView} 
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-chatbubbles" size={25} color={color} />
           ),
-        }}
-      />
+          // tabBarBadge: renderChatBadge(),
+          
+          
+        }}/>
 
       
 
@@ -760,6 +788,44 @@ function globalFeedStackView() {
               }}
             />
       </GlobalFeedStack.Navigator>
+   
+  )
+}
+
+function chatRoomsStackView() {
+  return (
+      <ChatStack.Navigator initialRouteName="ChatRooms">
+          <ChatStack.Screen 
+              name="ChatRooms" 
+              component={ChatRooms} 
+              options={({ navigation }) => ({
+                headerRight: () => (
+                  <View style={{flexDirection: "row"}}>
+      
+                     <TouchableOpacity 
+                      style={{paddingRight: 20}}
+                      // onPress={() => navigation.navigate('Search')}
+                      >
+                      <MaterialIcons name="add-box" size={24} color="white" />
+                    </TouchableOpacity> 
+      
+                  </View>
+                  
+                ),
+                title: " ",
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 24,
+                  color: '#FFFFFF'
+                },
+                headerStyle: {
+                  backgroundColor: '#000000',
+                  shadowColor: 'transparent'
+                },
+                
+              })}/>
+            
+      </ChatStack.Navigator>
    
   )
 }

@@ -66,6 +66,8 @@ class CommentReplyCellClass extends React.Component{
             return (
                 <View style={ styles.commentFeedCell }>
                     
+                    <View style = {styles.lineStyle} />
+                    
                         <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
                                 key={this.state.commentID}
@@ -124,6 +126,8 @@ class CommentReplyCellClass extends React.Component{
 
                 <View  style={ styles.commentFeedCell }>
                     
+                    <View style = {styles.lineStyle} />
+                    
                         <View style={{flexDirection: 'row', paddingLeft: 10}}>
                             <CommentUserComponent  
                                 key={this.state.commentID}
@@ -153,6 +157,7 @@ class CommentReplyCellClass extends React.Component{
 
                         </View>
 
+                        
                         {this.state.isReplying && 
                                <ReplyCommentComponent replyData={replyData} />
                         }
@@ -171,7 +176,7 @@ class CommentReplyCellClass extends React.Component{
                                 navigation={this.props.navigation} 
                             />
                         </View> */}
-                    
+
                     
                 </View>
                 
@@ -190,7 +195,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: Dimensions.get('window').width,
         // marginTop: 5,
-        borderBottomWidth: 1,
+        // borderBottomWidth: 1,
         borderRadius: 15,
         paddingLeft: 50
         
@@ -206,9 +211,11 @@ const styles = StyleSheet.create({
     },
     lineStyle:{
         borderWidth: 0.5,
-        borderColor:'#696969',
+        borderColor:'white',
         width: Dimensions.get('window').width,
-        // margin: 10
+        marginBottom: 10,
+        marginTop: 10,
+        marginLeft: 16
    },
    timeContainer: {
         paddingLeft: 10,
