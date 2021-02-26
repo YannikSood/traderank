@@ -35,6 +35,12 @@ class CommentLikeComponent extends React.Component {
         }
         
     }
+    shouldComponentUpdate(nextProps, nextState){
+        if(this.state.commentLikes !== nextState.commentLikes){
+            return true;
+        }
+        return false;
+    }
 
     //Do this every time the component mounts
     //----------------------------------------------------------

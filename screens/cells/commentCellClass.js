@@ -40,6 +40,21 @@ class CommentCellClass extends React.Component{
             this.setState({ showDeleteComponent: true })
         }
     }
+    shouldComponentUpdate(nextProps, nextState){
+        if(this.props.commentLikes !== nextProps.commentLikes){
+            return true;
+        }
+        if(this.state.commentLikes !== nextState.commentLikes){
+            return true;
+        }
+        if(this.props.replyCount !== nextProps.replyCount){
+            return true;
+        }
+        if(this.state.replyCount !== nextState.replyCount){
+            return true;
+        }
+        return false;
+    }
     // componentDidUpdate(){
     //     //trying to update on submit, may neeed to remove
     //     this.getFirstFiveReplies();

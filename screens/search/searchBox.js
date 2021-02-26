@@ -23,11 +23,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
 });
-const ClearRefinements = ({ items, refine }) => (
-    <button onClick={() => refine(items)} disabled={!items.length}>
-      Clear all refinements
-    </button>
-  );
 const SearchBox = ({ currentRefinement, refine }) => {    
   return (
     <View style={styles.container}>
@@ -37,7 +32,6 @@ const SearchBox = ({ currentRefinement, refine }) => {
         value={currentRefinement}
         placeholder="Search for people..."
       />
-      <ClearRefinements />
     </View>
   )
 };
