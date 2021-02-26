@@ -557,12 +557,13 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
         .saveObject(record)
         .then(() => {
             console.log('Firebase object indexed in Algolia', data.username);
+            return
         })
         .catch(err => {
-            console.log('Error when indexing contact into Algolia', error);
+            console.log('Error when indexing contact into Algolia', err);
         })
 
-}
+});
 
 
 // //Function to send notifications for comment replies
