@@ -1,44 +1,41 @@
-import React from 'react'
-import { View, StyleSheet, ActivityIndicator, Text } from 'react-native'
-import Firebase from '../../firebase'
-import { SearchBar } from 'react-native-elements';
+import React, { Component} from 'react';
+import { StyleSheet, Text, View, Container, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { InstantSearch, connectRefinementList } from 'react-instantsearch-native';
+import SearchBox from './searchBox';
+import InfiniteHits from './infiniteHits';
+import RefinementList from './refinementList';
+import algoliasearch from 'algoliasearch/lite';
 
+const VirtualRefinementList = connectRefinementList(() => null);
 
-class Search extends React.Component {
+//Need to put this in secret file and add that to .gitignore
+const searchClient = algoliasearch(
+    '5BS4R91W97', 
+    '1dd2a5427b3daed5059c1dc62bdd2197'
+  );
+
+class Search extends Component {
     
     constructor(props) {
         super(props)
         this.state = {
             search: '',
             isLoading: false,
-            userUID: ''
+            userUID: '',
+            searchState: {},
+            navigation: this.props.navigation
         }
     }
+    root = {
+        Root: View,
+        props: {
+          style: {
+            flex: 1,
+          },
+        },
+      };
 
-    //---------------------------------------------------------------
-    updateSearch = (search) => {
-        this.setState({ search });
-        this.makeRequest()
-    };
 
-    makeRequest = async() => {
-        // this.setState({isLoading: true})
-
-        // await Firebase.firestore()
-        // .collection('usernames')
-        // .doc(this.state.search.toLowerCase().trim()) 
-        // .get()
-        // .then((doc) => {
-        //     if (doc.exists) {
-        //         console.log('user exists')
-        //         this.setState({isLoading: false})
-        //     }
-        //     else {
-        //         console.log('user doesnt exist')
-        //         this.setState({isLoading: false})
-        //     }
-        // })
-    }
 
     render() {
 
@@ -52,22 +49,24 @@ class Search extends React.Component {
         return (
             <View style={styles.container}>
                 <View style = {styles.searchContainer}>
-                    <SearchBar
-                        containerStyle={{backgroundColor: '#121212'}}
-                        placeholder="Find a user... coming soon"
-                        onChangeText={this.updateSearch}
-                        value={this.state.search}
-                        platform="ios"
-                        lightTheme = {true}
-                        showLoading = {this.state.isLoading}
-                    />
+                    <InstantSearch
+                            searchClient={searchClient} 
+                            indexName="usernames"
+                            root={this.root}
+                    >
+                         {/* <VirtualRefinementList attribute="username" /> */}
+                    <SearchBox />
+                    <RefinementList attribute="username" limit={5} />
+                        <InfiniteHits navigation={this.state.navigation} />
+                     </InstantSearch>
+                                        
                 </View>
-                
             </View>
         )
         
     }
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -87,6 +86,6 @@ const styles = StyleSheet.create({
         padding: 20,
         color: '#000000'
     },
-})
+});
 
 export default Search;

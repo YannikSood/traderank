@@ -1,4 +1,6 @@
 import React from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import * as Analytics from 'expo-firebase-analytics';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, FlatList} from 'react-native';
 import * as Analytics from 'expo-firebase-analytics';
 import Firebase from '../../firebase'
@@ -12,6 +14,11 @@ class ChatRooms extends React.Component {
     }
 
     componentDidMount () {
+        Analytics.setCurrentScreen("ChatRooms")
+    }
+
+    
+    render() {
         this.setChatNotifications()
         Analytics.setCurrentScreen("ChatRooms")
     }
@@ -46,6 +53,7 @@ class ChatRooms extends React.Component {
                             }
                             style={styles.subscriptionCell}>
                                 <Text style={styles.buttonText}>📌 announcements </Text>
+
                         </TouchableOpacity>
 
                         <TouchableOpacity 
@@ -100,7 +108,6 @@ class ChatRooms extends React.Component {
                 />
             </View>   
         )
-        
     }
 }
 
