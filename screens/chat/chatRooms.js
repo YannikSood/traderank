@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, FlatList} from 'react-native';
 import * as Analytics from 'expo-firebase-analytics';
 import Firebase from '../../firebase'
 
@@ -32,10 +32,6 @@ class ChatRooms extends React.Component {
     }
 
     renderSubscriptionHeader = () => {
-        
-    }
-
-    render() {
         return (
             <View style={styles.container}>
             
@@ -48,8 +44,8 @@ class ChatRooms extends React.Component {
                                     roomName: "announcements"
                                 })
                             }
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>announcements 📣</Text>
+                            style={styles.subscriptionCell}>
+                                <Text style={styles.buttonText}>📌 announcements </Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
@@ -59,9 +55,9 @@ class ChatRooms extends React.Component {
                                     roomName: "daily discussion"
                                 })
                             }
-                            style={styles.button}>
+                            style={styles.subscriptionCell}>
 
-                                <Text style={styles.buttonText}>daily discussion 🚀</Text>
+                                <Text style={styles.buttonText}>📌 daily discussion </Text>
 
                         </TouchableOpacity>
 
@@ -73,8 +69,8 @@ class ChatRooms extends React.Component {
                                     roomName: "feedback"
                                 })
                             }
-                            style={styles.button}>
-                                <Text style={styles.buttonText}>feedback 🧪</Text>
+                            style={styles.subscriptionCell}>
+                                <Text style={styles.buttonText}>📌 feedback </Text>
                         </TouchableOpacity>
 
 
@@ -85,6 +81,25 @@ class ChatRooms extends React.Component {
 
             </View>
         )
+    }
+
+    render() {
+        return (
+            <View style= {{backgroundColor: '#000000'}}>
+                <FlatList
+                    // data={this.state.userPostsArray}
+                    // renderItem={renderItem}
+                    // keyExtractor={item => item.key}
+                    ListHeaderComponent={this.renderSubscriptionHeader}
+                    contentContainerStyle={{ paddingBottom: 50 }}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    // onRefresh={this._refresh}
+                    // refreshing={this.state.isLoading}
+                    // onEndReached={() => {this.getMore()}}
+                />
+            </View>   
+        )
         
     }
 }
@@ -94,7 +109,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#000000'
+        backgroundColor: '#000000',
+        paddingBottom: Dimensions.get('window').height - 100
     },
     buttonText: {
         fontSize: 20,
@@ -117,6 +133,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingBottom: 10,
         color: '#FFFFFF'
+    },
+    subscriptionCell : {
+        marginTop: 10,
+        borderBottomWidth: 1,
+        borderRadius: 15,
+        // flex: 1/3,
+        width: Dimensions.get('window').width,
+        backgroundColor: '#121212',
+        color: '#FFFFFF',
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingLeft: 10
     }
 })
 

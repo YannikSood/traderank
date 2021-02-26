@@ -27,7 +27,7 @@ class Chat extends React.Component {
     }
     //---------------------------------------------------------------
     async componentDidMount (){
-        console.log(this.state.roomName)
+        // console.log(this.state.roomName)
 
         let userUID = Firebase.auth().currentUser.uid
         // get user info from firestore

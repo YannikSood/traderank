@@ -66,8 +66,6 @@ class Signup2 extends React.Component {
                     postCount: 0,
                     bio: "",
                     userLevel: 0,
-                    commentsCount: 0,
-                    likesCount: 0,
                     score: 0,
                     signupDate: new Date()
                 })

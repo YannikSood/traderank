@@ -804,7 +804,8 @@ function chatRoomsStackView() {
       
                      <TouchableOpacity 
                       style={{paddingRight: 20}}
-                      onPress={() => navigation.navigate('Search')}>
+                      // onPress={() => navigation.navigate('Search')}
+                      >
                       <MaterialIcons name="add-box" size={24} color="white" />
                     </TouchableOpacity> 
       
