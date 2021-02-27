@@ -41,6 +41,12 @@ class CommentDeleteComponent extends React.Component {
         this.getCurrentCommentsCount();
         this.getReplyCount();
     }
+    shouldComponentUpdate(nextProps, nextState){
+        if(this.state.currentCommentCount!== nextState.currentCommentCount){
+            return true;
+        }
+        return false;
+    }
 
     getCurrentCommentsCount = async() => {
         await Firebase.firestore()
@@ -85,6 +91,12 @@ class CommentDeleteComponent extends React.Component {
         .set ({
             commentsCount: this.state.currentCommentCount - this.state.replyCount - 1
         }, { merge: true })
+        .then(() => {
+            this.setState({currentCommentsCount: this.state.currentCommentCount - this.state.replyCount - 1});
+        })
+        .catch(function(error){
+            console.error("Error lowering global comment count", error);
+        })
         
     }
 

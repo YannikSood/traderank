@@ -3,6 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Text,
 import Firebase from '../../firebase'
 import * as ImagePicker from 'expo-image-picker';
 import KeyboardSpacer from 'react-native-keyboard-spacer'
+import firebase from 'firebase/app';
 
 //redux
 import { connect } from 'react-redux';
@@ -33,6 +34,25 @@ class Signup2 extends React.Component {
             storage_image_uri: '',
             isLoading: false
         }
+    }
+    addOrUpdateIndexRecord(user){
+         // Get Firebase object
+        const record = user.val();
+
+        // Specify Algolia's objectID using the Firebase object key
+        record.objectId = user.key;
+
+        //Add object
+        index
+            .saveObject(record)
+            .then(() => {
+                console.log("Firebase object indexed in Algolia", record.objectId);
+            })
+            .catch(error => {
+                console.error('Error when indexing contact into Algolia', error);
+                process.exit(1);
+            });
+        
     }
 
     //Check username is in use/register user as a new user in the db
@@ -92,8 +112,19 @@ class Signup2 extends React.Component {
                     routes: [{ name: 'Tabs' }],
                 }))
                 .then(() => this.setState({ isLoading: false}))
-                    
                 
+                //Add to algolia
+                const addUserToAlgolia = Firebase.functions().httpsCallable('addUserToAlgolia');
+                addUserToAlgolia({
+                    ussername: this.state.username.trim().replace(/[^\w\s]/gi, ""),
+                    uid:Firebase.auth().currentUser.uid
+                })
+                .then((result) => {
+                    console.log(result)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
            }
            catch(error) {
                Alert.alert(

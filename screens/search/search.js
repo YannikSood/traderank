@@ -24,6 +24,7 @@ class Search extends Component {
             isLoading: false,
             userUID: '',
             searchState: {},
+            refresh: false,
             navigation: this.props.navigation
         }
     }
@@ -36,9 +37,33 @@ class Search extends Component {
         },
       };
 
+      onSearchStateChange = searchState =>
+    this.setState({
+      searchState,
+    });
+
+  onCacheClear = () => {
+    this.setState(
+      previousState => ({
+        refresh: true,
+        searchState: {
+          ...previousState.searchState,
+          page: 1,
+        },
+      }),
+      () => {
+        this.setState({
+          refresh: false,
+        });
+      }
+    );
+  };
+
 
 
     render() {
+
+        const { refresh, searchState } = this.state;
 
         if (this.state.isLoading) {
             return(
@@ -53,6 +78,9 @@ class Search extends Component {
                     <InstantSearch
                             searchClient={searchClient} 
                             indexName="usernames"
+                            refresh={refresh}
+                            searchState={searchState}
+                            onSearchStateChange={this.onSearchStateChange}
                             root={this.root}
                     >
                          {/* <VirtualRefinementList attribute="username" /> */}

@@ -42,6 +42,12 @@ class LikeComponent extends React.Component {
         this.getLikeCount()
         this.getPosterUID()
     }
+    shouldComponentUpdate(nextProps, nextState){
+        if(this.state.likesCount !== nextState.likesCount){
+            return true;
+        }
+        return false;
+    }
 
     //Get the poster userID
     getPosterUID = async() => {
