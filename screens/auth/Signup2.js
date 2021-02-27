@@ -116,7 +116,7 @@ class Signup2 extends React.Component {
                 //Add to algolia
                 const addUserToAlgolia = Firebase.functions().httpsCallable('addUserToAlgolia');
                 addUserToAlgolia({
-                    ussername: this.state.username.trim().replace(/[^\w\s]/gi, ""),
+                    username: this.state.username.trim().replace(/[^\w\s]/gi, ""),
                     uid:Firebase.auth().currentUser.uid
                 })
                 .then((result) => {
