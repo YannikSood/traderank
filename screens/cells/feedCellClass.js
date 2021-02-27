@@ -8,6 +8,7 @@ import DeleteComponent from './FFCcomponents/deleteComponent'
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
+import MiscUserComponent from '../cells/FollowCellComps/userComponent'
 
 
 
@@ -220,10 +221,7 @@ class FeedCellClass extends React.Component{
 
                                 <View style={{flexDirection: 'column', paddingTop: 10, paddingLeft: 4}}>
                                     <View style ={{flexDirection: 'row', paddingLeft: 12,}}>
-                                            <UserComponent 
-                                                postID={this.state.postID} 
-                                                navigation={this.props.navigation} 
-                                            />
+                                        <MiscUserComponent uid = {this.state.posterUID} navigation = {this.state.navigation} />  
                                     </View>
                                     
                                 </View>

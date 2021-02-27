@@ -84,7 +84,7 @@ class Notification extends React.Component {
             .doc(Firebase.auth().currentUser.uid)
             .collection('notifications')
             .orderBy("date_created", "desc")
-            .limit(10)
+            .limit(7)
             .get()
             .then(function(querySnapshot) {
 
@@ -131,7 +131,7 @@ class Notification extends React.Component {
         .collection('notifications')
         .orderBy("date_created", "desc")
         .startAfter(this.state.notificationsArray[lastItemIndex].date_created)
-        .limit(10)
+        .limit(7)
         .get()
         .then(function(querySnapshot) {
 
