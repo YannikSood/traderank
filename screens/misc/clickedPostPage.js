@@ -226,13 +226,15 @@ class ClickedPostPage extends React.Component {
                 </TouchableOpacity> */}
 
 
-                <View style={styles.timeContainer}>
-                    <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                </View>
+                
                 <View style={styles.descriptionContainer}>
 
                     <Text style = {styles.descriptionText}> {this.state.description}</Text> 
 
+                </View>
+
+                <View style={styles.timeContainer}>
+                    <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
                 </View>
 
 

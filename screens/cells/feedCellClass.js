@@ -151,12 +151,14 @@ class FeedCellClass extends React.Component{
 
                             </View>
 
-                            <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                            style={styles.buttonContainer}
+                            onPress={() => this.showPostPage()} >
 
 
                                 <CommentIconComponent postID = {this.state.postID} />
 
-                            </View>
+                            </TouchableOpacity>
 
                             <View style={styles.buttonContainer}>
 
@@ -213,9 +215,7 @@ class FeedCellClass extends React.Component{
                     </View>
                 </Modal>
 
-                <TouchableOpacity   
-                    
-                    onPress={() => this.showPostPage()} >
+                <View>
                     {/* <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}> */}
                         <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
 
@@ -241,7 +241,7 @@ class FeedCellClass extends React.Component{
 
                         { this.renderGainLoss() }
 
-                    </TouchableOpacity>
+                    </View>
 
                     
                     
@@ -256,18 +256,17 @@ class FeedCellClass extends React.Component{
                     
                     
                 
-                    <TouchableOpacity
-                    onPress={() => this.showPostPage()} >
-
-                    <TimeAgo style={{color: '#696969', paddingLeft: 25, paddingTop: 17}} time = {this.state.date_created} />
+                    
+                    
 
                     <View style={styles.descriptionContainer}>
 
                         <Text style = {styles.descriptionText}> {this.state.description}</Text> 
 
-                    </View>
+                    </View> 
 
 
+                    <TimeAgo style={{color: '#696969', paddingLeft: 25, paddingTop: 5, paddingBottom: 10}} time = {this.state.date_created} />
 
                     
                     {this.renderCellComponents()}
@@ -277,7 +276,6 @@ class FeedCellClass extends React.Component{
                     
                     <View style = {styles.lineStyle} />
 
-                    </TouchableOpacity>
 
             </View>
         )
