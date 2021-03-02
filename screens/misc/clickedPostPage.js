@@ -171,7 +171,7 @@ class ClickedPostPage extends React.Component {
         return (
             <View style= {this.getContainerStyle()} >
 
-            <Modal
+            {/* <Modal
                 isVisible={this.state.modalOpen}
                 animationIn='fadeIn'
                 onSwipeComplete={() => this.closeImageModal()}
@@ -185,7 +185,7 @@ class ClickedPostPage extends React.Component {
                         style={styles.fullScreenImage}
                     />
                 </View>
-            </Modal>
+            </Modal> */}
 
             <View>
             <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
@@ -210,12 +210,12 @@ class ClickedPostPage extends React.Component {
 
                 </View>
                 {/* </View> */}
-                { this.renderGainLoss() }
+                {/* { this.renderGainLoss() } */}
             </View>
             
 
 
-                <TouchableOpacity   
+                {/* <TouchableOpacity   
                     onPress={() => this.openImageModal()} 
                     style={{alignItems: "center", marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2}}>
 
@@ -223,7 +223,7 @@ class ClickedPostPage extends React.Component {
                             source={{ uri: this.state.image }}
                             style={styles.thumbnail}
                         />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
 
                 <View style={styles.timeContainer}>
@@ -237,7 +237,7 @@ class ClickedPostPage extends React.Component {
 
 
 
-                <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
+                {/* <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
                     <View style={styles.buttonContainer}>
 
                         <LikeComponent postID = {this.state.postID} />
@@ -258,15 +258,15 @@ class ClickedPostPage extends React.Component {
 
 
                     </View>
-                </View>
-                
+                </View> */}
+                <View style = {styles.lineStyle} />
 
             </View>
         )
     }
 
     getContainerStyle = () => {
-        if (this.state.commentsArray == []) {
+        if (this.state.commentsArray.length == 0) {
             return {
                 paddingTop: 20,
                 paddingBottom: 20,
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor:'black',
         width: Dimensions.get('window').width,
-        margin: 10
+        // margin: 10
    }
 });
 
