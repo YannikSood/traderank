@@ -35,15 +35,6 @@ class CommentIconComponent extends React.Component {
     componentDidMount() {
         this.getPostCommentsCount()
     }
-    shouldComponentUpdate(nextProps, nextState){
-        if(this.props.replyCount !== nextProps.replyCount){
-            return true;
-        }
-        if(this.state.postCommentsCount !== nextState.postCommentsCount){
-            return true;
-        }
-        return false;
-    }
 
     //Get the poster userID
     getPostCommentsCount = async() => {

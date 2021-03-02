@@ -6,6 +6,7 @@ import InfiniteHits from './infiniteHits';
 import RefinementList from './refinementList';
 import algoliasearch from 'algoliasearch/lite';
 import Highlight from './highlight';
+import * as Analytics from 'expo-firebase-analytics';
 
 const VirtualRefinementList = connectRefinementList(() => null);
 
@@ -27,6 +28,8 @@ class Search extends Component {
             refresh: false,
             navigation: this.props.navigation
         }
+        Analytics.logEvent("Search_Clicked")
+        Analytics.setCurrentScreen("SearchScreen")
     }
     root = {
         Root: View,

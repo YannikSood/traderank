@@ -41,12 +41,6 @@ class CommentDeleteComponent extends React.Component {
         this.getCurrentCommentsCount();
         this.getReplyCount();
     }
-    shouldComponentUpdate(nextProps, nextState){
-        if(this.state.currentCommentCount!== nextState.currentCommentCount){
-            return true;
-        }
-        return false;
-    }
 
     getCurrentCommentsCount = async() => {
         await Firebase.firestore()

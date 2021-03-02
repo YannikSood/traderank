@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Firebase from '../../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
@@ -29,8 +29,8 @@ class LikeComponent extends React.Component {
             isAlreadyLiked: false,
             likesCount: 0,
             posterUID: " ",
-            userScore: 0,
-            notificationUID: ""
+            notificationUID: "",
+            isLoading: false
         }
         
     }
@@ -38,15 +38,10 @@ class LikeComponent extends React.Component {
     //Do this every time the component mounts
     //----------------------------------------------------------
     componentDidMount() {
+        this.setState({ isLoading: true })
         this.hasLiked()
         this.getLikeCount()
         this.getPosterUID()
-    }
-    shouldComponentUpdate(nextProps, nextState){
-        if(this.state.likesCount !== nextState.likesCount){
-            return true;
-        }
-        return false;
     }
 
     //Get the poster userID
@@ -66,20 +61,6 @@ class LikeComponent extends React.Component {
             }
         }.bind(this));
 
-        await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .get()
-        .then(function(doc) {
-            if (doc.exists) {
-                this.setState ({
-                    userScore: doc.data().score
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document!");
-            }
-        }.bind(this));
     }
     //Check to see if a user has liked a post
     hasLiked = async() => {
@@ -92,12 +73,14 @@ class LikeComponent extends React.Component {
         .then(function(doc) {
             if (doc.exists) {
                 this.setState ({
-                    isAlreadyLiked: true
+                    isAlreadyLiked: true,
+                    isLoading: false
                 })
             } else {
                 // doc.data() will be undefined in this case
                 this.setState ({
-                    isAlreadyLiked: false
+                    isAlreadyLiked: false,
+                    isLoading: false
                 })
             }
         }.bind(this));
@@ -136,21 +119,11 @@ class LikeComponent extends React.Component {
         }, { merge: true })
         .then(() =>
             this.setState ({
-                likesCount: this.state.likesCount + 1
+                likesCount: this.state.likesCount + 1,
+                isLoading: false
             })
         )
 
-        Firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .set ({
-            score: this.state.userScore + 1
-        }, { merge: true })
-        .then(() =>
-            this.setState ({
-                userScore: this.state.userScore + 1
-            })
-        )
     }
 
     subtractFromLikeCount = async() => {
@@ -162,7 +135,8 @@ class LikeComponent extends React.Component {
         }, { merge: true })
         .then(() =>
             this.setState ({
-                likesCount: this.state.likesCount - 1
+                likesCount: this.state.likesCount - 1,
+                isLoading: false
             })
         )
 
@@ -172,6 +146,7 @@ class LikeComponent extends React.Component {
     //----------------------------------------------------------
     //We now have all 3 variables. Time to start adding to the database. First, we add User1 to the global and post "likes" collection
     addToLikesDB = async() => {
+        this.setState({ isLoading: true })
         await Firebase.firestore()
         .collection('likes')
         .doc(this.state.postID)
@@ -184,7 +159,7 @@ class LikeComponent extends React.Component {
             console.error("Error writing document to user posts: ", error);
         })
         .then(() => this.addToUserList())
-        .then(() => this.setState({isAlreadyLiked: true}))
+        .then(() => this.setState({ isAlreadyLiked: true }))
         .then(() => this.addToLikeCount())
         .then(() => this.writeToUserNotifications())
 
@@ -210,6 +185,7 @@ class LikeComponent extends React.Component {
     //----------------------------------------------------------
     //Unlike functionality. Delete the document from the post likes collection
     removeFromLikedDB = async() => {
+        this.setState({ isLoading: true })
         await Firebase.firestore()
         .collection('likes')
         .doc(this.state.postID)
@@ -293,6 +269,20 @@ class LikeComponent extends React.Component {
     }
 
     render() {
+        if(this.state.isLoading){
+            return(
+                <View >
+                    <TouchableOpacity 
+                        style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }} 
+                        >
+
+                        <ActivityIndicator size="small" color="#9E9E9E"/>
+                        
+                    </TouchableOpacity>
+                </View>
+                
+            )
+        }    
         //If the post is liked, show the filled in heart with the number of likes beside it. 
         //Connected to "Unlike" functionality
         if (this.state.isAlreadyLiked) {

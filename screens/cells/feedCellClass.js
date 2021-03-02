@@ -243,7 +243,6 @@ class FeedCellClass extends React.Component{
 
                     </TouchableOpacity>
 
-
                     
                     
                     <TouchableOpacity onPress={() => this.openImageModal()}>
