@@ -97,26 +97,26 @@ class SpecialClickedPostPage extends React.Component {
 
     getCollection = (querySnapshot) => {
             const commentsArray = [];
-            querySnapshot.forEach((res) => {
-            const { 
-                commentLikes,
-                commentText,
-                commentorUID,
-                commentorUsername,
-                date_created,
-                replyCount} = res.data();
+            // querySnapshot.forEach((res) => {
+            // const { 
+            //     commentLikes,
+            //     commentText,
+            //     commentorUID,
+            //     commentorUsername,
+            //     date_created,
+            //     replyCount} = res.data();
 
-                commentsArray.push({
-                    key: res.id,
-                    commentLikes,
-                    commentText,
-                    commentorUID,
-                    commentorUsername,
-                    date_created,
-                    replyCount
+            //     commentsArray.push({
+            //         key: res.id,
+            //         commentLikes,
+            //         commentText,
+            //         commentorUID,
+            //         commentorUsername,
+            //         date_created,
+            //         replyCount
                     
-                });
-            });
+            //     });
+            // });
 
             this.setState({
                 commentsArray,
@@ -124,6 +124,23 @@ class SpecialClickedPostPage extends React.Component {
             });
 
             // console.log(this.state.commentsArray)
+    }
+
+    showPostPage = () => {
+        console.log(this.state.date_created)
+        this.state.navigation.push('ClickedPostPage', 
+        {
+            username: this.state.username,
+            image: this.state.image,
+            ticker: this.state.ticker,
+            security: this.state.security,
+            description: this.state.description,
+            profit_loss: this.state.profit_loss,
+            percent_gain_loss: this.state.percent_gain_loss,
+            gain_loss: this.state.gain_loss,
+            postID: this.state.postID,
+            date_created: this.state.date_created
+        })
     }
     
 
@@ -246,11 +263,14 @@ class SpecialClickedPostPage extends React.Component {
 
                     </View>
 
-                    <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                            style={styles.buttonContainer}
+                            onPress={() => this.showPostPage()} >
 
-                         <CommentIconComponent postID = {this.state.postID} />
 
-                    </View>
+                                <CommentIconComponent postID = {this.state.postID} />
+
+                    </TouchableOpacity>
 
                     <View style={styles.buttonContainer}>
 
@@ -423,7 +443,7 @@ class SpecialClickedPostPage extends React.Component {
             <View style ={{backgroundColor: '#000000'}}> 
 
                     <FlatList
-                        data={this.state.commentsArray}
+                        // data={this.state.commentsArray}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
                         ListHeaderComponent={this.renderListHeader}
@@ -507,7 +527,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center',
         paddingTop: 10,
-        paddingBottom: 15,
+        paddingBottom: 35,
         paddingLeft: 25,
         paddingRight: 10,
         borderTopWidth: StyleSheet.hairlineWidth,

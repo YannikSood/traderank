@@ -54,7 +54,7 @@ class NotificationCellClass extends React.Component{
         
     }
 
-    showPostPage = async() => {
+    showPostCommentsPage = async() => {
         await Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
@@ -76,6 +76,42 @@ class NotificationCellClass extends React.Component{
         }.bind(this));
 
         this.state.navigation.push('ClickedPostPage', 
+        {
+            username: this.state.username,
+            image: this.state.image,
+            ticker: this.state.ticker,
+            security: this.state.security,
+            description: this.state.description,
+            profit_loss: this.state.profit_loss,
+            percent_gain_loss: this.state.percent_gain_loss,
+            gain_loss: this.state.gain_loss,
+            postID: this.state.postID,
+            date_created: this.state.date_created
+        })
+    }
+
+    showPostPage = async() => {
+        await Firebase.firestore()
+        .collection('globalPosts')
+        .doc(this.state.postID)
+        .get()
+        .then(function(doc) {
+            if (doc.exists) {
+                this.setState({
+                    username: doc.data().username,
+                    image: doc.data().image,
+                    ticker: doc.data().ticker,
+                    security: doc.data().security,
+                    description: doc.data().description,
+                    profit_loss: doc.data().profit_loss,
+                    percent_gain_loss: doc.data().percent_gain_loss,
+                    gain_loss: doc.data().gain_loss,
+                    date_created: doc.data().date_created.toDate()
+                })
+            }
+        }.bind(this));
+
+        this.state.navigation.push('SpecialClickedPostPage', 
         {
             username: this.state.username,
             image: this.state.image,
@@ -122,7 +158,7 @@ class NotificationCellClass extends React.Component{
             return (
                 <TouchableOpacity   
                     style={styles.feedCell}
-                    onPress={() => this.showPostPage()} >
+                    onPress={() => this.showPostCommentsPage()} >
                         <View style={{flexDirection: 'column'}}>
                         <View style={{flexDirection: 'row'}}>
   
@@ -174,7 +210,7 @@ class NotificationCellClass extends React.Component{
             return (
                 <TouchableOpacity   
                     style={styles.feedCell}
-                    onPress={() => this.showPostPage()} >
+                    onPress={() => this.showPostCommentsPage()} >
                          <View style={{flexDirection: 'column'}}>
                              
                         <View style={{flexDirection: 'row'}}>
@@ -250,7 +286,7 @@ class NotificationCellClass extends React.Component{
             return (
                 <TouchableOpacity   
                     style={styles.feedCell}
-                    onPress={() => this.showPostPage()} >
+                    onPress={() => this.showPostCommentsPage()} >
                         <View style={{flexDirection: 'column'}}>
                         <View style={{flexDirection: 'row'}}>
   

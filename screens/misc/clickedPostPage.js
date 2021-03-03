@@ -15,6 +15,7 @@ import { clearUser } from '../../redux/app-redux';
 import { Entypo } from '@expo/vector-icons';
 // import ReplyButton from './replyButton';
 
+
 const mapStateToProps = (state) => {
     return {
         user: state.user
@@ -27,6 +28,9 @@ const mapDispatchToProps = (dispatch) => {
      };
 }
 
+
+//This page now only shows comments
+//To show post details, go to Special Clicked Post Page
 class ClickedPostPage extends React.Component { 
     
     constructor(props) {
@@ -88,40 +92,60 @@ class ClickedPostPage extends React.Component {
             viewsCount: this.state.currentViewsCount + 1
         }, { merge: true })
 
-        this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        this.getCollection()
     }
     
-    componentWillUnmount(){
-        this.unsubscribe();
-    }
+    // componentWillUnmount(){
+    //     this.unsubscribe();
+    // }
 
-    getCollection = (querySnapshot) => {
+    getCollection = async () => {
             const commentsArray = [];
-            querySnapshot.forEach((res) => {
-            const { 
-                commentLikes,
-                commentText,
-                commentorUID,
-                commentorUsername,
-                date_created,
-                replyCount} = res.data();
 
-                commentsArray.push({
-                    key: res.id,
-                    commentLikes,
-                    commentText,
-                    commentorUID,
-                    commentorUsername,
-                    date_created,
-                    replyCount
-                    
+            await Firebase.firestore()
+            .collection('comments')
+            .doc(this.state.postID)
+            .collection('comments')
+            .orderBy("date_created", "asc")
+            .get()
+            .then(function(doc) {
+                doc.forEach((res) => {
+                    const { 
+                        commentLikes,
+                        commentText,
+                        commentorUID,
+                        commentorUsername,
+                        date_created,
+                        replyCount} = res.data();
+        
+                        commentsArray.push({
+                            key: res.id,
+                            commentLikes,
+                            commentText,
+                            commentorUID,
+                            commentorUsername,
+                            date_created,
+                            replyCount
+                            
+                        });
+                })
+
+                this.setState({
+                    commentsArray,
+                    isLoading: false,   
                 });
-            });
 
-            this.setState({
-                commentsArray,
-                isLoading: false,   
-            });
+            }.bind(this));
+
+            // if (commentsArray.length == 0) {
+            //     this.setState({
+            //         // commentsArray,
+            //         isLoading: false,   
+            //     });
+            // }
+            
+
+            
 
             // console.log(this.state.commentsArray)
     }
