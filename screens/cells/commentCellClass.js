@@ -35,12 +35,12 @@ class CommentCellClass extends React.Component{
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         if (this.state.commentorUID == Firebase.auth().currentUser.uid) {
             this.setState({ showDeleteComponent: true })
         }
     }
-    
+
     // componentDidUpdate(){
     //     //trying to update on submit, may neeed to remove
     //     this.getFirstFiveReplies();
