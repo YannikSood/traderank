@@ -52,7 +52,7 @@ class LeaderboardCell extends React.Component{
     }
 
     showPostPage = () => {
-        this.state.navigation.push('ClickedPostPage', 
+        this.state.navigation.push('SpecialClickedPostPage', 
         {
             username: this.state.username,
             image: this.state.image,

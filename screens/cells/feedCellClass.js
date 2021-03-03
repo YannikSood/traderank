@@ -113,12 +113,14 @@ class FeedCellClass extends React.Component{
 
                             </View>
 
-                            <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                            style={styles.buttonContainer}
+                            onPress={() => this.showPostPage()} >
 
 
                                 <CommentIconComponent postID = {this.state.postID} />
 
-                            </View>
+                            </TouchableOpacity>
 
                             <View style={styles.buttonContainer}>
 

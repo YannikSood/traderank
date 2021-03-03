@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
      };
 }
 
-class ClickedPostPage extends React.Component { 
+class SpecialClickedPostPage extends React.Component { 
     
     constructor(props) {
         super(props)
@@ -171,7 +171,7 @@ class ClickedPostPage extends React.Component {
         return (
             <View style= {this.getContainerStyle()} >
 
-            {/* <Modal
+            <Modal
                 isVisible={this.state.modalOpen}
                 animationIn='fadeIn'
                 onSwipeComplete={() => this.closeImageModal()}
@@ -185,7 +185,7 @@ class ClickedPostPage extends React.Component {
                         style={styles.fullScreenImage}
                     />
                 </View>
-            </Modal> */}
+            </Modal>
 
             <View>
             <View style={{flexDirection: 'row', padding: 6, justifyContent: 'space-between',  alignItems: 'left' }}>
@@ -210,12 +210,12 @@ class ClickedPostPage extends React.Component {
 
                 </View>
                 {/* </View> */}
-                {/* { this.renderGainLoss() } */}
+                { this.renderGainLoss() }
             </View>
             
 
 
-                {/* <TouchableOpacity   
+                <TouchableOpacity   
                     onPress={() => this.openImageModal()} 
                     style={{alignItems: "center", marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2}}>
 
@@ -223,7 +223,7 @@ class ClickedPostPage extends React.Component {
                             source={{ uri: this.state.image }}
                             style={styles.thumbnail}
                         />
-                </TouchableOpacity> */}
+                </TouchableOpacity>
 
 
                 
@@ -239,7 +239,7 @@ class ClickedPostPage extends React.Component {
 
 
 
-                {/* <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
+                <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
                     <View style={styles.buttonContainer}>
 
                         <LikeComponent postID = {this.state.postID} />
@@ -260,7 +260,7 @@ class ClickedPostPage extends React.Component {
 
 
                     </View>
-                </View> */}
+                </View>
                 <View style = {styles.lineStyle} />
 
             </View>
@@ -589,4 +589,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClickedPostPage);
+export default connect(mapStateToProps, mapDispatchToProps)(SpecialClickedPostPage);

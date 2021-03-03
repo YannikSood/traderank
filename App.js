@@ -54,6 +54,7 @@ import EditProfile from './screens/settings/editProfile'
 import Search from './screens/search/search'
 import Notification from './screens/notifications/Notifications.js'
 import ClickedPostPage from './screens/misc/clickedPostPage'
+import SpecialClickedPostPage from './screens/misc/specialClickedPostPage'
 import ClickedUserProfile from './screens/misc/clickedUserProfile'
 import ClickedFollowPage from './screens/misc/clickedFollowPage'
 
@@ -170,7 +171,7 @@ class App extends React.Component {
                   color: '#FFFFFF'
                 },
                 headerStyle: {
-                  backgroundColor: '#121212',
+                  backgroundColor: '#000000',
                   shadowColor: 'transparent'
                 },
                 headerBackTitle: ""
@@ -217,6 +218,21 @@ class App extends React.Component {
             }}/>
             <Stack.Screen name="ClickedPostPage" 
               component={ClickedPostPage}
+              options=  {{
+                title: "comments",
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  color: '#FFFFFF'
+                },
+                headerStyle: {
+                  backgroundColor: '#121212',
+                  shadowColor: 'transparent'
+                },
+                headerBackTitle: ""
+            }}/>
+            <Stack.Screen name="SpecialClickedPostPage" 
+              component={SpecialClickedPostPage}
               options=  {{
                 title: "post details",
                 headerTitleStyle: {
