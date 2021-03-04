@@ -150,13 +150,13 @@ class CommentCellClass extends React.Component{
                                 postID={this.state.postID} 
                                 commentID={this.state.commentID}
                                 navigation={this.props.navigation} 
-                            />
+                            /> 
 
-                            <CommentDeleteComponent  
+                             {/* <CommentDeleteComponent  
                                 postID={this.state.postID} 
                                 commentID={this.state.commentID}
                                 navigation={this.props.navigation} 
-                            />
+                            />  */}
 
                             {this.props.button} 
 
@@ -231,7 +231,7 @@ class CommentCellClass extends React.Component{
                                 postID={this.state.postID} 
                                 commentID={this.state.commentID}
                                 navigation={this.props.navigation} 
-                            />
+                            /> 
 
                             {this.props.button} 
 

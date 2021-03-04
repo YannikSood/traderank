@@ -391,43 +391,43 @@ class ClickedPostPage extends React.Component {
                       this.setState({replyData:replyDataObj});
                       storeReplyData(replyDataObj);
 
-                      if (replyDataObj.replyingToUID != this.state.currentUser) {
-                            Firebase.firestore()
-                            .collection('users')
-                            .doc(replyDataObj.replyingToUID)
-                            .collection('notifications')
-                            .add({
-                                type: 6,
-                                senderUID: this.state.currentUser,
-                                recieverUID: replyDataObj.replyingToUID,
-                                postID: this.state.postID,
-                                read: false,
-                                date_created: new Date(),
-                                recieverToken: ""
-                            })
-                            .then((docref) => this.setState({notificationUID: docref.id}))
-                            .catch(function(error) {
-                                console.error("Error writing document to user posts: ", error);
-                            });
+                    //   if (replyDataObj.replyingToUID != this.state.currentUser) {
+                    //         Firebase.firestore()
+                    //         .collection('users')
+                    //         .doc(replyDataObj.replyingToUID)
+                    //         .collection('notifications')
+                    //         .add({
+                    //             type: 6,
+                    //             senderUID: this.state.currentUser,
+                    //             recieverUID: replyDataObj.replyingToUID,
+                    //             postID: this.state.postID,
+                    //             read: false,
+                    //             date_created: new Date(),
+                    //             recieverToken: ""
+                    //         })
+                    //         .then((docref) => this.setState({notificationUID: docref.id}))
+                    //         .catch(function(error) {
+                    //             console.error("Error writing document to user posts: ", error);
+                    //         });
                 
-                            const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
-                            sendCommentReplyNotification({ 
-                                type: 3,
-                                senderUID: this.state.currentUser,
-                                recieverUID: replyDataObj.replyingToUID,
-                                postID: this.state.postID,
-                                senderUsername: this.props.user.username
-                            })
-                            .then((result) => {
-                                console.log(result)
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            });
-                        }   
-                        else {
-                            return
-                        }
+                    //         const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
+                    //         sendCommentReplyNotification({ 
+                    //             type: 3,
+                    //             senderUID: this.state.currentUser,
+                    //             recieverUID: replyDataObj.replyingToUID,
+                    //             postID: this.state.postID,
+                    //             senderUsername: this.props.user.username
+                    //         })
+                    //         .then((result) => {
+                    //             console.log(result)
+                    //         })
+                    //         .catch((error) => {
+                    //             console.log(error);
+                    //         });
+                    //     }   
+                    //     else {
+                    //         return
+                    //     }
                     }}>
 
                         <View style={{paddingLeft: 15, paddingRight: 15}}>

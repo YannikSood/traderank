@@ -35,6 +35,7 @@ class Signup2 extends React.Component {
             isLoading: false
         }
     }
+
     addOrUpdateIndexRecord(user){
          // Get Firebase object
         const record = user.val();
@@ -105,7 +106,7 @@ class Signup2 extends React.Component {
                 .catch(function(error) {
                     console.error("Error writing document to user collection: ", error);
                 })
-                .then(() => this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.uid, this.state.username))
+                .then(() => this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, this.state.username))
                 .then(() => this.props.navigation.navigate('Tabs'))
                 .then(() => this.props.navigation.reset({
                     index: 0,

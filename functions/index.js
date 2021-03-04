@@ -551,8 +551,10 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
     // })
     const record = {
         "username": data.username,
+        "objectID": data.uid,
         "uid": data.uid
     };
+
     index
         .saveObject(record)
         .then(() => {
