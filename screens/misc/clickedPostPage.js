@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
 import { Entypo } from '@expo/vector-icons';
 // import ReplyButton from './replyButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const mapStateToProps = (state) => {
@@ -356,6 +357,7 @@ class ClickedPostPage extends React.Component {
                 button = {
                     <TouchableOpacity
                     onPress={() =>{
+                        //just set state of replyTo in componentUpdate from async storage
                         //StoreReplyTo
                        const storeReplyTo = async (value) => {
                         try {
@@ -364,6 +366,7 @@ class ClickedPostPage extends React.Component {
                           // saving error
                         }
                       }
+   
                       storeReplyTo(`${item.commentorUsername}`);
                       this.setState({replyTo:`${item.commentorUsername}`})
 
@@ -378,6 +381,7 @@ class ClickedPostPage extends React.Component {
                         commentLikes: 0
                         //may need to change
                         }
+                        console.log(replyDataObj);
                       
                         //replyData that will be stored in the DB
                       const storeReplyData = async (value) => {
@@ -390,44 +394,8 @@ class ClickedPostPage extends React.Component {
                       }
                       this.setState({replyData:replyDataObj});
                       storeReplyData(replyDataObj);
-
-                      if (replyDataObj.replyingToUID != this.state.currentUser) {
-                            Firebase.firestore()
-                            .collection('users')
-                            .doc(replyDataObj.replyingToUID)
-                            .collection('notifications')
-                            .add({
-                                type: 6,
-                                senderUID: this.state.currentUser,
-                                recieverUID: replyDataObj.replyingToUID,
-                                postID: this.state.postID,
-                                read: false,
-                                date_created: new Date(),
-                                recieverToken: ""
-                            })
-                            .then((docref) => this.setState({notificationUID: docref.id}))
-                            .catch(function(error) {
-                                console.error("Error writing document to user posts: ", error);
-                            });
-                
-                            const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
-                            sendCommentReplyNotification({ 
-                                type: 3,
-                                senderUID: this.state.currentUser,
-                                recieverUID: replyDataObj.replyingToUID,
-                                postID: this.state.postID,
-                                senderUsername: this.props.user.username
-                            })
-                            .then((result) => {
-                                console.log(result)
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            });
-                        }   
-                        else {
-                            return
-                        }
+                      
+                      
                     }}>
 
                         <View style={{paddingLeft: 15, paddingRight: 15}}>

@@ -41,10 +41,15 @@ class CommentCellClass extends React.Component{
         }
     }
     
-    // componentDidUpdate(){
-    //     //trying to update on submit, may neeed to remove
-    //     this.getFirstFiveReplies();
-    // }
+    componentDidUpdate(prevState, prevProps){
+        console.log("Component updated");
+        //trying to update on submit, may neeed to remove
+       // this.getFirstFiveReplies();
+       if((prevState.replyCount !== this.state.replyCount) || (prevProps.replyCount !== this.props.replyCount)){
+                this.setState({replyCount:this.props.replyCount});
+                this.getFirstFiveReplies();//sets to 
+       }
+    }
 
 
     getFirstFiveReplies = async() => {
