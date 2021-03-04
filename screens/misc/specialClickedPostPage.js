@@ -60,13 +60,13 @@ class SpecialClickedPostPage extends React.Component {
         .orderBy("date_created", "asc");
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         //Not replying ot anyone
        //update replyingTo storage variable here?
 
         Analytics.logEvent("Post_Clicked")
         Analytics.setCurrentScreen("PostDetailsScreen")
-        await Firebase.firestore()
+        Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -81,18 +81,18 @@ class SpecialClickedPostPage extends React.Component {
             console.log(error)
         })
 
-        await Firebase.firestore()
+        Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .set({
             viewsCount: this.state.currentViewsCount + 1
         }, { merge: true })
 
-        this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
+        this.getCollection()
     }
-    
-    componentWillUnmount(){
-        this.unsubscribe();
+
+    componentWillUnmount = () => {
+        console.log("unmounted post")
     }
 
     getCollection = (querySnapshot) => {
@@ -250,9 +250,9 @@ class SpecialClickedPostPage extends React.Component {
 
                 </View>
 
-                <View style={styles.timeContainer}>
+                {/* <View style={styles.timeContainer}>
                     <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
-                </View>
+                </View> */}
 
 
 
