@@ -14,6 +14,9 @@ const initialUserState = {
   isLoggedIn: false,
 };
 
+const initialReplyState = {
+  reply: '',
+};
 //
 //Reducer
 //
@@ -54,6 +57,31 @@ const userReducer = (state = initialUserState, action) => {
   }
 };
 
+//reply reducer
+const replyReducer = (state = initialReplyState, action) => {
+  switch (action.type) {
+    case 'setReply':
+      return {
+        ...state,
+        reply,
+        isReplying: true,
+      };
+    case 'clearReply':
+      return {
+        ...state,
+        reply,
+        isReplying: false,
+      };
+    case 'getReply':
+      return {
+        ...state,
+        isReplying: true,
+      };
+    default:
+      return state;
+  }
+};
+
 //
 //Action
 //
@@ -80,6 +108,22 @@ const clearUser = temp => ({
   email: temp,
 });
 
+//Replying to comments
+const setReply = username => ({
+  type: 'setReply',
+  replyToUsername: username,
+});
+
+const clearReply = temp => ({
+  type: 'clearReply',
+  replyToUsername: temp,
+});
+
+const getReply = username => ({
+  type: 'getReply',
+  replyToUsername: username,
+});
+
 //
 //Store
 //
@@ -88,3 +132,10 @@ export { store };
 export { authUser };
 export { getUser };
 export { clearUser };
+
+//Reply
+const replyStore = createStore(replyReducer, applyMiddleware(thunkMiddleware));
+export { replyStore };
+export { setReply };
+export { getReply };
+export { clearReply };
