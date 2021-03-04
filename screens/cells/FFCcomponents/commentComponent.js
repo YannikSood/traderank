@@ -37,7 +37,8 @@ class CommentComponent extends React.Component {
             isLoading:false,
             replyTo:this.props.replyTo,
             replyData: this.props.replyData,
-            replyCount: 0
+            replyCount: 0,
+            currentUser: Firebase.auth().currentUser.uid
         }
         
     }
@@ -61,7 +62,7 @@ class CommentComponent extends React.Component {
               const value = await AsyncStorage.getItem('replyTo')
               if(value !== null) {
                 this.setState({commentText: `@${value}`});
-                // console.log(this.props.replyTo);
+
                 this.setState({replyTo:value});
               }
             } catch(e) {
@@ -307,6 +308,47 @@ class CommentComponent extends React.Component {
                   .catch(function(error) {
                       console.error("Error writing document to user posts: ", error);
                   });
+
+
+                    //Send notification that user has replied to comment 
+                      if (this.state.replyData.replyingToUID != this.state.currentUser) {
+                            Firebase.firestore()
+                            .collection('users')
+                            .doc(this.state.replyData.replyingToUID)
+                            .collection('notifications')
+                            .add({
+                                type: 6,
+                                senderUID: this.state.currentUser,
+                                recieverUID: this.state.replyData.replyingToUID,
+                                postID: this.state.postID,
+                                read: false,
+                                date_created: new Date(),
+                                recieverToken: ""
+                            })
+                            .then((docref) => this.setState({notificationUID: docref.id}))
+                            .catch(function(error) {
+                                console.error("Error writing document to user posts: ", error);
+                            });
+                
+                            const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
+                            sendCommentReplyNotification({ 
+                                type: 3,
+                                senderUID: this.state.currentUser,
+                                recieverUID: this.state.replyData.replyingToUID,
+                                postID: this.state.postID,
+                                senderUsername: this.props.user.username
+                            })
+                            .then((result) => {
+                                console.log(result)
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                        }   
+                        else {
+                            return
+                        }
+
             }
             
     }
