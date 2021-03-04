@@ -10,7 +10,11 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import Firebase from './firebase.js';
-import { store } from './redux/app-redux.js';
+import { rootReducer } from './redux/rootReducer';
+import { createStore, applyMiddleware, compose } from 'redux';
+import reduxThunk from 'redux-thunk';
+const createStoreWithMiddleware = compose(applyMiddleware(reduxThunk)(createStore));
+const store = createStoreWithMiddleware(rootReducer);
 
 //Auth Imports
 import Login from './screens/auth/Login.js';
@@ -79,11 +83,6 @@ const FriendFeedStack = createStackNavigator();
  * at the top of this file and replace it with this:
  *
  *
- * import { createStore, applyMiddleware, compose } from 'redux';
- * import reduxThunk from 'redux-thunk';
- *
- * const createStoreWithMiddleware = compose(applyMiddleware(reduxThunk)(createStore));
- * const store = createStoreWithMiddleware(rootReducer);
  */
 
 const App = () => (

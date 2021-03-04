@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import PostsReducer from './Posts.Reducer';
 import PermissionsReducer from './Permissions.Reducer';
+import UserReducer from './app-redux';
 
 /**
  * It looks like you are trying to create multiple reducers in the app-redux.js file, which is ok for proof of concept but you need to break those out.
@@ -10,6 +11,7 @@ import PermissionsReducer from './Permissions.Reducer';
 const rootReducer = combineReducers({
   PostsReducer,
   PermissionsReducer,
+  UserReducer
 });
 
 export default rootReducer;

@@ -232,7 +232,7 @@ class Chat extends React.Component {
                     
                     renderUsernameOnMessage={true}
                     messages={this.state.messages}
-                    // onInputTextChanged={message => this.onTextChange(message)}
+                    // onInputTextChanged={message => this.onTextChange(message)} <-------
                     onSend={message => this.onSend(message)}
                     scrollToBottom
                     // user = {{

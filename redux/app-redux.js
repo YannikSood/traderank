@@ -20,7 +20,7 @@ const initialReplyState = {
 //
 //Reducer
 //
-const userReducer = (state = initialUserState, action) => {
+const UserReducer = (state = initialUserState, action) => {
   switch (action.type) {
     case 'authUser':
       return {
@@ -58,84 +58,48 @@ const userReducer = (state = initialUserState, action) => {
 };
 
 //reply reducer
-const replyReducer = (state = initialReplyState, action) => {
-  switch (action.type) {
-    case 'setReply':
-      return {
-        ...state,
-        reply,
-        isReplying: true,
-      };
-    case 'clearReply':
-      return {
-        ...state,
-        reply,
-        isReplying: false,
-      };
-    case 'getReply':
-      return {
-        ...state,
-        isReplying: true,
-      };
-    default:
-      return state;
-  }
-};
+// const replyReducer = (state = initialReplyState, action) => {
+//   switch (action.type) {
+//     case 'setReply':
+//       return {
+//         ...state,
+//         reply,
+//         isReplying: true,
+//       };
+//     case 'clearReply':
+//       return {
+//         ...state,
+//         reply,
+//         isReplying: false,
+//       };
+//     case 'getReply':
+//       return {
+//         ...state,
+//         isReplying: true,
+//       };
+//     default:
+//       return state;
+//   }
+// };
 
 //
 //Action
 //
-const authUser = (userid, userEmail, username) => ({
-  type: 'authUser',
-  id: userid,
-  username,
-  email: userEmail,
 
-});
 
-const getUser = () => ({
-  type: 'getUser',
-  id: userid,
-  username,
-  email: userEmail,
-
-});
-
-const clearUser = temp => ({
-  type: 'clearUser',
-  id: temp,
-  username: temp,
-  email: temp,
-});
-
-//Replying to comments
-const setReply = username => ({
-  type: 'setReply',
-  replyToUsername: username,
-});
-
-const clearReply = temp => ({
-  type: 'clearReply',
-  replyToUsername: temp,
-});
-
-const getReply = username => ({
-  type: 'getReply',
-  replyToUsername: username,
-});
 
 //
 //Store
 //
-const store = createStore(userReducer, applyMiddleware(thunkMiddleware));
-export { store };
+// const store = createStore(userReducer, applyMiddleware(thunkMiddleware));
+export { UserReducer };
 export { authUser };
 export { getUser };
 export { clearUser };
 
 //Reply
-const replyStore = createStore(replyReducer, applyMiddleware(thunkMiddleware));
-export { replyStore };
-export { setReply };
-export { getReply };
-export { clearReply };
+// const replyStore = createStore(replyReducer, applyMiddleware(thunkMiddleware));
+// export { replyStore };
+// export { setReply };
+// export { getReply };
+// export { clearReply };

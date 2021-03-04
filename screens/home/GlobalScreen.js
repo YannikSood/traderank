@@ -8,6 +8,7 @@ import FeedCellClass from '../cells/feedCellClass.js';
 import Firebase from '../../firebase';
 import { fetchPermissions } from '../../actions/Permissions.Actions';
 import { fetchCollection, fetchMorePosts } from '../../actions/Posts.Actions';
+// import PostsReducer from '../../redux/Posts.Reducer';
 
 // Convert your React.Component to a function (functional component)
 const GlobalScreen = (props) => {
@@ -215,10 +216,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps  = (state) => {
   const { PostsReducer } = state;
-  return {
-    globalPosts: PostsReducer.globalPosts,
-    postsLoading: PostsReducer.postsLoading,
-  };
+    return {
+        globalPosts: PostsReducer.globalPosts,
+        postsLoading: PostsReducer.postsLoading,
+    };
 };
 
 export default connect(mapStateToProps)(GlobalScreen);
