@@ -3,5 +3,4 @@
  * actions and sending data to the wrong reducer. Just copy this pattern for each action file
  */
 export const AUTH_USER = 'AUTH_USER';
-export const GET_USER = 'GET_USER';
 export const CLEAR_USER = 'CLEAR_USER';

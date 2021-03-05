@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native'
 import Firebase from '../../firebase'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 //redux
-import { connect } from 'react-redux';
-import { authUser } from './../../redux/app-redux';
+import { connect, useDispatch } from 'react-redux';
+import { authUser } from './../../actions/User.Actions';
 
 
 const mapStateToProps = (state) => {
@@ -15,61 +15,73 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        authUser: (id, email, username) => { dispatch(authUser(id, email, username))}
-     };
-}
-class Login extends React.Component {
+// const dispatch = useDispatch();
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         authUser: (id, email, username) => { dispatch(authUser(id, email, username))}
+//      };
+// }
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            email: '',
-            password: '',
-            username: '',
-            user: this.props.user,
-            isLoading: false
-        }
-    }
+const Login = (props) => {
+    /**
+       * Any refs that you have in the component will be instantiated as a constant at the top of the function with the `useRef()` hook (which you will import from react),
+       * passing in the initialValue (if it's known on page load) as the param.
+       */
+  
+    // Refs
+  
+  
+    // Props
+    const { user, navigation } = props;
+  
+    /**
+       * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
+       */
+  
+    // Dispatch
+    const dispatch = useDispatch();
+  
+    /**
+       * We no longer need to use the `constructor` with `super(props)` or as a way to set the initial `this.state`. The `useState()` hook handles that, passing in
+       * the initial state as the param
+       */
+  
+    // State
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    componentDidMount = () => {
-        this.setState({isLoading: true})
-        this.unsubscribe = Firebase.auth().onAuthStateChanged((user) => {
+    useEffect(() => {
+        setIsLoading(true);
+        Firebase.auth().onAuthStateChanged((user) => {
           if (user) {
                 Firebase.firestore()
                 .collection('users')
                 .doc(Firebase.auth().currentUser.uid)
                 .get()
-                .then(async function (doc) {
+                .then(function (doc) {
                     if (doc.exists) {
-                        this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username)
-                        this.props.navigation.reset({
+                        dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username))
+
+                        navigation.reset({
                             index: 0,
                             routes: [{ name: 'Tabs' }],
                         })
-                        console.log("Current authed username: " + doc.data().username)
                     }
                 }.bind(this))
-                .then(() => this.setState({isLoading: false}))
+                .then(() => setIsLoading(false))
                 .catch(function (error) {
                     console.log("Error getting document:", error);
                 })
 
             }
             else {
-                this.setState({isLoading: false})
+                setIsLoading(false);
             }
         })
-      }
-    
-      componentWillUnmount() {
-        // Don't forget to unsubscribe when the component unmounts
-        this.unsubscribe();
-    }
+    }, []);
 
-    handleLogin = async() => {
-        const { email, password } = this.state
+    const handleLogin = async() => {
 
         try {
              await Firebase.auth()
@@ -83,12 +95,11 @@ class Login extends React.Component {
                     ],
                     { cancelable: false }
                   );
-                  this.setState({ isLoading: false})
+                  setIsLoading(false);
             })
-            .then(() => this.getLoginInfo())
-            .then(() => this.props.navigation.navigate('Tabs'))
+            .then(() => getLoginInfo())
             .then(() =>
-                this.props.navigation.reset({
+                navigation.reset({
                     index: 0,
                     routes: [{ name: 'Tabs' }],
                 })
@@ -99,17 +110,17 @@ class Login extends React.Component {
             console.log(error);
         }
     }
-
-    getLoginInfo = async() => {
+  
+    const getLoginInfo = async() => {
         var docRef = Firebase.firestore().collection('users')
 
         docRef
         .doc(Firebase.auth().currentUser.uid)
         .get()
-        .then(async function (doc) {
+        .then(function (doc) {
             if (doc.exists) {
-                this.props.authUser(Firebase.auth().currentUser.uid, this.state.email, doc.data().username)
-                console.log("Current authed username: " + this.state.user.username)
+                dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username))
+                // this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username)
             }
             else {
                 console.log("Username not found!");
@@ -122,59 +133,188 @@ class Login extends React.Component {
         
     }
 
-    render() {
-        if(this.state.isLoading){
-            return(
-              <View style={styles.container}>
-                <ActivityIndicator size="large" color="#9E9E9E"/>
-              </View>
-            )
-        }    
-        return (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View 
-                    style={styles.container}>
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.headerPartOneText}>trade</Text>
-                        <Text style={styles.headerPartTwoText}>rank</Text>
-                    </View>
+    if(isLoading){
+        return(
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color="#9E9E9E"/>
+          </View>
+        )
+    }    
+    return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View 
+                style={styles.container}>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.headerPartOneText}>trade</Text>
+                    <Text style={styles.headerPartTwoText}>rank</Text>
+                </View>
+                
+
+                <TextInput
+                    style={styles.inputBox}
+                    value={email}
+                    onChangeText={email => setEmail(email)}
+                    placeholder='email'
+                    placeholderTextColor="#696969" 
+                    autoCapitalize='none'
+                />
+
+                <TextInput
+                    style={styles.inputBox}
+                    value={password}
+                    onChangeText={password => setPassword(password)}
+                    placeholder='password'
+                    placeholderTextColor="#696969" 
+                    secureTextEntry={true}
+                />
+
+                <TouchableOpacity 
+                    style={styles.button}
+                    onPress={handleLogin()}>
+                        <Text style={styles.buttonText}>login</Text>
+                </TouchableOpacity>
+
+                <Button 
+                    title="no account? sign up" 
+                    onPress={() => navigation.navigate('Signup')}/>
+
+                <KeyboardSpacer />
+
+            </View>
+        </TouchableWithoutFeedback>
+    )
+}
+
+// class Login extends React.Component {
+
+//     constructor(props) {
+//         super(props)
+//         this.state = {
+//             email: '',
+//             password: '',
+//             username: '',
+//             user: this.props.user,
+//             isLoading: false
+//         }
+//     }
+
+//     componentDidMount = () => {
+        
+//       }
+    
+//       componentWillUnmount() {
+//         // Don't forget to unsubscribe when the component unmounts
+//         this.unsubscribe();
+//     }
+
+//     handleLogin = async() => {
+//         const { email, password } = this.state
+
+//         try {
+//              await Firebase.auth()
+//             .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
+//             .catch(function(error) {
+//                 Alert.alert(
+//                     'error',
+//                     String(error),
+//                     [
+//                       { text: 'OK', onPress: () => console.log('OK Pressed') }
+//                     ],
+//                     { cancelable: false }
+//                   );
+//                   this.setState({ isLoading: false})
+//             })
+//             .then(() => this.getLoginInfo())
+//             .then(() => this.props.navigation.navigate('Tabs'))
+//             .then(() =>
+//                 this.props.navigation.reset({
+//                     index: 0,
+//                     routes: [{ name: 'Tabs' }],
+//                 })
+//             )
+            
+//         }
+//         catch(error) {
+//             console.log(error);
+//         }
+//     }
+
+//     getLoginInfo = async() => {
+//         var docRef = Firebase.firestore().collection('users')
+
+//         docRef
+//         .doc(Firebase.auth().currentUser.uid)
+//         .get()
+//         .then(async function (doc) {
+//             if (doc.exists) {
+//                 // dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username))
+//                 this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username)
+//                 console.log("Current authed username: " + this.state.user.username)
+//             }
+//             else {
+//                 console.log("Username not found!");
+//             }
+//         }.bind(this))
+//         .catch(function (error) {
+//             console.log("Error getting document:", error);
+//         })
+        
+        
+//     }
+
+//     render() {
+//         if(this.state.isLoading){
+//             return(
+//               <View style={styles.container}>
+//                 <ActivityIndicator size="large" color="#9E9E9E"/>
+//               </View>
+//             )
+//         }    
+//         return (
+//             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+//                 <View 
+//                     style={styles.container}>
+//                     <View style={{flexDirection: 'row'}}>
+//                         <Text style={styles.headerPartOneText}>trade</Text>
+//                         <Text style={styles.headerPartTwoText}>rank</Text>
+//                     </View>
                     
 
-                    <TextInput
-                        style={styles.inputBox}
-                        value={this.state.email}
-                        onChangeText={email => this.setState({ email })}
-                        placeholder='email'
-                        placeholderTextColor="#696969" 
-                        autoCapitalize='none'
-                    />
+//                     <TextInput
+//                         style={styles.inputBox}
+//                         value={this.state.email}
+//                         onChangeText={email => this.setState({ email })}
+//                         placeholder='email'
+//                         placeholderTextColor="#696969" 
+//                         autoCapitalize='none'
+//                     />
 
-                    <TextInput
-                        style={styles.inputBox}
-                        value={this.state.password}
-                        onChangeText={password => this.setState({ password })}
-                        placeholder='password'
-                        placeholderTextColor="#696969" 
-                        secureTextEntry={true}
-                    />
+//                     <TextInput
+//                         style={styles.inputBox}
+//                         value={this.state.password}
+//                         onChangeText={password => this.setState({ password })}
+//                         placeholder='password'
+//                         placeholderTextColor="#696969" 
+//                         secureTextEntry={true}
+//                     />
 
-                    <TouchableOpacity 
-                        style={styles.button}
-                        onPress={this.handleLogin}>
-                            <Text style={styles.buttonText}>login</Text>
-                    </TouchableOpacity>
+//                     <TouchableOpacity 
+//                         style={styles.button}
+//                         onPress={this.handleLogin}>
+//                             <Text style={styles.buttonText}>login</Text>
+//                     </TouchableOpacity>
 
-                    <Button 
-                        title="no account? sign up" 
-                        onPress={() => this.props.navigation.navigate('Signup')}/>
+//                     <Button 
+//                         title="no account? sign up" 
+//                         onPress={() => this.props.navigation.navigate('Signup')}/>
 
-                    <KeyboardSpacer />
+//                     <KeyboardSpacer />
 
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }
-}
+//                 </View>
+//             </TouchableWithoutFeedback>
+//         )
+//     }
+// }
 
 const styles = StyleSheet.create({
     container: {
@@ -228,4 +368,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps)(Login);

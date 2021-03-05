@@ -1,30 +1,30 @@
 import {
     AUTH_USER,
-    GET_USER,
     CLEAR_USER
 } from '../types/User.Types';
 
+  
+export const authUser = (userid, userEmail, username) => (dispatch) => {
 
-export const authUser = (userid, userEmail, username) => ({
-    type: 'AUTH_USER',
-    id: userid,
-    username,
-    email: userEmail,  
-  });
+    const data = {
+        id: userid,
+        username: username,
+        email: userEmail,
+    }
+    dispatch(setAuthUser(data))
+    
+};
+
   
-export const getUser = () => ({
-    type: 'GET_USER',
-    id: userid,
-    username,
-    email: userEmail,
-  });
-  
-export const clearUser = temp => ({
-    type: 'CLEAR_USER',
-    id: temp,
-    username: temp,
-    email: temp,
-  });
+export const clearUser = (userid, userEmail, username) => (dispatch) => {
+    const data = {
+        id: userid,
+        username: username,
+        email: userEmail,
+    }
+    dispatch(setClearUser(data))
+    
+};
 
   function setAuthUser(value) {
     return {
@@ -33,14 +33,7 @@ export const clearUser = temp => ({
     };
   }
   
-  function setGetUser(value) {
-    return {
-      type: GET_USER,
-      payload: value,
-    };
-  }
-
-  function setClearUseer(value) {
+  function setClearUser(value) {
     return {
       type: CLEAR_USER,
       payload: value,

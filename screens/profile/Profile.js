@@ -24,11 +24,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 
 class Profile extends React.Component {
@@ -36,7 +31,7 @@ class Profile extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            user: this.props.user,
+            user: this.props.user, 
             bio: "",
             storage_image_uri: '',
             postCount: 0,
@@ -573,4 +568,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps)(Profile);

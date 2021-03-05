@@ -12,11 +12,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 //Only thing left is displaying the Post feed and styling the follow/unfollow/hide modal buttons
 class ClickedFollowPage extends React.Component {
@@ -275,4 +270,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClickedFollowPage);
+export default connect(mapStateToProps)(ClickedFollowPage);

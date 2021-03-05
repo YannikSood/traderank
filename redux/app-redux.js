@@ -92,10 +92,10 @@ const UserReducer = (state = initialUserState, action) => {
 //Store
 //
 // const store = createStore(userReducer, applyMiddleware(thunkMiddleware));
-export { UserReducer };
-export { authUser };
-export { getUser };
-export { clearUser };
+// export { UserReducer };
+// export { authUser };
+// export { getUser };
+// export { clearUser };
 
 //Reply
 // const replyStore = createStore(replyReducer, applyMiddleware(thunkMiddleware));

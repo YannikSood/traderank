@@ -2,7 +2,6 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
 
 import { connect } from 'react-redux';
-import { getUser } from '../../redux/app-redux';
 
 import Firebase from '../../firebase'
 
@@ -12,11 +11,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getUser: () => { dispatch(getUser())}
-     };
-}
 class CreateReview extends React.Component {
 
     constructor(props) {
@@ -304,4 +298,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateReview);
+export default connect(mapStateToProps)(CreateReview);

@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, Image, Alert, ActivityIndicator, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { connect } from 'react-redux';
-import { getUser } from '../../../redux/app-redux';
 import Modal from 'react-native-modal';
 
 import Firebase from '../../../firebase'
@@ -11,12 +10,6 @@ const mapStateToProps = (state) => {
     return {
         user: state.user
     }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getUser: () => { dispatch(getUser())}
-     };
 }
 
 class GainTradeConfirm extends React.Component {
@@ -387,4 +380,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(GainTradeConfirm)
+export default connect(mapStateToProps)(GainTradeConfirm)

@@ -4,20 +4,18 @@ import Firebase from '../../firebase'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 //redux
-import { connect } from 'react-redux';
-import { authUser } from './../../redux/app-redux';
+import { connect, useDispatch } from 'react-redux';
+import { authUser } from './../../actions/User.Actions';
+
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        isLoggedIn: state.isLoggedIn
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        authUser: (id, email, username) => { dispatch(authUser(id, email, username))}
-     };
-}
+
 
 class Signup extends React.Component {
     
@@ -169,4 +167,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps)(Signup);

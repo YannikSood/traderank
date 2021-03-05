@@ -1,6 +1,5 @@
 import {
     AUTH_USER,
-    GET_USER,
     CLEAR_USER
 } from '../types/User.Types';
   
@@ -19,29 +18,19 @@ import {
         return {
             ...state,
             user: {
-              id: action.id,
-              username: action.username,
-              email: action.email,
+              id: action.payload.id,
+              username: action.payload.username,
+              email: action.payload.email,
             },
             isLoggedIn: true,
-          };
-      case GET_USER:
-        return {
-            ...state,
-            user: {
-              id,
-              username,
-              email,
-            },
-            isLoggedIn: true,
-          };
+        };
       case CLEAR_USER:
         return {
             ...state,
             user: {
-              id: action.id,
-              username: action.username,
-              email: action.email,
+              id: action.payload.id,
+              username: action.payload.username,
+              email: action.payload.email,
             },
             isLoggedIn: false,
           };

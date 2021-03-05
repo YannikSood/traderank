@@ -21,12 +21,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
-
 class SpecialClickedPostPage extends React.Component { 
     
     constructor(props) {
@@ -609,4 +603,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpecialClickedPostPage);
+export default connect(mapStateToProps)(SpecialClickedPostPage);

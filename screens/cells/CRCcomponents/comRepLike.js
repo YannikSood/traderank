@@ -12,11 +12,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 class CommentReplyLikeComponent extends React.Component {
     
@@ -362,4 +357,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentReplyLikeComponent);
+export default connect(mapStateToProps)(CommentReplyLikeComponent);

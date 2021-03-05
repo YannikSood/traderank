@@ -10,7 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import Firebase from './firebase.js';
-import { rootReducer } from './redux/rootReducer';
+import  rootReducer  from './redux/rootReducer';
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 const createStoreWithMiddleware = compose(applyMiddleware(reduxThunk)(createStore));

@@ -15,13 +15,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
-
-
 class EditProfile extends React.Component {
 
     constructor(props) {
@@ -340,4 +333,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
+export default connect(mapStateToProps)(EditProfile);

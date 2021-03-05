@@ -87,6 +87,7 @@ const GlobalScreen = (props) => {
       viewsCount={item.viewsCount}
     />
   );
+  
   if (isLoading) {
     return (
       <View style={styles.container}>

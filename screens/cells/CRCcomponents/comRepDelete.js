@@ -11,11 +11,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 class CommentReplyDeleteComponent extends React.Component {
     
@@ -111,4 +106,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentReplyDeleteComponent);
+export default connect(mapStateToProps)(CommentReplyDeleteComponent);

@@ -11,11 +11,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 //We add comments 
 class CommentIconComponent extends React.Component {
@@ -92,4 +87,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentIconComponent);
+export default connect(mapStateToProps)(CommentIconComponent);

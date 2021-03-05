@@ -23,11 +23,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 
 //This page now only shows comments
@@ -580,4 +575,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClickedPostPage);
+export default connect(mapStateToProps)(ClickedPostPage);

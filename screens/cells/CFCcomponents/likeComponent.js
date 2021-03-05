@@ -2,7 +2,6 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Firebase from '../../../firebase'
 import { connect } from 'react-redux';
-import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 
@@ -12,11 +11,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 class CommentLikeComponent extends React.Component {
     
@@ -352,4 +346,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentLikeComponent);
+export default connect(mapStateToProps)(CommentLikeComponent);

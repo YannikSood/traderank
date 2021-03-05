@@ -4,21 +4,19 @@ import Firebase from '../../firebase'
 import { Ionicons } from '@expo/vector-icons';
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 
-//Redux
-import { connect } from 'react-redux';
-import { clearUser } from './../../redux/app-redux';
+import { connect, useDispatch } from 'react-redux';
+import { clearUser } from './../../actions/User.Actions';
+
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        isLoggedIn: state.isLoggedIn
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
+// const dispatch = useDispatch();
+
 
 
 class Settings extends React.Component {
@@ -95,4 +93,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps)(Settings);

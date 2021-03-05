@@ -11,11 +11,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 //Only thing left is displaying the Post feed and styling the follow/unfollow/hide modal buttons
 class UserComponent extends React.Component {
@@ -163,4 +158,4 @@ const styles = StyleSheet.create({
       }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserComponent);
+export default connect(mapStateToProps)(UserComponent);

@@ -6,20 +6,25 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import firebase from 'firebase/app';
 
 //redux
-import { connect } from 'react-redux';
-import { authUser } from './../../redux/app-redux';
+import { connect, useDispatch } from 'react-redux';
+import { authUser } from './../../actions/User.Actions';
+
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        isLoggedIn: state.isLoggedIn
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        authUser: (id, email, username) => { dispatch(authUser(id, email, username))}
-     };
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         authUser: (id, email, username) => { dispatch(authUser(id, email, username))}
+//      };
+// }
+
+// const dispatch = useDispatch();
+
 
 class Signup2 extends React.Component {
     
@@ -106,7 +111,8 @@ class Signup2 extends React.Component {
                 .catch(function(error) {
                     console.error("Error writing document to user collection: ", error);
                 })
-                .then(() => this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, this.state.username))
+                // .then(() => dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, this.state.username)))
+                // .then(() => this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username))
                 .then(() => this.props.navigation.navigate('Tabs'))
                 .then(() => this.props.navigation.reset({
                     index: 0,
@@ -279,4 +285,4 @@ const styles = StyleSheet.create({
       }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup2);
+export default connect(mapStateToProps)(Signup2);

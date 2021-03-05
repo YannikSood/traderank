@@ -12,11 +12,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        clearUser: (temp) => { dispatch(clearUser(temp))}
-     };
-}
 
 class LikeComponent extends React.Component {
     
@@ -326,4 +321,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(LikeComponent);
+export default connect(mapStateToProps)(LikeComponent);
