@@ -4,10 +4,10 @@ import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList } from 'react
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as Analytics from 'expo-firebase-analytics';
 import { useScrollToTop } from '@react-navigation/native';
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
 import FeedCellClass from '../cells/feedCellClass.js';
 import Firebase from '../../firebase';
-import { fetchPermissions } from '../../actions/Permissions.Actions';
-import { fetchCollection, fetchMorePosts } from '../../actions/Posts.Actions';
 // import PostsReducer from '../../redux/Posts.Reducer';
 
 // Convert your React.Component to a function (functional component)
@@ -38,6 +38,8 @@ const GlobalScreen = (props) => {
 
   // State
   const [isLoading, setIsLoading] = useState(true);
+  const [pushStatus, setPushStatus] = useState(true);
+  const [globalPostsArray, setGlobalPostsArray] = useState([]);
 
   /**
      * The `useEffect()` hook with an empty array replaces your `componentDidMount`
@@ -46,10 +48,10 @@ const GlobalScreen = (props) => {
   // Effects
   useEffect(() => {
     // useScrollToTop(scrollRef);
-    dispatch(fetchCollection());
+    fetchCollection();
     Analytics.setUserId(Firebase.auth().currentUser.uid);
     Analytics.setCurrentScreen('GlobalScreen');
-    dispatch(fetchPermissions());
+    fetchPermissions();
   }, []);
 
   /**
@@ -61,13 +63,138 @@ const GlobalScreen = (props) => {
 
   const refresh = () => {
     setIsLoading(true);
-    dispatch(fetchCollection());
+    fetchCollection();
   };
 
   const handleFetchMorePosts = () => {
-    setIsLoading(true);
-    dispatch(fetchMorePosts());
+    fetchMorePosts();
   };
+
+  const fetchPermissions = async() => {
+    await Permissions.getAsync(Permissions.NOTIFICATIONS)
+      .then(response => (response.status === 'granted'
+        ? response
+        : Permissions.askAsync(Permissions.NOTIFICATIONS)))
+      .then(async(response) => {
+        if (response.status !== 'granted') {
+          setPushStatus(false);
+          return Promise.reject(new Error('Push notifications permission was rejected'));
+        }
+
+
+        const token = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log(token);
+        return token;
+      })
+      .then((token) => {
+        Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).set({
+          token,
+          pushStatus: this.state.pushStatus,
+        }, { merge: true });
+      })
+      .catch((error) => {
+        console.log('Error while registering device push token', error);
+      });
+  };
+
+  //
+
+  const fetchCollection = async() => {
+    const tempGlobalPostsArray = [];
+    Analytics.logEvent('First_5_Loaded');
+
+    await Firebase.firestore()
+      .collection('globalPosts')
+      .orderBy('date_created', 'desc')
+      .limit(5)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((res) => {
+          const {
+            username,
+            uid,
+            image,
+            ticker,
+            security,
+            description,
+            percent_gain_loss,
+            profit_loss,
+            gain_loss,
+            date_created,
+            viewsCount,
+          } = res.data();
+
+          tempGlobalPostsArray.push({
+            key: res.id,
+            username,
+            uid,
+            image,
+            ticker,
+            security,
+            description,
+            percent_gain_loss,
+            profit_loss,
+            gain_loss,
+            date_created,
+            viewsCount,
+          });
+        });
+
+        setGlobalPostsArray(tempGlobalPostsArray);
+        setIsLoading(false);
+      });
+  };
+
+  const fetchMorePosts = async() => {
+    setIsLoading(true);
+    const lastItemIndex = globalPostsArray.length - 1;
+    Analytics.logEvent('More_5_Loaded');
+
+    await Firebase.firestore()
+      .collection('globalPosts')
+      .orderBy('date_created', 'desc')
+      .startAfter(globalPostsArray[lastItemIndex].date_created)
+      .limit(5)
+      .get()
+      .then((querySnapshot) => {
+        const newPostsArray = [];
+
+        querySnapshot.forEach((res) => {
+          const {
+            username,
+            uid,
+            image,
+            ticker,
+            security,
+            description,
+            percent_gain_loss,
+            profit_loss,
+            gain_loss,
+            date_created,
+            viewsCount,
+          } = res.data();
+
+          newPostsArray.push({
+            key: res.id,
+            username,
+            uid,
+            image,
+            ticker,
+            security,
+            description,
+            percent_gain_loss,
+            profit_loss,
+            gain_loss,
+            date_created,
+            viewsCount,
+          });
+        });
+
+        setGlobalPostsArray(globalPostsArray.concat(newPostsArray));
+        setIsLoading(false);
+      });
+  };
+
 
   const renderItem = ({ item }) => (
 
@@ -82,7 +209,7 @@ const GlobalScreen = (props) => {
       gain_loss={item.gain_loss}
       postID={item.key}
       navigation={navigation}
-      date_created={item.date_created}
+      date_created={item.date_created.toDate()}
       uid={item.uid}
       viewsCount={item.viewsCount}
     />
@@ -100,7 +227,7 @@ const GlobalScreen = (props) => {
     <View style={styles.view}>
       <FlatList
         ref={scrollRef}
-        data={globalPosts}
+        data={globalPostsArray}
         renderItem={renderItem}
         keyExtractor={item => item.key}
         contentContainerStyle={{ paddingBottom: 50 }}
@@ -217,10 +344,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps  = (state) => {
   const { PostsReducer } = state;
-    return {
-        globalPosts: PostsReducer.globalPosts,
-        postsLoading: PostsReducer.postsLoading,
-    };
+  return {
+    globalPosts: PostsReducer.globalPosts,
+    postsLoading: PostsReducer.postsLoading,
+  };
 };
 
 export default connect(mapStateToProps)(GlobalScreen);
