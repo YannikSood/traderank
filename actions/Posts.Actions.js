@@ -56,13 +56,16 @@ export const fetchCollection = () => (dispatch) => {
 export const fetchMorePosts = () => (dispatch, getState) => {
   dispatch(setPostsLoading(true));
   const { PostsReducer: { globalPostsArray } } = getState();
-  const lastItemIndex = globalPostsArray.length - 1;
+
+  const array = getState(globalPostsArray);
+
+  const lastItemIndex = array.length - 1;
   Analytics.logEvent('More_5_Loaded');
 
   Firebase.firestore()
     .collection('globalPosts')
     .orderBy('date_created', 'desc')
-    .startAfter(globalPostsArray[lastItemIndex].date_created)
+    .startAfter(array[lastItemIndex].date_created)
     .limit(5)
     .get()
     .then((querySnapshot) => {

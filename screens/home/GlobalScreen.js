@@ -45,7 +45,7 @@ const GlobalScreen = (props) => {
 
   // Effects
   useEffect(() => {
-    useScrollToTop(scrollRef);
+    // useScrollToTop(scrollRef);
     dispatch(fetchCollection());
     Analytics.setUserId(Firebase.auth().currentUser.uid);
     Analytics.setCurrentScreen('GlobalScreen');
@@ -82,12 +82,12 @@ const GlobalScreen = (props) => {
       gain_loss={item.gain_loss}
       postID={item.key}
       navigation={navigation}
-      date_created={item.date_created.toDate()}
+      date_created={item.date_created}
       uid={item.uid}
       viewsCount={item.viewsCount}
     />
   );
-  
+
   if (isLoading) {
     return (
       <View style={styles.container}>

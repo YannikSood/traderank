@@ -11,7 +11,7 @@ import UserReducer from './User.Reducer';
 const rootReducer = combineReducers({
   PostsReducer,
   PermissionsReducer,
-  UserReducer
+  UserReducer,
 });
 
 export default rootReducer;
