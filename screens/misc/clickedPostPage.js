@@ -95,7 +95,6 @@ class ClickedPostPage extends React.Component {
 
         this.getCollection()
     }
-    
     // componentWillUnmount(){
     //     this.unsubscribe();
     // }

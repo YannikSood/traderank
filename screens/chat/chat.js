@@ -8,7 +8,14 @@ import { Ionicons } from '@expo/vector-icons';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import * as Analytics from 'expo-firebase-analytics';
-
+import algoliasearch from 'algoliasearch/lite';
+import PropTypes from 'prop-types';
+import { InstantSearch} from 'react-instantsearch-native';
+import Mentions from './Mentions';
+  const searchClient = algoliasearch(
+    '5BS4R91W97', 
+    '1dd2a5427b3daed5059c1dc62bdd2197'
+  );
 
 class Chat extends React.Component {
     
@@ -51,6 +58,7 @@ class Chat extends React.Component {
         }
         
     }
+    
 
     getCurrentMessages = async() => {
         Firebase.firestore()
@@ -180,6 +188,19 @@ class Chat extends React.Component {
             </View>
           )
     }
+    onTextChange = (message) => {
+        this.setState({messageText:message});
+        let length = this.state.messageText.length;
+        //if previous character is '@' show user list
+        if(this.state.messageText.charAt(length-1) === '@'){
+            console.log(this.state.messageText);
+            console.log(this.state.messageText.indexOf('@'));
+            // this.setState({showUserList:true});
+            //set it to false after next 
+        }
+        //show use
+    }
+    
 
     render() { 
         if(this.state.isLoading){
@@ -189,10 +210,11 @@ class Chat extends React.Component {
               </View>
             )
         }   
+        //only for us?
         if (this.state.userLevel < 1 && this.state.roomName == "announcements") {
             return (
                 <View style={{backgroundColor: '#000000', flex: 1}}>
-                    <GiftedChat
+                    {/* <GiftedChat
                         showUserAvatar={true}
                         isTyping={this.state.isTyping}
                         renderComposer={this.renderComposer}
@@ -216,15 +238,20 @@ class Chat extends React.Component {
                         isKeyboardInternallyHandled = {false}
                         // alwaysShowSend = {true}
                         maxInputLength = {240}
-                    />
-    
-                    <KeyboardSpacer />
+                    /> */}
+                 {/* <KeyboardSpacer /> */}
+                <InstantSearch searchClient={searchClient} indexName="usernames">
+                    <Mentions />
+                </InstantSearch>
+
+           
                 </View>
             )
         }
         
         return (
             <View style={{backgroundColor: '#000000', flex: 1}}>
+               
                 <GiftedChat
                     showUserAvatar={true}
                     isTyping={this.state.isTyping}
@@ -232,7 +259,7 @@ class Chat extends React.Component {
                     
                     renderUsernameOnMessage={true}
                     messages={this.state.messages}
-                    // onInputTextChanged={message => this.onTextChange(message)}
+                    onInputTextChanged={message => this.onTextChange(message)}
                     onSend={message => this.onSend(message)}
                     scrollToBottom
                     // user = {{
@@ -252,6 +279,7 @@ class Chat extends React.Component {
                 />
 
                 <KeyboardSpacer />
+            
             </View>
             
         )
