@@ -5,18 +5,17 @@ import { AntDesign } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import { FontAwesome } from '@expo/vector-icons';
 
-//Profile Components 
-import ProfilePic from './profileComponents/profilePic.js'
-import ProfileStats from './profileComponents/profileStats.js'
-import ProfileBio from './profileComponents/profileBio.js'
-import FeedCellClass from '../cells/feedCellClass'
+//Profile Components
 import TimeAgo from 'react-native-timeago';
 import * as Analytics from 'expo-firebase-analytics';
+import { connect } from 'react-redux';
+import ProfilePic from './profileComponents/profilePic.js';
+import ProfileStats from './profileComponents/profileStats.js';
+import ProfileBio from './profileComponents/profileBio.js';
+import FeedCellClass from '../cells/feedCellClass';
 
 //Redux
-import { connect } from 'react-redux';
-import Firebase from '../../firebase'
-import { clearUser } from "../../redux/app-redux";
+import Firebase from '../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -43,11 +42,13 @@ class Profile extends React.Component {
       instagram: '',
     };
 
-    this.firestoreRef =         Firebase.firestore()
-          .collection('globalPosts')
-          .where('uid', '==', this.state.userUID)
-          .orderBy('date_created', 'desc')
-          .limit(5);
+    // console.log(Firebase.auth().currentUser.uid);
+
+    this.firestoreRef = Firebase.firestore()
+      .collection('globalPosts')
+      .where('uid', '==', `${Firebase.auth().currentUser.uid}`)
+      .orderBy('date_created', 'desc')
+      .limit(5);
   }
 
   componentWillMount() {
@@ -131,7 +132,7 @@ class Profile extends React.Component {
 
       await Firebase.firestore()
         .collection('globalPosts')
-        .where('uid', '==', this.state.userUID)
+        .where('uid', '==', `${Firebase.auth().currentUser.uid}`)
         .orderBy('date_created', 'desc')
         .startAfter(this.state.userPostsArray[lastItemIndex].date_created)
         .limit(5)
@@ -180,20 +181,17 @@ class Profile extends React.Component {
         .collection('users')
         .doc(this.state.userUID)
         .onSnapshot((doc) => {
-
-            this.setState({
-                postCount: doc.data().postCount,
-                followerCount: doc.data().followerCount,
-                followingCount: doc.data().followingCount,
-                storage_image_uri: doc.data().profilePic,
-                bio: doc.data().bio,
-                dateJoined: doc.data().signupDate.toDate(),
-                twitter: doc.data().twitter,
-                instagram: doc.data().instagram,
-                isLoading: false
-            })
-
-
+          this.setState({
+            postCount: doc.data().postCount,
+            followerCount: doc.data().followerCount,
+            followingCount: doc.data().followingCount,
+            storage_image_uri: doc.data().profilePic,
+            bio: doc.data().bio,
+            dateJoined: doc.data().signupDate.toDate(),
+            twitter: doc.data().twitter,
+            instagram: doc.data().instagram,
+            isLoading: false,
+          });
         });
     }
 
@@ -214,257 +212,290 @@ class Profile extends React.Component {
     }
 
     renderTwitterAndInstagram = () => {
-        if (this.state.twitter == undefined && this.state.instagram == undefined) {
-            return (
-                <View></View>
-            )
-        }
-        if (this.state.twitter != undefined && this.state.instagram == undefined){
-            return (
-                <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                    <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-                    <Text 
-                    style ={{color: '#FFFFFF'}}
-                    onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
-                </View>
-            )
-        }
-        else if (this.state.twitter == undefined && this.state.instagram != undefined) {
-            return (
-                <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                    <AntDesign name="instagram" size={18} color="#E1306C" />
-                    <Text style ={{color: '#FFFFFF'}}
-                        onPress={() => Linking.openURL('http://instagram.com/' + this.state.instagram)}> @{this.state.instagram} </Text>
-                </View>
-            )
-        }
-        else {
-            return (
-                <View>
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-                        <Text 
-                        style ={{color: '#FFFFFF'}}
-                        onPress={() => Linking.openURL('http://twitter.com/' + this.state.twitter)}> @{this.state.twitter} </Text>
-                    </View>
+      if (this.state.twitter == undefined && this.state.instagram == undefined) {
+        return (
+          <View />
+        );
+      }
+      if (this.state.twitter != undefined && this.state.instagram == undefined) {
+        return (
+          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
+            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+            <Text
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.twitter}`)}
+            >
+              {' '}
+@
+              {this.state.twitter}
+              {' '}
 
-                    <View style={{flexDirection: 'row', paddingLeft: 24, paddingTop: 10}}>
-                        <AntDesign name="instagram" size={18} color="#E1306C" />
-                        <Text style ={{color: '#FFFFFF'}}
-                            onPress={() => Linking.openURL('http://instagram.com/' + this.state.instagram)}> @{this.state.instagram} </Text>
-                    </View>
-                </View>
-            )
-        }
+            </Text>
+          </View>
+        );
+      }
+      if (this.state.twitter == undefined && this.state.instagram != undefined) {
+        return (
+          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
+            <AntDesign name="instagram" size={18} color="#E1306C" />
+            <Text
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.instagram}`)}
+            >
+              {' '}
+@
+              {this.state.instagram}
+              {' '}
+
+            </Text>
+          </View>
+        );
+      }
+
+      return (
+        <View>
+          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
+            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+            <Text
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.twitter}`)}
+            >
+              {' '}
+@
+              {this.state.twitter}
+              {' '}
+
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
+            <AntDesign name="instagram" size={18} color="#E1306C" />
+            <Text
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.instagram}`)}
+            >
+              {' '}
+@
+              {this.state.instagram}
+              {' '}
+
+            </Text>
+          </View>
+        </View>
+      );
     }
 
 
     renderListHeader = () => {
       if (this.state.userPostsArray.length === 0) {
         return (
-              <View style ={styles.noPostContainer}>
-                  <Modal
-                          isVisible={this.state.modalOpen}
-                          animationIn="fadeIn"
-                          onSwipeComplete={() => this.closeImageModal()}
-                          swipeDirection="down"
-                        >
+          <View style={styles.noPostContainer}>
+            <Modal
+              isVisible={this.state.modalOpen}
+              animationIn="fadeIn"
+              onSwipeComplete={() => this.closeImageModal()}
+              swipeDirection="down"
+            >
 
-                          <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
-                          <Image
-                              source={{ uri: this.state.storage_image_uri }}
-                              style={styles.fullScreenImage}
-                            />
-                        </View>
-                        </Modal>
+                <Image
+                  source={{ uri: this.state.storage_image_uri }}
+                  style={styles.fullScreenImage}
+                />
+              </View>
+            </Modal>
 
-                  <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style= {styles.subheader}> 
-{' '}
-{this.state.user.username}
-{' '}
- </Text>
-                    </View>
+            <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={styles.subheader}>
+                {' '}
+                {this.state.user.username}
+                {' '}
+              </Text>
+            </View>
 
-                  <View style={{ flex: 1,
-flexDirection: 'row',
-alignItems: 'center',
-                      justifyContent: 'center'  }}
-                    >
+            <View style={{ flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center' }}
+            >
 
-                      <TouchableOpacity
-                          onPress={() => this.openImageModal()}>
+              <TouchableOpacity
+                onPress={() => this.openImageModal()}
+              >
 
-                          <ProfilePic storage_image_uri ={this.state.storage_image_uri} />
+                <ProfilePic storage_image_uri={this.state.storage_image_uri} />
 
-                        </TouchableOpacity>
-
-
-                      <View style={{ paddingLeft: 30 }}>
-                          <ProfileStats navigation= {this.props.navigation} userUID= {this.state.userUID} postCount= {this.state.postCount} followerCount ={this.state.followerCount} followingCount ={this.state.followingCount} />
-                        </View>
-
-                    </View>
-
-                  <View style= {{ alignItems: 'center', justifyContent: 'center' }}>
-                      <ProfileBio bio= {this.state.bio} />
-                    </View>
+              </TouchableOpacity>
 
 
-                  <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
+              <View style={{ paddingLeft: 30 }}>
+                <ProfileStats navigation={this.props.navigation} userUID={this.state.userUID} postCount={this.state.postCount} followerCount={this.state.followerCount} followingCount={this.state.followingCount} />
+              </View>
 
-                      <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
+            </View>
 
-                          <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
-                          <Text>  
-{' '}
-{this.state.user.username}
-{' '}
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <ProfileBio bio={this.state.bio} />
+            </View>
+
+
+            <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
+
+              <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
+
+                <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
+                <Text>
+                  {' '}
+                  {this.state.user.username}
+                  {' '}
 joined
-{' '}
-</Text>
-                          <TimeAgo style={{ color: '#FFFFFF' }} time= {this.state.dateJoined} />
-                          <Text />
+                  {' '}
+                </Text>
+                <TimeAgo style={{ color: '#FFFFFF' }} time={this.state.dateJoined} />
+                <Text />
 
-                        </Text>
+              </Text>
 
-                    </View>
+            </View>
 
-                  {this.renderTwitterAndInstagram()}
+            {this.renderTwitterAndInstagram()}
 
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
 
-                      <TouchableOpacity
-                              onPress={() => this.goToEditProfile()}
-                              style={styles.button}
-                            >
-                              <Text style ={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>edit profile</Text>
-                            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.goToEditProfile()}
+                style={styles.button}
+              >
+                <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>edit profile</Text>
+              </TouchableOpacity>
 
-                      <TouchableOpacity
-                              onPress={() => this.gotToSettings()}
-                              style={styles.button}
-                            >
-                              <Text style ={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>settings</Text>
-                            </TouchableOpacity>
-
-
-                    </View>
-                  <View style ={{ alignItems: 'center', justifyContent: 'center' }}>
-                      <TouchableOpacity
-                          style ={styles.shareButton}
-                          onPress={() => this.onShare()}>
-                          <Text style ={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
-                        </TouchableOpacity>
-                    </View>
+              <TouchableOpacity
+                onPress={() => this.gotToSettings()}
+                style={styles.button}
+              >
+                <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>settings</Text>
+              </TouchableOpacity>
 
 
-                </View>
+            </View>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <TouchableOpacity
+                style={styles.shareButton}
+                onPress={() => this.onShare()}
+              >
+                <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
+              </TouchableOpacity>
+            </View>
+
+
+          </View>
 
         );
       }
       return (
-          <View style= {styles.container}>
-              <Modal
-                      isVisible={this.state.modalOpen}
-                      animationIn="fadeIn"
-                      onSwipeComplete={() => this.closeImageModal()}
-                      swipeDirection="down"
-                    >
+        <View style={styles.container}>
+          <Modal
+            isVisible={this.state.modalOpen}
+            animationIn="fadeIn"
+            onSwipeComplete={() => this.closeImageModal()}
+            swipeDirection="down"
+          >
 
-                      <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
-                          <Image
-                              source={{ uri: this.state.storage_image_uri }}
-                              style={styles.fullScreenImage}
-                            />
-                        </View>
-                    </Modal>
-
-              <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style ={styles.subheader}> 
-{' '}
-{this.state.user.username}
-{' '}
- </Text>
-                    </View>
-
-              <View style={{ flex: 1,
-flexDirection: 'row',
-alignItems: 'center',
-                      justifyContent: 'center'  }}
-                    >
-
-                      <TouchableOpacity
-                          onPress={() => this.openImageModal()}>
-
-                          <ProfilePic storage_image_uri ={this.state.storage_image_uri} />
-
-                        </TouchableOpacity>
-
-
-                      <View style={{ paddingLeft: 30 }}>
-                          <ProfileStats navigation= {this.props.navigation} userUID= {this.state.userUID} postCount ={this.state.postCount} followerCount ={this.state.followerCount} followingCount= {this.state.followingCount} />
-                        </View>
-
-                    </View>
-
-              <View style ={{ alignItems: 'center', justifyContent: 'center' }}>
-                      <ProfileBio bio= {this.state.bio} />
-                    </View>
-
-
-              <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
-
-                      <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
-
-                          <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
-                          <Text>  
-{' '}
-{this.state.user.username}
-{' '}
-joined
-{' '}
-</Text>
-                          <TimeAgo style={{ color: '#FFFFFF' }} time= {this.state.dateJoined} />
-                          <Text />
-
-                        </Text>
-
-                    </View>
-
-              {this.renderTwitterAndInstagram()}
-
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-
-                      <TouchableOpacity
-                              onPress={() => this.goToEditProfile()}
-                              style={styles.button}
-                            >
-                              <Text style ={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>edit profile</Text>
-                            </TouchableOpacity>
-
-                      <TouchableOpacity
-                              onPress={() => this.gotToSettings()}
-                              style={styles.button}
-                            >
-                              <Text style= {{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>settings</Text>
-                            </TouchableOpacity>
-
-
-                    </View>
-
-              <View style= {{ alignItems: 'center', justifyContent: 'center' }}>
-                      <TouchableOpacity
-                          style ={styles.shareButton}
-                          onPress={() => this.onShare()}>
-                          <Text style ={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
-                        </TouchableOpacity>
-                    </View>
-
-
+              <Image
+                source={{ uri: this.state.storage_image_uri }}
+                style={styles.fullScreenImage}
+              />
             </View>
+          </Modal>
+
+          <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={styles.subheader}>
+              {' '}
+              {this.state.user.username}
+              {' '}
+            </Text>
+          </View>
+
+          <View style={{ flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center' }}
+          >
+
+            <TouchableOpacity
+              onPress={() => this.openImageModal()}
+            >
+
+              <ProfilePic storage_image_uri={this.state.storage_image_uri} />
+
+            </TouchableOpacity>
+
+
+            <View style={{ paddingLeft: 30 }}>
+              <ProfileStats navigation={this.props.navigation} userUID={this.state.userUID} postCount={this.state.postCount} followerCount={this.state.followerCount} followingCount={this.state.followingCount} />
+            </View>
+
+          </View>
+
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <ProfileBio bio={this.state.bio} />
+          </View>
+
+
+          <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
+
+            <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
+
+              <FontAwesome name="birthday-cake" size={14} color="#FCAF45" />
+              <Text>
+                {' '}
+                {this.state.user.username}
+                {' '}
+joined
+                {' '}
+              </Text>
+              <TimeAgo style={{ color: '#FFFFFF' }} time={this.state.dateJoined} />
+              <Text />
+
+            </Text>
+
+          </View>
+
+          {this.renderTwitterAndInstagram()}
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+
+            <TouchableOpacity
+              onPress={() => this.goToEditProfile()}
+              style={styles.button}
+            >
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>edit profile</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => this.gotToSettings()}
+              style={styles.button}
+            >
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>settings</Text>
+            </TouchableOpacity>
+
+
+          </View>
+
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <TouchableOpacity
+              style={styles.shareButton}
+              onPress={() => this.onShare()}
+            >
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
+            </TouchableOpacity>
+          </View>
+
+
+        </View>
 
       );
     }
@@ -473,45 +504,45 @@ joined
       const { navigation } = this.props;
       const renderItem = ({ item }) => (
 
-          <FeedCellClass
-              username={item.username}
-              description={item.description}
-              image={item.image}
-              security={item.security}
-              ticker={item.ticker}
-              percent_gain_loss={item.percent_gain_loss}
-              profit_loss={item.profit_loss}
-              gain_loss={item.gain_loss}
-              postID={item.key}
-              navigation={navigation}
-              date_created={item.date_created.toDate()}
-              uid={item.uid}
-              viewsCount={item.viewsCount}
-            />
+        <FeedCellClass
+          username={item.username}
+          description={item.description}
+          image={item.image}
+          security={item.security}
+          ticker={item.ticker}
+          percent_gain_loss={item.percent_gain_loss}
+          profit_loss={item.profit_loss}
+          gain_loss={item.gain_loss}
+          postID={item.key}
+          navigation={navigation}
+          date_created={item.date_created.toDate()}
+          uid={item.uid}
+          viewsCount={item.viewsCount}
+        />
       );
 
       if (this.state.isLoading) {
         return (
-              <View style ={styles.container}>
-                <ActivityIndicator size="large" color="#9E9E9E" />
-              </View>
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color="#9E9E9E" />
+          </View>
         );
       }
       return (
-          <View style={{ backgroundColor: '#000000' }}>
-              <FlatList
-                  data={this.state.userPostsArray}
-                  renderItem={renderItem}
-                  keyExtractor={item => item.key}
-                  ListHeaderComponent={this.renderListHeader}
-                  contentContainerStyle={{ paddingBottom: 50 }}
-                  showsHorizontalScrollIndicator={false}
-                  showsVerticalScrollIndicator={false}
-                  onRefresh={this._refresh}
-                  refreshing={this.state.isLoading}
-                  onEndReached={() => { this.getMore(); }}
-                />
-            </View>
+        <View style={{ backgroundColor: '#000000' }}>
+          <FlatList
+            data={this.state.userPostsArray}
+            renderItem={renderItem}
+            keyExtractor={item => item.key}
+            ListHeaderComponent={this.renderListHeader}
+            contentContainerStyle={{ paddingBottom: 50 }}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            onRefresh={this._refresh}
+            refreshing={this.state.isLoading}
+            onEndReached={() => { this.getMore(); }}
+          />
+        </View>
       );
     }
 }
