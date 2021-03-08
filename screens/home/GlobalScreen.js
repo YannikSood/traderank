@@ -146,7 +146,7 @@ const GlobalScreen = (props) => {
   };
 
   const fetchMorePosts = async() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const lastItemIndex = globalPostsArray.length - 1;
     Analytics.logEvent('More_5_Loaded');
 

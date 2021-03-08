@@ -18,16 +18,16 @@ class Signup extends React.Component {
     super(props);
     this.state = {
       username: '',
-      user: this.props.user,
+      isLoading: false,
     };
   }
 
     //Check username is in use/register user as a new user in the db
     handleSignUp = async() => {
+    //   console.log(this.state.username);
       try {
         this.props.navigation.navigate('Register', {
-          username: this.state.username,
-
+            username: this.state.username,
         });
       } catch (error) {
         console.log(error);
