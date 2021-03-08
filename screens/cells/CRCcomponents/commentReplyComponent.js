@@ -1,62 +1,59 @@
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, Alert , ActivityIndicator} from 'react-native'
-import Firebase from '../../../firebase'
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, Alert, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
+import Firebase from '../../../firebase'
 
-const mapStateToProps = (state) => {
-    return {
-        user: state.user
-    }
-}
+const mapStateToProps = state => ({
+  user: state.UserReducer.user,
+});
 
 
-//We add comments 
+//We add comments
 class ReplyCommentComponent extends React.Component {
-    
-    constructor(props) {
-        super(props)
-        this.state = {
-            //same props as replyToData obj
-            commentorUID: Firebase.auth().currentUser.uid,
-            commentorUsername: this.props.user.username,
-            commentText: `@${this.props.replyData.replierUsername}`,
-            commentsCount: 0, //how many comments for this post (regular comments, top level replies, sub replies)
-            isLoading:false,
-            replyData: this.props.replyData,
-            replyCount: 0,
-            userCommentsCount: 0,
-            currentUser: null
-        }
-        
-    }
-    async componentDidMount(){
-        let userUID = Firebase.auth().currentUser.uid
+  constructor(props) {
+    super(props);
+    this.state = {
+      //same props as replyToData obj
+      commentorUID: Firebase.auth().currentUser.uid,
+      commentorUsername: this.props.user.username,
+      commentText: `@${this.props.replyData.replierUsername}`,
+      commentsCount: 0, //how many comments for this post (regular comments, top level replies, sub replies)
+      isLoading: false,
+      replyData: this.props.replyData,
+      replyCount: 0,
+      userCommentsCount: 0,
+      currentUser: null,
+    };
+  }
+
+  async componentDidMount() {
+    const userUID = Firebase.auth().currentUser.uid;
 
 
-        await Firebase.firestore().collection("users").doc(userUID).get()
-        .then(doc => {
-            data = doc.data()
-            this.setState({
-                currentUser: {
-                    name: data.username,
-                    id: doc.id,
-                },
-            })
-        })
-    }
-  
+    await Firebase.firestore().collection('users').doc(userUID).get()
+      .then((doc) => {
+        data = doc.data();
+        this.setState({
+          currentUser: {
+            name: data.username,
+            id: doc.id,
+          },
+        });
+      });
+  }
+
      //get number of replies associated with the comment
      getReplyCount = async() => {
-        await Firebase.firestore()
-        .collection('comments')
-        .doc(this.state.replyData.postID)
-        .collection('comments')
-        .doc(this.state.replyData.topCommentID) 
-        .get()
-        .then(function(doc){
+       await Firebase.firestore()
+         .collection('comments')
+         .doc(this.state.replyData.postID)
+         .collection('comments')
+         .doc(this.state.replyData.topCommentID)
+         .get()
+         .then((doc) => {
             if(doc.exists){
                 this.setState({
                     replyCount: doc.data().replyCount
@@ -64,15 +61,15 @@ class ReplyCommentComponent extends React.Component {
             } else{
                 console.log("No such document for getting replyCount.");
             }
-        }.bind(this));
-    }
+        });
+     }
 
     updateCommentCount = async() => {
-        await Firebase.firestore()
+      await Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.replyData.postID)
         .get()
-        .then(function(doc) {
+        .then((doc) => {
             if (doc.exists) {
                 this.setState ({
                     commentsCount: doc.data().commentsCount
@@ -81,16 +78,16 @@ class ReplyCommentComponent extends React.Component {
                 // doc.data() will be undefined in this case
                     console.log("No such document!");
             }
-        }.bind(this));
-
+        });
     }
+
     setUserCommentCount = async() => {
-          //Get the comments count of a user, how many comments they have posted
-          await Firebase.firestore()
-          .collection('users')
-          .doc(this.state.replyData.replierAuthorUID)
-          .get()
-          .then(function(doc) {
+      //Get the comments count of a user, how many comments they have posted
+      await Firebase.firestore()
+        .collection('users')
+        .doc(this.state.replyData.replierAuthorUID)
+        .get()
+        .then((doc) => {
               if (doc.exists) {
                   this.setState ({
                       userCommentsCount: doc.data().commentsCount
@@ -99,7 +96,7 @@ class ReplyCommentComponent extends React.Component {
                   // doc.data() will be undefined in this case
                       console.log("No such document!");
               }
-          }.bind(this)); 
+          });
     }
 
     addComment = async() => {
@@ -114,7 +111,7 @@ class ReplyCommentComponent extends React.Component {
                 { cancelable: false }
               );
               return
-        } else{
+        } 
             this.setState({isLoading:true});
             Analytics.logEvent("User_Posted_Comment_Reply")
             this.setUserCommentCount();
@@ -198,74 +195,70 @@ class ReplyCommentComponent extends React.Component {
                       })
                   ).then(() => this.updateCommentCount())
 
-        }
+        
      
 
     }
 
- 
+
     render() {
-
-     
-        
-  
-        //Allow a user to post a comment. First, take a text input, then submit it with the comment button. 
-        if(this.state.isLoading) {
-            return (
-                <View style={styles.inputBox}>
-                    <ActivityIndicator size="large" color="#9E9E9E"/>
-                </View>
-            )
-        }
+      //Allow a user to post a comment. First, take a text input, then submit it with the comment button.
+      if (this.state.isLoading) {
         return (
-    
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                
-                <View
-                    style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 15, marginBottom: 15 , }}>
+              <View style={styles.inputBox}>
+                  <ActivityIndicator size="large" color="#9E9E9E" />
+                </View>
+        );
+      }
+      return (
 
-                    <TextInput
-                        style={styles.inputBox}
-                        value={this.state.commentText}
-                        onChangeText={commentText => {
-                           // console.log("comment from commentComponent: " + this.state.commentText);
-                            this.setState({ commentText })
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+
+              <View
+                  style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 15, marginBottom: 15 }}
+                >
+
+                  <TextInput
+                      style={styles.inputBox}
+                      value={this.state.commentText}
+                      onChangeText={(commentText) => {
+                          // console.log("comment from commentComponent: " + this.state.commentText);
+                          this.setState({ commentText });
                         }}
-                        placeholder='Add a comment...'
-                        placeholderTextColor="#696969" 
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        multiline={true}
-                        maxLength={400}
+                      placeholder="Add a comment..."
+                      placeholderTextColor="#696969"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      multiline
+                      maxLength={400}
                     />
 
-                    <TouchableOpacity onPress={() => { this.addComment() }}> 
-                        <MaterialCommunityIcons name="message" size={30} color="white" />
+                  <TouchableOpacity onPress={() => { this.addComment(); }}>
+                      <MaterialCommunityIcons name="message" size={30} color="white" />
                     </TouchableOpacity>
                 </View>
             </TouchableWithoutFeedback>
-        )
-       
+      );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    inputBox: {
-        width: '80%',
-        margin: 10,
-        padding: 7,
-        fontSize: 16,
-        borderColor: '#d3d3d3',
-        borderWidth: 1,
-        borderRadius: 15,
-        // textAlign: 'center',
-        color: '#FFFFFF'
-    },
-})
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputBox: {
+    width: '80%',
+    margin: 10,
+    padding: 7,
+    fontSize: 16,
+    borderColor: '#d3d3d3',
+    borderWidth: 1,
+    borderRadius: 15,
+    // textAlign: 'center',
+    color: '#FFFFFF',
+  },
+});
 
 export default connect(mapStateToProps)(ReplyCommentComponent);

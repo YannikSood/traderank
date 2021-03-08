@@ -109,7 +109,7 @@ class LikeComponent extends React.Component {
         .then(() => this.setState({
           likesCount: this.state.likesCount + 1,
           isLoading: false,
-        }) );
+        }));
     }
 
     subtractFromLikeCount = async() => {
@@ -122,7 +122,7 @@ class LikeComponent extends React.Component {
         .then(() => this.setState({
           likesCount: this.state.likesCount - 1,
           isLoading: false,
-        }) );
+        }));
     }
 
     //Add to the likes lists in the database
@@ -212,8 +212,8 @@ class LikeComponent extends React.Component {
           })
           .then(docref => this.setState({ notificationUID: docref.id }))
           .catch((error) => {
-                console.error("Error writing document to user posts: ", error);
-            });
+            console.error('Error writing document to user posts: ', error);
+          });
 
         const writeNotification = Firebase.functions().httpsCallable('writeNotification');
         writeNotification({
@@ -229,8 +229,7 @@ class LikeComponent extends React.Component {
           .catch((error) => {
             console.log(error);
           });
-      }
-      else {
+      } else {
 
       }
     }
@@ -251,15 +250,15 @@ class LikeComponent extends React.Component {
     render() {
       if (this.state.isLoading) {
         return (
-              <View>
-                  <TouchableOpacity
-                      style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }}
-                        >
+          <View>
+                <TouchableOpacity
+                    style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }}
+                  >
 
-                      <ActivityIndicator size="small" color="#9E9E9E" />
+                    <ActivityIndicator size="small" color="#9E9E9E" />
 
-                    </TouchableOpacity>
-                </View>
+                  </TouchableOpacity>
+              </View>
 
         );
       }
@@ -267,40 +266,40 @@ class LikeComponent extends React.Component {
       //Connected to "Unlike" functionality
       if (this.state.isAlreadyLiked) {
         return (
-              <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}>
-                  <TouchableOpacity onPress={() => {
-                      this.removeFromLikedDB();
-                    }}
-                    >
-                      <Ionicons name="ios-heart" size={30} color="#00cc00" />
+          <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => {
+                    this.removeFromLikedDB();
+                  }}
+                  >
+                    <Ionicons name="ios-heart" size={30} color="#00cc00" />
 
-                    </TouchableOpacity>
-                  <Text style={{ color: 'white' }}>  
-{' '}
-{this.state.likesCount}
-</Text>
-                </View>
+                  </TouchableOpacity>
+                <Text style={{ color: 'white' }}>
+                    {' '}
+                    {this.state.likesCount}
+                                    </Text>
+              </View>
         );
       }
       //If the post is not liked, show the slashed heart with the number of likes beside it.
       //Connected to "Like" functionality
 
       return (
-              <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF' }}>
-                  <TouchableOpacity
-                      style={{ color: '#FFFFFF' }}
-                      onPress={() => {
-                      this.addToLikesDB();
-                    }}
-                    >
-                      <Ionicons name="ios-heart" size={30} color="white" />
+        <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF' }}>
+                <TouchableOpacity
+                    style={{ color: '#FFFFFF' }}
+                    onPress={() => {
+                        this.addToLikesDB();
+                      }}
+                  >
+                    <Ionicons name="ios-heart" size={30} color="white" />
 
-                    </TouchableOpacity>
-                  <Text style={{ color: 'white' }}>  
-{' '}
-{this.state.likesCount}
-</Text>
-                </View>
+                  </TouchableOpacity>
+                <Text style={{ color: 'white' }}>
+                    {' '}
+                    {this.state.likesCount}
+                                    </Text>
+              </View>
       );
     }
 }
