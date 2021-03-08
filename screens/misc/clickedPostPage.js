@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
-import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
+import React, { useState, useEffect }  from 'react';
+import {  FlatList, View, Text, StyleSheet, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
 import TimeAgo from 'react-native-timeago';
-import Modal from 'react-native-modal';
-import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Firebase from '../../firebase';
-import LikeComponent from '../cells/FFCcomponents/likeComponent';
-import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent';
 import UserComponent from '../cells/FFCcomponents/userComponent';
 import CommentCellClass from '../cells/commentCellClass';
 import CommentComponent from '../cells/FFCcomponents/commentComponent';
-import { clearUser } from '../../redux/app-redux';
 // import ReplyButton from './replyButton';
 
 
@@ -21,55 +16,43 @@ const mapStateToProps = state => ({
   user: state.UserReducer.user,
 });
 
+const ClickedPostPage = ({ props, route, navigation }) => {
+  const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, date_created } = route.params;
 
-//This page now only shows comments
-//To show post details, go to Special Clicked Post Page
-class ClickedPostPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: this.props.route.params.username,
-      image: this.props.route.params.image,
-      ticker: this.props.route.params.ticker,
-      security: this.props.route.params.security,
-      description: this.props.route.params.description,
-      profit_loss: this.props.route.params.profit_loss,
-      percent_gain_loss: this.props.route.params.percent_gain_loss,
-      gain_loss: this.props.route.params.gain_loss,
-      postID: this.props.route.params.postID,
-      navigation: this.props.navigation,
-      isLoading: true,
-      currentUser: Firebase.auth().currentUser.uid,
-      date_created: this.props.route.params.date_created,
-      commentsArray: [],
-      modalOpen: false,
-      currentViewsCount: 0,
-      replyTo: '',
-      replyData: {},
-    };
 
-    this.firestoreRef = Firebase.firestore()
-      .collection('comments')
-      .doc(this.state.postID)
-      .collection('comments')
-      .orderBy('date_created', 'asc');
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const currentUser = Firebase.auth().currentUser.uid;
+  const [currentUsername, setCurrentUsername] = useState('');
+  const [commentsArray, setCommentsArray] = useState([]);
+  const [currentViewsCount, setCurrentViewsCount] = useState(0);
+  const [replyTo, setReplyTo] = useState('');
+  const [replyData, setReplyData] = useState({});
 
-  componentDidMount() {
-    //Not replying ot anyone
-    //update replyingTo storage variable here?
+  useEffect(() => {
+    setIsLoading(true);
+    Analytics.logEvent('Comments_Clicked');
+    Analytics.setCurrentScreen('CommentsScreen');
 
-    Analytics.logEvent('Post_Clicked');
-    Analytics.setCurrentScreen('PostDetailsScreen');
     Firebase.firestore()
       .collection('globalPosts')
-      .doc(this.state.postID)
+      .doc(postID)
       .get()
       .then((doc) => {
         if (doc.exists) {
-          this.setState({
-            currentViewsCount: doc.data().viewsCount,
-          });
+          setCurrentViewsCount(doc.data().viewsCount);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    Firebase.firestore()
+      .collection('users')
+      .doc(currentUser)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setCurrentUsername(doc.data().username);
         }
       })
       .catch((error) => {
@@ -78,370 +61,270 @@ class ClickedPostPage extends React.Component {
 
     Firebase.firestore()
       .collection('globalPosts')
-      .doc(this.state.postID)
+      .doc(postID)
       .set({
-        viewsCount: this.state.currentViewsCount + 1,
+        viewsCount: currentViewsCount + 1,
       }, { merge: true });
 
-    this.getCollection();
-  }
+    fetchCollection();
+  }, []);
 
-    componentWillUnmount = () => {
-      console.log('unmounted comments');
-    }
+  const refresh = () => {
+    setIsLoading(true);
+    fetchCollection();
+  };
 
-    getCollection = async() => {
-      const commentsArray = [];
+  const fetchCollection = async() => {
+    const tempCommentsArray = [];
 
-      await Firebase.firestore()
-        .collection('comments')
-        .doc(this.state.postID)
-        .collection('comments')
-        .orderBy('date_created', 'asc')
-        .get()
-        .then((doc) => {
-          doc.forEach((res) => {
-            const {
-              commentLikes,
-              commentText,
-              commentorUID,
-              commentorUsername,
-              date_created,
-              replyCount } = res.data();
+    await Firebase.firestore()
+      .collection('comments')
+      .doc(postID)
+      .collection('comments')
+      .orderBy('date_created', 'asc')
+      .get()
+      .then((doc) => {
+        doc.forEach((res) => {
+          const {
+            commentLikes,
+            commentText,
+            commentorUID,
+            commentorUsername,
+            date_created,
+            replyCount } = res.data();
 
-            commentsArray.push({
-              key: res.id,
-              commentLikes,
-              commentText,
-              commentorUID,
-              commentorUsername,
-              date_created,
-              replyCount,
+          tempCommentsArray.push({
+            key: res.id,
+            commentLikes,
+            commentText,
+            commentorUID,
+            commentorUsername,
+            date_created,
+            replyCount,
 
-            });
-          });
-
-          this.setState({
-            commentsArray,
-            isLoading: false,
           });
         });
 
-      // if (commentsArray.length == 0) {
-      //     this.setState({
-      //         // commentsArray,
-      //         isLoading: false,
-      //     });
-      // }
+        setCommentsArray(tempCommentsArray);
+        setIsLoading(false);
+      });
+  };
 
-
-      // console.log(this.state.commentsArray)
-    }
-
-
-    renderGainLoss = () => {
-      if (this.state.gain_loss == 'gain') {
-        return (
-          <Text style={styles.pnlContainer}>
-            <Text style={styles.gainText}>
-$
-              {this.state.profit_loss}
-            </Text>
-            <Text style={styles.regularTradeText}>  🚀  </Text>
-            <Text style={styles.gainText}>
-              {this.state.percent_gain_loss}
-%
-            </Text>
-          </Text>
-
-        );
-      }
-      if (this.state.gain_loss == 'loss') {
-        return (
-          <Text style={styles.pnlContainer}>
-            <Text style={styles.lossText}>
--$
-              {this.state.profit_loss}
-            </Text>
-            <Text style={styles.tradeText}>  🥴  </Text>
-            <Text style={styles.lossText}>
--
-              {this.state.percent_gain_loss}
-%
-            </Text>
-          </Text>
-        );
-      }
+  const renderGainLoss = () => {
+    if (gain_loss === 'gain') {
       return (
         <Text style={styles.pnlContainer}>
-          <Text style={styles.yoloText}>
+          <Text style={styles.gainText}>
 $
-            {this.state.profit_loss}
-            {' '}
-🙏  trade
+            {profit_loss}
+          </Text>
+          <Text style={styles.regularTradeText}>  🚀  </Text>
+          <Text style={styles.gainText}>
+            {percent_gain_loss}
+%
+          </Text>
+        </Text>
+
+      );
+    }
+    if (gain_loss === 'loss') {
+      return (
+        <Text style={styles.pnlContainer}>
+          <Text style={styles.lossText}>
+-$
+            {profit_loss}
+          </Text>
+          <Text style={styles.tradeText}>  🥴  </Text>
+          <Text style={styles.lossText}>
+-
+            {percent_gain_loss}
+%
           </Text>
         </Text>
       );
     }
-
-    _refresh = () => {
-      this.setState({ isLoading: true });
-      this.firestoreRef.onSnapshot(this.getCollection);
-    };
-
-    renderListHeader = () => {
-      if (this.state.isLoading) {
-        return (
-          <View style={styles.noCommentsContainer}>
-            <ActivityIndicator size="large" color="#9E9E9E" />
-          </View>
-        );
-      }
-      return (
-        <View style={this.getContainerStyle()}>
-
-          {/* <Modal
-                isVisible={this.state.modalOpen}
-                animationIn='fadeIn'
-                onSwipeComplete={() => this.closeImageModal()}
-                swipeDirection="down"
-            >
-
-                <View  style={{flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}>
-
-                    <Image
-                        source={{ uri: this.state.image }}
-                        style={styles.fullScreenImage}
-                    />
-                </View>
-            </Modal> */}
-
-          <View>
-            <View style={{ flexDirection: 'row', padding: 6, justifyContent: 'space-between', alignItems: 'left' }}>
-
-              <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
-                <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
-                  <UserComponent
-                    postID={this.state.postID}
-                    navigation={this.props.navigation}
-                  />
-                </View>
-
-              </View>
-
-              <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
-                <Text style={styles.tradeText}>
+    return (
+      <Text style={styles.pnlContainer}>
+        <Text style={styles.yoloText}>
 $
-                  {this.state.ticker}
-                </Text>
-                <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
-#
-                  {this.state.security}
-                  {' '}
-                </Text>
-              </View>
+          {profit_loss}
+          {' '}
+🙏  trade
+        </Text>
+      </Text>
+    );
+  };
 
-
-            </View>
-            {/* </View> */}
-            {/* { this.renderGainLoss() } */}
-          </View>
-
-
-          {/* <TouchableOpacity
-                    onPress={() => this.openImageModal()}
-                    style={{alignItems: "center", marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2}}>
-
-                        <Image
-                            source={{ uri: this.state.image }}
-                            style={styles.thumbnail}
-                        />
-                </TouchableOpacity> */}
-
-
-          <View style={styles.descriptionContainer}>
-
-            <Text style={styles.descriptionText}>
-              {' '}
-              {this.state.description}
-            </Text>
-
-          </View>
-
-          <View style={styles.timeContainer}>
-            <TimeAgo style={{ color: '#696969' }} time={this.state.date_created} />
-          </View>
-
-
-          {/* <View style = {{flexDirection: 'row', color: '#FFFFFF'}}>
-                    <View style={styles.buttonContainer}>
-
-                        <LikeComponent postID = {this.state.postID} />
-
-                    </View>
-
-                    <View style={styles.buttonContainer}>
-
-                         <CommentIconComponent postID = {this.state.postID} />
-
-                    </View>
-
-                    <View style={styles.buttonContainer}>
-
-
-                        <Ionicons name="eye-sharp" size={30} color="white" />
-                        <Text style = {{color: '#FFFFFF', paddingLeft: 4}}>{this.state.currentViewsCount}</Text>
-
-
-                    </View>
-                </View> */}
-          <View style={styles.lineStyle} />
-
+  const renderListHeader = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.noCommentsContainer}>
+          <ActivityIndicator size="large" color="#9E9E9E" />
         </View>
       );
     }
+    return (
+      <View style={getContainerStyle()}>
 
-    getContainerStyle = () => {
-      if (this.state.commentsArray.length == 0) {
-        return {
-          paddingTop: 20,
-          paddingBottom: 20,
-          backgroundColor: '#000000',
-          color: '#000000',
-          height: Dimensions.get('window').height,
-        };
-      }
+        <View>
+          <View style={{ flexDirection: 'row', padding: 6, justifyContent: 'space-between', alignItems: 'left' }}>
+
+            <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
+              <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
+                <UserComponent
+                  postID={postID}
+                  navigation={navigation}
+                />
+              </View>
+
+            </View>
+
+            <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
+              <Text style={styles.tradeText}>
+$
+                {ticker}
+              </Text>
+              <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
+#
+                {security}
+                {' '}
+              </Text>
+            </View>
+
+
+          </View>
+        </View>
+
+        <View style={styles.descriptionContainer}>
+
+          <Text style={styles.descriptionText}>
+            {' '}
+            {description}
+          </Text>
+
+        </View>
+
+        <View style={styles.timeContainer}>
+          <TimeAgo style={{ color: '#696969' }} time={date_created} />
+        </View>
+
+        <View style={styles.lineStyle} />
+
+      </View>
+    );
+  };
+
+  const getContainerStyle = () => {
+    if (commentsArray.length === 0) {
       return {
         paddingTop: 20,
         paddingBottom: 20,
         backgroundColor: '#000000',
         color: '#000000',
+        height: Dimensions.get('window').height,
       };
     }
+    return {
+      paddingTop: 20,
+      paddingBottom: 20,
+      backgroundColor: '#000000',
+    };
+  };
 
-    renderCommentComponent = () => (
-      <CommentComponent postID={this.state.postID} />
-    )
 
-    openImageModal = () => {
-      this.setState({ modalOpen: true });
-    }
+  const renderItem = ({ item }) => (
 
-    closeImageModal = () => {
-      this.setState({ modalOpen: false });
-    }
+    <CommentCellClass
+      key={item.key}
+      commentLikes={item.commentLikes}
+      commentText={item.commentText}
+      commentorUID={item.commentorUID}
+      commentorUsername={item.commentorUsername}
+      navigation={navigation}
+      date_created={item.date_created.toDate()}
+      commentID={item.key}
+      postID={postID}
+      replyCount={item.replyCount}
+      button={(
+        <TouchableOpacity
+          onPress={() => {
+            //just set state of replyTo in componentUpdate from async storage
+            //StoreReplyTo
+            const storeReplyTo = async(value) => {
+              try {
+                await AsyncStorage.setItem('replyTo', value);
+              } catch (e) {
+                // saving error
+              }
+            };
 
-    render() {
-      const { navigation } = this.props;
-      /*
-                button = {
-                    <ReplyButton
-                     postID = {this.state.postID}
-                     commentID={item.key}
-                     replyingToUsername = {item.commentorUsername}
-                     replyTo={item.commentorUsername}
-                     replyingToUID={item.commentorUID}
-                     replierUsername={this.props.user.username}
-                     replierAuthorUID={this.state.currentUser}
-                     commentLikes={0}
+            storeReplyTo(`${item.commentorUsername}`);
+            setReplyTo(`${item.commentorUsername}`);
 
-                    />
-                }
-        */
-      const renderItem = ({ item }) => (
+            //sotre who to reply to
+            const replyDataObj = {
+              postID: `${postID}`, //post the comment I am replying to
+              commentID: `${item.key}`, //Id of the comment I am replying to
+              replyingToUsername: `${item.commentorUsername}`,
+              replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
+              replierAuthorUID: `${currentUser}`, //person sending the reply
+              replierUsername: `${currentUsername}`,
+              commentLikes: 0,
+              //may need to change
+            };
+            console.log(replyDataObj);
 
-        <CommentCellClass
-          key={item.key}
-          commentLikes={item.commentLikes}
-          commentText={item.commentText}
-          commentorUID={item.commentorUID}
-          commentorUsername={item.commentorUsername}
-          navigation={navigation}
-          date_created={item.date_created.toDate()}
-          commentID={item.key}
-          postID={this.state.postID}
-          replyCount={item.replyCount}
-          button={(
-            <TouchableOpacity
-              onPress={() => {
-                //just set state of replyTo in componentUpdate from async storage
-                //StoreReplyTo
-                const storeReplyTo = async(value) => {
-                  try {
-                    await AsyncStorage.setItem('replyTo', value);
-                  } catch (e) {
-                    // saving error
-                  }
-                };
+            //replyData that will be stored in the DB
+            const storeReplyData = async(value) => {
+              try {
+                const jsonValue = JSON.stringify(value);
+                await AsyncStorage.setItem('replyData', jsonValue);
+              } catch (e) {
+                // saving error
+              }
+            };
+            setReplyData(replyDataObj);
+            storeReplyData(replyDataObj);
+          }}
+        >
 
-                storeReplyTo(`${item.commentorUsername}`);
-                this.setState({ replyTo: `${item.commentorUsername}` });
+          <View style={{ paddingLeft: 15, paddingRight: 15 }}>
 
-                //sotre who to reply to
-                const replyDataObj = {
-                  postID: `${this.state.postID}`, //post the comment I am replying to
-                  commentID: `${item.key}`, //Id of the comment I am replying to
-                  replyingToUsername: `${item.commentorUsername}`,
-                  replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
-                  replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
-                  replierUsername: `${this.props.user.username}`,
-                  commentLikes: 0,
-                  //may need to change
-                };
-                console.log(replyDataObj);
+            <Entypo name="reply" size={22} color="white" />
 
-                //replyData that will be stored in the DB
-                const storeReplyData = async(value) => {
-                  try {
-                    const jsonValue = JSON.stringify(value);
-                    await AsyncStorage.setItem('replyData', jsonValue);
-                  } catch (e) {
-                    // saving error
-                  }
-                };
-                this.setState({ replyData: replyDataObj });
-                storeReplyData(replyDataObj);
-              }}
-            >
-
-              <View style={{ paddingLeft: 15, paddingRight: 15 }}>
-
-                <Entypo name="reply" size={22} color="white" />
-
-              </View>
-            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
 )}
-        />
-      );
+    />
+  );
 
-      return (
-        <View style={{ backgroundColor: '#000000' }}>
+  return (
+    <View style={{ backgroundColor: '#000000' }}>
 
-          <FlatList
-            data={this.state.commentsArray}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
-            ListHeaderComponent={this.renderListHeader}
-            contentContainerStyle={{ paddingBottom: Dimensions.get('window').height }}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            onRefresh={this._refresh}
-            refreshing={this.state.isLoading}
-          />
+      <FlatList
+        data={commentsArray}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
+        ListHeaderComponent={renderListHeader()}
+        contentContainerStyle={{ paddingBottom: Dimensions.get('window').height }}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        onRefresh={refresh}
+        refreshing={isLoading}
+      />
 
-          <KeyboardAvoidingView
-            style={styles.commentFooter}
-            behavior="padding"
-            enabled
-            keyboardVerticalOffset={100}
-          >
-            <CommentComponent postID={this.state.postID} replyTo={this.state.replyTo} replyData={this.state.replyData} />
-          </KeyboardAvoidingView>
-        </View>
+      <KeyboardAvoidingView
+        style={styles.commentFooter}
+        behavior="padding"
+        enabled
+        keyboardVerticalOffset={100}
+      >
+        <CommentComponent postID={postID} replyTo={replyTo} replyData={replyData} />
+      </KeyboardAvoidingView>
+    </View>
 
-      );
-    }
-}
+  );
+};
 
 
 const styles = StyleSheet.create({

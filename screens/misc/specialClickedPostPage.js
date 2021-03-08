@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
 import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
 import TimeAgo from 'react-native-timeago';
-import Firebase from '../../firebase'
-import LikeComponent from '../cells/FFCcomponents/likeComponent'
-import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent'
-import UserComponent from '../cells/FFCcomponents/userComponent'
-import CommentCellClass from '../cells/commentCellClass'
-import CommentComponent from '../cells/FFCcomponents/commentComponent'
 import Modal from 'react-native-modal';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Entypo } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import { connect } from 'react-redux';
-import { clearUser } from '../../redux/app-redux';
-import { Entypo } from '@expo/vector-icons';
-// import ReplyButton from './replyButton';
+import Firebase from '../../firebase';
+import LikeComponent from '../cells/FFCcomponents/likeComponent';
+import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent';
+import UserComponent from '../cells/FFCcomponents/userComponent';
+import CommentCellClass from '../cells/commentCellClass';
+import CommentComponent from '../cells/FFCcomponents/commentComponent';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
 });
 
+/**
+ *Single post information.
+ */
 class SpecialClickedPostPage extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -44,11 +43,11 @@ class SpecialClickedPostPage extends React.Component {
       replyData: {},
     };
 
-    this.firestoreRef =         Firebase.firestore()
-          .collection('comments')
-          .doc(this.state.postID)
-          .collection('comments')
-          .orderBy('date_created', 'asc');
+    this.firestoreRef = Firebase.firestore()
+      .collection('comments')
+      .doc(this.state.postID)
+      .collection('comments')
+      .orderBy('date_created', 'asc');
   }
 
   componentDidMount() {
@@ -136,31 +135,48 @@ class SpecialClickedPostPage extends React.Component {
 
 
     renderGainLoss = () => {
-
-        if(this.state.gain_loss == "gain") {
-            return (
-                <Text style={styles.pnlContainer}>
-                    <Text style={styles.gainText}>${this.state.profit_loss}</Text>
-                    <Text style={styles.regularTradeText}>  🚀  </Text>
-                    <Text style={styles.gainText}>{this.state.percent_gain_loss}%</Text>
-                </Text>
-                
-            )
-        }
-        if (this.state.gain_loss == "loss") {
-            return (
-                <Text style={styles.pnlContainer}>
-                    <Text style={styles.lossText}>-${this.state.profit_loss}</Text>
-                    <Text style={styles.tradeText}>  🥴  </Text>
-                    <Text style={styles.lossText}>-{this.state.percent_gain_loss}%</Text>
-                </Text>
-            )
-        }
+      if (this.state.gain_loss == 'gain') {
         return (
-            <Text style={styles.pnlContainer}>
-                 <Text style={styles.yoloText}>${this.state.profit_loss}  🙏  trade</Text>
+          <Text style={styles.pnlContainer}>
+            <Text style={styles.gainText}>
+$
+              {this.state.profit_loss}
             </Text>
-        )
+            <Text style={styles.regularTradeText}>  🚀  </Text>
+            <Text style={styles.gainText}>
+              {this.state.percent_gain_loss}
+%
+            </Text>
+          </Text>
+
+        );
+      }
+      if (this.state.gain_loss == 'loss') {
+        return (
+          <Text style={styles.pnlContainer}>
+            <Text style={styles.lossText}>
+-$
+              {this.state.profit_loss}
+            </Text>
+            <Text style={styles.tradeText}>  🥴  </Text>
+            <Text style={styles.lossText}>
+-
+              {this.state.percent_gain_loss}
+%
+            </Text>
+          </Text>
+        );
+      }
+      return (
+        <Text style={styles.pnlContainer}>
+          <Text style={styles.yoloText}>
+$
+            {this.state.profit_loss}
+            {' '}
+🙏  trade
+          </Text>
+        </Text>
+      );
     }
 
     _refresh = () => {
@@ -171,39 +187,39 @@ class SpecialClickedPostPage extends React.Component {
     renderListHeader = () => {
       if (this.state.isLoading) {
         return (
-              <View style={styles.noCommentsContainer}>
-                  <ActivityIndicator size="large" color="#9E9E9E" />
-                </View>
+          <View style={styles.noCommentsContainer}>
+            <ActivityIndicator size="large" color="#9E9E9E" />
+          </View>
         );
       }
       return (
-          <View style={this.getContainerStyle()}>
+        <View style={this.getContainerStyle()}>
 
-              <Modal
-              isVisible={this.state.modalOpen}
-              animationIn="fadeIn"
-              onSwipeComplete={() => this.closeImageModal()}
-              swipeDirection="down"
-            >
+          <Modal
+            isVisible={this.state.modalOpen}
+            animationIn="fadeIn"
+            onSwipeComplete={() => this.closeImageModal()}
+            swipeDirection="down"
+          >
 
-              <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
-                  <Image
-                      source={{ uri: this.state.image }}
-                      style={styles.fullScreenImage}
-                    />
-                </View>
-            </Modal>
+              <Image
+                  source={{ uri: this.state.image }}
+                  style={styles.fullScreenImage}
+                />
+            </View>
+          </Modal>
 
-              <View>
-              <View style={{ flexDirection: 'row', padding: 6, justifyContent: 'space-between', alignItems: 'left' }}>
+          <View>
+            <View style={{ flexDirection: 'row', padding: 6, justifyContent: 'space-between', alignItems: 'left' }}>
 
               <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
-                  <View style={{ flexDirection: 'row', paddingLeft: 12  }}>
+                  <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
                       <UserComponent
-                              postID={this.state.postID}
-                              navigation={this.props.navigation}
-                            />
+                      postID={this.state.postID}
+                      navigation={this.props.navigation}
+                    />
                     </View>
 
                 </View>
@@ -211,77 +227,77 @@ class SpecialClickedPostPage extends React.Component {
               <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
                   <Text style={styles.tradeText}>
 $
-{this.state.ticker}
-</Text>
+                      {this.state.ticker}
+                    </Text>
                   <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
 #
-{this.state.security}
-{' '}
- </Text>
+                      {this.state.security}
+                      {' '}
+                    </Text>
                 </View>
 
 
             </View>
-              {/* </View> */}
-              { this.renderGainLoss() }
-            </View>
+            {/* </View> */}
+            { this.renderGainLoss() }
+          </View>
 
 
+          <TouchableOpacity
+            onPress={() => this.openImageModal()}
+            style={{ alignItems: 'center', marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2 }}
+          >
 
-              <TouchableOpacity
-                  onPress={() => this.openImageModal()}
-                  style={{ alignItems: 'center', marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2 }}
-                >
-
-                  <Image
-                          source={{ uri: this.state.image }}
-                          style={styles.thumbnail}
-                        />
-                </TouchableOpacity>
+            <Image
+              source={{ uri: this.state.image }}
+              style={styles.thumbnail}
+            />
+          </TouchableOpacity>
 
 
-              <View style={styles.descriptionContainer}>
+          <View style={styles.descriptionContainer}>
 
-                  <Text style ={styles.descriptionText}> 
-{' '}
-{this.state.description}
-</Text>
+            <Text style={styles.descriptionText}>
+              {' '}
+              {this.state.description}
+            </Text>
 
-                </View>
+          </View>
 
-              {/* <View style={styles.timeContainer}>
+          {/* <View style={styles.timeContainer}>
                     <TimeAgo style={{color: '#696969'}} time = {this.state.date_created} />
                 </View> */}
 
 
-              <View style= {{ flexDirection: 'row', color: '#FFFFFF' }}>
-                  <View style={styles.buttonContainer}>
+          <View style={{ flexDirection: 'row', color: '#FFFFFF' }}>
+            <View style={styles.buttonContainer}>
 
-                      <LikeComponent postID ={this.state.postID} />
-
-                    </View>
-
-                  <TouchableOpacity
-                      style={styles.buttonContainer}
-                      onPress={() => this.showPostPage()}>
-
-
-                      <CommentIconComponent postID ={this.state.postID} />
-
-                    </TouchableOpacity>
-
-                  <View style={styles.buttonContainer}>
-
-
-                      <Ionicons name="eye-sharp" size={30} color="white" />
-                      <Text style ={{ color: '#FFFFFF', paddingLeft: 4 }}>{this.state.currentViewsCount}</Text>
-
-
-                    </View>
-                </View>
-              <View style ={styles.lineStyle} />
+              <LikeComponent postID={this.state.postID} />
 
             </View>
+
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => this.showPostPage()}
+            >
+
+
+              <CommentIconComponent postID={this.state.postID} />
+
+            </TouchableOpacity>
+
+            <View style={styles.buttonContainer}>
+
+
+              <Ionicons name="eye-sharp" size={30} color="white" />
+              <Text style={{ color: '#FFFFFF', paddingLeft: 4 }}>{this.state.currentViewsCount}</Text>
+
+
+            </View>
+          </View>
+          <View style={styles.lineStyle} />
+
+        </View>
       );
     }
 
@@ -304,8 +320,8 @@ $
     }
 
     renderCommentComponent = () => (
-            <CommentComponent postID = {this.state.postID}/>
-        )
+      <CommentComponent postID={this.state.postID} />
+    )
 
     openImageModal = () => {
       this.setState({ modalOpen: true });
@@ -334,131 +350,128 @@ $
         */
       const renderItem = ({ item }) => (
 
-          <CommentCellClass
-              key= {item.key}
-              commentLikes={item.commentLikes}
-              commentText= {item.commentText}
-              commentorUID ={item.commentorUID}
-              commentorUsername ={item.commentorUsername}
-              navigation ={navigation}
-              date_created= {item.date_created.toDate()}
-              commentID ={item.key}
-              postID= {this.state.postID}
-              replyCount={item.replyCount}
-              button ={(
-<TouchableOpacity
-                    onPress={() =>{
-                        //StoreReplyTo
-                       const storeReplyTo = async (value) => {
-                        try {
-                          await AsyncStorage.setItem('replyTo', value)
-                        } catch (e) {
-                          // saving error
-                        }
-                      }
-                      storeReplyTo(`${item.commentorUsername}`);
-                      this.setState({replyTo:`${item.commentorUsername}`})
+        <CommentCellClass
+          key={item.key}
+          commentLikes={item.commentLikes}
+          commentText={item.commentText}
+          commentorUID={item.commentorUID}
+          commentorUsername={item.commentorUsername}
+          navigation={navigation}
+          date_created={item.date_created.toDate()}
+          commentID={item.key}
+          postID={this.state.postID}
+          replyCount={item.replyCount}
+          button={(
+            <TouchableOpacity
+              onPress={() => {
+                  //StoreReplyTo
+                  const storeReplyTo = async(value) => {
+                    try {
+                      await AsyncStorage.setItem('replyTo', value);
+                    } catch (e) {
+                      // saving error
+                    }
+                  };
+                  storeReplyTo(`${item.commentorUsername}`);
+                  this.setState({ replyTo: `${item.commentorUsername}` });
 
-                      //sotre who to reply to
-                      let replyDataObj = {
-                        postID: `${this.state.postID}`, //post the comment I am replying to 
-                        commentID: `${item.key}`, //Id of the comment I am replying to 
-                        replyingToUsername: `${item.commentorUsername}`,
-                        replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
-                        replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
-                        replierUsername: `${this.props.user.username}`,
-                        commentLikes: 0
-                        //may need to change
-                        }
-                      
-                        //replyData that will be stored in the DB
-                      const storeReplyData = async (value) => {
-                        try {
-                          const jsonValue = JSON.stringify(value)
-                          await AsyncStorage.setItem('replyData', jsonValue)
-                        } catch (e) {
-                          // saving error
-                        }
-                      }
-                      this.setState({replyData:replyDataObj});
-                      storeReplyData(replyDataObj);
+                  //sotre who to reply to
+                  const replyDataObj = {
+                    postID: `${this.state.postID}`, //post the comment I am replying to
+                    commentID: `${item.key}`, //Id of the comment I am replying to
+                    replyingToUsername: `${item.commentorUsername}`,
+                    replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
+                    replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
+                    replierUsername: `${this.props.user.username}`,
+                    commentLikes: 0,
+                    //may need to change
+                  };
 
-                      if (replyDataObj.replyingToUID != this.state.currentUser) {
-                            Firebase.firestore()
-                            .collection('users')
-                            .doc(replyDataObj.replyingToUID)
-                            .collection('notifications')
-                            .add({
-                                type: 6,
-                                senderUID: this.state.currentUser,
-                                recieverUID: replyDataObj.replyingToUID,
-                                postID: this.state.postID,
-                                read: false,
-                                date_created: new Date(),
-                                recieverToken: ""
-                            })
-                            .then((docref) => this.setState({notificationUID: docref.id}))
-                            .catch(function(error) {
-                                console.error("Error writing document to user posts: ", error);
-                            });
-                
-                            const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
-                            sendCommentReplyNotification({ 
-                                type: 3,
-                                senderUID: this.state.currentUser,
-                                recieverUID: replyDataObj.replyingToUID,
-                                postID: this.state.postID,
-                                senderUsername: this.props.user.username
-                            })
-                            .then((result) => {
-                                console.log(result)
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            });
-                        }   
-                        else {
-                            return
-                        }
-                    }}>
+                  //replyData that will be stored in the DB
+                  const storeReplyData = async(value) => {
+                    try {
+                      const jsonValue = JSON.stringify(value);
+                      await AsyncStorage.setItem('replyData', jsonValue);
+                    } catch (e) {
+                      // saving error
+                    }
+                  };
+                  this.setState({ replyData: replyDataObj });
+                  storeReplyData(replyDataObj);
 
-                        <View style={{paddingLeft: 15, paddingRight: 15}}>
+                  if (replyDataObj.replyingToUID != this.state.currentUser) {
+                    Firebase.firestore()
+                      .collection('users')
+                      .doc(replyDataObj.replyingToUID)
+                      .collection('notifications')
+                      .add({
+                        type: 6,
+                        senderUID: this.state.currentUser,
+                        recieverUID: replyDataObj.replyingToUID,
+                        postID: this.state.postID,
+                        read: false,
+                        date_created: new Date(),
+                        recieverToken: '',
+                      })
+                      .then(docref => this.setState({ notificationUID: docref.id }))
+                      .catch((error) => {
+                        console.error('Error writing document to user posts: ', error);
+                      });
 
-                            <Entypo name="reply" size={22} color="white" />
-                        
-                        </View>
-                    </TouchableOpacity>
+                    const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
+                    sendCommentReplyNotification({
+                      type: 3,
+                      senderUID: this.state.currentUser,
+                      recieverUID: replyDataObj.replyingToUID,
+                      postID: this.state.postID,
+                      senderUsername: this.props.user.username,
+                    })
+                      .then((result) => {
+                        console.log(result);
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  } else {
+
+                  }
+                }}
+            >
+
+              <View style={{ paddingLeft: 15, paddingRight: 15 }}>
+
+                  <Entypo name="reply" size={22} color="white" />
+
+                </View>
+            </TouchableOpacity>
 )}
-
-                //pass a reply button as a prop
-
-            />
+        />
       );
 
       return (
-          <View style={{ backgroundColor: '#000000' }}>
+        <View style={{ backgroundColor: '#000000' }}>
 
-              <FlatList
+          <FlatList
                         // data={this.state.commentsArray}
-                      renderItem={renderItem}
-                      keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
-                      ListHeaderComponent={this.renderListHeader}
-                      contentContainerStyle={{ paddingBottom: Dimensions.get('window').height }}
-                      showsHorizontalScrollIndicator={false}
-                      showsVerticalScrollIndicator={false}
-                      onRefresh={this._refresh}
-                      refreshing={this.state.isLoading}
-                    />
+            renderItem={renderItem}
+            keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
+            ListHeaderComponent={this.renderListHeader}
+            contentContainerStyle={{ paddingBottom: Dimensions.get('window').height }}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            onRefresh={this._refresh}
+            refreshing={this.state.isLoading}
+          />
 
-              <KeyboardAvoidingView
-style={styles.commentFooter}
-                      behavior="padding"
-enabled
-                      keyboardVerticalOffset={100}
-                    >
-                      <CommentComponent postID= {this.state.postID} replyTo={this.state.replyTo} replyData={this.state.replyData} />
-                    </KeyboardAvoidingView>
-            </View>
+          <KeyboardAvoidingView
+            style={styles.commentFooter}
+            behavior="padding"
+            enabled
+            keyboardVerticalOffset={100}
+          >
+            <CommentComponent postID={this.state.postID} replyTo={this.state.replyTo} replyData={this.state.replyData} />
+          </KeyboardAvoidingView>
+        </View>
 
       );
     }
