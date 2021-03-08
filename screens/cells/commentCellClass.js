@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, ActivityIndicator } from 'react-native';
 import TimeAgo from 'react-native-timeago';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,265 +9,248 @@ import CommentDeleteComponent from './CFCcomponents/deleteComponent';
 import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import CommentReplyCellClass from './commentReplyCell';
 
+const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation }) => {
+//   const { commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation } = props.params;
 
-class CommentCellClass extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      commentLikes: this.props.commentLikes,
-      commentText: this.props.commentText,
-      commentorUID: this.props.commentorUID,
-      commentorUsername: this.props.commentorUsername,
-      date_created: this.props.date_created,
-      commentID: this.props.commentID,
-      postID: this.props.postID,
-      isLoading: false,
-      navigation: this.props.navigation,
-      currentUser: Firebase.auth().currentUser.uid,
-      showDeleteComponent: false,
-      button: this.props.button,
-      replyCount: this.props.replyCount,
-      repliesArray: [],
-      hasReplies: false,
 
-      //count of replies
-    };
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const currentUser = Firebase.auth().currentUser.uid;
+  const [showDeleteComponent, setShowDeleteComponent] = useState(false);
+  const [repliesArray, setRepliesArray] = useState([]);
+  const [hasReplies, setHasReplies] = useState(false);
 
-  componentDidMount() {
-    if (this.state.commentorUID == Firebase.auth().currentUser.uid) {
-      this.setState({ showDeleteComponent: true });
+  useEffect(() => {
+    // setIsLoading(true);
+    if (commentorUID === Firebase.auth().currentUser.uid) {
+      setShowDeleteComponent(true);
     }
-  }
+    getFirstFiveReplies();
+  }, []);
 
 
-    getFirstFiveReplies = async() => {
-      const repliesArray = [];
-      await Firebase.firestore()
-        .collection('comments') // collection comments
-        .doc(this.state.postID) // Which post?
-        .collection('comments') //Get comments for this post
-        .doc(this.state.commentID) //Get the specific comment we want to reply to
-        .collection('replies') //Create a collection for said comment
-        .orderBy('date_created', 'asc')
-        .limit(5)
-        .get()
-        .then((response) => {
-          response.forEach((res) => {
-            const {
-              commentID, //TODO: needs to be changed to id
-              commentText,
-              date_created,
-              postID,
-              replierAuthorUID,
-              replierUsername,
-              replyingToUID,
-              replyingToUsername,
-            } = res.data();
-            repliesArray.push({
-              key: res.id,
-              id: res.id,
-              commentText,
-              date_created,
-              postID,
-              replierAuthorUID,
-              replierUsername,
-              replyingToUID,
-              replyingToUsername,
-            });
+  const getFirstFiveReplies = async() => {
+    setIsLoading(true);
+
+    let tempRepliesArray = [];
+    await Firebase.firestore()
+      .collection('comments') // collection comments
+      .doc(postID) // Which post?
+      .collection('comments') //Get comments for this post
+      .doc(commentID) //Get the specific comment we want to reply to
+      .collection('replies') //Create a collection for said comment
+      .orderBy('date_created', 'asc')
+      .onSnapshot((response) => {
+        tempRepliesArray = [];
+
+        response.forEach((res) => {
+          const {
+            commentID, //TODO: needs to be changed to id
+            commentText,
+            date_created,
+            postID,
+            replierAuthorUID,
+            replierUsername,
+            replyingToUID,
+            replyingToUsername,
+          } = res.data();
+          tempRepliesArray.push({
+            key: res.id,
+            id: res.id,
+            commentText,
+            date_created,
+            postID,
+            replierAuthorUID,
+            replierUsername,
+            replyingToUID,
+            replyingToUsername,
           });
-
-          //console.log(repliesArray)
-
-          if (repliesArray.length > 0) {
-            this.setState({
-              repliesArray,
-              hasReplies: true,
-            });
-          } else {
-            this.setState({
-              repliesArray,
-              hasReplies: false,
-            });
-          }
         });
-    }
 
-    render() {
-      const renderItem = ({ item }) => (
+        //console.log(repliesArray)
 
-        <CommentReplyCellClass
-          commentID={item.key} //refers to the reply comment, id not the top level comment id
-          topCommentID={this.state.commentID}
-          commentText={item.commentText}
-          date_created={item.date_created.toDate()}
-          postID={item.postID}
-          replierAuthorUID={item.replierAuthorUID}
-          replierUsername={item.replierUsername}
-          replyingToUID={item.replyingToUID}
-          replyingToUsername={item.replyingToUsername}
-          navigation={this.state.navigation}
-        />
-      );
+        if (repliesArray.length > 0) {
+          setRepliesArray(tempRepliesArray);
+          setHasReplies(true);
+          setIsLoading(false);
+        } else {
+          setRepliesArray(tempRepliesArray);
+          setHasReplies(false);
+          setIsLoading(false);
+        }
+      });
+  };
+  const renderItem = ({ item }) => (
 
-      if (this.state.isLoading) {
-        return (
-          <View style={styles.commentFeedCell}>
-            <ActivityIndicator size="large" color="#9E9E9E" />
+    <CommentReplyCellClass
+      commentID={item.key} //refers to the reply comment, id not the top level comment id
+      topCommentID={commentID}
+      commentText={item.commentText}
+      date_created={item.date_created.toDate()}
+      postID={item.postID}
+      replierAuthorUID={item.replierAuthorUID}
+      replierUsername={item.replierUsername}
+      replyingToUID={item.replyingToUID}
+      replyingToUsername={item.replyingToUsername}
+      navigation={navigation}
+    />
+  );
+
+  if (isLoading) {
+    return (
+      <View style={styles.commentFeedCell}>
+        <ActivityIndicator size="large" color="#9E9E9E" />
+      </View>
+    );
+  }
+  if (showDeleteComponent) {
+    return (
+      <View style={styles.commentFeedCell}>
+
+        <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+          <CommentUserComponent
+            key={commentID}
+            posterUID={commentorUID}
+            navigation={navigation}
+          />
+
+          <View style={styles.timeContainer}>
+
+            <TimeAgo style={{ color: '#696969' }} time={date_created} />
+
           </View>
-        );
-      }
-      if (this.state.showDeleteComponent) {
-        return (
-          <View style={styles.commentFeedCell}>
-
-            <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
-              <CommentUserComponent
-                key={this.state.commentID}
-                posterUID={this.state.commentorUID}
-                navigation={this.props.navigation}
-              />
-
-              <View style={styles.timeContainer}>
-
-                <TimeAgo style={{ color: '#696969' }} time={this.state.date_created} />
-
-              </View>
-            </View>
+        </View>
 
 
-            <Text style={styles.commentTextColor}>{this.state.commentText}</Text>
+        <Text style={styles.commentTextColor}>{commentText}</Text>
 
-            <View style={{ flexDirection: 'row' }}>
-              <CommentLikeComponent
-                postID={this.state.postID}
-                commentID={this.state.commentID}
-                navigation={this.props.navigation}
-              />
+        <View style={{ flexDirection: 'row' }}>
+          <CommentLikeComponent
+            postID={postID}
+            commentID={commentID}
+            navigation={navigation}
+          />
 
-              {/* <CommentDeleteComponent
-                                postID={this.state.postID}
-                                commentID={this.state.commentID}
-                                navigation={this.props.navigation}
-                            />  */}
+          {/* <CommentDeleteComponent
+                            postID={this.state.postID}
+                            commentID={this.state.commentID}
+                            navigation={this.props.navigation}
+                        />  */}
 
-              {this.props.button}
+          {button}
 
-              {this.state.replyCount > 0 && (
-              <TouchableOpacity
-                onPress={() => this.getFirstFiveReplies()}
-                style={styles.showRepliesButton}
-              >
-                {!this.state.hasReplies
-                                       && <CommentIconComponent postID={this.state.postID} replyCount={this.state.replyCount} />
-                                }
-              </TouchableOpacity>
-              )}
+          {replyCount > 0 && (
+          <TouchableOpacity
+            onPress={() => getFirstFiveReplies()}
+            style={styles.showRepliesButton}
+          >
+            {!hasReplies
+                                   && <CommentIconComponent postID={postID} replyCount={replyCount} />
+                            }
+          </TouchableOpacity>
+          )}
 
-            </View>
+        </View>
 
 
-            {this.state.hasReplies
+        {hasReplies
+                    && (
+                    <View style={styles.repliesList}>
+
+                      <FlatList
+                        style={{
+                          flex: 1,
+                          width: Dimensions.get('window').width,
+                        }}
+                        data={repliesArray}
+                        renderItem={renderItem}
+                        keyExtractor={(item, index) => String(index)}
+                        contentContainerStyle={{ paddingBottom: 25 }}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                      />
+                    </View>
+                    )
+
+                }
+
+
+      </View>
+    );
+  }
+
+  return (
+
+
+    <View style={styles.commentFeedCell}>
+
+      <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+        <CommentUserComponent
+          key={commentID}
+          posterUID={commentorUID}
+          navigation={navigation}
+        />
+
+        <View style={styles.timeContainer}>
+
+          <TimeAgo style={{ color: '#696969' }} time={date_created} />
+
+        </View>
+
+
+      </View>
+
+
+      <Text style={styles.commentTextColor}>{commentText}</Text>
+
+      <View style={{ flexDirection: 'row' }}>
+
+        <CommentLikeComponent
+          postID={postID}
+          commentID={commentID}
+          navigation={navigation}
+        />
+
+        {button}
+
+        {replyCount > 0 && (
+          <TouchableOpacity
+            onPress={() => getFirstFiveReplies()}
+            style={styles.showRepliesButton}
+          >
+            {!hasReplies
+                                   && <CommentIconComponent postID={postID} replyCount={replyCount} />
+                            }
+          </TouchableOpacity>
+        )}
+
+      </View>
+
+
+      {hasReplies
                         && (
                         <View style={styles.repliesList}>
-
                           <FlatList
                             style={{
                               flex: 1,
                               width: Dimensions.get('window').width,
                             }}
-                            data={this.state.repliesArray}
+                            data={repliesArray}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => String(index)}
-                            contentContainerStyle={{ paddingBottom: 50 }}
+                            contentContainerStyle={{ paddingBottom: 25 }}
                             showsHorizontalScrollIndicator={false}
                             showsVerticalScrollIndicator={false}
                           />
                         </View>
                         )
 
-                    }
+                }
 
 
-          </View>
-        );
-      }
+    </View>
 
-      return (
-
-
-        <View style={styles.commentFeedCell}>
-
-          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
-            <CommentUserComponent
-              key={this.state.commentID}
-              posterUID={this.state.commentorUID}
-              navigation={this.props.navigation}
-            />
-
-            <View style={styles.timeContainer}>
-
-              <TimeAgo style={{ color: '#696969' }} time={this.state.date_created} />
-
-            </View>
-
-
-          </View>
-
-
-          <Text style={styles.commentTextColor}>{this.state.commentText}</Text>
-
-          <View style={{ flexDirection: 'row' }}>
-
-            <CommentLikeComponent
-              postID={this.state.postID}
-              commentID={this.state.commentID}
-              navigation={this.props.navigation}
-            />
-
-            {this.props.button}
-
-            {this.state.replyCount > 0 && (
-              <TouchableOpacity
-                onPress={() => this.getFirstFiveReplies()}
-                style={styles.showRepliesButton}
-              >
-                {!this.state.hasReplies
-                                       && <CommentIconComponent postID={this.state.postID} replyCount={this.state.replyCount} />
-                                }
-              </TouchableOpacity>
-            )}
-
-          </View>
-
-
-          {this.state.hasReplies
-                            && (
-                            <View style={styles.repliesList}>
-                              <FlatList
-                                style={{
-                                  flex: 1,
-                                  width: Dimensions.get('window').width,
-                                }}
-                                data={this.state.repliesArray}
-                                renderItem={renderItem}
-                                keyExtractor={(item, index) => String(index)}
-                                contentContainerStyle={{ paddingBottom: 50 }}
-                                showsHorizontalScrollIndicator={false}
-                                showsVerticalScrollIndicator={false}
-                              />
-                            </View>
-                            )
-
-                    }
-
-
-        </View>
-
-      );
-    }
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
 

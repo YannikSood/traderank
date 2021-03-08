@@ -33,18 +33,6 @@ const ClickedPostPage = ({ props, route, navigation }) => {
     Analytics.logEvent('Comments_Clicked');
     Analytics.setCurrentScreen('CommentsScreen');
 
-    Firebase.firestore()
-      .collection('globalPosts')
-      .doc(postID)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          setCurrentViewsCount(doc.data().viewsCount);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
     Firebase.firestore()
       .collection('users')
@@ -59,12 +47,6 @@ const ClickedPostPage = ({ props, route, navigation }) => {
         console.log(error);
       });
 
-    Firebase.firestore()
-      .collection('globalPosts')
-      .doc(postID)
-      .set({
-        viewsCount: currentViewsCount + 1,
-      }, { merge: true });
 
     fetchCollection();
   }, []);
@@ -72,6 +54,28 @@ const ClickedPostPage = ({ props, route, navigation }) => {
   const refresh = () => {
     setIsLoading(true);
     fetchCollection();
+  };
+
+  const setViewsCount = async() => {
+    await Firebase.firestore()
+      .collection('globalPosts')
+      .doc(postID)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setCurrentViewsCount(doc.data().viewsCount);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    await Firebase.firestore()
+      .collection('globalPosts')
+      .doc(postID)
+      .set({
+        viewsCount: currentViewsCount + 1,
+      }, { merge: true });
   };
 
   const fetchCollection = async() => {
@@ -156,6 +160,7 @@ $
   };
 
   const renderListHeader = () => {
+    setViewsCount();
     if (isLoading) {
       return (
         <View style={styles.noCommentsContainer}>

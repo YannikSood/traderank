@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import Firebase from '../../../firebase'
-import { clearUser } from '../../../redux/app-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Firebase from '../../../firebase';
+import { clearUser } from '../../../redux/app-redux';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -34,14 +34,14 @@ class CommentIconComponent extends React.Component {
         .doc(this.state.postID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    postCommentsCount: doc.data().commentsCount
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document!");
-            }
+          if (doc.exists) {
+            this.setState({
+              postCommentsCount: doc.data().commentsCount,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            console.log('No such document!');
+          }
         });
     }
 
@@ -49,28 +49,34 @@ class CommentIconComponent extends React.Component {
       //Allow a user to post a comment. First, take a text input, then submit it with the comment button.
       //Msg count for the replies or post
       return (
-          <View
-              style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF', paddingTop: 2 }}
-            >
-              {this.props.replyCount > 0
-                      ? <MaterialCommunityIcons name="message" size={19} color="white" />
-                      : <MaterialCommunityIcons name="message" size={28} color="white" />
+        <View
+          style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF', paddingTop: 2 }}
+        >
+          {this.props.replyCount > 0
+            ? <MaterialCommunityIcons name="message" size={19} color="white" />
+            : <MaterialCommunityIcons name="message" size={28} color="white" />
                     }
 
-              {this.props.replyCount > 0
-                      ? <Text style={{ color: 'white' }}>  
-{' '}
-{this.props.replyCount}
-{' '}
- </Text>
-                      : <Text style={{ color: 'white' }}>  
-{' '}
-{this.state.postCommentsCount}
-{' '}
- </Text>
+          {this.props.replyCount > 0
+            ? (
+                <Text style={{ color: 'white' }}>
+                    {' '}
+
+                    {' '}
+                    {/* {this.props.replyCount} */}
+                    {' '}
+                                    </Text>
+            )
+            : (
+                <Text style={{ color: 'white' }}>
+                    {' '}
+                    {this.state.postCommentsCount}
+                    {' '}
+                                    </Text>
+            )
                     }
 
-            </View>
+        </View>
       );
     }
 }
