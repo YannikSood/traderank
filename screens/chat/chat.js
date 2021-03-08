@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect }from 'react'
-import { View, StyleSheet, ActivityIndicator, Text, TextInput, Dimensions } from 'react-native'
+import { View, StyleSheet, ActivityIndicator, Text, TextInput, Dimensions, FlatList } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import Firebase from '../../firebase'
@@ -11,11 +11,9 @@ import * as Analytics from 'expo-firebase-analytics';
 import algoliasearch from 'algoliasearch/lite';
 import PropTypes from 'prop-types';
 import { InstantSearch} from 'react-instantsearch-native';
-import Mentions from './Mentions';
-  const searchClient = algoliasearch(
-    '5BS4R91W97', 
-    '1dd2a5427b3daed5059c1dc62bdd2197'
-  );
+import UserComponent from './userComponent';
+const client = algoliasearch('5BS4R91W97', '0207d80e22ad5ab4d65fe92fed7958d7');
+const index = client.initIndex('usernames');
 
 class Chat extends React.Component {
     
@@ -29,7 +27,11 @@ class Chat extends React.Component {
             isTyping: false,
             messageText: "",
             roomName: this.props.route.params.roomName, // Room names are exactly as follows: //lounge //stocks //options //crypto //spacs //ideas //devs 
-            userLevel: 0
+            userLevel: 0,
+            usernames: [],
+            mentionsData:[], //array of @ mention username and uid who to send a notification to
+            isSearching: false,
+            notificationUID: ""
         }
     }
     //---------------------------------------------------------------
@@ -146,6 +148,25 @@ class Chat extends React.Component {
             
         })
 
+        /*
+        Parse message to send mention notifications
+        */
+       let messageWords = message[0].text.split(" ");
+       //console.log("Message words: ", messageWords);
+       let mentions = messageWords.filter(elem => elem.charAt(0) == '@');
+    //    console.log("Mentions: ", mentions);
+    //    console.log("Mentions Data: ",this.state.mentionsData);
+       mentions.map(mention => console.log(mention));
+       for(let elem of this.state.mentionsData){
+           if(elem !== null && mentions.indexOf(elem.username) > -1){
+            console.log("Notifying:", elem.uid, "Message: ", message[0].text);
+           this.writeToUserNotifications(elem.uid, message[0].text);
+            //Send notification
+           }
+       }
+    //    mentions.map(mention => console.log("Every user mentioned: ", this.state.mentionsObj[mention]));
+       this.setState({isSearching:false});
+
         Analytics.logEvent(`ChatMessageSent_${this.state.roomName}`)
         
         // this.sendChatNotification()
@@ -188,21 +209,127 @@ class Chat extends React.Component {
             </View>
           )
     }
+    writeToUserNotifications = async(uid, message) => {
+        console.log("Inside writeToUserNotifications", uid, message);
+        if (this.state.currentUser.id != uid) {
+            await Firebase.firestore()
+            .collection('users')
+            .doc(uid)
+            .collection('notifications')
+            .add({
+                type: 7,
+                senderUID: this.state.currentUser.id,
+                recieverUID: uid,
+                postID: "",
+                read: false,
+                date_created: new Date(),
+                recieverToken: "",
+                mention: message,
+                chatRoom: this.state.roomName
+
+            })
+            .then((docref) => this.setState({notificationUID: docref.id}))
+            .catch(function(error) {
+                console.error("Error writing document to user posts: ", error);
+            });
+
+            const writeNotification = Firebase.functions().httpsCallable('writeNotification');
+            writeNotification({ 
+                type: 7,
+                senderUID:  this.state.currentUser.id,
+                recieverUID: uid,
+                postID: "",
+                senderUsername: this.state.currentUser.name
+            })
+            .then((result) => {
+                console.log(result)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }   
+        else {
+            return
+        }
+    }
+    
     onTextChange = (message) => {
+        /**
+         * Sample response from hits object
+        
+            Object {
+            "_highlightResult": Object {
+            "username": Object {
+                "fullyHighlighted": false,
+                "matchLevel": "full",
+                "matchedWords": Array [
+                "ka",
+                ],
+                "value": "<em>ka</em>l",
+            },
+            },
+            "objectID": "752083000",
+            "uid": "vei3naWuMqY9qXPo9YuQFOUcqmx1",
+            "username": "kal",
+        },
+         */
         this.setState({messageText:message});
+        if(this.state.messageText.indexOf('@') == -1){
+            this.setState({isSearching:false});
+        }
+
         let length = this.state.messageText.length;
         //if previous character is '@' show user list
-        if(this.state.messageText.charAt(length-1) === '@'){
-            console.log(this.state.messageText);
-            console.log(this.state.messageText.indexOf('@'));
-            // this.setState({showUserList:true});
-            //set it to false after next 
+        if(this.state.messageText.charAt(length-1) === '@' || this.state.isSearching){
+            if(this.state.isSearching === false) {
+                //console.log("Starting the search...");
+                this.setState({isSearching:true});
+            }
+           // console.log(this.state.messageText);
+            let indexOfAt = this.state.messageText.lastIndexOf('@');
+            let username = this.state.messageText.substring(indexOfAt + 1, length);
+            let suggestions = [];
+
+            //Set list of usernames to suggest to mention
+            index.search(username).then(({ hits }) => {
+                for(let h of hits){
+                    let elem = {username: h.username, uid: h.uid};
+                    suggestions.push(elem);
+                }
+                this.setState({usernames:suggestions});
+               // console.log("Usernames: ", this.state.usernames);
+              });
+
         }
-        //show use
+    
+    }
+
+    //Replace last @username text in messageText with clicked on username
+    setUsername = (item) => {
+       // console.log(item.username);
+        this.setState({messageText: this.state.messageText.trim()});
+        let lastIndexOfAt = this.state.messageText.lastIndexOf('@'); 
+        let replacement = `@${item.username}`;
+       // console.log("Before: ", this.state.messageText);
+        let msg = this.state.messageText.substring(0, lastIndexOfAt) + replacement;
+        let mentions = {username: `@${item.username}`, uid: item.uid};
+
+        this.setState({
+            messageText:msg,
+            isSearching:false,
+            mentionsData: [...this.state.mentionsData, mentions]
+        });
+       // console.log("After: ", msg);
     }
     
 
     render() { 
+        const renderItem = ({ item }) => (
+        <View>
+            <Text onPress={() => this.setUsername(item)} style={styles.usernames}>{item.username}</Text>
+            {/* <UserComponent onPress={() => console.log(item.username)} uid = {item.uid}/>   */}
+          </View>
+        );
         if(this.state.isLoading){
             return(
               <View style={{backgroundColor: '#000000', flex: 1}}>
@@ -214,14 +341,29 @@ class Chat extends React.Component {
         if (this.state.userLevel < 1 && this.state.roomName == "announcements") {
             return (
                 <View style={{backgroundColor: '#000000', flex: 1}}>
-                    {/* <GiftedChat
+                    {this.state.isSearching &&
+                       <FlatList
+                    //    ref={this.props.scrollRef}
+                       data={this.state.usernames}
+                       renderItem={renderItem}
+                       keyExtractor={(item, index) => String(index)}
+                       contentContainerStyle={{ paddingBottom: 50 }}
+                       showsHorizontalScrollIndicator={false}
+                       showsVerticalScrollIndicator={false}
+                    //    onRefresh={this._refresh}
+                       refreshing={this.state.isSearching}
+                       // onEndReachedThreshold={0.5}
+                       //onEndReached={() => {this.getMore()}}
+                   />
+                }
+                     <GiftedChat
                         showUserAvatar={true}
                         isTyping={this.state.isTyping}
                         renderComposer={this.renderComposer}
                         
                         renderUsernameOnMessage={true}
                         messages={this.state.messages}
-                        // onInputTextChanged={message => this.onTextChange(message)}
+                        onInputTextChanged={message => this.onTextChange(message)}
                         onSend={message => this.onSend(message)}
                         scrollToBottom
                         // user = {{
@@ -236,22 +378,33 @@ class Chat extends React.Component {
                         onPressAvatar={user => this.getProfile(user)}
                         textInputStyle={styles.inputContainer}
                         isKeyboardInternallyHandled = {false}
+                        text={this.state.messageText}
                         // alwaysShowSend = {true}
                         maxInputLength = {240}
-                    /> */}
-                 {/* <KeyboardSpacer /> */}
-                <InstantSearch searchClient={searchClient} indexName="usernames">
-                    <Mentions />
-                </InstantSearch>
-
-           
+                    /> 
+                 <KeyboardSpacer />
                 </View>
             )
         }
         
         return (
             <View style={{backgroundColor: '#000000', flex: 1}}>
-               
+                {this.state.isSearching &&
+                  
+                       <FlatList
+                    //    ref={this.props.scrollRef}
+                       data={this.state.usernames}
+                       renderItem={renderItem}
+                       keyExtractor={(item, index) => String(index)}
+                       contentContainerStyle={{ paddingBottom: 50 }}
+                       showsHorizontalScrollIndicator={false}
+                       showsVerticalScrollIndicator={false}
+                    //    onRefresh={this._refresh}
+                       refreshing={this.state.isSearching}
+                       // onEndReachedThreshold={0.5}
+                       //onEndReached={() => {this.getMore()}}
+                   />
+                }
                 <GiftedChat
                     showUserAvatar={true}
                     isTyping={this.state.isTyping}
@@ -276,6 +429,7 @@ class Chat extends React.Component {
                     isKeyboardInternallyHandled = {false}
                     alwaysShowSend = {true}
                     maxInputLength = {240}
+                    text={this.state.messageText}
                 />
 
                 <KeyboardSpacer />
@@ -306,6 +460,16 @@ const styles = StyleSheet.create({
         // backgroundColor: '#121212',
         borderRadius: 11,
         // color: '#FFFFFF'
+    },
+    usernames: {
+        backgroundColor: 'black',
+        color: "white",
+        flex: 1,
+        paddingBottom: 3,
+        fontSize: 20,
+        fontWeight: 'bold',
+        paddingLeft: 10,
+        paddingTop: 5
     }
 
 })

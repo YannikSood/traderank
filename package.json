@@ -18,7 +18,7 @@
     "@react-navigation/native": "^5.7.5",
     "@react-navigation/stack": "^5.9.2",
     "algoliasearch": "^4.8.5",
-    "antd": "^3.23.2",
+    "antd": "^3.26.20",
     "autosuggest": "0.0.2",
     "dayjs": "^1.10.4",
     "expo": "^40.0.0",
