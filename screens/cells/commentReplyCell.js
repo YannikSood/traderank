@@ -37,11 +37,11 @@ class CommentReplyCellClass extends React.Component{
         }
     }
 
-    async componentDidMount() {
-        if (this.state.replierAuthorUID == Firebase.auth().currentUser.uid) {
-            this.setState({ showDeleteComponent: true })
-        }
-    }
+    // componentDidMount() {
+    //     if (this.state.replierAuthorUID == Firebase.auth().currentUser.uid) {
+    //         this.setState({ showDeleteComponent: true })
+    //     }
+    // }
 
    
 

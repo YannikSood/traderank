@@ -65,13 +65,13 @@ class ClickedPostPage extends React.Component {
         .orderBy("date_created", "asc");
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         //Not replying ot anyone
        //update replyingTo storage variable here?
 
         Analytics.logEvent("Post_Clicked")
         Analytics.setCurrentScreen("PostDetailsScreen")
-        await Firebase.firestore()
+        Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -86,7 +86,7 @@ class ClickedPostPage extends React.Component {
             console.log(error)
         })
 
-        await Firebase.firestore()
+        Firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .set({
@@ -95,9 +95,16 @@ class ClickedPostPage extends React.Component {
 
         this.getCollection()
     }
+<<<<<<< HEAD
     // componentWillUnmount(){
     //     this.unsubscribe();
     // }
+=======
+    
+    componentWillUnmount = () => {
+        console.log("unmounted comments")
+    }
+>>>>>>> 13e871ae784c2d84dd67e148711176548c5f9075
 
     getCollection = async () => {
             const commentsArray = [];
