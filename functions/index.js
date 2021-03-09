@@ -442,6 +442,25 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                         body: JSON.stringify(messages)
                     });
                 }
+                else if (data.type === 7) {
+                    messages.push({
+                        "to": doc.data().token,
+                        "sound": "default",
+                        "title":"Someone mentioned you in a chatroom.",
+                        "body": data.senderUsername + " mentioned you in a chatroom."
+                    });
+    
+                    //Post it to expo
+                    
+                    fetch('https://exp.host/--/api/v2/push/send', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(messages)
+                    });
+                }
 
                 return (
                     "notification written"

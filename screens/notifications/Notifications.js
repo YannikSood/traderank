@@ -97,6 +97,8 @@ class Notification extends React.Component {
                         read,
                         recieverToken,
                         date_created,
+                        mention,
+                        chatRoom
                         } = res.data();
 
                         notificationsArray.push({
@@ -108,6 +110,8 @@ class Notification extends React.Component {
                             read,
                             recieverToken,
                             date_created,
+                            mention,
+                            chatRoom
                         });
 
                 });
@@ -146,6 +150,8 @@ class Notification extends React.Component {
                     read,
                     recieverToken,
                     date_created,
+                    mention,
+                    chatRoom
                     } = res.data();
 
                     newNotificationsArray.push({
@@ -157,6 +163,8 @@ class Notification extends React.Component {
                         read,
                         recieverToken,
                         date_created,
+                        mention,
+                        chatRoom
                     });
                 });
 
@@ -182,6 +190,8 @@ class Notification extends React.Component {
                 recieverToken={item.recieverToken}
                 date_created={item.date_created.toDate()}
                 navigation={navigation}
+                mention={item.mention}
+                chatRoom={item.chatRoom}
             />
         );
         if(this.state.isLoading){
