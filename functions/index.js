@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 const algoliasearch = require('algoliasearch');
+
 const client = algoliasearch('5BS4R91W97', '1dd2a5427b3daed5059c1dc62bdd2197');
 const index = client.initIndex('usernames');
 
@@ -148,7 +149,7 @@ exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('59 23 * * 
             .collection('users')
             .doc(currentUID)
             .get()
-            .then(function(doc) {
+            .then((doc) => {
                 console.log(doc.exists)
                 if (doc.data().pushStatus) {
                     console.log("push status true")
@@ -306,7 +307,7 @@ exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('59 23 * * 
             .collection('users')
             .doc(currentUID)
             .get()
-            .then(function(doc) {
+            .then((doc) => {
                 console.log(doc.exists)
                 if (doc.data().pushStatus) {
                     console.log("push status true")
@@ -356,7 +357,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
     .collection('users')
     .doc(data.recieverUID)
     .get()
-    .then(function(doc) {
+    .then((doc) => {
         if (doc.exists) {
             //Find out if the user will accept push notifications
             if (doc.data().pushStatus) {
@@ -456,7 +457,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
             return
         }
     })
-    .catch(function(error) {
+    .catch((error) => {
         console.error("Error finding user: ", error);
     });
 
@@ -478,7 +479,7 @@ exports.sendCommentReplyNotification = functions.https.onCall((data, context) =>
     .collection('users')
     .doc(data.recieverUID)
     .get()
-    .then(function(doc) {
+    .then((doc) => {
         if (doc.exists) {
             //Find out if the user will accept push notifications
             if (doc.data().pushStatus) {
@@ -519,7 +520,7 @@ exports.sendCommentReplyNotification = functions.https.onCall((data, context) =>
             return
         }
     })
-    .catch(function(error) {
+    .catch((error) => {
         console.error("Error finding user: ", error);
     });
 
