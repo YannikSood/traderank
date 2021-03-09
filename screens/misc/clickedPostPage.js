@@ -20,48 +20,6 @@ const ClickedPostPage = ({ props, route, navigation }) => {
   const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, date_created } = route.params;
 
 
-<<<<<<< HEAD
-    componentDidMount() {
-        //Not replying ot anyone
-       //update replyingTo storage variable here?
-
-        Analytics.logEvent("Post_Clicked")
-        Analytics.setCurrentScreen("PostDetailsScreen")
-        Firebase.firestore()
-        .collection('globalPosts')
-        .doc(this.state.postID)
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                this.setState({
-                    currentViewsCount: doc.data().viewsCount
-                })
-            }
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-
-        Firebase.firestore()
-        .collection('globalPosts')
-        .doc(this.state.postID)
-        .set({
-            viewsCount: this.state.currentViewsCount + 1
-        }, { merge: true })
-
-        this.getCollection()
-    }
-<<<<<<< HEAD
-    // componentWillUnmount(){
-    //     this.unsubscribe();
-    // }
-=======
-    
-    componentWillUnmount = () => {
-        console.log("unmounted comments")
-    }
->>>>>>> 13e871ae784c2d84dd67e148711176548c5f9075
-=======
   const [isLoading, setIsLoading] = useState(false);
   const currentUser = Firebase.auth().currentUser.uid;
   const [currentUsername, setCurrentUsername] = useState('');
@@ -69,7 +27,6 @@ const ClickedPostPage = ({ props, route, navigation }) => {
   const [currentViewsCount, setCurrentViewsCount] = useState(0);
   const [replyTo, setReplyTo] = useState('');
   const [replyData, setReplyData] = useState({});
->>>>>>> main
 
   useEffect(() => {
     setIsLoading(true);

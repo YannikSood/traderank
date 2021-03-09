@@ -1,41 +1,6 @@
 import React, { useState } from 'react';
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
 import TimeAgo from 'react-native-timeago';
-<<<<<<< HEAD
-import MiscUserComponent from '../cells/FollowCellComps/userComponent'
-
-class NotificationCellClass extends React.Component{ 
-    
-    constructor(props) {
-        super(props)
-        this.state = {
-            type: this.props.type,
-            senderUID: this.props.senderUID, 
-            recieverUID: this.props.recieverUID,
-            postID:this.props.postID,
-            read: this.props.read,
-            recieverToken: this.props.recieverToken,
-            notification_date_created: this.props.date_created,
-            senderUsername: "",
-            username: "",
-            image: "",
-            ticker: "",
-            security: "",
-            description: "",
-            profit_loss: "",
-            percent_gain_loss: "",
-            gain_loss: "",
-            date_created: new Date(),
-            navigation: this.props.navigation,
-            mention:this.props.mention,
-            chatRoom:this.props.chatRoom
-        }
-    }
-
-    componentDidMount () {
-        this.getUsernames()
-    }
-=======
 import Firebase from '../../firebase';
 import UserComponent from './FFCcomponents/userComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
@@ -68,7 +33,6 @@ class NotificationCellClass extends React.Component {
   componentDidMount() {
     this.getUsernames();
   }
->>>>>>> main
 
     getUsernames = async() => {
       await Firebase.firestore()
@@ -234,147 +198,6 @@ class NotificationCellClass extends React.Component {
             </View>
             {/*
                     <View style = {styles.lineStyle} /> */}
-<<<<<<< HEAD
-                </View>
-                    
-            )
-        }
-
-        if (this.state.type == 3) {
-            return (
-                <TouchableOpacity   
-                    style={styles.feedCell}
-                    onPress={() => this.showPostCommentsPage()} >
-                         <View style={{flexDirection: 'column'}}>
-                             
-                        <View style={{flexDirection: 'row'}}>
-
-                            <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
-
-                            <Text style={styles.textStyle2}> liked your comment</Text>
-                            
-                            </View>
-                            <View style={styles.timeContainer}>
-
-                                    <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
-
-                            </View>
-                        </View>
-
-                        {/* <View style = {styles.lineStyle} /> */}
-                </TouchableOpacity>
-            )
-        }
-
-        if (this.state.type == 4) {
-            return (
-                <TouchableOpacity   
-                    style={styles.feedCell}
-                    onPress={() => this.props.navigation.navigate('Leaderboard')} >
-                         <View style={{flexDirection: 'column'}}>
-                             
-                            <View style={{flexDirection: 'row'}}>
-
-                                    <Text style={styles.textStyle}>you ranked on the gains leaderboard!</Text>
-
-                            
-                            </View>
-                            <View style={styles.timeContainer}>
-
-                                    <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
-
-                            </View>
-                        </View>
-
-                        {/* <View style = {styles.lineStyle} /> */}
-                </TouchableOpacity>
-            )
-        }
-
-        if (this.state.type == 5) {
-            return (
-                <TouchableOpacity   
-                    style={styles.feedCell}
-                    onPress={() => this.props.navigation.navigate('Leaderboard')} >
-                         <View style={{flexDirection: 'column'}}>
-                             
-                            <View style={{flexDirection: 'row'}}>
-
-                                    <Text style={styles.textStyle}>you ranked on the loss leaderboard!</Text>
-
-                            
-                            </View>
-                            <View style={styles.timeContainer}>
-
-                                    <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
-
-                            </View>
-                        </View>
-
-                        {/* <View style = {styles.lineStyle} /> */}
-                </TouchableOpacity>
-            )
-        }
-
-        if (this.state.type == 6) {
-            return (
-                <TouchableOpacity   
-                    style={styles.feedCell}
-                    onPress={() => this.showPostCommentsPage()} >
-                        <View style={{flexDirection: 'column'}}>
-                        <View style={{flexDirection: 'row'}}>
-  
-                                <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
-
-                                 <Text style={styles.textStyle2}> replied to your comment</Text>
-
-                            
-                                 </View>
-                                <View style={styles.timeContainer}>
-
-                                        <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
-
-                                </View>
-                            </View>
-
-                        {/* <View style = {styles.lineStyle} /> */}
-                </TouchableOpacity>
-            )
-        }
-        if(this.state.type == 7){
-            return (
-                <TouchableOpacity   
-                    style={styles.feedCell}
-                    onPress={() =>
-                        this.props.navigation.push('Chat',
-                        {
-                            roomName: this.state.chatRoom
-                        })
-                    }
-                    >
-                        <View style={{flexDirection: 'column'}}>
-                        <View style={{flexDirection: 'row'}}>
-  
-                                <MiscUserComponent uid = {this.state.senderUID} navigation = {this.state.navigation} />
-
-                                 <Text style={styles.textStyle2}>mentioned you in the {this.state.chatRoom} chatroom : {this.state.mention}</Text>
-
-                            
-                                 </View>
-                                <View style={styles.timeContainer}>
-
-                                        <TimeAgo style={{color: '#696969'}} time = {this.state.notification_date_created} />
-
-                                </View>
-                            </View>
-
-                        {/* <View style = {styles.lineStyle} /> */}
-                </TouchableOpacity>
-            )
-        }
-        return
-        
-=======
           </View>
 
         );
@@ -485,7 +308,6 @@ class NotificationCellClass extends React.Component {
           </TouchableOpacity>
         );
       }
->>>>>>> main
     }
 
     showUserProfile = () => {
