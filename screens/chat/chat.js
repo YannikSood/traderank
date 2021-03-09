@@ -9,9 +9,6 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import * as Analytics from 'expo-firebase-analytics';
 import algoliasearch from 'algoliasearch/lite';
-import PropTypes from 'prop-types';
-import { InstantSearch} from 'react-instantsearch-native';
-import UserComponent from './userComponent';
 const client = algoliasearch('5BS4R91W97', '0207d80e22ad5ab4d65fe92fed7958d7');
 const index = client.initIndex('usernames');
 
@@ -55,98 +52,94 @@ class Chat extends React.Component {
             })
         })
 
-        if (this.state.messages.length == 0) {
-            this.getCurrentMessages()
-        }
-        
+    if (this.state.messages.length === 0) {
+      this.getCurrentMessages();
     }
+}
     
 
     getCurrentMessages = async() => {
-        Firebase.firestore()
+      Firebase.firestore()
         .collection('users')
         .doc(Firebase.auth().currentUser.uid)
-        .collection("chatNotifications")
+        .collection('chatNotifications')
         .doc(this.state.roomName)
-        .set({ hasChatNotifications: false }, {merge: true})
+        .set({ hasChatNotifications: false }, { merge: true });
 
-        await Firebase
+      await Firebase
         .firestore()
-        .collection("chatRooms")
+        .collection('chatRooms')
         .doc(this.state.roomName)
-        .collection("messages")
-        .orderBy("createdAt", "desc")
+        .collection('messages')
+        .orderBy('createdAt', 'desc')
         .limit(50)
-        .onSnapshot(querySnapshot => {
-            const messages = []
-            var i = 0
-            querySnapshot.forEach((res) => {
-                const { 
-                    _id,
-                    user,
-                    text,
-                    createdAt,
-                    } = res.data();
-    
-                    
-                    messages.push({
-                        key: res._id,
-                        _id,
-                        user,
-                        text,
-                        createdAt
-                    });
-
-                    messages[i].createdAt = Moment(messages[i].createdAt.toDate()).format('LLL')
-
-                    if (messages[i].user._id == this.state.currentUser.id) {
-                        if (messages[i].user.avatar !== this.state.currentUser.avatar) {
-                            Firebase.firestore().collection('chat').doc(messages[i]._id).set({
-                                user: {
-                                    _id: this.state.currentUser.id,
-                                    name: this.state.currentUser.name,
-                                    avatar: this.state.currentUser.avatar,
-                                }
-                            }, { merge: true})
-                        }
-                    }
-                    i++
-            })
+        .onSnapshot((querySnapshot) => {
+          const messages = [];
+          let i = 0;
+          querySnapshot.forEach((res) => {
+            const {
+              _id,
+              user,
+              text,
+              createdAt,
+            } = res.data();
 
 
-
-
-            this.setState({
-                messages,
-                isLoading: false, 
-                isTyping: false
+            messages.push({
+              key: res._id,
+              _id,
+              user,
+              text,
+              createdAt,
             });
-        })
+
+            messages[i].createdAt = Moment(messages[i].createdAt.toDate()).format('LLL');
+
+            if (messages[i].user.id === this.state.currentUser.id) {
+              if (messages[i].user.avatar !== this.state.currentUser.avatar) {
+                Firebase.firestore().collection('chat').doc(messages[i]._id).set({
+                  user: {
+                    _id: this.state.currentUser.id,
+                    name: this.state.currentUser.name,
+                    avatar: this.state.currentUser.avatar,
+                  },
+                }, { merge: true });
+              }
+            }
+            i++;
+          });
+
+
+          this.setState({
+            messages,
+            isLoading: false,
+            isTyping: false,
+          });
+        });
     }
 
     //Load 50 more messages when the user scrolls
     //Add a message to firestore
     onSend = async(message) => {
-
-        this.setState({isTyping: true,})
-        const messageID = uuidv4()
-        await Firebase.firestore()
-        .collection("chatRooms")
+      this.setState({ isTyping: true });
+      const messageID = uuidv4();
+      await Firebase.firestore()
+        .collection('chatRooms')
         .doc(this.state.roomName)
-        .collection("messages")
+        .collection('messages')
         .doc(messageID)
         .set({
-            _id: messageID,
-            text: message[0].text,
-            // image: message[0].image,
-            createdAt: new Date(message[0].createdAt),
-            user: {
-                id: this.state.currentUser.id,
-                name: this.state.currentUser.name,
-                avatar: this.state.currentUser.avatar,
-            },
-            
-        })
+          _id: messageID,
+          text: message[0].text,
+          // image: message[0].image,
+          createdAt: new Date(message[0].createdAt),
+          user: {
+            _id: this.state.currentUser.id,
+            name: this.state.currentUser.name,
+            avatar: this.state.currentUser.avatar,
+          },
+
+        });
 
         /*
         Parse message to send mention notifications
@@ -171,44 +164,44 @@ class Chat extends React.Component {
         
         // this.sendChatNotification()
 
+      // this.sendChatNotification()
     }
 
     sendChatNotification = async() => {
-        const sendChatNotifications = Firebase.functions().httpsCallable('sendChatNotifications');
-        sendChatNotifications({
-            senderUID: this.state.currentUser.id,
-            roomName: this.state.roomName
-        })
+      const sendChatNotifications = Firebase.functions().httpsCallable('sendChatNotifications');
+      sendChatNotifications({
+        senderUID: this.state.currentUser.id,
+        roomName: this.state.roomName,
+      })
         .then((result) => {
-            console.log(result)
+          console.log(result);
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
         });
     }
 
     getProfile = async(user) => {
-        //Make sure the user is not clicking on their own profile. If they are, redirect them to the profile tab.
-        //Removes the chance of them following themselves or having to show a different profile
-        if (Firebase.auth().currentUser.uid == user._id) {
-            this.props.navigation.navigate('Profile')
-        }
-        else {
-            //Get the remainder of the poster's information. We already have the UID and username, we need bio and follower, following, and profile pic
-            this.props.navigation.push('ClickedUserProfile', 
-            {
-                posterUID: user._id,
-                // navigation: this.props.navigation
-            })
-        }
+      //Make sure the user is not clicking on their own profile. If they are, redirect them to the profile tab.
+      //Removes the chance of them following themselves or having to show a different profile
+      if (Firebase.auth().currentUser.uid === user._id) {
+        // console.log(`${user.id} self`);
+        this.props.navigation.navigate('Profile');
+      } else {
+        // console.log(`${user.id} clicked`);
+        //Get the remainder of the poster's information. We already have the UID and username, we need bio and follower, following, and profile pic
+        this.props.navigation.push('ClickedUserProfile',
+          {
+            posterUID: user._id,
+            // navigation: this.props.navigation
+          });
+      }
     }
 
-    renderComposer = () => {
-        return (
-            <View style={{backgroundColor: '#000000'}} >
-            </View>
-          )
-    }
+    renderComposer = () => (
+      <View style={{ backgroundColor: '#000000' }} />
+    )
+
     writeToUserNotifications = async(uid, message) => {
         console.log("Inside writeToUserNotifications", uid, message);
         if (this.state.currentUser.id != uid) {
@@ -472,6 +465,6 @@ const styles = StyleSheet.create({
         paddingTop: 5
     }
 
-})
+});
 
 export default Chat;

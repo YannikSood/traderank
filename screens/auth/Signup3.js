@@ -14,11 +14,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        authUser: (id, email, username) => { dispatch(authUser(id, email, username))}
-     };
-}
 
 class Signup3 extends React.Component {
     
@@ -312,4 +307,4 @@ const styles = StyleSheet.create({
       }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup3);
+export default connect(mapStateToProps)(Signup3);

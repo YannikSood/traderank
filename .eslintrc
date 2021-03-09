@@ -1,0 +1,18 @@
+{
+  "extends": "rhinogram",
+  "parser": "babel-eslint",
+  "rules": {
+    "react/jsx-filename-extension": 0,
+    "react/prop-types": 0,
+    "react/destructuring-assignment": 0,
+    "import/prefer-default-export": 0,
+    "no-console": 0,
+    "no-use-before-define": 0, // Turning this off to prevent `const styles = StyleSheet.create` from triggering an error
+    "no-plusplus": 0,
+    "camelcase": 0,
+    "react/style-prop-object": 0
+  },
+  "globals": {
+    "firebase": true
+  }
+}
