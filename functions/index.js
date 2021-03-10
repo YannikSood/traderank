@@ -670,12 +670,12 @@ exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 
                 admin.firestore()
                 .collection('users')
-                .doc(doc.data().uid)
+                .doc(data.recieverUID)
                 .set({ hasChatNotifications: true }, {merge: true})
 
                 admin.firestore()
                 .collection('users')
-                .doc(doc.data().uid)
+                .doc(data.recieverUID)
                 .collection("chatNotifications")
                 .doc(data.roomName)
                 .set({ hasChatNotifications: true }, {merge: true})
