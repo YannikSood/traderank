@@ -202,37 +202,19 @@ class Chat extends React.Component {
       <View style={{ backgroundColor: '#000000' }} />
     )
 
+    // sendMentionsNotification = functions.https.onCall((data, context) => {
+
+        //RecieverUID, senderUsername, Roomname
     writeToUserNotifications = async(uid, message) => {
         console.log("Inside writeToUserNotifications", uid, message);
         if (this.state.currentUser.id != uid) {
-            await Firebase.firestore()
-            .collection('users')
-            .doc(uid)
-            .collection('notifications')
-            .add({
-                type: 7,
-                senderUID: this.state.currentUser.id,
-                recieverUID: uid,
-                postID: "",
-                read: false,
-                date_created: new Date(),
-                recieverToken: "",
-                mention: message,
-                chatRoom: this.state.roomName
 
-            })
-            .then((docref) => this.setState({notificationUID: docref.id}))
-            .catch(function(error) {
-                console.error("Error writing document to user posts: ", error);
-            });
-
-            const writeNotification = Firebase.functions().httpsCallable('writeNotification');
-            writeNotification({ 
-                type: 7,
+            const sendMentionsNotification = Firebase.functions().httpsCallable('sendMentionsNotification');
+            sendMentionsNotification({
                 senderUID:  this.state.currentUser.id,
                 recieverUID: uid,
-                postID: "",
-                senderUsername: this.state.currentUser.name
+                senderUsername: this.state.currentUser.name,
+                roomName: this.state.roomName
             })
             .then((result) => {
                 console.log(result)

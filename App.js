@@ -421,7 +421,7 @@ function Tabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-chatbubbles" size={25} color={color} />
           ),
-          // tabBarBadge: renderChatBadge(),
+          tabBarBadge: renderChatBadge(),
 
 
         }}

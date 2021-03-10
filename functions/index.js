@@ -442,25 +442,6 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                         body: JSON.stringify(messages)
                     });
                 }
-                else if (data.type === 7) {
-                    messages.push({
-                        "to": doc.data().token,
-                        "sound": "default",
-                        "title":"Someone mentioned you in a chatroom.",
-                        "body": data.senderUsername + " mentioned you in a chatroom."
-                    });
-    
-                    //Post it to expo
-                    
-                    fetch('https://exp.host/--/api/v2/push/send', {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(messages)
-                    });
-                }
 
                 return (
                     "notification written"
@@ -655,6 +636,62 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
 // });
 
 
+exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 
+    //RecieverUID, senderUsername, Roomname
+    admin.firestore()
+    .collection('users')
+    .doc(data.recieverUID)
+    .get()
+    .then((doc) => {
+        if (doc.exists) {
+            //Find out if the user will accept push notifications
+            if (doc.data().pushStatus) {
 
+                var messages = []
 
+                messages.push({
+                    "to": doc.data().token,
+                    "sound": "default",
+                    "title":"Hey!",
+                    "body": data.senderUsername + " mentioned you in " + data.roomName
+                });
+
+                //Post it to expo
+                
+                fetch('https://exp.host/--/api/v2/push/send', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(messages)
+                });
+
+                admin.firestore()
+                .collection('users')
+                .doc(doc.data().uid)
+                .set({ hasChatNotifications: true }, {merge: true})
+
+                admin.firestore()
+                .collection('users')
+                .doc(doc.data().uid)
+                .collection("chatNotifications")
+                .doc(data.roomName)
+                .set({ hasChatNotifications: true }, {merge: true})
+            }
+
+            return (
+                "notification written"
+            )
+        }
+        else {
+            // doc.data() will be undefined in this case, so this wont even come up honestly
+            console.log("No such document!");
+            return
+        }
+    })
+    .catch((error) => {
+        console.error("Error finding user: ", error);
+    });
+});
