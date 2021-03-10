@@ -158,7 +158,10 @@ class Chat extends React.Component {
            }
        }
     //    mentions.map(mention => console.log("Every user mentioned: ", this.state.mentionsObj[mention]));
-       this.setState({isSearching:false});
+       this.setState({
+           isSearching:false,
+           mentionsData: []
+    });
 
         Analytics.logEvent(`ChatMessageSent_${this.state.roomName}`)
         
