@@ -160,14 +160,15 @@ const Signup2 = ({ props, route, navigation }) => {
 
         <Text
           style={{ color: '#5233FF', padding: 4 }}
-          onPress={() => Linking.openURL('http://socialtradinginc.com/#tos')}
+          onPress={() => Linking.openURL('http://socialtradinginc.com/#terms')}
         >
                         Terms of Service
         </Text>
 
+
         <Text
           style={{ color: '#5233FF', padding: 4 }}
-          onPress={() => Linking.openURL('http://socialtradinginc.com/#privacy')}
+          onPress={() => Linking.openURL('http://socialtradinginc.com/#pri')}
         >
                         Privacy Policy
         </Text>

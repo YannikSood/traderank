@@ -239,10 +239,18 @@ $
 
               <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
                 {/* <Text style={styles.securityContainer}> */}
-                <Text style={styles.tradeText}>
-$
-                  {this.state.ticker}
-                </Text>
+                <TouchableOpacity 
+                  onPress={() => this.props.navigation.navigate('SingleStockPosts', {
+                    ticker: this.state.ticker,
+                    })
+                    }
+                >
+                    <Text style={styles.tradeText}>
+                    ${this.state.ticker}
+                    </Text>
+
+                </TouchableOpacity> 
+                
                 <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
 #
                   {this.state.security}
@@ -256,6 +264,20 @@ $
             {/* </View> */}
 
             { this.renderGainLoss() }
+
+            {/* <TouchableOpacity 
+                            onPress={() =>
+                                this.props.navigation.push('Chat',
+                                {
+                                    roomName: "announcements"
+                                })
+                            }
+                            style={styles.subscriptionCell}>
+                                <Text style={styles.buttonText}>📌 announcements </Text>
+
+                                { this.renderAnnouncementBadge() }
+
+                        </TouchableOpacity> */}
 
           </View>
 

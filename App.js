@@ -13,8 +13,6 @@ import Firebase from './firebase.js';
 import  rootReducer  from './redux/rootReducer';
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
-const createStoreWithMiddleware = compose(applyMiddleware(reduxThunk)(createStore));
-const store = createStoreWithMiddleware(rootReducer);
 
 //Auth Imports
 import Login from './screens/auth/Login.js';
@@ -29,6 +27,8 @@ import LeaderboardGains from './screens/leaderboard/leaderboardGains';
 import LeaderboardLosses from './screens/leaderboard/leaderboardLosses';
 import Chat from './screens/chat/chat';
 import ChatRooms from './screens/chat/chatRooms';
+import SingleStockChat from './screens/chat/singleStockChat';
+import SingleStockPosts from './screens/misc/singleStockPosts';
 
 //Create a post flow
 import Create from './screens/create/Create.js';
@@ -60,6 +60,9 @@ import SpecialClickedPostPage from './screens/misc/specialClickedPostPage';
 import ClickedUserProfile from './screens/misc/clickedUserProfile';
 import ClickedFollowPage from './screens/misc/clickedFollowPage';
 
+const createStoreWithMiddleware = compose(applyMiddleware(reduxThunk)(createStore));
+const store = createStoreWithMiddleware(rootReducer);
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const CreateStack = createStackNavigator();
@@ -70,10 +73,15 @@ const ChatStack = createStackNavigator();
 
 
 const LBTopTab = createMaterialTopTabNavigator();
+const ChatTopTabs = createMaterialTopTabNavigator();
 
 
 const LeaderboardGainsStack = createStackNavigator();
 const LeaderboardLossesStack = createStackNavigator();
+
+
+const SingleStockChatStack = createStackNavigator();
+const SingleStockPostStack = createStackNavigator();
 
 const GlobalFeedStack = createStackNavigator();
 const FriendFeedStack = createStackNavigator();
@@ -178,6 +186,23 @@ const App = () => (
           component={LBTopTabs}
           options={{
             title: 'leaderboard',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#000000',
+              shadowColor: 'transparent',
+            },
+            headerBackTitle: '',
+          }}
+        />
+        <Stack.Screen
+          name="SingleStockPosts"
+          component={SingleStockPosts}
+          options={{
+            title: 'Single Stock',
             headerTitleStyle: {
               fontWeight: 'bold',
               fontSize: 20,
@@ -820,6 +845,78 @@ function LBTopTabs() {
 
   );
 }
+
+//Home top tabs
+function SingleStockTabs() {
+  return (
+    <View style={{ flex: 1 }}>
+      <ChatTopTabs.Navigator
+        initialRouteName="SingleStockPost"
+        tabBarOptions={{
+          activeTintColor: '#FFFFFF',
+          inactiveTintColor: '#696969',
+          style: {
+            backgroundColor: '#000000',
+
+          },
+        }}
+      >
+
+        {/* <ChatTopTabs.Screen
+          name="SingleStockChat"
+          component={singleStockChatStack}
+          options={{
+            tabBarLabel: 'chat',
+          }}
+        /> */}
+
+        <ChatTopTabs.Screen
+          name="SingleStockPost"
+          component={singleStockPostStack}
+          options={{
+            tabBarLabel: 'posts',
+          }}
+        />
+
+      </ChatTopTabs.Navigator>
+    </View>
+
+  );
+}
+
+//Global feed stack
+function singleStockChatStack() {
+  return (
+    <SingleStockChatStack.Navigator initialRouteName="SingleStockChat">
+      <SingleStockChatStack.Screen
+        name="SingleStockChat"
+        component={SingleStockChat}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </SingleStockChatStack.Navigator>
+
+  );
+}
+
+//Global feed stack
+function singleStockPostStack() {
+  return (
+    <SingleStockPostStack.Navigator initialRouteName="SingleStockPost">
+      <SingleStockPostStack.Screen
+        name="SingleStockPost"
+        component={SingleStockPosts}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </SingleStockPostStack.Navigator>
+
+  );
+}
+
+
 
 //Global feed stack
 function globalFeedStackView() {

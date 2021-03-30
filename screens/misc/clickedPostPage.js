@@ -70,14 +70,24 @@ const ClickedPostPage = ({ props, route, navigation }) => {
         console.log(error);
       });
 
-    await Firebase.firestore()
-      .collection('globalPosts')
-      .doc(postID)
-      .set({
+      await Firebase.firestore()
+        .collection('globalPosts')
+        .doc(postID)
+        .set({
         viewsCount: currentViewsCount + 1,
-      }, { merge: true });
+        }, { merge: true });
+    
   };
 
+//   const setViewsCountPartTwo = async() => {
+//     await Firebase.firestore()
+//     .collection('globalPosts')
+//     .doc(postID)
+//     .set({
+//       viewsCount: currentViewsCount + 1,
+//     }, { merge: true });
+//   }
+ 
   const fetchCollection = async() => {
     const tempCommentsArray = [];
 
