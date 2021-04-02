@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Share} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Share, NavigationContainer} from 'react-native';
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import Firebase from '../../../firebase';
+import * as Linking from 'expo-linking';
+
 
 const mapStateToProps = state => ({
     user: state.UserReducer.user,
   });
+const linking = {
+        prefixes: ['https://google.com', 'google.com'],
+  };
 
    
 
@@ -20,20 +25,37 @@ class ShareComponent extends Component {
             posterUID: '',
             posterUsername:'',
             description: '',
-            ticker: ''
+            ticker: '',
+            image: this.props.image
         }
     }
-    
+     
   
     componentDidMount(){
         this.getPost();
     }
     onShare = async () => {
+      //${this.state.image}
+      //'https://testflight.apple.com/join/eHiBK1S3'
         try {
           const result = await Share.share({
             message:
-              `@${this.state.posterUsername} is talking about ${this.state.ticker} - ${this.state.description} on Traderank. Check it out: https://testflight.apple.com/join/eHiBK1S3`,
-          });
+              `Check out this post on Traderank. @${this.state.posterUsername} is talking about ${this.state.ticker}: ${this.state.description}`,
+              url: 'https://testflight.apple.com/join/eHiBK1S3'
+          },
+          { 
+            excludedActivityTypes:[
+              'com.apple.UIKit.activity.Print',
+              'com.apple.UIKit.activity.AirDrop',
+              'com.apple.UIKit.activity.CopyToPasteboard',
+              'com.apple.UIKit.activity.AddToReadingList',
+              'com.apple.UIKit.activity.PostToFacebook',
+              'com.apple.UIKit.activity.PostToGmail',
+              'com.apple.UIKit.activity.PostToGoogleChrome'
+              
+            ]
+          }
+          );
     
           if (result.action === Share.sharedAction) {
             if (result.activityType) {
@@ -81,7 +103,6 @@ class ShareComponent extends Component {
                 >
                 <Ionicons name="share-outline" size={30} color="white" />
             </TouchableOpacity>
-
             </View>
         );
     }

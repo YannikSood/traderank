@@ -154,7 +154,7 @@ $
 
             <View style={styles.buttonContainer}>
 
-              <ShareComponent postID={this.state.postID} />
+              <ShareComponent postID={this.state.postID} image={this.state.image} />
 
             </View>
 
@@ -193,7 +193,7 @@ $
 
           <View style={styles.buttonContainer}>
 
-              <ShareComponent postID={this.state.postID} />
+              <ShareComponent postID={this.state.postID} image={this.state.image}  />
 
           </View>
 
