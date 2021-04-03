@@ -18,6 +18,7 @@ import reduxThunk from 'redux-thunk';
 import Login from './screens/auth/Login.js';
 import Signup from './screens/auth/Signup.js';
 import Signup2 from './screens/auth/Signup2.js';
+import ForgotPassword from './screens/auth/ForgotPassword.js';
 
 //Tab Screen Imports
 import Profile from './screens/profile/Profile.js';
@@ -136,6 +137,23 @@ const App = () => (
           component={Signup2}
           options={{
             headerLeft: null,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#121212',
+              shadowColor: 'transparent',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{
+            // headerLeft: null,
+            title: ' ',
             headerTitleStyle: {
               fontWeight: 'bold',
               fontSize: 20,

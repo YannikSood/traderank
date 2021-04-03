@@ -131,7 +131,7 @@ const SingleStockPosts = ({ props, route, navigation }) => {
 
     await Firebase.firestore()
       .collection('globalPosts')
-      .where('ticker', '==', ticker
+      .where('ticker', '==', ticker)
       .orderBy('date_created', 'desc')
       .startAfter(globalPostsArray[lastItemIndex].date_created)
       .limit(5)

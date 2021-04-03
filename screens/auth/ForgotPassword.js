@@ -14,27 +14,24 @@ const mapStateToProps = state => ({
 });
 
 
-const Login = (props) => {
+const ForgotPassword = (props) => {
   // Props
   const { user, navigation } = props;
 
-  //const navigation = props.navigation
-
   /**
-       * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
-       */
+   * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
+   */
 
   // Dispatch
   const dispatch = useDispatch();
 
   /**
-       * We no longer need to use the `constructor` with `super(props)` or as a way to set the initial `this.state`. The `useState()` hook handles that, passing in
-       * the initial state as the param
-       */
+   * We no longer need to use the `constructor` with `super(props)` or as a way to set the initial `this.state`. The `useState()` hook handles that, passing in
+   * the initial state as the param
+   */
 
   // State
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -65,47 +62,31 @@ const Login = (props) => {
     });
   }, []);
 
-  const handleLogin = async() => {
-    try {
-      await Firebase.auth()
-        .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
-        .catch((error) => {
-          Alert.alert(
-            'error',
-            String(error),
-            [
-              { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-            { cancelable: false },
-          );
-          setIsLoading(false);
-        })
-        .then(() => getLoginInfo())
-        .then(() => navigation.reset({
-          index: 0,
-          routes: [{ name: 'Tabs' }],
-        }));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //Send Forgot Password Email
+  const sendForgotPasswordEmail = async() => {
+    const docRef = Firebase.auth();
 
-  const getLoginInfo = async() => {
-    const docRef = Firebase.firestore().collection('users');
-
-    docRef
-      .doc(Firebase.auth().currentUser.uid)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username));
-        } else {
-          console.log('Username not found!');
-        }
+    docRef.sendPasswordResetEmail(email)
+      .then(function() {
+        Alert.alert(
+          'password reset email sent',
+          String(email),
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false },
+        );
+      }).catch((error) => {
+        Alert.alert(
+          'error',
+          String(error),
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false },
+        );
+        setIsLoading(false);
       })
-      .catch((error) => {
-        console.log('Error getting document:', error);
-      });
   };
 
   if (isLoading) {
@@ -120,8 +101,7 @@ const Login = (props) => {
       <View style={styles.container}>
 
         <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.headerPartOneText}>trade</Text>
-          <Text style={styles.headerPartTwoText}>rank</Text>
+          <Text style={styles.headerPartOneText}>forgot password</Text>
         </View>
 
 
@@ -134,30 +114,16 @@ const Login = (props) => {
           autoCapitalize="none"
         />
 
-        <TextInput
-          style={styles.inputBox}
-          value={password}
-          onChangeText={text => setPassword(text)}
-          placeholder="password"
-          placeholderTextColor="#696969"
-          secureTextEntry
-        />
-
         <TouchableOpacity
           style={styles.button}
-          onPress={() => handleLogin()}
+          onPress={() => sendForgotPasswordEmail()}
         >
-          <Text style={styles.buttonText}>login</Text>
+          <Text style={styles.buttonText}>send email</Text>
         </TouchableOpacity>
 
         <Button
           title="no account? sign up"
           onPress={() => navigation.navigate('Signup')}
-        />
-
-        <Button
-          title="forgot password"
-          onPress={() => navigation.navigate('ForgotPassword')}
         />
 
         <KeyboardSpacer />
@@ -218,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps)(ForgotPassword);
