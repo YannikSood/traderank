@@ -50,13 +50,13 @@ class SpecialClickedPostPage extends React.Component {
       .orderBy('date_created', 'asc');
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     //Not replying ot anyone
     //update replyingTo storage variable here?
 
     Analytics.logEvent('Post_Clicked');
     Analytics.setCurrentScreen('PostDetailsScreen');
-    Firebase.firestore()
+    await Firebase.firestore()
       .collection('globalPosts')
       .doc(this.state.postID)
       .get()
@@ -71,7 +71,7 @@ class SpecialClickedPostPage extends React.Component {
         console.log(error);
       });
 
-    Firebase.firestore()
+    await Firebase.firestore()
       .collection('globalPosts')
       .doc(this.state.postID)
       .set({
