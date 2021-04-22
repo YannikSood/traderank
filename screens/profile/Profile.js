@@ -379,14 +379,14 @@ joined
 
 
             </View>
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {/* <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <TouchableOpacity
                 style={styles.shareButton}
                 onPress={() => this.onShare()}
               >
                 <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
 
           </View>
@@ -485,14 +485,14 @@ joined
 
           </View>
 
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          {/* <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity
               style={styles.shareButton}
               onPress={() => this.onShare()}
             >
               <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
 
         </View>

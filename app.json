@@ -17,8 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "65.0.0",
-      "supportsTablet": true,
+      "buildNumber": "67.0.0",
+      "supportsTablet": false,
       "bundleIdentifier": "com.yanniksood.traderank",
       "googleServicesFile": "./GoogleService-Info-5.plist"
     },

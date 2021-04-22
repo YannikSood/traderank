@@ -141,49 +141,49 @@ exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('59 23 * * 
         }
         return null;
     })
-    .then(() => {
-        for (i = 0; i < sortedGainsUID.length; i++) {
-            var currentUID = sortedGainsUID[i]
-            console.log(currentUID)
-            admin.firestore()
-            .collection('users')
-            .doc(currentUID)
-            .get()
-            .then((doc) => {
-                console.log(doc.exists)
-                if (doc.data().pushStatus) {
-                    console.log("push status true")
-                    console.log(currentUID + " push status true, writing notification")
-                        var messages = []
-                        console.log(currentUID + " notification written, sending notification")
+    // .then(() => {
+    //     for (i = 0; i < sortedGainsUID.length; i++) {
+    //         var currentUID = sortedGainsUID[i]
+    //         console.log(currentUID)
+    //         admin.firestore()
+    //         .collection('users')
+    //         .doc(currentUID)
+    //         .get()
+    //         .then((doc) => {
+    //             console.log(doc.exists)
+    //             if (doc.data().pushStatus) {
+    //                 console.log("push status true")
+    //                 console.log(currentUID + " push status true, writing notification")
+    //                     var messages = []
+    //                     console.log(currentUID + " notification written, sending notification")
                         
-                        messages.push({
-                            "to": doc.data().token,
-                            "sound": "default",
-                            "title":"you got ranked!",
-                            "body": "you made it on the gains leaderboard!"
+    //                     messages.push({
+    //                         "to": doc.data().token,
+    //                         "sound": "default",
+    //                         "title":"you got ranked!",
+    //                         "body": "you made it on the gains leaderboard!"
 
-                        });
+    //                     });
 
-                        fetch('https://exp.host/--/api/v2/push/send', {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(messages)
-                        });
-                        return
-                }
-                return
-            })
-            .catch(error => {
-                console.error("Error getting user push status etc: ", error);
-            });
+    //                     fetch('https://exp.host/--/api/v2/push/send', {
+    //                         method: 'POST',
+    //                         headers: {
+    //                             'Accept': 'application/json',
+    //                             'Content-Type': 'application/json',
+    //                         },
+    //                         body: JSON.stringify(messages)
+    //                     });
+    //                     return
+    //             }
+    //             return
+    //         })
+    //         .catch(error => {
+    //             console.error("Error getting user push status etc: ", error);
+    //         });
 
-        }
-        return null
-    })
+    //     }
+    //     return null
+    // })
     
     return null
 
@@ -298,56 +298,104 @@ exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('59 23 * * 
         }
         return null;
     })
-    .then(() => {
+    // .then(() => {
 
-        for (i = 0; i < sortedLossesUID.length; i++) {
-            var currentUID = sortedLossesUID[i]
-            console.log(currentUID)
-            admin.firestore()
-            .collection('users')
-            .doc(currentUID)
-            .get()
-            .then((doc) => {
-                console.log(doc.exists)
-                if (doc.data().pushStatus) {
-                    console.log("push status true")
-                    console.log(currentUID + " push status true, writing notification")
-                    var messages = []
-                    console.log(currentUID + " notification written, sending notification")
+    //     for (i = 0; i < sortedLossesUID.length; i++) {
+    //         var currentUID = sortedLossesUID[i]
+    //         console.log(currentUID)
+    //         admin.firestore()
+    //         .collection('users')
+    //         .doc(currentUID)
+    //         .get()
+    //         .then((doc) => {
+    //             console.log(doc.exists)
+    //             if (doc.data().pushStatus) {
+    //                 console.log("push status true")
+    //                 console.log(currentUID + " push status true, writing notification")
+    //                 var messages = []
+    //                 console.log(currentUID + " notification written, sending notification")
                     
-                    messages.push({
-                        "to": doc.data().token,
-                        "sound": "default",
-                        "title":"you got ranked!",
-                        "body": "you made it on the losses leaderboard!"
+    //                 messages.push({
+    //                     "to": doc.data().token,
+    //                     "sound": "default",
+    //                     "title":"you got ranked!",
+    //                     "body": "you made it on the losses leaderboard!"
 
-                    });
+    //                 });
 
-                    fetch('https://exp.host/--/api/v2/push/send', {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(messages)
-                    });
-                    return
-                }
-                return
-            })
-            .catch(error => {
-                console.error("Error getting user push status etc: ", error);
-            });
+    //                 fetch('https://exp.host/--/api/v2/push/send', {
+    //                     method: 'POST',
+    //                     headers: {
+    //                         'Accept': 'application/json',
+    //                         'Content-Type': 'application/json',
+    //                     },
+    //                     body: JSON.stringify(messages)
+    //                 });
+    //                 return
+    //             }
+    //             return
+    //         })
+    //         .catch(error => {
+    //             console.error("Error getting user push status etc: ", error);
+    //         });
 
-        }
-        return null
-    })
+    //     }
+    //     return null
+    // })
     
     
     
     return null
 
 });
+
+exports.scheduledRankingNotification = functions.pubsub.schedule('59 23 * * *')
+  .timeZone('America/New_York') 
+  .onRun(async (context) => {
+
+    admin.firestore()
+    .collection('users')
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            if (doc.data().pushStatus) {
+                var messages = []
+
+                messages.push({
+                    "to": doc.data().token,
+                    "sound": "default",
+                    "title":"daily rankings are updated!",
+                    "body": "click to see if you made it"
+                });
+
+                //Post it to expo
+                
+                fetch('https://exp.host/--/api/v2/push/send', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(messages)
+                });
+
+                return (
+                    "notification written"
+                )
+            }
+            
+        })
+        return null
+    })
+    .catch((error) => {
+        console.error("Error finding user: ", error);
+    });
+
+    return (
+        true
+    )
+    
+}); 
 
 //Function to write notifications to DB, and send push notifications
 exports.writeNotification = functions.https.onCall((data, context) => {

@@ -57,7 +57,13 @@ class FeedCellClass extends React.Component {
       if (this.state.gain_loss == 'gain') {
         return (
           <Text style={styles.pnlContainer}>
-            <Text style={styles.gainText}> $ {this.state.profit_loss} </Text>
+            <Text style={styles.gainText}>
+{' '}
+$
+{' '}
+{this.state.profit_loss}
+{' '}
+ </Text>
 
             <Text style={styles.regularTradeText}>  🚀  </Text>
             <Text style={styles.gainText}>
@@ -239,18 +245,20 @@ $
 
               <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
                 {/* <Text style={styles.securityContainer}> */}
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => this.props.navigation.navigate('SingleStockPosts', {
                     ticker: this.state.ticker,
-                    })
+                  })
                     }
+                  style={{ backgroundColor: '#696969', borderRadius: 15, marginRight: 20, marginTop: 10, padding: 4 }}
                 >
-                    <Text style={styles.tradeText}>
-                    ${this.state.ticker}
+                  <Text style={styles.tradeText}>
+                    $
+{this.state.ticker}
                     </Text>
 
-                </TouchableOpacity> 
-                
+                </TouchableOpacity>
+
                 <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
 #
                   {this.state.security}
@@ -265,7 +273,7 @@ $
 
             { this.renderGainLoss() }
 
-            {/* <TouchableOpacity 
+            {/* <TouchableOpacity
                             onPress={() =>
                                 this.props.navigation.push('Chat',
                                 {
@@ -337,8 +345,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     alignContent: 'center',
-    paddingRight: 10,
-    paddingTop: 15,
+    paddingLeft: 5,
+    paddingRight: 5,
+    // paddingTop: 15,
     color: '#FFFFFF',
     // paddingTop: 20
   },

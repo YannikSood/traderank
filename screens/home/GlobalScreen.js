@@ -89,7 +89,7 @@ const GlobalScreen = (props) => {
       .then((token) => {
         Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).set({
           token,
-          pushStatus: this.state.pushStatus,
+          pushStatus: pushStatus,
         }, { merge: true });
       })
       .catch((error) => {

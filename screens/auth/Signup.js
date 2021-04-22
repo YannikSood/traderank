@@ -84,6 +84,7 @@ class Signup extends React.Component {
               <Text style={styles.headerPartTwoText}>rank</Text>
             </View>
 
+
             <TextInput
               style={styles.inputBox}
               value={this.state.username.trim().replace(/[^\w\s]/gi, '')}
@@ -94,6 +95,8 @@ class Signup extends React.Component {
               autoCorrect={false}
               maxLength={20}
             />
+
+            <Text style={styles.labelText}>💡 pick something anonymous for privacy</Text>
 
             <TouchableOpacity
               style={styles.button}
@@ -157,6 +160,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignContent: 'center',
   },
+  labelText: {
+    fontSize: 16,
+    color: '#FFFFFF'
+},
 });
 
 export default connect(mapStateToProps)(Signup);

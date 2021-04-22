@@ -219,8 +219,8 @@ const App = () => (
         <Stack.Screen
           name="SingleStockPosts"
           component={SingleStockPosts}
-          options={{
-            title: 'Single Stock',
+          options={({ route }) => ({
+            title: route.params.ticker,
             headerTitleStyle: {
               fontWeight: 'bold',
               fontSize: 20,
@@ -231,7 +231,7 @@ const App = () => (
               shadowColor: 'transparent',
             },
             headerBackTitle: '',
-          }}
+          })}
         />
         <Stack.Screen
           name="Search"
@@ -447,7 +447,7 @@ function Tabs() {
 
       <Tab.Screen
         name="Home"
-        component={HomeTopTabs}
+        component={GlobalScreen}
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
