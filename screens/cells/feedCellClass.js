@@ -58,12 +58,9 @@ class FeedCellClass extends React.Component {
         return (
           <Text style={styles.pnlContainer}>
             <Text style={styles.gainText}>
-{' '}
 $
-{' '}
-{this.state.profit_loss}
-{' '}
- </Text>
+              {this.state.profit_loss}
+            </Text>
 
             <Text style={styles.regularTradeText}>  🚀  </Text>
             <Text style={styles.gainText}>
@@ -254,8 +251,8 @@ $
                 >
                   <Text style={styles.tradeText}>
                     $
-{this.state.ticker}
-                    </Text>
+                    {this.state.ticker}
+                  </Text>
 
                 </TouchableOpacity>
 
