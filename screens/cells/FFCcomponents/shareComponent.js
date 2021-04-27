@@ -26,7 +26,9 @@ class ShareComponent extends Component {
             posterUsername:'',
             description: '',
             ticker: '',
-            image: this.props.image
+            image: this.props.image,
+            gain_loss: this.props.gain_loss,
+            profit_loss: this.props.profit_loss
         }
     }
      
@@ -36,12 +38,11 @@ class ShareComponent extends Component {
     }
     onShare = async () => {
       //${this.state.image}
-      //'https://testflight.apple.com/join/eHiBK1S3'
         try {
           const result = await Share.share({
             message:
-              `Check out this post on Traderank. @${this.state.posterUsername} is talking about ${this.state.ticker}: ${this.state.description}`,
-              url: 'https://testflight.apple.com/join/eHiBK1S3'
+              `@${this.state.posterUsername} posted a $${this.state.profit_loss} ${this.state.gain_loss} for $${this.state.ticker} on Traderank. Check it out here: `,
+              url: 'https://apps.apple.com/us/app/traderank/id1546959332' //this.state.url
           },
           { 
             excludedActivityTypes:[
@@ -52,7 +53,6 @@ class ShareComponent extends Component {
               'com.apple.UIKit.activity.PostToFacebook',
               'com.apple.UIKit.activity.PostToGmail',
               'com.apple.UIKit.activity.PostToGoogleChrome'
-              
             ]
           }
           );

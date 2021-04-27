@@ -154,7 +154,12 @@ $
 
             <View style={styles.buttonContainer}>
 
-              <ShareComponent postID={this.state.postID} image={this.state.image} />
+              <ShareComponent 
+                postID={this.state.postID}
+                image={this.state.image}
+                gain_loss={this.state.gain_loss}
+                profit_loss={this.state.profit_loss} 
+              />
 
             </View>
 
@@ -193,7 +198,12 @@ $
 
           <View style={styles.buttonContainer}>
 
-              <ShareComponent postID={this.state.postID} image={this.state.image}  />
+              <ShareComponent 
+                postID={this.state.postID}
+                image={this.state.image}
+                gain_loss={this.state.gain_loss} 
+                profit_loss={this.state.profit_loss}  
+               />
 
           </View>
 
