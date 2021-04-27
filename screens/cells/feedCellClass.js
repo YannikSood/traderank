@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Firebase from '../../firebase';
 import LikeComponent from './FFCcomponents/likeComponent';
 import UserComponent from './FFCcomponents/userComponent';
+import ShareComponent from './FFCcomponents/shareComponent';
 import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import DeleteComponent from './FFCcomponents/deleteComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
@@ -154,6 +155,17 @@ $
 
             </View>
 
+            <View style={styles.buttonContainer}>
+
+              <ShareComponent 
+                postID={this.state.postID}
+                image={this.state.image}
+                gain_loss={this.state.gain_loss}
+                profit_loss={this.state.profit_loss} 
+              />
+
+            </View>
+
           </View>
         );
       }
@@ -184,6 +196,17 @@ $
             <Ionicons name="eye-sharp" size={30} color="white" />
             <Text style={{ color: '#FFFFFF', paddingLeft: 4 }}>{this.state.viewsCount}</Text>
 
+
+          </View>
+
+          <View style={styles.buttonContainer}>
+
+              <ShareComponent 
+                postID={this.state.postID}
+                image={this.state.image}
+                gain_loss={this.state.gain_loss} 
+                profit_loss={this.state.profit_loss}  
+               />
 
           </View>
 
