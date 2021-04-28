@@ -423,9 +423,7 @@ class ClickedUserProfile extends React.Component {
 
       if (this.state.isFollowing) {
         return (
-          <View 
-          // style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-          >
+          <View >
             <TouchableOpacity
               style={styles.button2}
               onPress={() => {
@@ -440,9 +438,7 @@ class ClickedUserProfile extends React.Component {
         );
       }
       return (
-        <View 
-        // style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-        >
+        <View >
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
@@ -460,7 +456,7 @@ class ClickedUserProfile extends React.Component {
       if (this.state.hasAlerts) {
         return (
           <View
-          style={{ paddingTop: 26, paddingLeft: 10}}
+            style={{ paddingTop: 26, paddingLeft: 10 }}
           >
             <TouchableOpacity
               // style={styles.button2}
@@ -478,7 +474,7 @@ class ClickedUserProfile extends React.Component {
       }
       return (
         <View
-        style={{ paddingTop: 26, paddingLeft: 10}}
+          style={{ paddingTop: 26, paddingLeft: 10 }}
         >
           <TouchableOpacity
             // style={styles.button}
@@ -552,15 +548,15 @@ class ClickedUserProfile extends React.Component {
           <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
             <FontAwesome name="twitter" size={19} color="#1DA1F2" />
             <Text
-                  style={{ color: '#FFFFFF' }}
-                  onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
-                >
-                  {' '}
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
+            >
+              {' '}
 @
-                  {this.state.posterTwitter}
-                  {' '}
+              {this.state.posterTwitter}
+              {' '}
 
-                </Text>
+            </Text>
           </View>
         );
       }
@@ -569,15 +565,15 @@ class ClickedUserProfile extends React.Component {
           <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
             <AntDesign name="instagram" size={18} color="#E1306C" />
             <Text
-                  style={{ color: '#FFFFFF' }}
-                  onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
-                >
-                  {' '}
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
+            >
+              {' '}
 @
-                  {this.state.posterInstagram}
-                  {' '}
+              {this.state.posterInstagram}
+              {' '}
 
-                </Text>
+            </Text>
           </View>
         );
       }
@@ -585,32 +581,32 @@ class ClickedUserProfile extends React.Component {
       return (
         <View>
           <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-                  <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-                  <Text
-                      style={{ color: '#FFFFFF' }}
-                      onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
-                    >
-                      {' '}
+            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
+            <Text
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
+            >
+              {' '}
 @
-                      {this.state.posterTwitter}
-                      {' '}
+              {this.state.posterTwitter}
+              {' '}
 
-                    </Text>
-                </View>
+            </Text>
+          </View>
 
           <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-                  <AntDesign name="instagram" size={18} color="#E1306C" />
-                  <Text
-                      style={{ color: '#FFFFFF' }}
-                      onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
-                    >
-                      {' '}
+            <AntDesign name="instagram" size={18} color="#E1306C" />
+            <Text
+              style={{ color: '#FFFFFF' }}
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
+            >
+              {' '}
 @
-                      {this.state.posterInstagram}
-                      {' '}
+              {this.state.posterInstagram}
+              {' '}
 
-                    </Text>
-                </View>
+            </Text>
+          </View>
         </View>
       );
     }
@@ -666,18 +662,18 @@ class ClickedUserProfile extends React.Component {
                   onPress={() => this.openFollowerList()}
                 >
                   <View style={{ flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                        <Text style={styles.tradeText}>{this.state.posterFollowerCount}</Text>
-                        <Text style={{ color: '#FFFFFF' }}> followers </Text>
-                      </View>
+                    <Text style={styles.tradeText}>{this.state.posterFollowerCount}</Text>
+                    <Text style={{ color: '#FFFFFF' }}> followers </Text>
+                  </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   onPress={() => this.openFollowingList()}
                 >
                   <View style={{ flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                        <Text style={styles.tradeText}>{this.state.posterFollowingCount}</Text>
-                        <Text style={{ color: '#FFFFFF' }}> following </Text>
-                      </View>
+                    <Text style={styles.tradeText}>{this.state.posterFollowingCount}</Text>
+                    <Text style={{ color: '#FFFFFF' }}> following </Text>
+                  </View>
                 </TouchableOpacity>
 
               </View>
@@ -713,8 +709,11 @@ joined
             { this.renderTwitterAndInstagram() }
 
             {/* { this.renderFollowsYou() } */}
-            { this.renderFollowButton() }
-            { this.renderAlertsButton() }
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              { this.renderFollowButton() }
+              { this.renderAlertsButton() }
+
+            </View>
 
           </View>
         );
@@ -768,18 +767,18 @@ joined
                 onPress={() => this.openFollowerList()}
               >
                 <View style={{ flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                    <Text style={styles.tradeText}>{this.state.posterFollowerCount}</Text>
-                    <Text style={{ color: '#FFFFFF' }}> followers </Text>
-                  </View>
+                  <Text style={styles.tradeText}>{this.state.posterFollowerCount}</Text>
+                  <Text style={{ color: '#FFFFFF' }}> followers </Text>
+                </View>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => this.openFollowingList()}
               >
                 <View style={{ flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
-                    <Text style={styles.tradeText}>{this.state.posterFollowingCount}</Text>
-                    <Text style={{ color: '#FFFFFF' }}> following </Text>
-                  </View>
+                  <Text style={styles.tradeText}>{this.state.posterFollowingCount}</Text>
+                  <Text style={{ color: '#FFFFFF' }}> following </Text>
+                </View>
               </TouchableOpacity>
             </View>
           </View>
@@ -814,7 +813,7 @@ joined
           { this.renderTwitterAndInstagram() }
 
           {/* { this.renderFollowsYou() } */}
-          <View  style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             { this.renderFollowButton() }
             { this.renderAlertsButton() }
 
