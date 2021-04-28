@@ -104,18 +104,18 @@ $
               {/* <Text style={styles.securityContainer}> */}
               {/* <Text style={styles.tradeText}> */}
               <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('SingleStockPosts', {
-                    ticker: this.state.ticker,
-                  })
+                onPress={() => this.props.navigation.navigate('SingleStockPosts', {
+                  ticker: this.state.ticker,
+                })
                     }
-                  style={{ backgroundColor: '#696969', borderRadius: 15, marginRight: 20, marginTop: 10, padding: 4 }}
-                >
-                  <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#FFFFFF' }}>
+                style={{ backgroundColor: '#696969', borderRadius: 15, marginRight: 20, marginTop: 10, padding: 4 }}
+              >
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#FFFFFF' }}>
                     $
-                    {this.state.ticker}
-                  </Text>
+                  {this.state.ticker}
+                </Text>
 
-                </TouchableOpacity>
+              </TouchableOpacity>
               {/* </Text> */}
               <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
 #

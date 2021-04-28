@@ -19,7 +19,7 @@ const GlobalScreen = (props) => {
 
   // Refs
   const scrollRef = useRef(null);
-
+  useScrollToTop(scrollRef);
 
   // Props
   const { navigation, globalPosts, postsLoading } = props;
