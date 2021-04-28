@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from 'react-native-modal';
 
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../../firebase'
+import Firebase from '../../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -62,7 +62,7 @@ class YoloConfirm extends React.Component {
         })
         .then(docRef => this.uploadToStorage(docRef.id))
         .catch((error) => {
-            console.error("Error storing and retrieving image url: ", error);
+          console.error('Error storing and retrieving image url: ', error);
         });
 
       //And now we are storing user posts. Now, we do the same thing for global posts, to display in the global feed
@@ -88,7 +88,7 @@ class YoloConfirm extends React.Component {
           viewsCount: 0,
         })
         .catch((error) => {
-            console.error("Error writing document to global posts: ", error);
+          console.error('Error writing document to global posts: ', error);
         });
 
       await Firebase.firestore()
@@ -113,7 +113,7 @@ class YoloConfirm extends React.Component {
           viewsCount: 0,
         })
         .catch((error) => {
-            console.error("Error writing document to global posts: ", error);
+          console.error('Error writing document to global posts: ', error);
         });
 
       //Update post count
@@ -124,7 +124,20 @@ class YoloConfirm extends React.Component {
           postCount: this.state.postCount + 1,
         }, { merge: true })
         .catch((error) => {
-            console.error("Error writing document to user collection: ", error);
+          console.error('Error writing document to user collection: ', error);
+        });
+
+      const sendUserAlertsNotication = Firebase.functions().httpsCallable('sendUserAlertsNotication');
+      sendUserAlertsNotication({
+        posterUID: Firebase.auth().currentUser.uid,
+        posterUsername: this.state.username,
+        postType: 'yolo',
+      })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
         });
 
       this.setState({
@@ -165,15 +178,15 @@ class YoloConfirm extends React.Component {
           .doc(Firebase.auth().currentUser.uid)
           .get()
           .then((doc) => {
-                if (doc.exists) {
-                    this.setState({
-                        postCount: doc.data().postCount,
-                        isLoading: true
-                    })
-                } else {
-                    console.log("No such document!");
-                }
-            })
+            if (doc.exists) {
+              this.setState({
+                postCount: doc.data().postCount,
+                isLoading: true,
+              });
+            } else {
+              console.log('No such document!');
+            }
+          })
           .then(() => this.onSubmit());
       }
     }
@@ -189,43 +202,43 @@ class YoloConfirm extends React.Component {
     render() {
       if (this.state.isLoading) {
         return (
-              <View style={styles.activityContainer}>
+          <View style={styles.activityContainer}>
                 <ActivityIndicator size="large" color="#9E9E9E" />
               </View>
         );
       }
       return (
 
-          <KeyboardAvoidingView
-              style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' }}
-              behavior="padding"
-enabled
-              keyboardVerticalOffset={100}
-            >
-              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                  <View
-                  style={styles.container}
-                >
+        <KeyboardAvoidingView
+            style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' }}
+            behavior="padding"
+            enabled
+            keyboardVerticalOffset={100}
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View
+                    style={styles.container}
+                  >
 
-                  <Modal
-                          isVisible={this.state.modalOpen}
-                          animationIn="fadeIn"
-                          onSwipeComplete={() => this.closeImageModal()}
-                          swipeDirection="down"
-                        >
+                    <Modal
+                    isVisible={this.state.modalOpen}
+                    animationIn="fadeIn"
+                    onSwipeComplete={() => this.closeImageModal()}
+                    swipeDirection="down"
+                  >
 
-                          <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
-                                  <Image
-                                      source={{ uri: this.state.image.uri }}
-                                      style={styles.fullScreenImage}
-                                    />
+                            <Image
+                                    source={{ uri: this.state.image.uri }}
+                                    style={styles.fullScreenImage}
+                                  />
 
-                                </View>
-                        </Modal>
+                          </View>
+                  </Modal>
 
 
-                  {/* <Text style = {styles.textContainer}>
+                    {/* <Text style = {styles.textContainer}>
                         <Text style = {styles.boldText}>{this.state.username}'s</Text>
                         <Text style = {styles.labelText}> trade on </Text>
                         <Text style = {styles.boldText}>${this.state.ticker} </Text>
@@ -248,35 +261,35 @@ enabled
                     </TouchableOpacity> */}
 
 
-                  <View style={{ flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                      <Text style={styles.labelText}>lastly, caption your trade:</Text>
-                      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <Text style={styles.labelText}>lastly, caption your trade:</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 
-                         <TextInput
-                              style={styles.inputBox}
-                              value={this.state.description}
-                              onChangeText={description => this.setState({ description })}
-                              placeholder="I love tendies... "
-                              autoCapitalize="none"
-                              multiline
-                              maxLength={700}
-                            />
-                       </View>
+                        <TextInput
+                           style={styles.inputBox}
+                           value={this.state.description}
+                           onChangeText={description => this.setState({ description })}
+                           placeholder="I love tendies... "
+                           autoCapitalize="none"
+                           multiline
+                           maxLength={700}
+                         />
+                      </View>
 
-                    </View>
+                  </View>
 
 
-                  <TouchableOpacity
-                      onPress={() => this.checkAndNext()}
-                      style={styles.gainButton}
-                    >
-                      <Text style={styles.buttonText}>get ranked🎉</Text>
-                    </TouchableOpacity>
+                    <TouchableOpacity
+                    onPress={() => this.checkAndNext()}
+                    style={styles.gainButton}
+                  >
+                    <Text style={styles.buttonText}>get ranked🎉</Text>
+                  </TouchableOpacity>
 
-                </View>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+                  </View>
+              </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
       );
     }
 }

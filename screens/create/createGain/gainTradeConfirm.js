@@ -129,6 +129,23 @@ class GainTradeConfirm extends React.Component {
         });
 
 
+      //data.posterUID
+      //data.posterUsername
+      //data.postType
+
+      const sendUserAlertsNotication = Firebase.functions().httpsCallable('sendUserAlertsNotication');
+      sendUserAlertsNotication({
+        posterUID: Firebase.auth().currentUser.uid,
+        posterUsername: this.state.username,
+        postType: "gain",
+      })
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
       this.setState({
         isLoading: false,
       });

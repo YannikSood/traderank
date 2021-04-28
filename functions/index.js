@@ -519,6 +519,61 @@ exports.writeNotification = functions.https.onCall((data, context) => {
     )
 });
 
+
+exports.sendUserAlertsNotication = functions.https.onCall((data, context) => {
+
+    //data.posterUID
+    //data.posterUsername
+    //data.postType
+
+    admin.firestore()
+    .collection('users')
+    .doc(data.posterUID) //
+    .collection('UsersToAlert')
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            if (doc.data().pushStatus) {
+                var messages = []
+
+                messages.push({
+                    "to": doc.data().token,
+                    "sound": "default",
+                    "title": data.posterUsername + " just posted a " + data.postType + "!",
+                    "body": "check it out"
+                });
+
+                //Post it to expo
+                
+                fetch('https://exp.host/--/api/v2/push/send', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(messages)
+                });
+
+                return (
+                    "notification written"
+                )
+            }
+            
+        })
+        return null
+    })
+    .catch((error) => {
+        console.error("Error finding user: ", error);
+    });
+
+    return (
+        true
+    )
+
+
+})
+
+
 //Function to send notifications for comment replies
 exports.sendCommentReplyNotification = functions.https.onCall((data, context) => {
 

@@ -148,12 +148,7 @@ $
             </View>
 
 
-            <View style={styles.buttonContainer}>
-
-
-              <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
-
-            </View>
+            
 
             <View style={styles.buttonContainer}>
 
@@ -163,6 +158,14 @@ $
                 gain_loss={this.state.gain_loss}
                 profit_loss={this.state.profit_loss} 
               />
+
+            </View>
+
+
+            <View style={styles.buttonContainer}>
+
+
+              <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
 
             </View>
 
