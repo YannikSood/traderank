@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect }from 'react'
-import { View, StyleSheet, ActivityIndicator, Text, TextInput, Dimensions, FlatList } from 'react-native'
+import { View, StyleSheet, ActivityIndicator, Text, TextInput, Dimensions, FlatList, Keyboard, KeyboardEvent } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
+import UserComponent from './userComponent.js'
 import Firebase from '../../firebase'
 import Moment from 'moment'
 import { Ionicons } from '@expo/vector-icons';
@@ -28,11 +29,17 @@ class Chat extends React.Component {
             usernames: [],
             mentionsData:[], //array of @ mention username and uid who to send a notification to
             isSearching: false,
-            notificationUID: ""
+            notificationUID: "",
+            keyboardHeight: 0,
+            normalHeight: 0,
+            shortHeight: 0
+
         }
     }
-    //---------------------------------------------------------------
+
     async componentDidMount (){
+  
+
         // console.log(this.state.roomName)
 
         let userUID = Firebase.auth().currentUser.uid
@@ -232,6 +239,9 @@ class Chat extends React.Component {
     }
     
     onTextChange = (message) => {
+      if(message == '' || message.length === 0){
+        this.setState({isSearching:false});
+      }
         /**
          * Sample response from hits object
         
@@ -275,7 +285,7 @@ class Chat extends React.Component {
                     suggestions.push(elem);
                 }
                 this.setState({usernames:suggestions});
-               // console.log("Usernames: ", this.state.usernames);
+              //  console.log("Usernames: ", this.state.usernames);
               });
 
         }
@@ -284,11 +294,11 @@ class Chat extends React.Component {
 
     //Replace last @username text in messageText with clicked on username
     setUsername = (item) => {
-       // console.log(item.username);
+       console.log(item.username);
         this.setState({messageText: this.state.messageText.trim()});
         let lastIndexOfAt = this.state.messageText.lastIndexOf('@'); 
         let replacement = `@${item.username}`;
-       // console.log("Before: ", this.state.messageText);
+        console.log(`@${item.username} ${item.uid}`);
         let msg = this.state.messageText.substring(0, lastIndexOfAt) + replacement;
         let mentions = {username: `@${item.username}`, uid: item.uid};
 
@@ -297,15 +307,19 @@ class Chat extends React.Component {
             isSearching:false,
             mentionsData: [...this.state.mentionsData, mentions]
         });
-       // console.log("After: ", msg);
+       
     }
     
 
     render() { 
         const renderItem = ({ item }) => (
-        <View>
+          <View>
+            
             <Text onPress={() => this.setUsername(item)} style={styles.usernames}>{item.username}</Text>
-            {/* <UserComponent onPress={() => console.log(item.username)} uid = {item.uid}/>   */}
+            {/* <UserComponent onPress={() => this.setUsername(item)} style={styles.usernames} uid={item.uid} /> */}
+            <View style={styles.lineStyle} />
+
+            
           </View>
         );
         if(this.state.isLoading){
@@ -318,14 +332,16 @@ class Chat extends React.Component {
         //only for us?
         if (this.state.userLevel < 1 && this.state.roomName == "announcements") {
             return (
-                <View style={{backgroundColor: '#000000', flex: 1}}>
+                <View style={{backgroundColor: '#000000', flex: 1, paddingTop: 5}}>
                     {this.state.isSearching &&
+                    
+              
                        <FlatList
                     //    ref={this.props.scrollRef}
                        data={this.state.usernames}
                        renderItem={renderItem}
                        keyExtractor={(item, index) => String(index)}
-                       contentContainerStyle={{ paddingBottom: 50 }}
+                       contentContainerStyle={styles.flatList}
                        showsHorizontalScrollIndicator={false}
                        showsVerticalScrollIndicator={false}
                     //    onRefresh={this._refresh}
@@ -336,9 +352,9 @@ class Chat extends React.Component {
                 }
                      <GiftedChat
                         showUserAvatar={true}
+                        textInputProps={{autoFocus: true}}
                         isTyping={this.state.isTyping}
                         renderComposer={this.renderComposer}
-                        
                         renderUsernameOnMessage={true}
                         messages={this.state.messages}
                         onInputTextChanged={message => this.onTextChange(message)}
@@ -360,57 +376,67 @@ class Chat extends React.Component {
                         // alwaysShowSend = {true}
                         maxInputLength = {240}
                     /> 
-                 <KeyboardSpacer />
+                 <KeyboardSpacer style={{ zIndex: 3, elevation: 3}} />
                 </View>
             )
         }
         
         return (
-            <View style={{backgroundColor: '#000000', flex: 1}}>
-                {this.state.isSearching &&
-                  
-                       <FlatList
-                    //    ref={this.props.scrollRef}
-                       data={this.state.usernames}
-                       renderItem={renderItem}
-                       keyExtractor={(item, index) => String(index)}
-                       contentContainerStyle={{ paddingBottom: 50 }}
-                       showsHorizontalScrollIndicator={false}
-                       showsVerticalScrollIndicator={false}
-                    //    onRefresh={this._refresh}
-                       refreshing={this.state.isSearching}
-                       // onEndReachedThreshold={0.5}
-                       //onEndReached={() => {this.getMore()}}
-                   />
-                }
-                <GiftedChat
-                    showUserAvatar={true}
-                    isTyping={this.state.isTyping}
-                    // renderComposer={this.renderComposer}
-                    
-                    renderUsernameOnMessage={true}
-                    messages={this.state.messages}
-                    onInputTextChanged={message => this.onTextChange(message)}
-                    onSend={message => this.onSend(message)}
-                    scrollToBottom
-                    // user = {{
-                    //     _id: 1
-                    // }}
-                    // locale = { dayjs.locale('en-ca') }
-                    showAvatarForEveryMessage = {false}
-                    dateFormat = 'll'
-                    timeFormat = 'LT'
-                    placeholder = "send a message..."
-                    keyboardShouldPersistTaps='never'
-                    onPressAvatar={user => this.getProfile(user)}
-                    textInputStyle={styles.inputContainer}
-                    isKeyboardInternallyHandled = {false}
-                    alwaysShowSend = {true}
-                    maxInputLength = {240}
-                    text={this.state.messageText}
-                />
+            <View style={{backgroundColor: '#121212', flex: 1}}>
 
-                <KeyboardSpacer />
+
+                {/* <View> */}
+                {this.state.isSearching &&     
+                  
+                  <FlatList
+               //    ref={this.props.scrollRef}
+                  // inverted={true}
+                  data={this.state.usernames}
+                  renderItem={renderItem}
+                  keyExtractor={(item, index) => String(index)}
+                  contentContainerStyle={styles.flatList}
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={true}
+               //    onRefresh={this._refresh}
+                  refreshing={this.state.isSearching}
+                  // onEndReachedThreshold={0.5}
+                  //onEndReached={() => {this.getMore()}}
+              />
+           }
+                {/* </View> */}
+                
+                <View style={{backgroundColor: 'transparent', flex: 1}}>
+                  <GiftedChat
+                      showUserAvatar={true}
+                      textInputProps={{autoFocus: true}}
+                      isTyping={this.state.isTyping}
+                      // renderComposer={this.renderComposer}
+                      
+                      renderUsernameOnMessage={true}
+                      messages={this.state.messages}
+                      onInputTextChanged={message => this.onTextChange(message)}
+                      onSend={message => this.onSend(message)}
+                      scrollToBottom
+                      // user = {{
+                      //     _id: 1
+                      // }}
+                      // locale = { dayjs.locale('en-ca') }
+                      showAvatarForEveryMessage = {false}
+                      dateFormat = 'll'
+                      timeFormat = 'LT'
+                      placeholder = "send a message..."
+                      keyboardShouldPersistTaps='handled'
+                      onPressAvatar={user => this.getProfile(user)}
+                      textInputStyle={styles.inputContainer}
+                      isKeyboardInternallyHandled = {false}
+                      alwaysShowSend = {true}
+                      maxInputLength = {400}
+                      text={this.state.messageText}
+                  />
+                </View>
+                
+
+                <KeyboardSpacer style={{ zIndex: 3, elevation: 3}} />
             
             </View>
             
@@ -421,6 +447,17 @@ class Chat extends React.Component {
 
 
 const styles = StyleSheet.create({
+    flatList: {
+      // flex: 1,
+      flexGrow: 1,
+      zIndex: 1, 
+      elevation: 1,
+      // position: 'absolute',
+      // bottom: -Dimensions.get('screen').height,
+      marginBottom: -500,
+      width: Dimensions.get('screen').width,
+      backgroundColor: 'transparent'
+    },
     bioText: {
         fontSize: 16,
         alignContent: 'center',
@@ -437,6 +474,8 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         // backgroundColor: '#121212',
         borderRadius: 11,
+        zIndex: 3, 
+        elevation: 3
         // color: '#FFFFFF'
     },
     usernames: {
@@ -448,7 +487,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingLeft: 10,
         paddingTop: 5
-    }
+    },
+    lineStyle: {
+      borderWidth: 0.5,
+      borderColor: 'white',
+      width: Dimensions.get('window').width,
+      marginBottom: 10,
+    },
 
 });
 
