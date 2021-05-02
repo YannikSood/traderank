@@ -425,7 +425,7 @@ class Chat extends React.Component {
                       dateFormat = 'll'
                       timeFormat = 'LT'
                       placeholder = "send a message..."
-                      keyboardShouldPersistTaps='never'
+                      keyboardShouldPersistTaps='handled'
                       onPressAvatar={user => this.getProfile(user)}
                       textInputStyle={styles.inputContainer}
                       isKeyboardInternallyHandled = {false}
