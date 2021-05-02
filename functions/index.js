@@ -34,7 +34,7 @@ admin.initializeApp();
 //Update device info in device table on logout/login/deletion
 
 //Cloud function to perform gains leaderboard calculation
-exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('59 23 * * *')
+exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('58 23 * * *')
   .timeZone('America/New_York') 
   .onRun(async (context) => {
 
@@ -190,7 +190,7 @@ exports.scheduledLeaderboardGainFunction = functions.pubsub.schedule('59 23 * * 
 });
 
 //Cloud function to perform loss leaderboard calculation
-exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('59 23 * * *')
+exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('58 23 * * *')
   .timeZone('America/New_York') 
   .onRun(async (context) => {
 
@@ -349,7 +349,7 @@ exports.scheduledLeaderboardLossFunction = functions.pubsub.schedule('59 23 * * 
 
 });
 
-exports.scheduledRankingNotification = functions.pubsub.schedule('59 23 * * *')
+exports.scheduledRankingNotification = functions.pubsub.schedule('58 23 * * *')
   .timeZone('America/New_York') 
   .onRun(async (context) => {
 
@@ -364,8 +364,8 @@ exports.scheduledRankingNotification = functions.pubsub.schedule('59 23 * * *')
                 messages.push({
                     "to": doc.data().token,
                     "sound": "default",
-                    "title":"daily rankings are updated!",
-                    "body": "click to see if you made it"
+                    "title":"🏆",
+                    "body": "daily rankings are updated!"
                 });
 
                 //Post it to expo
@@ -532,34 +532,53 @@ exports.sendUserAlertsNotication = functions.https.onCall((data, context) => {
     .collection('UsersToAlert')
     .get()
     .then((querySnapshot) => {
+        console.log("within the users to alert")
         querySnapshot.forEach((doc) => {
-            if (doc.data().pushStatus) {
-                var messages = []
+            console.log(doc.data().uid)
+            admin.firestore()
+            .collection('users')
+            .doc(doc.data().uid)
+            .get()
+            .then((gotUser) => {
+                console.log("within the users information")
+                if (gotUser.exists) {
+            //Find out if the user will accept push notifications
+                    if (gotUser.data().pushStatus) {
+                        var messages = []
 
-                messages.push({
-                    "to": doc.data().token,
-                    "sound": "default",
-                    "title": data.posterUsername + " just posted a " + data.postType + "!",
-                    "body": "check it out"
-                });
+                        // console.log("within the users to alert")
+                        messages.push({
+                            "to": gotUser.data().token,
+                            "sound": "default",
+                            "title": "traderank",
+                            "body": data.posterUsername + " just posted a " + data.postType + "!"
+                        });
 
-                //Post it to expo
-                
-                fetch('https://exp.host/--/api/v2/push/send', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(messages)
-                });
+                        //Post it to expo
+                        
+                        fetch('https://exp.host/--/api/v2/push/send', {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(messages)
+                        });
 
+                        return (
+                            "notification written"
+                        )
+                    }
+                }
                 return (
                     "notification written"
                 )
-            }
-            
+            })
+            .catch((error) => {
+                console.error("Error finding user: ", error);
+            });
         })
+
         return null
     })
     .catch((error) => {
