@@ -107,10 +107,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tradeText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     alignContent: 'center',
     color: '#FFFFFF',
+    paddingLeft: 10
   },
   modalContainer: {
     marginTop: 75,

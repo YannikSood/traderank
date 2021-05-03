@@ -16,6 +16,7 @@ const mapStateToProps = state => ({
   user: state.UserReducer.user,
 });
 
+//Comments Page, when you click the comment button on a post
 const ClickedPostPage = ({ props, route, navigation }) => {
   const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, date_created } = route.params;
 

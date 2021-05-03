@@ -55,25 +55,29 @@ class FeedCellClass extends React.Component {
   }
 
     renderGainLoss = () => {
-      if (this.state.gain_loss == 'gain') {
+      if (this.state.gain_loss === 'gain') {
         return (
-          <Text style={styles.pnlContainer}>
-            <Text style={styles.gainText}>
-$
-              {this.state.profit_loss}
+          <View styles={{ flexDirection: 'row' }}>
+            <Text style={styles.pnlContainer}>
+              <Text style={styles.gainText}>
+  $
+                {this.state.profit_loss}
+              </Text>
+
+              <Text style={styles.regularTradeText}>  🚀  </Text>
+              <Text style={styles.gainText}>
+                {this.state.percent_gain_loss}
+  %
+              </Text>
             </Text>
 
-            <Text style={styles.regularTradeText}>  🚀  </Text>
-            <Text style={styles.gainText}>
-              {this.state.percent_gain_loss}
-%
-            </Text>
-          </Text>
+          </View>
 
         );
       }
-      if (this.state.gain_loss == 'loss') {
+      if (this.state.gain_loss === 'loss') {
         return (
+          <View styles={{ flexDirection: 'row' }}>
           <Text style={styles.pnlContainer}>
             <Text style={styles.lossText}>
 -$
@@ -86,18 +90,24 @@ $
 %
             </Text>
           </Text>
+          </View>
         );
       }
       return (
-        <Text style={styles.pnlContainer}>
-          <Text style={styles.yoloText}>
-$
-            {this.state.profit_loss}
-            {' '}
-🙏  trade
-          </Text>
-          {/* <Text style={styles.yoloText}>    </Text> */}
-        </Text>
+        <View styles={{ flexDirection: 'row' }}>
+          <View>
+            <Text style={styles.pnlContainer}>
+              <Text style={styles.yoloText}>
+    $
+                {this.state.profit_loss}
+                {' '}
+    🙏  trade
+              </Text>
+              {/* <Text style={styles.yoloText}>    </Text> */}
+            </Text>
+          </View>
+
+        </View>
       );
     }
 
@@ -266,14 +276,16 @@ $
 
               </View>
 
-              <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
-                {/* <Text style={styles.securityContainer}> */}
+              <View style={{ flexDirection: 'row', paddingTop: 10,  }}>
+
+                 
+
                 <TouchableOpacity
                   onPress={() => this.props.navigation.navigate('SingleStockPosts', {
                     ticker: this.state.ticker,
                   })
                     }
-                  style={{ backgroundColor: '#696969', borderRadius: 15, marginRight: 20, marginTop: 10, padding: 4 }}
+                  style={{ backgroundColor: '#696969', borderRadius: 15, marginRight: 5, marginTop: 9, padding: 4 }}
                 >
                   <Text style={styles.tradeText}>
                     $
@@ -282,19 +294,21 @@ $
 
                 </TouchableOpacity>
 
-                <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingTop: 14, paddingRight: 17 }}>
 #
                   {this.state.security}
                   {' '}
                 </Text>
-                {/* </Text> */}
+
+                
+
               </View>
+
 
 
             </View>
             {/* </View> */}
 
-            { this.renderGainLoss() }
 
             {/* <TouchableOpacity
                             onPress={() =>
@@ -312,6 +326,16 @@ $
 
           </View>
 
+          <View style={styles.descriptionContainer}>
+
+            <Text style={styles.descriptionText}>
+              {' '}
+              {this.state.description}
+            </Text>
+
+          </View>
+
+          { this.renderGainLoss() }
 
           <TouchableOpacity onPress={() => this.openImageModal()}>
             <View style={styles.thumbnailContainer}>
@@ -323,23 +347,19 @@ $
           </TouchableOpacity>
 
 
-          <View style={styles.descriptionContainer}>
+          
 
-            <Text style={styles.descriptionText}>
-              {' '}
-              {this.state.description}
-            </Text>
-
-          </View>
+          
 
 
-          <TimeAgo style={{ color: '#696969', paddingLeft: 25, paddingTop: 5, paddingBottom: 10 }} time={this.state.date_created} />
+
+          {/* <View style={styles.lineStyle} /> */}
 
 
           {this.renderCellComponents()}
 
 
-          <View style={styles.lineStyle} />
+          {/* <View style={styles.lineStyle} /> */}
 
 
         </View>
@@ -475,6 +495,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     resizeMode: 'contain',
+  },
+  lineStyle: {
+    borderWidth: 0.5,
+    borderColor: '#696969',
+    width: Dimensions.get('window').width,
+    // marginBottom: 10,
   },
 });
 
