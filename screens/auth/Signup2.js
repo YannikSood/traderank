@@ -4,6 +4,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 //redux
 import { connect, useDispatch } from 'react-redux';
+import * as Analytics from 'expo-firebase-analytics';
 import Firebase from '../../firebase';
 import { authUser } from '../../actions/User.Actions';
 
@@ -26,6 +27,7 @@ const Signup2 = ({ props, route, navigation }) => {
 
   const handleSignUp = async() => {
     try {
+      Analytics.logEvent('sign_up');
       //If this is true, upload the profile pic to storage, then initialize a new user to the database with
       //Username, uid, email, [following, followers, post all 0] and profile pic
       await Firebase.auth()

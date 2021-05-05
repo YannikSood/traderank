@@ -3,6 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Text,
 import Firebase from '../../firebase'
 import * as ImagePicker from 'expo-image-picker';
 import KeyboardSpacer from 'react-native-keyboard-spacer'
+import * as Analytics from 'expo-firebase-analytics';
 
 //redux
 import { connect } from 'react-redux';

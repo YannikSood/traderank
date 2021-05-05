@@ -177,6 +177,12 @@ class Profile extends React.Component {
     }
 
     pullUserInfo = async() => {
+      //Call a firebase function
+      //Pass this.state.userUID
+      //get all the information down there using the function
+      //Return the information from the function
+      //Set it to state
+      //Make sure to set isLoading to true when you call the function, and isLoading to false when it returns
       await Firebase.firestore()
         .collection('users')
         .doc(this.state.userUID)
