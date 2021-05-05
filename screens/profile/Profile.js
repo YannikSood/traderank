@@ -183,22 +183,44 @@ class Profile extends React.Component {
       //Return the information from the function
       //Set it to state
       //Make sure to set isLoading to true when you call the function, and isLoading to false when it returns
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.userUID)
-        .onSnapshot((doc) => {
+
+      const getUserInfo = Firebase.functions().httpsCallable('pullUserInfo');
+      getUserInfo({
+
+      })
+      .then((result) => {
           this.setState({
-            postCount: doc.data().postCount,
-            followerCount: doc.data().followerCount,
-            followingCount: doc.data().followingCount,
-            storage_image_uri: doc.data().profilePic,
-            bio: doc.data().bio,
-            dateJoined: doc.data().signupDate.toDate(),
-            twitter: doc.data().twitter,
-            instagram: doc.data().instagram,
+            postCount: resultpostCount,
+            followerCount: result.followerCount,
+            followingCount: result.followingCount,
+            storage_image_uri: result.profilePic,
+            bio: result.bio,
+            dateJoined: result.signupDate.toDate(),
+            twitter: result.twitter,
+            instagram: result.instagram,
             isLoading: false,
           });
-        });
+
+      }).catch((error) => {
+
+      });
+
+      // await Firebase.firestore()
+      //   .collection('users')
+      //   .doc(this.state.userUID)
+      //   .onSnapshot((doc) => {
+      //     this.setState({
+      //       postCount: doc.data().postCount,
+      //       followerCount: doc.data().followerCount,
+      //       followingCount: doc.data().followingCount,
+      //       storage_image_uri: doc.data().profilePic,
+      //       bio: doc.data().bio,
+      //       dateJoined: doc.data().signupDate.toDate(),
+      //       twitter: doc.data().twitter,
+      //       instagram: doc.data().instagram,
+      //       isLoading: false,
+      //     });
+      //   });
     }
 
     gotToSettings() {

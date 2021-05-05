@@ -757,6 +757,27 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
 //     )
 // });
 
+exports.pullUserInfo = functions.https.onCall((data, context) => {
+    let hash = {}
+    admin.firestore()
+        .collection('users')
+        .doc(this.state.userUID)
+        .onSnapshot((doc) => {
+          hash = {
+            postCount: doc.data().postCount,
+            followerCount: doc.data().followerCount,
+            followingCount: doc.data().followingCount,
+            storage_image_uri: doc.data().profilePic,
+            bio: doc.data().bio,
+            dateJoined: doc.data().signupDate.toDate(),
+            twitter: doc.data().twitter,
+            instagram: doc.data().instagram,
+            isLoading: false,
+          };
+        });
+        console.log(hash);
+        return hash;
+});
 
 exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 
