@@ -186,7 +186,7 @@ class Profile extends React.Component {
 
       const getUserInfo = Firebase.functions().httpsCallable('pullUserInfo');
       getUserInfo({
-
+        userUID: this.state.userUID
       })
       .then((result) => {
           this.setState({

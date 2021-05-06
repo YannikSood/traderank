@@ -761,7 +761,7 @@ exports.pullUserInfo = functions.https.onCall((data, context) => {
     let hash = {}
     admin.firestore()
         .collection('users')
-        .doc(this.state.userUID)
+        .doc(data.userUID)
         .onSnapshot((doc) => {
           hash = {
             postCount: doc.data().postCount,
@@ -775,7 +775,55 @@ exports.pullUserInfo = functions.https.onCall((data, context) => {
             isLoading: false,
           };
         });
-        console.log(hash);
+        return hash;
+});
+
+exports.getPosterInfo = functions.https.onCall((data, context) => {
+    let hash = {}
+    admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+                hash = {
+                    posterUsername: doc.data().username,
+                      posterFollowerCount: doc.data().followerCount,
+                      posterFollowingCount: doc.data().followingCount,
+                      posterPostCount: doc.data().postCount,
+                      posterBio: doc.data().bio,
+                      storage_image_uri: doc.data().profilePic,
+                      dateJoined: doc.data().signupDate.toDate(),
+                      posterTwitter: doc.data().twitter,
+                      posterInstagram: doc.data().instagram,
+                      isLoading: false,
+                  };
+            } else{
+               console.log("No such document");
+            }
+
+        });
+        return hash;
+});
+
+exports.getUserNumbers = functions.https.onCall((data, context) => {
+    let hash = {}
+    admin.firestore()
+        .collection('users')
+        .doc(data.currentUserUID)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+                hash = {
+                    currentUserUsername: doc.data().username,
+                    currentFollowerCount: doc.data().followerCount,
+                    currentFollowingCount: doc.data().followingCount,
+                  };
+            } else{
+               console.log("No such document");
+            }
+
+        });
         return hash;
 });
 

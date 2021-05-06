@@ -128,48 +128,87 @@ class ClickedUserProfile extends React.Component {
 
     //Get the poster UID and the poster username for display purposes
     getPosterInfo = async() => {
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
+      // await Firebase.firestore()
+      //   .collection('users')
+      //   .doc(this.state.posterUID)
+      //   .get()
+      //   .then((doc) => {
+      //     if (doc.exists) {
+      //       this.setState({
+      //         posterUsername: doc.data().username,
+      //         posterFollowerCount: doc.data().followerCount,
+      //         posterFollowingCount: doc.data().followingCount,
+      //         posterPostCount: doc.data().postCount,
+      //         posterBio: doc.data().bio,
+      //         storage_image_uri: doc.data().profilePic,
+      //         dateJoined: doc.data().signupDate.toDate(),
+      //         posterTwitter: doc.data().twitter,
+      //         posterInstagram: doc.data().instagram,
+      //         isLoading: false,
+      //       });
+      //     } else {
+      //       // doc.data() will be undefined in this case
+      //       console.log('No such document!');
+      //     }
+      //   });
+
+        const getPosterInfo = Firebase.functions().httpsCallable('getPosterInfo');
+        getPosterInfo({
+          posterUID: this.state.posterUID
+        })
+        .then((result) => {
             this.setState({
-              posterUsername: doc.data().username,
-              posterFollowerCount: doc.data().followerCount,
-              posterFollowingCount: doc.data().followingCount,
-              posterPostCount: doc.data().postCount,
-              posterBio: doc.data().bio,
-              storage_image_uri: doc.data().profilePic,
-              dateJoined: doc.data().signupDate.toDate(),
-              posterTwitter: doc.data().twitter,
-              posterInstagram: doc.data().instagram,
+              posterUsername: result.username,
+              posterFollowerCount: result.followerCount,
+              posterFollowingCount: result.followingCount,
+              posterPostCount: result.postCount,
+              posterBio: result.bio,
+              storage_image_uri: result.profilePic,
+              dateJoined: result.signupDate.toDate(),
+              posterTwitter: result.twitter,
+              posterInstagram: result.instagram,
               isLoading: false,
             });
-          } else {
-            // doc.data() will be undefined in this case
-            console.log('No such document!');
-          }
+  
+        }).catch((error) => {
+  
         });
+
+   
 
       //We also need some user information, like their follower/following count so we can update that if they decide to follow
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.currentUserUID)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.setState({
-              currentUserUsername: doc.data().username,
-              currentFollowerCount: doc.data().followerCount,
-              currentFollowingCount: doc.data().followingCount,
-            });
-          } else {
-            console.log('No such document!');
-          }
-        });
+      // await Firebase.firestore()
+      //   .collection('users')
+      //   .doc(this.state.currentUserUID)
+      //   .get()
+      //   .then((doc) => {
+      //     if (doc.exists) {
+      //       this.setState({
+      //         currentUserUsername: doc.data().username,
+      //         currentFollowerCount: doc.data().followerCount,
+      //         currentFollowingCount: doc.data().followingCount,
+      //       });
+      //     } else {
+      //       console.log('No such document!');
+      //     }
+      //   });
 
       console.log(`${this.state.posterTwitter} twitter`);
+
+      const getUserNumbers = Firebase.functions().httpsCallable('getUserNumbers');
+      getUserNumbers({
+        currentUserUID: this.state.currentUserUID
+      })
+      .then((result) => {
+          this.setState({
+            currentUserUsername: result.username,
+            currentFollowerCount: result.followerCount,
+            currentFollowingCount: result.followingCount
+          });
+
+      }).catch((error) => {
+
+      });
     }
 
     getCollection = (querySnapshot) => {
