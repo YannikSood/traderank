@@ -157,17 +157,16 @@ class ClickedUserProfile extends React.Component {
           posterUID: this.state.posterUID
         })
         .then((result) => {
-            console.log('getPosterInfo: '+ JSON.stringify(result));
             this.setState({
-              posterUsername: result.posterUsername,
-              posterFollowerCount: result.posterFollowerCount,
-              posterFollowingCount: result.posterFollowingCount,
-              posterPostCount: result.posterPostCount,
-              posterBio: result.posterBio,
-              storage_image_uri: result.storage_image_uri,
-              dateJoined: result.dateJoined,
-              posterTwitter: result.posterTwitter,
-              posterInstagram: result.posterInstagram,
+              posterUsername: result.data.posterUsername,
+              posterFollowerCount: result.data.posterFollowerCount,
+              posterFollowingCount: result.data.posterFollowingCount,
+              posterPostCount: result.data.posterPostCount,
+              posterBio: result.data.posterBio,
+              storage_image_uri: result.data.storage_image_uri,
+              dateJoined: result.data.dateJoined,
+              posterTwitter: result.data.posterTwitter,
+              posterInstagram: result.data.posterInstagram,
               isLoading: false,
             });
   
@@ -194,7 +193,7 @@ class ClickedUserProfile extends React.Component {
       //     }
       //   });
 
-      console.log(`${this.state.posterTwitter} twitter`);
+      // console.log(`${this.state.posterTwitter} twitter`);
 
       const getUserNumbers = Firebase.functions().httpsCallable('getUserNumbers');
       getUserNumbers({
@@ -202,9 +201,9 @@ class ClickedUserProfile extends React.Component {
       })
       .then((result) => {
           this.setState({
-            currentUserUsername: result.currentUserUsername,
-            currentFollowerCount: result.currentFollowerCount,
-            currentFollowingCount: result.currentFollowingCount
+            currentUserUsername: result.data.currentUserUsername,
+            currentFollowerCount: result.data.currentFollowerCount,
+            currentFollowingCount: result.data.currentFollowingCount
           });
 
       }).catch((error) => {

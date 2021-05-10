@@ -189,9 +189,7 @@ class Profile extends React.Component {
         userUID: this.state.userUID
       })
       .then((result) => {
-          console.log(result);
-          console.log("Testing: " + Object.keys(result.data).length === 0);
-          console.log('getUserInfo from Profile.js:' + JSON.stringify(result.data));
+
           this.setState({
             postCount: result.data.postCount,
             followerCount: result.data.followerCount,
@@ -208,22 +206,6 @@ class Profile extends React.Component {
           console.log("Error from getUserInfo in Profile.js" + error);
       });
 
-      // await Firebase.firestore()
-      //   .collection('users')
-      //   .doc(this.state.userUID)
-      //   .onSnapshot((doc) => {
-      //     this.setState({
-      //       postCount: doc.data().postCount,
-      //       followerCount: doc.data().followerCount,
-      //       followingCount: doc.data().followingCount,
-      //       storage_image_uri: doc.data().profilePic,
-      //       bio: doc.data().bio,
-      //       dateJoined: doc.data().signupDate.toDate(),
-      //       twitter: doc.data().twitter,
-      //       instagram: doc.data().instagram,
-      //       isLoading: false,
-      //     });
-      //   });
     }
 
     gotToSettings() {
