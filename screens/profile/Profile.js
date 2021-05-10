@@ -51,7 +51,7 @@ class Profile extends React.Component {
       .limit(5);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.pullUserInfo();
     this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
     Analytics.logEvent('Profile_Clicked');
@@ -184,25 +184,28 @@ class Profile extends React.Component {
       //Set it to state
       //Make sure to set isLoading to true when you call the function, and isLoading to false when it returns
 
-      const getUserInfo = Firebase.functions().httpsCallable('pullUserInfo');
+      const getUserInfo = await Firebase.functions().httpsCallable('pullUserInfo');
       getUserInfo({
         userUID: this.state.userUID
       })
       .then((result) => {
+          console.log(result);
+          console.log("Testing: " + Object.keys(result.data).length === 0);
+          console.log('getUserInfo from Profile.js:' + JSON.stringify(result.data));
           this.setState({
-            postCount: resultpostCount,
-            followerCount: result.followerCount,
-            followingCount: result.followingCount,
-            storage_image_uri: result.profilePic,
-            bio: result.bio,
-            dateJoined: result.signupDate.toDate(),
-            twitter: result.twitter,
-            instagram: result.instagram,
+            postCount: result.data.postCount,
+            followerCount: result.data.followerCount,
+            followingCount: result.data.followingCount,
+            storage_image_uri: result.data.storage_image_uri,
+            bio: result.data.bio,
+            dateJoined: result.data.dateJoined,
+            twitter: result.data.twitter,
+            instagram: result.data.instagram,
             isLoading: false,
           });
 
       }).catch((error) => {
-
+          console.log("Error from getUserInfo in Profile.js" + error);
       });
 
       // await Firebase.firestore()

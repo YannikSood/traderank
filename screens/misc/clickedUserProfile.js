@@ -152,26 +152,27 @@ class ClickedUserProfile extends React.Component {
       //     }
       //   });
 
-        const getPosterInfo = Firebase.functions().httpsCallable('getPosterInfo');
-        getPosterInfo({
+        const getPosterInformation = Firebase.functions().httpsCallable('getPosterInfo');
+        getPosterInformation({
           posterUID: this.state.posterUID
         })
         .then((result) => {
+            console.log('getPosterInfo: '+ JSON.stringify(result));
             this.setState({
-              posterUsername: result.username,
-              posterFollowerCount: result.followerCount,
-              posterFollowingCount: result.followingCount,
-              posterPostCount: result.postCount,
-              posterBio: result.bio,
-              storage_image_uri: result.profilePic,
-              dateJoined: result.signupDate.toDate(),
-              posterTwitter: result.twitter,
-              posterInstagram: result.instagram,
+              posterUsername: result.posterUsername,
+              posterFollowerCount: result.posterFollowerCount,
+              posterFollowingCount: result.posterFollowingCount,
+              posterPostCount: result.posterPostCount,
+              posterBio: result.posterBio,
+              storage_image_uri: result.storage_image_uri,
+              dateJoined: result.dateJoined,
+              posterTwitter: result.posterTwitter,
+              posterInstagram: result.posterInstagram,
               isLoading: false,
             });
   
         }).catch((error) => {
-  
+            console.log(error);
         });
 
    
@@ -201,16 +202,16 @@ class ClickedUserProfile extends React.Component {
       })
       .then((result) => {
           this.setState({
-            currentUserUsername: result.username,
-            currentFollowerCount: result.followerCount,
-            currentFollowingCount: result.followingCount
+            currentUserUsername: result.currentUserUsername,
+            currentFollowerCount: result.currentFollowerCount,
+            currentFollowingCount: result.currentFollowingCount
           });
 
       }).catch((error) => {
-
+        console.log(error);
       });
     }
-
+ 
     getCollection = (querySnapshot) => {
       const userPostsArray = [];
       querySnapshot.forEach((res) => {

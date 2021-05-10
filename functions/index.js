@@ -758,12 +758,13 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
 // });
 
 exports.pullUserInfo = functions.https.onCall((data, context) => {
-    let hash = {}
-    admin.firestore()
+    return new Promise((resolve, reject) => {
+        admin.firestore()
         .collection('users')
         .doc(data.userUID)
-        .onSnapshot((doc) => {
-          hash = {
+        .get()
+        .then((doc) => {
+          let hash = {
             postCount: doc.data().postCount,
             followerCount: doc.data().followerCount,
             followingCount: doc.data().followingCount,
@@ -774,46 +775,76 @@ exports.pullUserInfo = functions.https.onCall((data, context) => {
             instagram: doc.data().instagram,
             isLoading: false,
           };
-        });
-        return hash;
+          console.log("Hash from pullUserInfo: " + JSON.stringify(hash));
+          resolve(hash);
+          return null;
+        }).catch(err => {
+            console.log("Error from pullUserInfo: " + err);
+            reject(err);
+        })
+    });
+    // let hash = {"a": "1234"};
+    // console.log(hash);
+    //  admin.firestore()
+    //     .collection('users')
+    //     .doc(data.userUID)
+    //     .get()
+    //     .then((doc) => {
+    //       console.log(hash);
+    //       hash = {
+    //         postCount: doc.data().postCount,
+    //         followerCount: doc.data().followerCount,
+    //         followingCount: doc.data().followingCount,
+    //         storage_image_uri: doc.data().profilePic,
+    //         bio: doc.data().bio,
+    //         dateJoined: doc.data().signupDate.toDate(),
+    //         twitter: doc.data().twitter,
+    //         instagram: doc.data().instagram,
+    //         isLoading: false,
+    //       };
+    //       console.log("Hash from pullUserInfo: " + JSON.stringify(hash));
+    //       return hash;
+    //     }).catch(err => {
+    //         console.log("Error from pullUserInfo: " + err);
+    //     })
+    //     return hash;
 });
 
 exports.getPosterInfo = functions.https.onCall((data, context) => {
+    
     let hash = {}
     admin.firestore()
         .collection('users')
         .doc(data.posterUID)
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                hash = {
-                    posterUsername: doc.data().username,
-                      posterFollowerCount: doc.data().followerCount,
-                      posterFollowingCount: doc.data().followingCount,
-                      posterPostCount: doc.data().postCount,
-                      posterBio: doc.data().bio,
-                      storage_image_uri: doc.data().profilePic,
-                      dateJoined: doc.data().signupDate.toDate(),
-                      posterTwitter: doc.data().twitter,
-                      posterInstagram: doc.data().instagram,
-                      isLoading: false,
-                  };
-            } else{
-               console.log("No such document");
-            }
-
+        .onSnapshot((doc) => {
+            console.log(doc.data().followerCount + "f");
+            hash = {
+                posterUsername: doc.data().username,
+                posterFollowerCount: doc.data().followerCount,
+                posterFollowingCount: doc.data().followingCount,
+                posterPostCount: doc.data().postCount,
+                posterBio: doc.data().bio,
+                storage_image_uri: doc.data().profilePic,
+                dateJoined: doc.data().signupDate,
+                posterTwitter: doc.data().twitter,
+                posterInstagram: doc.data().instagram,
+                isLoading: false,
+            };
         });
         return hash;
 });
 
 exports.getUserNumbers = functions.https.onCall((data, context) => {
+
     let hash = {}
     admin.firestore()
         .collection('users')
         .doc(data.currentUserUID)
         .get()
         .then((doc) => {
+
             if (doc.exists) {
+              
                 hash = {
                     currentUserUsername: doc.data().username,
                     currentFollowerCount: doc.data().followerCount,
@@ -822,7 +853,10 @@ exports.getUserNumbers = functions.https.onCall((data, context) => {
             } else{
                console.log("No such document");
             }
-
+           
+            return hash;
+        }).catch(function(error){
+            console.log("Error getUserNumbers");
         });
         return hash;
 });
