@@ -757,6 +757,111 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
 //     )
 // });
 
+/**
+ * Promise template
+ * return new Promise((resolve, reject) => { 
+ *  admin.firestore()
+ *  ...
+ *  ...
+ *  ...
+ * let hash = {
+ *  //data from db 
+ * }
+ * resolve(hash);
+ * return null;
+ * }).catch(err => {
+ *   console.log(err);
+ *   reject(err);
+ * })
+ * 
+ */
+
+exports.pullUserInfo = functions.https.onCall((data, context) => {
+    return new Promise((resolve, reject) => {
+        admin.firestore()
+        .collection('users')
+        .doc(data.userUID)
+        .get()
+        .then((doc) => {
+          let hash = {
+            postCount: doc.data().postCount,
+            followerCount: doc.data().followerCount,
+            followingCount: doc.data().followingCount,
+            storage_image_uri: doc.data().profilePic,
+            bio: doc.data().bio,
+            dateJoined: doc.data().signupDate.toDate(),
+            twitter: doc.data().twitter,
+            instagram: doc.data().instagram,
+            isLoading: false,
+          };
+          console.log("Hash from pullUserInfo: " + JSON.stringify(hash));
+          resolve(hash);
+          return null;
+        }).catch(err => {
+            console.log("Error from pullUserInfo: " + err);
+            reject(err);
+        })
+    });
+
+});
+
+exports.getPosterInfo = functions.https.onCall((data, context) => {
+    
+    return new Promise((resolve, reject) => {
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .onSnapshot((doc) => {
+            let hash = {
+                posterUsername: doc.data().username,
+                posterFollowerCount: doc.data().followerCount,
+                posterFollowingCount: doc.data().followingCount,
+                posterPostCount: doc.data().postCount,
+                posterBio: doc.data().bio,
+                storage_image_uri: doc.data().profilePic,
+                dateJoined: doc.data().signupDate.toDate(),
+                posterTwitter: doc.data().twitter,
+                posterInstagram: doc.data().instagram,
+                isLoading: false,
+            };
+            resolve(hash);
+            return null;
+        })
+    }).catch(err => {
+        console.log(`Error from getPosterInfo ${err}`);
+        reject(err);
+    })
+
+
+});
+
+exports.getUserNumbers = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('users')
+        .doc(data.currentUserUID)
+        .get()
+        .then((doc) => {
+              
+            let hash = {
+                currentUserUsername: doc.data().username,
+                currentFollowerCount: doc.data().followerCount,
+                currentFollowingCount: doc.data().followingCount,
+            };
+            
+            resolve(hash);
+            return null;
+        }).catch(err => {
+            console.log(`Error from getUserNumbers ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
 
 exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 
