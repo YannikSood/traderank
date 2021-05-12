@@ -2,7 +2,7 @@
   "expo": {
     "name": "traderank",
     "slug": "traderank",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,7 +17,7 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.0.1",
       "supportsTablet": true,
       "bundleIdentifier": "com.yanniksood.traderank",
       "googleServicesFile": "./GoogleService-Info-5.plist"

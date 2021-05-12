@@ -255,7 +255,7 @@ class Profile extends React.Component {
         return (
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <FontAwesome
-              onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.twitter}`)}
               name="twitter"
               size={35}
               color="#1DA1F2"
@@ -267,7 +267,7 @@ class Profile extends React.Component {
         return (
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <AntDesign
-              onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.instagram}`)}
               name="instagram"
               size={35}
               color="#E1306C"
@@ -280,7 +280,7 @@ class Profile extends React.Component {
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <FontAwesome
-              onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.twitter}`)}
               name="twitter"
               size={35}
               color="#1DA1F2"
@@ -289,7 +289,7 @@ class Profile extends React.Component {
 
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <AntDesign
-              onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.instagram}`)}
               name="instagram"
               size={35}
               color="#E1306C"
