@@ -35,13 +35,13 @@ class ClickedUserProfile extends React.Component {
       //Current user information
       currentUserUID: Firebase.auth().currentUser.uid,
       currentUserUsername: '',
-      currentFollowerCount: 0,
       currentFollowingCount: 0,
 
       //Other Stuff
       isLoading: true,
       navigation: this.props.navigation,
       isFollowing: false,
+      followButtonLoading: false,
 
       userPostsArray: [],
       //clickedUserUID: this.props.clickedUserUID, posterUID
@@ -145,7 +145,7 @@ class ClickedUserProfile extends React.Component {
             posterInstagram: result.data.posterInstagram,
             isLoading: false,
           });
-          console.log(`${this.state.dateJoined.toDate() } date joined`);
+          console.log(`${this.state.dateJoined.toDate()} date joined`);
         }).catch((error) => {
           console.log(error);
         });
@@ -157,7 +157,6 @@ class ClickedUserProfile extends React.Component {
         .then((result) => {
           this.setState({
             currentUserUsername: result.data.currentUserUsername,
-            currentFollowerCount: result.data.currentFollowerCount,
             currentFollowingCount: result.data.currentFollowingCount,
           });
         }).catch((error) => {
@@ -328,6 +327,7 @@ class ClickedUserProfile extends React.Component {
     //Follow a user
     followUser = async() => {
       //The current user now follows the poster with logic
+      this.setState({ followButtonLoading: true });
       const followAUser = Firebase.functions().httpsCallable('followUser');
       followAUser({
         currentUserUID: this.state.currentUserUID,
@@ -339,55 +339,49 @@ class ClickedUserProfile extends React.Component {
           this.setState({
             currentFollowingCount: result.data.currentFollowingCount,
             posterFollowerCount: result.data.posterFollowerCount,
+            followButtonLoading: false,
           });
         })
+        .then(() => Analytics.logEvent('User_Followed'))
         .then(() => this.writeToUserNotifications())
         .catch((error) => {
           console.log(error);
         });
     }
 
-     //Unfollow a user
-     unfollowUser = async() => {
-       //Delete the poster user from the current users following list
-       await Firebase.firestore()
-         .collection('following')
-         .doc(this.state.currentUserUID)
-         .collection('following')
-         .doc(this.state.posterUID)
-         .delete();
-
-       //Delete the current user from the posters follower list
-       await Firebase.firestore()
-         .collection('followers')
-         .doc(this.state.posterUID)
-         .collection('followers')
-         .doc(this.state.currentUserUID)
-         .delete();
-
-       //Update the following count for the current user, remove one because they unfollowed
-       await Firebase.firestore()
-         .collection('users')
-         .doc(this.state.currentUserUID)
-         .set({
-           followingCount: this.state.currentFollowingCount - 1,
-         }, { merge: true })
-         .then(() => this.setState({ currentFollowingCount: this.state.currentFollowingCount - 1 }));
-
-       //Update the follower count for the poster user, remove one because they unfollowed
-       await Firebase.firestore()
-         .collection('users')
-         .doc(this.state.posterUID)
-         .set({
-           followerCount: this.state.posterFollowerCount - 1,
-         }, { merge: true })
-         .then(() => this.setState({ posterFollowerCount: this.state.posterFollowerCount - 1 }))
-         .then(() => this.removeFromUserNotifications());
-     }
+    //Unfollow a user
+    unfollowUser = async() => {
+      //Delete the poster user from the current users following list
+      const unfollowAUser = Firebase.functions().httpsCallable('unfollowUser');
+      unfollowAUser({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+        currentFollowingCount: this.state.currentFollowingCount,
+        posterFollowerCount: this.state.posterFollowerCount,
+      })
+        .then((result) => {
+          this.setState({
+            currentFollowingCount: result.data.currentFollowingCount,
+            posterFollowerCount: result.data.posterFollowerCount,
+            followButtonLoading: false,
+          });
+        })
+        .then(() => Analytics.logEvent('User_Unfollowed'))
+        .then(() => this.removeFromUserNotifications())
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
     renderFollowButton = () => {
       this.isFollowing();
-
+      if (this.state.followButtonLoading) {
+        return (
+          <View>
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          </View>
+        );
+      }
       if (this.state.isFollowing) {
         return (
           <View>
