@@ -64,7 +64,7 @@ class FeedCellClass extends React.Component {
                 {this.state.profit_loss}
               </Text>
 
-              <Text style={styles.regularTradeText}>  🚀  </Text>
+              <Text style={styles.regularTradeText}> 🚀</Text>
               <Text style={styles.gainText}>
                 {this.state.percent_gain_loss}
   %
@@ -78,18 +78,19 @@ class FeedCellClass extends React.Component {
       if (this.state.gain_loss === 'loss') {
         return (
           <View styles={{ flexDirection: 'row' }}>
-          <Text style={styles.pnlContainer}>
-            <Text style={styles.lossText}>
+            <Text style={styles.pnlContainer}>
+              <Text style={styles.lossText}>
 -$
-              {this.state.profit_loss}
-            </Text>
-            <Text style={styles.tradeText}>  🥴  </Text>
-            <Text style={styles.lossText}>
+                {this.state.profit_loss}
+              </Text>
+              <Text style={styles.tradeText}> 🥴 </Text>
+              <Text style={styles.lossText}>
 -
-              {this.state.percent_gain_loss}
+                {this.state.percent_gain_loss}
 %
+              </Text>
+              {/* <Text style={styles.tradeText}> on </Text> */}
             </Text>
-          </Text>
           </View>
         );
       }
@@ -100,8 +101,8 @@ class FeedCellClass extends React.Component {
               <Text style={styles.yoloText}>
     $
                 {this.state.profit_loss}
-                {' '}
-    🙏  trade
+
+    🙏TRADE
               </Text>
               {/* <Text style={styles.yoloText}>    </Text> */}
             </Text>
@@ -131,7 +132,7 @@ class FeedCellClass extends React.Component {
     renderCellComponents = () => {
       if (this.state.posterUID == this.state.currentUser) {
         return (
-          <View style={{ flexDirection: 'row', color: '#FFFFFF' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
             <View style={styles.buttonContainer}>
 
               <LikeComponent postID={this.state.postID} />
@@ -151,22 +152,20 @@ class FeedCellClass extends React.Component {
             <View style={styles.buttonContainer}>
 
 
-              <Ionicons name="eye-sharp" size={30} color="white" />
-              <Text style={{ color: '#FFFFFF', paddingLeft: 4 }}>{this.state.viewsCount}</Text>
+              <Ionicons name="eye-sharp" size={24} color="white" />
+              <Text style={{ color: '#FFFFFF', paddingLeft: 4}}>{this.state.viewsCount}</Text>
 
 
             </View>
 
 
-            
-
             <View style={styles.buttonContainer}>
 
-              <ShareComponent 
+              <ShareComponent
                 postID={this.state.postID}
                 image={this.state.image}
                 gain_loss={this.state.gain_loss}
-                profit_loss={this.state.profit_loss} 
+                profit_loss={this.state.profit_loss}
               />
 
             </View>
@@ -185,7 +184,7 @@ class FeedCellClass extends React.Component {
 
       return (
 
-        <View style={{ flexDirection: 'row', color: '#FFFFFF' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
 
           <View style={styles.buttonContainer}>
 
@@ -206,20 +205,20 @@ class FeedCellClass extends React.Component {
           <View style={styles.buttonContainer}>
 
 
-            <Ionicons name="eye-sharp" size={30} color="white" />
-            <Text style={{ color: '#FFFFFF', paddingLeft: 4 }}>{this.state.viewsCount}</Text>
+            <Ionicons name="eye-sharp" size={24} color="white" />
+            <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{this.state.viewsCount}</Text>
 
 
           </View>
 
           <View style={styles.buttonContainer}>
 
-              <ShareComponent 
-                postID={this.state.postID}
-                image={this.state.image}
-                gain_loss={this.state.gain_loss} 
-                profit_loss={this.state.profit_loss}  
-               />
+            <ShareComponent
+              postID={this.state.postID}
+              image={this.state.image}
+              gain_loss={this.state.gain_loss}
+              profit_loss={this.state.profit_loss}
+            />
 
           </View>
 
@@ -267,43 +266,11 @@ class FeedCellClass extends React.Component {
 
           <View>
             {/* <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}> */}
-            <View style={{ flexDirection: 'row', padding: 6, justifyContent: 'space-between', alignItems: 'left' }}>
 
-              <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
-                <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
-                  <MiscUserComponent uid={this.state.posterUID} navigation={this.state.navigation} />
-                </View>
-
+            <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
+              <View style={{ flexDirection: 'row', paddingLeft: 17 }}>
+                <MiscUserComponent uid={this.state.posterUID} navigation={this.state.navigation} />
               </View>
-
-              <View style={{ flexDirection: 'row', paddingTop: 10,  }}>
-
-                 
-
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('SingleStockPosts', {
-                    ticker: this.state.ticker,
-                  })
-                    }
-                  style={{ backgroundColor: '#696969', borderRadius: 15, marginRight: 5, marginTop: 9, padding: 4 }}
-                >
-                  <Text style={styles.tradeText}>
-                    $
-                    {this.state.ticker}
-                  </Text>
-
-                </TouchableOpacity>
-
-                <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingTop: 14, paddingRight: 17 }}>
-#
-                  {this.state.security}
-                  {' '}
-                </Text>
-
-                
-
-              </View>
-
 
 
             </View>
@@ -329,13 +296,35 @@ class FeedCellClass extends React.Component {
           <View style={styles.descriptionContainer}>
 
             <Text style={styles.descriptionText}>
-              {' '}
+
               {this.state.description}
             </Text>
 
           </View>
 
-          { this.renderGainLoss() }
+
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingBottom: 5 }}>
+            { this.renderGainLoss() }
+            <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('SingleStockPosts', {
+                    ticker: this.state.ticker,
+                  })
+                        }
+                  style={{ backgroundColor: '#696969', borderRadius: 15, marginLeft: 0, marginTop: 10, marginLeft: 2, padding: 0 }}
+                >
+                  <Text style={styles.tradeText}>
+                        $
+                    {this.state.ticker}
+                  </Text>
+
+                </TouchableOpacity>
+
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#696969', paddingTop: 10, marginLeft: 10 }}>
+    #
+                  {this.state.security}
+                  {' '}
+                </Text>
+          </View>
 
           <TouchableOpacity onPress={() => this.openImageModal()}>
             <View style={styles.thumbnailContainer}>
@@ -345,12 +334,6 @@ class FeedCellClass extends React.Component {
               />
             </View>
           </TouchableOpacity>
-
-
-          
-
-          
-
 
 
           {/* <View style={styles.lineStyle} /> */}
@@ -379,7 +362,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderRadius: 15,
     // width: Dimensions.get('window').width - 20,
-    flex: 1 / 3,
+    // flex: 1 / 3,
     backgroundColor: '#121212',
     color: '#FFFFFF',
     // alignItems: 'center'
@@ -408,17 +391,17 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   gainText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#00cc00',
   },
   lossText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#cc0000',
   },
   yoloText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#0066CC',
   },
@@ -440,7 +423,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 10,
-    paddingBottom: 15,
+    paddingBottom: 10,
     paddingLeft: 25,
     paddingRight: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -454,7 +437,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     alignItems: 'flex-start',
-    paddingLeft: 22,
+    paddingLeft: 27,
     padding: 10,
     backgroundColor: '#121212',
   },
@@ -465,12 +448,9 @@ const styles = StyleSheet.create({
   // },
   buttonContainer: {
     flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 22,
-    marginRight: 22,
-    paddingTop: 10,
+    marginLeft: 20,
+    // marginRight: 22,
+    paddingTop: 5,
     paddingBottom: 10,
     color: '#FFFFFF',
     // backgroundColor: '#696969'

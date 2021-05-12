@@ -98,7 +98,7 @@ class ShareComponent extends Component {
                   style={{ color: '#FFFFFF' }}
                   onPress={this.onShare}
                 >
-                  <Ionicons name="share-outline" size={30} color="white" />
+                  <Ionicons name="share-outline" size={24} color="white" />
                 </TouchableOpacity>
             </View>
        );

@@ -129,7 +129,7 @@ class DeleteComponent extends React.Component {
 
               <TouchableOpacity onPress={() => this.showDeletionAlert()}>
 
-                  <Ionicons name="md-trash" size={30} color="white" />
+                  <Ionicons name="md-trash" size={24} color="white" />
 
                 </TouchableOpacity>
             </View>

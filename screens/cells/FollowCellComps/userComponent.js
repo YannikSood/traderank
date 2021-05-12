@@ -83,7 +83,7 @@ class MiscUserComponent extends React.Component {
             return (
                 <View >
                     <TouchableOpacity 
-                        style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }} 
+                        style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 5 }} 
                         onPress={() => this.getProfile()} >
 
                         <Image

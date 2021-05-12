@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Image, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import KeyboardSpacer from 'react-native-keyboard-spacer'
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 //Redux
 import { connect } from 'react-redux';
-import Firebase from '../../firebase'
-import { clearUser } from "../../redux/app-redux";
+import Firebase from '../../firebase';
+import { clearUser } from '../../redux/app-redux';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -44,17 +44,17 @@ class EditProfile extends React.Component {
         .doc(Firebase.auth().currentUser.uid)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    oldBio: doc.data().bio,
-                    oldProfilePic: doc.data().profilePic,
-                    twitter: doc.data().twitter,
-                    instagram: doc.data().instagram
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document!");
-            }
+          if (doc.exists) {
+            this.setState({
+              oldBio: doc.data().bio,
+              oldProfilePic: doc.data().profilePic,
+              twitter: doc.data().twitter,
+              instagram: doc.data().instagram,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            console.log('No such document!');
+          }
         });
     }
 
@@ -72,7 +72,7 @@ class EditProfile extends React.Component {
           isLoading: false,
         }))
         .catch((error) => {
-            console.error("Error storing and retrieving image url: ", error);
+          console.error('Error storing and retrieving image url: ', error);
         });
     }
 
@@ -89,7 +89,7 @@ class EditProfile extends React.Component {
           isLoading: false,
         }))
         .catch((error) => {
-            console.error("Error changing twitter handle: ", error);
+          console.error('Error changing twitter handle: ', error);
         });
     }
 
@@ -106,7 +106,7 @@ class EditProfile extends React.Component {
           isLoading: false,
         }))
         .catch((error) => {
-            console.error("Error changing instagram handle: ", error);
+          console.error('Error changing instagram handle: ', error);
         });
     }
 
@@ -129,53 +129,48 @@ class EditProfile extends React.Component {
           profilePic: this.state.newProfilePicURL,
         }, { merge: true })
         .catch((error) => {
-            console.error("Error writing document to user collection: ", error);
+          console.error('Error writing document to user collection: ', error);
         })
         .then(() => this.setState({ isLoading: false }));
     }
 
     openImagePickerAsync = async() => {
-        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
-        if (permissionResult.granted === false) {
-          alert("Permission to access camera roll is required!");
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        alert('Permission to access camera roll is required!');
+        return;
+      }
+
+      const pickerResult = await ImagePicker.launchImageLibraryAsync();
+
+      try {
+        if (pickerResult.cancelled === true) {
+          console.log('pickerResult is cancelled');
+          this.setState({ profilePic: null });
           return;
         }
 
-        let pickerResult = await ImagePicker.launchImageLibraryAsync()
-        
-        try {
-            if (pickerResult.cancelled === true) {
-                console.log("pickerResult is cancelled");
-                this.setState({ profilePic: null})
-                return;
-            }
+        if (pickerResult !== null) {
+          console.log('pickerResult not null');
 
-            if (pickerResult !== null) {
+          this.setState({
+            isLoading: true,
+            profilePic: pickerResult,
+          });
 
-                console.log("pickerResult not null")
-
-                this.setState({
-                    isLoading: true,
-                    profilePic: pickerResult
-                })
-
-                this.changeProfilePic()
-            }
-            else {
-                console.log("pickerResult is null");
-                return;
-            }
+          this.changeProfilePic();
+        } else {
+          console.log('pickerResult is null');
+          return;
         }
-        catch (error) {
-            console.log(error);
-        }
-        if (pickerResult.cancelled === true) {
-            console.log("pickerResult is cancelled");
-            this.setState({ profilePic: null})
-            
-        }
-        
+      } catch (error) {
+        console.log(error);
+      }
+      if (pickerResult.cancelled === true) {
+        console.log('pickerResult is cancelled');
+        this.setState({ profilePic: null });
+      }
     };
 
     //Function to update all profile info at once excpet image
@@ -194,84 +189,93 @@ class EditProfile extends React.Component {
     render() {
       if (this.state.isLoading) {
         return (
-              <View styles ={styles.container}>
-                <ActivityIndicator size="large" color="#9E9E9E" />
-              </View>
+          <View styles={styles.container}>
+            <ActivityIndicator size="large" color="#9E9E9E" />
+          </View>
         );
       }
       return (
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <View style={styles.container}>
-
-                  <Image
-                      source={{ uri: this.state.oldProfilePic }}
-                      style={styles.thumbnail}
-                    />
-
-                  <TouchableOpacity
-                      onPress={this.openImagePickerAsync}
-                      style={styles.button}
-                    >
-                      <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>change profile picture</Text>
-                    </TouchableOpacity>
-
-                  <View style= {{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-                      <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 5 }}>bio   </Text>
-
-                      <TextInput
-                          style={styles.inputBox}
-                          value={this.state.newBio}
-                          onChangeText={newBio => this.setState({ newBio })}
-                          placeholder={this.state.oldBio}
-                          multiline
-                          maxLength={240}
-                          autoCapitalize="none"
-                          placeholderTextColor="#696969"
-                        />
-                    </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
 
 
-                  <View style ={{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-                      <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7 }}>twitter   </Text>
+            <View style={{ alignItems: 'center' }}>
+              <Image
+                source={{ uri: this.state.oldProfilePic }}
+                style={styles.thumbnail}
+              />
 
-                      <TextInput
-                          style={styles.socialInputBox}
-                          value={this.state.twitter}
-                          onChangeText={twitter => this.setState({ twitter })}
-                          placeholder={this.state.twitter === null ? 'Enter Twitter username' : this.state.twitter}
-                          autoCapitalize="none"
-                          placeholderTextColor="#696969"
-                        />
-                    </View>
+              <TouchableOpacity
+                onPress={this.openImagePickerAsync}
+                style={styles.button}
+              >
+                <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>change profile picture</Text>
+              </TouchableOpacity>
 
+            </View>
+            <View style={styles.lineStyle} />
 
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', padding: 5 }}>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 5 }}> new bio        </Text>
 
-                  <View style= {{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-                      <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7 }}>instagram   </Text>
-
-                      <TextInput
-                          style={styles.socialInputBox}
-                          value={this.state.instagram}
-                          onChangeText={instagram => this.setState({ instagram })}
-                          placeholder={this.state.instagram === null ? 'Enter Instagram username' : this.state.instagram}
-                          autoCapitalize="none"
-                          placeholderTextColor="#696969"
-                        />
-                    </View>
-
-
-
-                  <TouchableOpacity
-                      onPress={() => { this.saveChanges(); }}
-                      style={styles.button}
-                    >
-                      <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>save changes</Text>
-                    </TouchableOpacity>
+              <TextInput
+                style={styles.inputBox}
+                value={this.state.newBio}
+                onChangeText={newBio => this.setState({ newBio })}
+                placeholder={this.state.oldBio}
+                multiline
+                maxLength={240}
+                autoCapitalize="none"
+                placeholderTextColor="#696969"
+              />
+            </View>
+            <View style={styles.lineStyle} />
 
 
-                  <KeyboardSpacer />
-                </View>
-            </TouchableWithoutFeedback>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', padding: 5 }}>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7 }}> twitter       </Text>
+
+              <TextInput
+                style={styles.socialInputBox}
+                value={this.state.twitter}
+                onChangeText={twitter => this.setState({ twitter })}
+                placeholder={this.state.twitter === null ? 'Enter Twitter username' : this.state.twitter}
+                autoCapitalize="none"
+                placeholderTextColor="#696969"
+              />
+            </View>
+            <View style={styles.lineStyle} />
+
+
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', padding: 5 }}>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7 }}> instagram</Text>
+
+              <TextInput
+                style={styles.socialInputBox}
+                value={this.state.instagram}
+                onChangeText={instagram => this.setState({ instagram })}
+                placeholder={this.state.instagram === null ? 'Enter Instagram username' : this.state.instagram}
+                autoCapitalize="none"
+                placeholderTextColor="#696969"
+              />
+            </View>
+            <View style={styles.lineStyle} />
+
+
+            <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={() => { this.saveChanges(); }}
+                style={styles.button}
+              >
+                <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>save changes</Text>
+              </TouchableOpacity>
+            </View>
+            
+
+
+            <KeyboardSpacer />
+          </View>
+        </TouchableWithoutFeedback>
       );
     }
 }
@@ -279,17 +283,17 @@ class EditProfile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'flex-start',
+    // alignItems: 'center',
     // justifyContent: 'space-between',
-    backgroundColor: '#121212',
+    backgroundColor: '#000000',
   },
   inputBox: {
     width: '85%',
     // margin: 10,
     padding: 15,
     fontSize: 16,
-    borderColor: '#d3d3d3',
-    borderWidth: 1,
+    // borderColor: '#d3d3d3',
+    // borderWidth: 1,
     color: '#FFFFFF',
     // textAlign: 'center'
   },
@@ -297,11 +301,11 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75,
-    marginTop: 40,
-    marginBottom: 30,
+    marginTop: 15,
+    marginBottom: 15,
   },
   button: {
-    // marginTop: 10,
+    marginTop: 15,
     paddingVertical: 5,
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -311,7 +315,7 @@ const styles = StyleSheet.create({
     width: 200,
     marginRight: 10,
     marginLeft: 10,
-    marginBottom: 30,
+    marginBottom: 15,
   },
   socialInputBoxText: {
     fontSize: 16,
@@ -330,6 +334,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#FFFFFF',
   },
+  lineStyle: {
+    borderWidth: 2,
+    borderColor: '#121212',
+    width: Dimensions.get('window').width,
+    // marginBottom: 10,
+  },
+  
 });
 
 export default connect(mapStateToProps)(EditProfile);
