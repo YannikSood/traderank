@@ -819,7 +819,7 @@ exports.getPosterInfo = functions.https.onCall((data, context) => {
                 posterPostCount: doc.data().postCount,
                 posterBio: doc.data().bio,
                 storage_image_uri: doc.data().profilePic,
-                dateJoined: doc.data().signupDate.toDate(),
+                dateJoined: doc.data().signupDate,
                 posterTwitter: doc.data().twitter,
                 posterInstagram: doc.data().instagram,
                 isLoading: false,
@@ -915,6 +915,256 @@ exports.getUserNumbers = functions.https.onCall((data, context) => {
 
 
 });
+
+exports.checkIsFollowing = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('following')
+        .doc(data.currentUserUID)
+        .collection('following')
+        .doc(data.posterUID)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            let hash = {
+              isFollowing: true,
+            };
+            resolve(hash);
+            return null;
+          } else {
+            let hash = {
+              isFollowing: false,
+            };
+            resolve(hash);
+            return null;
+          }
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
+exports.checkHasAlerts = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .collection('UsersToAlert')
+        .doc(data.currentUserUID)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+            let hash = {
+                hasAlerts: true,
+            };
+            resolve(hash);
+            return null;
+            } else {
+            let hash = {
+                hasAlerts: false,
+            };
+            resolve(hash);
+            return null;
+            }
+          
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
+exports.followUser = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+        admin.firestore()
+        .collection('following')
+        .doc(data.currentUserUID)
+        .collection('following')
+        .doc(data.posterUID)
+        .set({
+            uid: data.posterUID,
+        })
+        .catch(err => {
+            console.log(`Error when updating current following DB: ${err}`);
+        })
+
+        //The poster now has the current user as a follower
+        admin.firestore()
+        .collection('followers')
+        .doc(data.posterUID)
+        .collection('followers')
+        .doc(data.currentUserUID)
+        .set({
+            uid: data.currentUserUID,
+        })
+        .catch(err => {
+            console.log(`Error when updating poster follower DB: ${err}`);
+        })
+
+        //Update the following count for the current user
+        admin.firestore()
+        .collection('users')
+        .doc(data.currentUserUID)
+        .set({
+            followingCount: data.currentFollowingCount + 1,
+        }, { merge: true })
+        .catch(err => {
+            console.log(`Error when updating current following COUNT: ${err}`);
+        })
+
+
+        //Update the follower count for the clicked user
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .set({
+            followerCount: data.posterFollowerCount + 1,
+        }, { merge: true })
+        .then(() => {
+            let hash = {
+                currentFollowingCount: data.currentFollowingCount + 1,
+                posterFollowerCount: data.posterFollowerCount + 1
+            };
+            resolve(hash);
+            return null;
+        })
+        .catch(err => {
+            console.log(`Error when updating clicked follower COUNT: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
+exports.unfollowUser = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+        admin.firestore()
+        .collection('following')
+        .doc(data.currentUserUID)
+        .collection('following')
+        .doc(data.posterUID)
+        .delete()
+        .catch(err => {
+            console.log(`Error when deleting from current following DB: ${err}`);
+        })
+
+        //The poster now has the current user as a follower
+        admin.firestore()
+        .collection('followers')
+        .doc(data.posterUID)
+        .collection('followers')
+        .doc(data.currentUserUID)
+        .delete()
+        .catch(err => {
+            console.log(`Error when deleting from poster follower DB: ${err}`);
+        })
+
+        //Update the following count for the current user
+        admin.firestore()
+        .collection('users')
+        .doc(data.currentUserUID)
+        .set({
+            followingCount: data.currentFollowingCount - 1,
+        }, { merge: true })
+        .catch(err => {
+            console.log(`Error when updating current following COUNT: ${err}`);
+        })
+
+
+        //Update the follower count for the clicked user
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .set({
+            followerCount: data.posterFollowerCount - 1,
+        }, { merge: true })
+        .then(() => {
+            let hash = {
+                currentFollowingCount: data.currentFollowingCount - 1,
+                posterFollowerCount: data.posterFollowerCount - 1
+            };
+            resolve(hash);
+            return null;
+        })
+        .catch(err => {
+            console.log(`Error when updating clicked follower COUNT: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
+exports.addUserToAlerts = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .collection('UsersToAlert')
+        .doc(data.currentUserUID)
+        .set({
+          uid: data.currentUserUID,
+        })
+        .then(() => {
+            let hash = {
+                hasAlerts: true
+            };
+            resolve(hash);
+            return null;
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
+exports.removeUserFromAlerts = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .collection('UsersToAlert')
+        .doc(data.currentUserUID)
+        .delete()
+        .then(() => {
+            let hash = {
+                hasAlerts: false
+            };
+            resolve(hash);
+            return null;
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
 
 exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 

@@ -224,6 +224,7 @@ class EditProfile extends React.Component {
                           onChangeText={newBio => this.setState({ newBio })}
                           placeholder={this.state.oldBio}
                           multiline
+                          maxLength={240}
                           autoCapitalize="none"
                           placeholderTextColor="#696969"
                         />
@@ -278,7 +279,7 @@ class EditProfile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     // justifyContent: 'space-between',
     backgroundColor: '#121212',
   },
@@ -324,8 +325,8 @@ const styles = StyleSheet.create({
     // marginTop: 10,
     padding: 10,
     fontSize: 14,
-    borderColor: '#d3d3d3',
-    borderWidth: 1,
+    // borderColor: '#d3d3d3',
+    // borderWidth: 1,
     textAlign: 'center',
     color: '#FFFFFF',
   },

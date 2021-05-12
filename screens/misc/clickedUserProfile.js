@@ -35,20 +35,21 @@ class ClickedUserProfile extends React.Component {
       //Current user information
       currentUserUID: Firebase.auth().currentUser.uid,
       currentUserUsername: '',
-      currentFollowerCount: 0,
       currentFollowingCount: 0,
 
       //Other Stuff
       isLoading: true,
       navigation: this.props.navigation,
       isFollowing: false,
+      followButtonLoading: false,
+      alertsButtonLoading: false,
 
       userPostsArray: [],
       //clickedUserUID: this.props.clickedUserUID, posterUID
       //navigation: this.props.navigation
       notificationUID: '',
       modalOpen: false,
-      dateJoined: null,
+      dateJoined: new Date(),
       followsYou: false,
       hasAlerts: false,
     };
@@ -128,89 +129,42 @@ class ClickedUserProfile extends React.Component {
 
     //Get the poster UID and the poster username for display purposes
     getPosterInfo = async() => {
-      // await Firebase.firestore()
-      //   .collection('users')
-      //   .doc(this.state.posterUID)
-      //   .get()
-      //   .then((doc) => {
-      //     if (doc.exists) {
-      //       this.setState({
-      //         posterUsername: doc.data().username,
-      //         posterFollowerCount: doc.data().followerCount,
-      //         posterFollowingCount: doc.data().followingCount,
-      //         posterPostCount: doc.data().postCount,
-      //         posterBio: doc.data().bio,
-      //         storage_image_uri: doc.data().profilePic,
-      //         dateJoined: doc.data().signupDate.toDate(),
-      //         posterTwitter: doc.data().twitter,
-      //         posterInstagram: doc.data().instagram,
-      //         isLoading: false,
-      //       });
-      //     } else {
-      //       // doc.data() will be undefined in this case
-      //       console.log('No such document!');
-      //     }
-      //   });
-
-        const getPosterInformation = Firebase.functions().httpsCallable('getPosterInfo');
-        getPosterInformation({
-          posterUID: this.state.posterUID
-        })
+      const getPosterInformation = Firebase.functions().httpsCallable('getPosterInfo');
+      getPosterInformation({
+        posterUID: this.state.posterUID,
+      })
         .then((result) => {
-            this.setState({
-              posterUsername: result.data.posterUsername,
-              posterFollowerCount: result.data.posterFollowerCount,
-              posterFollowingCount: result.data.posterFollowingCount,
-              posterPostCount: result.data.posterPostCount,
-              posterBio: result.data.posterBio,
-              storage_image_uri: result.data.storage_image_uri,
-              dateJoined: result.data.dateJoined,
-              posterTwitter: result.data.posterTwitter,
-              posterInstagram: result.data.posterInstagram,
-              isLoading: false,
-            });
-  
+          this.setState({
+            posterUsername: result.data.posterUsername,
+            posterFollowerCount: result.data.posterFollowerCount,
+            posterFollowingCount: result.data.posterFollowingCount,
+            posterPostCount: result.data.posterPostCount,
+            posterBio: result.data.posterBio,
+            storage_image_uri: result.data.storage_image_uri,
+            dateJoined: result.data.dateJoined,
+            posterTwitter: result.data.posterTwitter,
+            posterInstagram: result.data.posterInstagram,
+            isLoading: false,
+          });
+          console.log('date joined');
         }).catch((error) => {
-            console.log(error);
+          console.log(error);
         });
-
-   
-
-      //We also need some user information, like their follower/following count so we can update that if they decide to follow
-      // await Firebase.firestore()
-      //   .collection('users')
-      //   .doc(this.state.currentUserUID)
-      //   .get()
-      //   .then((doc) => {
-      //     if (doc.exists) {
-      //       this.setState({
-      //         currentUserUsername: doc.data().username,
-      //         currentFollowerCount: doc.data().followerCount,
-      //         currentFollowingCount: doc.data().followingCount,
-      //       });
-      //     } else {
-      //       console.log('No such document!');
-      //     }
-      //   });
-
-      // console.log(`${this.state.posterTwitter} twitter`);
 
       const getUserNumbers = Firebase.functions().httpsCallable('getUserNumbers');
       getUserNumbers({
-        currentUserUID: this.state.currentUserUID
+        currentUserUID: this.state.currentUserUID,
       })
-      .then((result) => {
+        .then((result) => {
           this.setState({
             currentUserUsername: result.data.currentUserUsername,
-            currentFollowerCount: result.data.currentFollowerCount,
-            currentFollowingCount: result.data.currentFollowingCount
+            currentFollowingCount: result.data.currentFollowingCount,
           });
-
-      }).catch((error) => {
-        console.log(error);
-      });
+        }).catch((error) => {
+          console.log(error);
+        });
     }
- 
+
     getCollection = (querySnapshot) => {
       const userPostsArray = [];
       querySnapshot.forEach((res) => {
@@ -299,42 +253,32 @@ class ClickedUserProfile extends React.Component {
 
     //If the current user is already following the poster, check here.
     isFollowing = async() => {
-      await Firebase.firestore()
-        .collection('following')
-        .doc(this.state.currentUserUID)
-        .collection('following')
-        .doc(this.state.posterUID)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.setState({
-              isFollowing: true,
-            });
-          } else {
-            this.setState({
-              isFollowing: false,
-            });
-          }
+      const isFollowing = Firebase.functions().httpsCallable('checkIsFollowing');
+      isFollowing({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            isFollowing: result.data.isFollowing,
+          });
+        }).catch((error) => {
+          console.log(error);
         });
     }
 
     hasAlerts = async() => {
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .collection('UsersToAlert')
-        .doc(this.state.currentUserUID)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.setState({
-              hasAlerts: true,
-            });
-          } else {
-            this.setState({
-              hasAlerts: false,
-            });
-          }
+      const checkHasAlerts = Firebase.functions().httpsCallable('checkHasAlerts');
+      checkHasAlerts({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            hasAlerts: result.data.hasAlerts,
+          });
+        }).catch((error) => {
+          console.log(error);
         });
     }
 
@@ -379,90 +323,64 @@ class ClickedUserProfile extends React.Component {
     //Follow a user
     followUser = async() => {
       //The current user now follows the poster with logic
-      await Firebase.firestore()
-        .collection('following')
-        .doc(this.state.currentUserUID)
-        .collection('following')
-        .doc(this.state.posterUID)
-        .set({
-          uid: this.state.posterUID,
+      this.setState({ followButtonLoading: true });
+      const followAUser = Firebase.functions().httpsCallable('followUser');
+      followAUser({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+        currentFollowingCount: this.state.currentFollowingCount,
+        posterFollowerCount: this.state.posterFollowerCount,
+      })
+        .then((result) => {
+          this.setState({
+            currentFollowingCount: result.data.currentFollowingCount,
+            posterFollowerCount: result.data.posterFollowerCount,
+            followButtonLoading: false,
+          });
+        })
+        .then(() => Analytics.logEvent('User_Followed'))
+        .then(() => this.writeToUserNotifications())
+        .catch((error) => {
+          console.log(error);
         });
-
-      //The poster now has the current user as a follower
-      await Firebase.firestore()
-        .collection('followers')
-        .doc(this.state.posterUID)
-        .collection('followers')
-        .doc(this.state.currentUserUID)
-        .set({
-          uid: this.state.currentUserUID,
-        });
-
-      //Update the following count for the current user
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.currentUserUID)
-        .set({
-          followingCount: this.state.currentFollowingCount + 1,
-        }, { merge: true })
-        .then(() => this.setState({ currentFollowingCount: this.state.currentFollowingCount + 1 }));
-
-
-      //Update the follower count for the poster user
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .set({
-          followerCount: this.state.posterFollowerCount + 1,
-        }, { merge: true })
-        .then(() => this.setState({ posterFollowerCount: this.state.posterFollowerCount + 1 }))
-        .then(() => this.writeToUserNotifications());
     }
 
-     //Unfollow a user
-     unfollowUser = async() => {
-       //Delete the poster user from the current users following list
-       await Firebase.firestore()
-         .collection('following')
-         .doc(this.state.currentUserUID)
-         .collection('following')
-         .doc(this.state.posterUID)
-         .delete();
-
-       //Delete the current user from the posters follower list
-       await Firebase.firestore()
-         .collection('followers')
-         .doc(this.state.posterUID)
-         .collection('followers')
-         .doc(this.state.currentUserUID)
-         .delete();
-
-       //Update the following count for the current user, remove one because they unfollowed
-       await Firebase.firestore()
-         .collection('users')
-         .doc(this.state.currentUserUID)
-         .set({
-           followingCount: this.state.currentFollowingCount - 1,
-         }, { merge: true })
-         .then(() => this.setState({ currentFollowingCount: this.state.currentFollowingCount - 1 }));
-
-       //Update the follower count for the poster user, remove one because they unfollowed
-       await Firebase.firestore()
-         .collection('users')
-         .doc(this.state.posterUID)
-         .set({
-           followerCount: this.state.posterFollowerCount - 1,
-         }, { merge: true })
-         .then(() => this.setState({ posterFollowerCount: this.state.posterFollowerCount - 1 }))
-         .then(() => this.removeFromUserNotifications());
-     }
+    //Unfollow a user
+    unfollowUser = async() => {
+      //Delete the poster user from the current users following list
+      const unfollowAUser = Firebase.functions().httpsCallable('unfollowUser');
+      unfollowAUser({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+        currentFollowingCount: this.state.currentFollowingCount,
+        posterFollowerCount: this.state.posterFollowerCount,
+      })
+        .then((result) => {
+          this.setState({
+            currentFollowingCount: result.data.currentFollowingCount,
+            posterFollowerCount: result.data.posterFollowerCount,
+            followButtonLoading: false,
+          });
+        })
+        .then(() => Analytics.logEvent('User_Unfollowed'))
+        .then(() => this.removeFromUserNotifications())
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
     renderFollowButton = () => {
       this.isFollowing();
-
+      if (this.state.followButtonLoading) {
+        return (
+          <View style={styles.button3}>
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          </View>
+        );
+      }
       if (this.state.isFollowing) {
         return (
-          <View >
+          <View>
             <TouchableOpacity
               style={styles.button2}
               onPress={() => {
@@ -477,7 +395,7 @@ class ClickedUserProfile extends React.Component {
         );
       }
       return (
-        <View >
+        <View>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
@@ -492,28 +410,35 @@ class ClickedUserProfile extends React.Component {
     }
 
     renderAlertsButton = () => {
+      if (this.state.alertsButtonLoading) {
+        return (
+          <View>
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          </View>
+        );
+      }
       if (this.state.hasAlerts) {
         return (
           <View
-            style={{ paddingTop: 26, paddingLeft: 10 }}
+            style={{ paddingLeft: 10 }}
           >
             <TouchableOpacity
-              // style={styles.button2}
+          // style={styles.button2}
               onPress={() => {
                 this.removeUserFromUserAlerts();
               }}
-
             >
 
-              <MaterialCommunityIcons name="bell-check" size={30} color="#FFFFFF" />
+              <MaterialCommunityIcons name="bell-check" size={30} color="#FCAF45" />
             </TouchableOpacity>
 
           </View>
+
         );
       }
       return (
         <View
-          style={{ paddingTop: 26, paddingLeft: 10 }}
+          style={{ paddingLeft: 10 }}
         >
           <TouchableOpacity
             // style={styles.button}
@@ -522,9 +447,11 @@ class ClickedUserProfile extends React.Component {
             }}
           >
 
-            <MaterialCommunityIcons name="bell-cancel" size={30} color="#FFFFFF" />
+            <MaterialCommunityIcons name="bell-cancel" size={30} color="#FCAF45" />
           </TouchableOpacity>
         </View>
+
+
       );
     }
 
@@ -544,27 +471,41 @@ class ClickedUserProfile extends React.Component {
     // }
 
     addUserToUserAlerts = async() => {
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .collection('UsersToAlert')
-        .doc(this.state.currentUserUID)
-        .set({
-          uid: this.state.currentUserUID,
+      this.setState({ alertsButtonLoading: true });
+      const addToAlerts = Firebase.functions().httpsCallable('addUserToAlerts');
+      addToAlerts({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            hasAlerts: result.data.hasAlerts,
+            alertsButtonLoading: false,
+          });
+        })
+        .then(() => Analytics.logEvent('User_Alerts_On'))
+        .catch((error) => {
+          console.log(error);
         });
-      this.setState({ hasAlerts: true });
-      console.log('added to alerts');
     }
 
     removeUserFromUserAlerts = async() => {
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .collection('UsersToAlert')
-        .doc(this.state.currentUserUID)
-        .delete();
-      this.setState({ hasAlerts: false });
-      console.log('removed from alerts');
+      this.setState({ alertsButtonLoading: true });
+      const removeFromAlerts = Firebase.functions().httpsCallable('removeUserFromAlerts');
+      removeFromAlerts({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            hasAlerts: result.data.hasAlerts,
+            alertsButtonLoading: false,
+          });
+        })
+        .then(() => Analytics.logEvent('User_Alerts_Off'))
+        .catch((error) => {
+          console.log(error);
+        });
     }
 
 
@@ -584,67 +525,47 @@ class ClickedUserProfile extends React.Component {
       }
       if (this.state.posterTwitter != undefined && this.state.posterInstagram == undefined) {
         return (
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <FontAwesome
               onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
-            >
-              {' '}
-@
-              {this.state.posterTwitter}
-              {' '}
-
-            </Text>
+              name="twitter"
+              size={35}
+              color="#1DA1F2"
+            />
           </View>
         );
       }
       if (this.state.posterTwitter == undefined && this.state.posterInstagram != undefined) {
         return (
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <AntDesign name="instagram" size={18} color="#E1306C" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <AntDesign
               onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
-            >
-              {' '}
-@
-              {this.state.posterInstagram}
-              {' '}
-
-            </Text>
+              name="instagram"
+              size={35}
+              color="#E1306C"
+            />
           </View>
         );
       }
 
       return (
-        <View>
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <FontAwesome
               onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
-            >
-              {' '}
-@
-              {this.state.posterTwitter}
-              {' '}
-
-            </Text>
+              name="twitter"
+              size={35}
+              color="#1DA1F2"
+            />
           </View>
 
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <AntDesign name="instagram" size={18} color="#E1306C" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <AntDesign
               onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
-            >
-              {' '}
-@
-              {this.state.posterInstagram}
-              {' '}
-
-            </Text>
+              name="instagram"
+              size={35}
+              color="#E1306C"
+            />
           </View>
         </View>
       );
@@ -673,8 +594,7 @@ class ClickedUserProfile extends React.Component {
             <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={styles.subheader}>
                 {' '}
-                {this.state.posterUsername}
-'s profile
+                @{this.state.posterUsername}
                 {' '}
               </Text>
             </View>
@@ -726,7 +646,7 @@ class ClickedUserProfile extends React.Component {
               </Text>
             </View>
 
-            <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
+            {/* <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
 
               <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
 
@@ -743,13 +663,13 @@ joined
 
               </Text>
 
-            </View>
+            </View> */}
 
-            { this.renderTwitterAndInstagram() }
 
             {/* { this.renderFollowsYou() } */}
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
               { this.renderFollowButton() }
+              { this.renderTwitterAndInstagram() }
               { this.renderAlertsButton() }
 
             </View>
@@ -778,8 +698,7 @@ joined
           <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.subheader}>
               {' '}
-              {this.state.posterUsername}
-'s profile
+              @{this.state.posterUsername}
               {' '}
             </Text>
           </View>
@@ -822,7 +741,7 @@ joined
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 15 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingTop: 10 }}>
             <Text style={styles.bioText}>
               {' '}
               {this.state.posterBio}
@@ -830,7 +749,7 @@ joined
             </Text>
           </View>
 
-          <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
+          {/* <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
 
             <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
 
@@ -847,13 +766,13 @@ joined
 
             </Text>
 
-          </View>
+          </View> */}
 
-          { this.renderTwitterAndInstagram() }
 
           {/* { this.renderFollowsYou() } */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             { this.renderFollowButton() }
+            { this.renderTwitterAndInstagram() }
             { this.renderAlertsButton() }
 
           </View>
@@ -980,7 +899,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   button: {
-    marginTop: 30,
+    // marginTop: 30,
     paddingVertical: 5,
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -992,7 +911,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button2: {
-    marginTop: 30,
+    // marginTop: 30,
     paddingVertical: 5,
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
@@ -1002,6 +921,19 @@ const styles = StyleSheet.create({
     width: 150,
     marginRight: 10,
     marginLeft: 10,
+  },
+  button3: {
+    // marginTop: 30,
+    paddingVertical: 5,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderColor: '#FFFFFF',
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 150,
+    marginRight: 10,
+    marginLeft: 10,
+
   },
 });
 
