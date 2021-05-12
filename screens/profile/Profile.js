@@ -70,9 +70,9 @@ class Profile extends React.Component {
     onShare = async() => {
       try {
         const result = await Share.share({
-          title: 'traderank invite',
-          message: 'join traderank, the social network for stock traders!',
-          url: 'https://testflight.apple.com/join/eHiBK1S3',
+          title: 'you are invited',
+          message: 'hey! i want you to join traderank!!', 
+          url: 'https://apps.apple.com/us/app/traderank/id1546959332'
         });
         if (result.action === Share.sharedAction) {
           if (result.activityType) {
@@ -184,28 +184,48 @@ class Profile extends React.Component {
       //Set it to state
       //Make sure to set isLoading to true when you call the function, and isLoading to false when it returns
 
-      const getUserInfo = await Firebase.functions().httpsCallable('pullUserInfo');
-      getUserInfo({
-        userUID: this.state.userUID
-      })
-      .then((result) => {
+      // const getUserInfo = await Firebase.functions().httpsCallable('pullUserInfo');
+      // getUserInfo({
+      //   userUID: this.state.userUID
+      // })
+      // .then((result) => {
 
+      //     this.setState({
+      //       postCount: result.data.postCount,
+      //       followerCount: result.data.followerCount,
+      //       followingCount: result.data.followingCount,
+      //       storage_image_uri: result.data.storage_image_uri,
+      //       bio: result.data.bio,
+      //       dateJoined: result.data.dateJoined,
+      //       twitter: result.data.twitter,
+      //       instagram: result.data.instagram,
+      //       isLoading: false,
+      //     });
+
+      // }).catch((error) => {
+      //     console.log("Error from getUserInfo in Profile.js" + error);
+      // });
+
+      Firebase.firestore()
+      .collection('users')
+      .doc(this.state.userUID)
+      .get()
+      .then((doc) => {
           this.setState({
-            postCount: result.data.postCount,
-            followerCount: result.data.followerCount,
-            followingCount: result.data.followingCount,
-            storage_image_uri: result.data.storage_image_uri,
-            bio: result.data.bio,
-            dateJoined: result.data.dateJoined,
-            twitter: result.data.twitter,
-            instagram: result.data.instagram,
+            postCount: doc.data().postCount,
+            followerCount: doc.data().followerCount,
+            followingCount: doc.data().followingCount,
+            storage_image_uri: doc.data().profilePic,
+            bio: doc.data().bio,
+            dateJoined: doc.data().signupDate.toDate(),
+            twitter: doc.data().twitter,
+            instagram: doc.data().instagram,
             isLoading: false,
           });
-
-      }).catch((error) => {
-          console.log("Error from getUserInfo in Profile.js" + error);
-      });
-
+      }).catch(err => {
+          console.log("Error from pullUserInfo: " + err);
+          reject(err);
+      })
     }
 
     gotToSettings() {

@@ -35,11 +35,11 @@ class Notification extends React.Component {
 
     onShare = async () => {
         try {
-          const result = await Share.share({
-           title: 'traderank invite',
-            message: 'join traderank, the social network for traders!', 
-            url: 'https://testflight.apple.com/join/eHiBK1S3'
-          });
+            const result = await Share.share({
+                title: 'you are invited',
+                message: 'hey! i want you to join traderank!!', 
+                url: 'https://apps.apple.com/us/app/traderank/id1546959332'
+            });
           if (result.action === Share.sharedAction) {
             if (result.activityType) {
               // shared with activity type of result.activityType

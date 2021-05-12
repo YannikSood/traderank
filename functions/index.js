@@ -819,7 +819,7 @@ exports.getPosterInfo = functions.https.onCall((data, context) => {
                 posterPostCount: doc.data().postCount,
                 posterBio: doc.data().bio,
                 storage_image_uri: doc.data().profilePic,
-                dateJoined: doc.data().signupDate.toDate(),
+                dateJoined: doc.data().signupDate,
                 posterTwitter: doc.data().twitter,
                 posterInstagram: doc.data().instagram,
                 isLoading: false,
@@ -862,6 +862,41 @@ exports.getUserNumbers = functions.https.onCall((data, context) => {
 
 
 });
+
+exports.checkIsFollowing = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('following')
+        .doc(data.currentUserUID)
+        .collection('following')
+        .doc(data.posterUID)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            let hash = {
+              isFollowing: true,
+            };
+            resolve(hash);
+            return null;
+          } else {
+            let hash = {
+              isFollowing: false,
+            };
+            resolve(hash);
+            return null;
+          }
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
 
 exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 

@@ -48,7 +48,7 @@ class ClickedUserProfile extends React.Component {
       //navigation: this.props.navigation
       notificationUID: '',
       modalOpen: false,
-      dateJoined: null,
+      dateJoined: new Date(),
       followsYou: false,
       hasAlerts: false,
     };
@@ -152,29 +152,28 @@ class ClickedUserProfile extends React.Component {
       //     }
       //   });
 
-        const getPosterInformation = Firebase.functions().httpsCallable('getPosterInfo');
-        getPosterInformation({
-          posterUID: this.state.posterUID
-        })
+      const getPosterInformation = Firebase.functions().httpsCallable('getPosterInfo');
+      getPosterInformation({
+        posterUID: this.state.posterUID,
+      })
         .then((result) => {
-            this.setState({
-              posterUsername: result.data.posterUsername,
-              posterFollowerCount: result.data.posterFollowerCount,
-              posterFollowingCount: result.data.posterFollowingCount,
-              posterPostCount: result.data.posterPostCount,
-              posterBio: result.data.posterBio,
-              storage_image_uri: result.data.storage_image_uri,
-              dateJoined: result.data.dateJoined,
-              posterTwitter: result.data.posterTwitter,
-              posterInstagram: result.data.posterInstagram,
-              isLoading: false,
-            });
-  
+          this.setState({
+            posterUsername: result.data.posterUsername,
+            posterFollowerCount: result.data.posterFollowerCount,
+            posterFollowingCount: result.data.posterFollowingCount,
+            posterPostCount: result.data.posterPostCount,
+            posterBio: result.data.posterBio,
+            storage_image_uri: result.data.storage_image_uri,
+            dateJoined: result.data.dateJoined,
+            posterTwitter: result.data.posterTwitter,
+            posterInstagram: result.data.posterInstagram,
+            isLoading: false,
+          });
+          console.log(this.state.dateJoined.toDate() + " date joined");
         }).catch((error) => {
-            console.log(error);
+          console.log(error);
         });
 
-   
 
       //We also need some user information, like their follower/following count so we can update that if they decide to follow
       // await Firebase.firestore()
@@ -197,20 +196,19 @@ class ClickedUserProfile extends React.Component {
 
       const getUserNumbers = Firebase.functions().httpsCallable('getUserNumbers');
       getUserNumbers({
-        currentUserUID: this.state.currentUserUID
+        currentUserUID: this.state.currentUserUID,
       })
-      .then((result) => {
+        .then((result) => {
           this.setState({
             currentUserUsername: result.data.currentUserUsername,
             currentFollowerCount: result.data.currentFollowerCount,
-            currentFollowingCount: result.data.currentFollowingCount
+            currentFollowingCount: result.data.currentFollowingCount,
           });
-
-      }).catch((error) => {
-        console.log(error);
-      });
+        }).catch((error) => {
+          console.log(error);
+        });
     }
- 
+
     getCollection = (querySnapshot) => {
       const userPostsArray = [];
       querySnapshot.forEach((res) => {
@@ -299,22 +297,34 @@ class ClickedUserProfile extends React.Component {
 
     //If the current user is already following the poster, check here.
     isFollowing = async() => {
-      await Firebase.firestore()
-        .collection('following')
-        .doc(this.state.currentUserUID)
-        .collection('following')
-        .doc(this.state.posterUID)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.setState({
-              isFollowing: true,
-            });
-          } else {
-            this.setState({
-              isFollowing: false,
-            });
-          }
+      // await Firebase.firestore()
+      //   .collection('following')
+      //   .doc(this.state.currentUserUID)
+      //   .collection('following')
+      //   .doc(this.state.posterUID)
+      //   .get()
+      //   .then((doc) => {
+      //     if (doc.exists) {
+      //       this.setState({
+      //         isFollowing: true,
+      //       });
+      //     } else {
+      //       this.setState({
+      //         isFollowing: false,
+      //       });
+      //     }
+      //   });
+      const isFollowing = Firebase.functions().httpsCallable('checkIsFollowing');
+      isFollowing({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            isFollowing: result.data.isFollowing,
+          });
+        }).catch((error) => {
+          console.log(error);
         });
     }
 
@@ -462,7 +472,7 @@ class ClickedUserProfile extends React.Component {
 
       if (this.state.isFollowing) {
         return (
-          <View >
+          <View>
             <TouchableOpacity
               style={styles.button2}
               onPress={() => {
@@ -477,7 +487,7 @@ class ClickedUserProfile extends React.Component {
         );
       }
       return (
-        <View >
+        <View>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
