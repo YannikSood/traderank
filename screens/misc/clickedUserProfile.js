@@ -42,6 +42,7 @@ class ClickedUserProfile extends React.Component {
       navigation: this.props.navigation,
       isFollowing: false,
       followButtonLoading: false,
+      alertsButtonLoading: false,
 
       userPostsArray: [],
       //clickedUserUID: this.props.clickedUserUID, posterUID
@@ -145,7 +146,7 @@ class ClickedUserProfile extends React.Component {
             posterInstagram: result.data.posterInstagram,
             isLoading: false,
           });
-          console.log(`${this.state.dateJoined.toDate()} date joined`);
+          console.log(`date joined`);
         }).catch((error) => {
           console.log(error);
         });
@@ -267,22 +268,17 @@ class ClickedUserProfile extends React.Component {
     }
 
     hasAlerts = async() => {
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .collection('UsersToAlert')
-        .doc(this.state.currentUserUID)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.setState({
-              hasAlerts: true,
-            });
-          } else {
-            this.setState({
-              hasAlerts: false,
-            });
-          }
+      const checkHasAlerts = Firebase.functions().httpsCallable('checkHasAlerts');
+      checkHasAlerts({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            hasAlerts: result.data.hasAlerts,
+          });
+        }).catch((error) => {
+          console.log(error);
         });
     }
 
@@ -377,7 +373,7 @@ class ClickedUserProfile extends React.Component {
       this.isFollowing();
       if (this.state.followButtonLoading) {
         return (
-          <View>
+          <View style={styles.button3}>
             <ActivityIndicator size="small" color="#FFFFFF" />
           </View>
         );
@@ -414,6 +410,13 @@ class ClickedUserProfile extends React.Component {
     }
 
     renderAlertsButton = () => {
+      if (this.state.alertsButtonLoading) {
+        return (
+          <View >
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          </View>
+        );
+      }
       if (this.state.hasAlerts) {
         return (
           <View
@@ -466,27 +469,41 @@ class ClickedUserProfile extends React.Component {
     // }
 
     addUserToUserAlerts = async() => {
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .collection('UsersToAlert')
-        .doc(this.state.currentUserUID)
-        .set({
-          uid: this.state.currentUserUID,
+      this.setState({ alertsButtonLoading: true });
+      const addToAlerts = Firebase.functions().httpsCallable('addUserToAlerts');
+      addToAlerts({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            hasAlerts: result.data.hasAlerts,
+            alertsButtonLoading: false,
+          });
+        })
+        .then(() => Analytics.logEvent('User_Alerts_On'))
+        .catch((error) => {
+          console.log(error);
         });
-      this.setState({ hasAlerts: true });
-      console.log('added to alerts');
     }
 
     removeUserFromUserAlerts = async() => {
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .collection('UsersToAlert')
-        .doc(this.state.currentUserUID)
-        .delete();
-      this.setState({ hasAlerts: false });
-      console.log('removed from alerts');
+      this.setState({ alertsButtonLoading: true });
+      const removeFromAlerts = Firebase.functions().httpsCallable('removeUserFromAlerts');
+      removeFromAlerts({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+      })
+        .then((result) => {
+          this.setState({
+            hasAlerts: result.data.hasAlerts,
+            alertsButtonLoading: false,
+          });
+        })
+        .then(() => Analytics.logEvent('User_Alerts_Off'))
+        .catch((error) => {
+          console.log(error);
+        });
     }
 
 
@@ -925,6 +942,19 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
   },
+  button3: {
+    marginTop: 30,
+    paddingVertical: 5,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderColor: '#FFFFFF',
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 150,
+    marginRight: 10,
+    marginLeft: 10,
+
+  }
 });
 
 export default connect(mapStateToProps)(ClickedUserProfile);

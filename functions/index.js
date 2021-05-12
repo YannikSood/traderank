@@ -897,6 +897,41 @@ exports.checkIsFollowing = functions.https.onCall((data, context) => {
 
 });
 
+exports.checkHasAlerts = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .collection('UsersToAlert')
+        .doc(data.currentUserUID)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+            let hash = {
+                hasAlerts: true,
+            };
+            resolve(hash);
+            return null;
+            } else {
+            let hash = {
+                hasAlerts: false,
+            };
+            resolve(hash);
+            return null;
+            }
+          
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
 exports.followUser = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1015,6 +1050,60 @@ exports.unfollowUser = functions.https.onCall((data, context) => {
         })
         .catch(err => {
             console.log(`Error when updating clicked follower COUNT: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
+exports.addUserToAlerts = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .collection('UsersToAlert')
+        .doc(data.currentUserUID)
+        .set({
+          uid: data.currentUserUID,
+        })
+        .then(() => {
+            let hash = {
+                hasAlerts: true
+            };
+            resolve(hash);
+            return null;
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
+exports.removeUserFromAlerts = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .collection('UsersToAlert')
+        .doc(data.currentUserUID)
+        .delete()
+        .then(() => {
+            let hash = {
+                hasAlerts: false
+            };
+            resolve(hash);
+            return null;
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
             reject(err);
         })
 
