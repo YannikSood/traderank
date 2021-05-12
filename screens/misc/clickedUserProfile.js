@@ -128,30 +128,6 @@ class ClickedUserProfile extends React.Component {
 
     //Get the poster UID and the poster username for display purposes
     getPosterInfo = async() => {
-      // await Firebase.firestore()
-      //   .collection('users')
-      //   .doc(this.state.posterUID)
-      //   .get()
-      //   .then((doc) => {
-      //     if (doc.exists) {
-      //       this.setState({
-      //         posterUsername: doc.data().username,
-      //         posterFollowerCount: doc.data().followerCount,
-      //         posterFollowingCount: doc.data().followingCount,
-      //         posterPostCount: doc.data().postCount,
-      //         posterBio: doc.data().bio,
-      //         storage_image_uri: doc.data().profilePic,
-      //         dateJoined: doc.data().signupDate.toDate(),
-      //         posterTwitter: doc.data().twitter,
-      //         posterInstagram: doc.data().instagram,
-      //         isLoading: false,
-      //       });
-      //     } else {
-      //       // doc.data() will be undefined in this case
-      //       console.log('No such document!');
-      //     }
-      //   });
-
       const getPosterInformation = Firebase.functions().httpsCallable('getPosterInfo');
       getPosterInformation({
         posterUID: this.state.posterUID,
@@ -169,30 +145,10 @@ class ClickedUserProfile extends React.Component {
             posterInstagram: result.data.posterInstagram,
             isLoading: false,
           });
-          console.log(this.state.dateJoined.toDate() + " date joined");
+          console.log(`${this.state.dateJoined.toDate() } date joined`);
         }).catch((error) => {
           console.log(error);
         });
-
-
-      //We also need some user information, like their follower/following count so we can update that if they decide to follow
-      // await Firebase.firestore()
-      //   .collection('users')
-      //   .doc(this.state.currentUserUID)
-      //   .get()
-      //   .then((doc) => {
-      //     if (doc.exists) {
-      //       this.setState({
-      //         currentUserUsername: doc.data().username,
-      //         currentFollowerCount: doc.data().followerCount,
-      //         currentFollowingCount: doc.data().followingCount,
-      //       });
-      //     } else {
-      //       console.log('No such document!');
-      //     }
-      //   });
-
-      // console.log(`${this.state.posterTwitter} twitter`);
 
       const getUserNumbers = Firebase.functions().httpsCallable('getUserNumbers');
       getUserNumbers({
@@ -297,23 +253,6 @@ class ClickedUserProfile extends React.Component {
 
     //If the current user is already following the poster, check here.
     isFollowing = async() => {
-      // await Firebase.firestore()
-      //   .collection('following')
-      //   .doc(this.state.currentUserUID)
-      //   .collection('following')
-      //   .doc(this.state.posterUID)
-      //   .get()
-      //   .then((doc) => {
-      //     if (doc.exists) {
-      //       this.setState({
-      //         isFollowing: true,
-      //       });
-      //     } else {
-      //       this.setState({
-      //         isFollowing: false,
-      //       });
-      //     }
-      //   });
       const isFollowing = Firebase.functions().httpsCallable('checkIsFollowing');
       isFollowing({
         currentUserUID: this.state.currentUserUID,
@@ -389,44 +328,23 @@ class ClickedUserProfile extends React.Component {
     //Follow a user
     followUser = async() => {
       //The current user now follows the poster with logic
-      await Firebase.firestore()
-        .collection('following')
-        .doc(this.state.currentUserUID)
-        .collection('following')
-        .doc(this.state.posterUID)
-        .set({
-          uid: this.state.posterUID,
+      const followAUser = Firebase.functions().httpsCallable('followUser');
+      followAUser({
+        currentUserUID: this.state.currentUserUID,
+        posterUID: this.state.posterUID,
+        currentFollowingCount: this.state.currentFollowingCount,
+        posterFollowerCount: this.state.posterFollowerCount,
+      })
+        .then((result) => {
+          this.setState({
+            currentFollowingCount: result.data.currentFollowingCount,
+            posterFollowerCount: result.data.posterFollowerCount,
+          });
+        })
+        .then(() => this.writeToUserNotifications())
+        .catch((error) => {
+          console.log(error);
         });
-
-      //The poster now has the current user as a follower
-      await Firebase.firestore()
-        .collection('followers')
-        .doc(this.state.posterUID)
-        .collection('followers')
-        .doc(this.state.currentUserUID)
-        .set({
-          uid: this.state.currentUserUID,
-        });
-
-      //Update the following count for the current user
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.currentUserUID)
-        .set({
-          followingCount: this.state.currentFollowingCount + 1,
-        }, { merge: true })
-        .then(() => this.setState({ currentFollowingCount: this.state.currentFollowingCount + 1 }));
-
-
-      //Update the follower count for the poster user
-      await Firebase.firestore()
-        .collection('users')
-        .doc(this.state.posterUID)
-        .set({
-          followerCount: this.state.posterFollowerCount + 1,
-        }, { merge: true })
-        .then(() => this.setState({ posterFollowerCount: this.state.posterFollowerCount + 1 }))
-        .then(() => this.writeToUserNotifications());
     }
 
      //Unfollow a user

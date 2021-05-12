@@ -897,6 +897,71 @@ exports.checkIsFollowing = functions.https.onCall((data, context) => {
 
 });
 
+exports.followUser = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+        admin.firestore()
+        .collection('following')
+        .doc(data.currentUserUID)
+        .collection('following')
+        .doc(data.posterUID)
+        .set({
+            uid: data.posterUID,
+        })
+        .catch(err => {
+            console.log(`Error when updating current following DB: ${err}`);
+        })
+
+        //The poster now has the current user as a follower
+        admin.firestore()
+        .collection('followers')
+        .doc(data.posterUID)
+        .collection('followers')
+        .doc(data.currentUserUID)
+        .set({
+            uid: data.currentUserUID,
+        })
+        .catch(err => {
+            console.log(`Error when updating poster follower DB: ${err}`);
+        })
+
+        //Update the following count for the current user
+        admin.firestore()
+        .collection('users')
+        .doc(data.currentUserUID)
+        .set({
+            followingCount: data.currentFollowingCount + 1,
+        }, { merge: true })
+        .catch(err => {
+            console.log(`Error when updating current following COUNT: ${err}`);
+        })
+
+
+        //Update the follower count for the clicked user
+        admin.firestore()
+        .collection('users')
+        .doc(data.posterUID)
+        .set({
+            followerCount: data.posterFollowerCount + 1,
+        }, { merge: true })
+        .then(() => {
+            let hash = {
+                currentFollowingCount: data.currentFollowingCount + 1,
+                posterFollowerCount: data.posterFollowerCount + 1
+            };
+            resolve(hash);
+            return null;
+        })
+        .catch(err => {
+            console.log(`Error when updating clicked follower COUNT: ${err}`);
+            reject(err);
+        })
+
+    });
+
+
+});
+
 
 exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 
