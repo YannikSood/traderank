@@ -71,8 +71,8 @@ class Profile extends React.Component {
       try {
         const result = await Share.share({
           title: 'you are invited',
-          message: 'hey! i want you to join traderank!!', 
-          url: 'https://apps.apple.com/us/app/traderank/id1546959332'
+          message: `hey! i want you to join traderank!! follow me @${this.state.user.username}`,
+          url: 'https://apps.apple.com/us/app/traderank/id1546959332',
         });
         if (result.action === Share.sharedAction) {
           if (result.activityType) {
@@ -207,10 +207,10 @@ class Profile extends React.Component {
       // });
 
       Firebase.firestore()
-      .collection('users')
-      .doc(this.state.userUID)
-      .get()
-      .then((doc) => {
+        .collection('users')
+        .doc(this.state.userUID)
+        .get()
+        .then((doc) => {
           this.setState({
             postCount: doc.data().postCount,
             followerCount: doc.data().followerCount,
@@ -222,10 +222,11 @@ class Profile extends React.Component {
             instagram: doc.data().instagram,
             isLoading: false,
           });
-      }).catch(err => {
-          console.log("Error from pullUserInfo: " + err);
+        })
+        .catch((err) => {
+          console.log(`Error from pullUserInfo: ${err}`);
           reject(err);
-      })
+        });
     }
 
     gotToSettings() {
@@ -245,74 +246,54 @@ class Profile extends React.Component {
     }
 
     renderTwitterAndInstagram = () => {
-      if (this.state.twitter == undefined && this.state.instagram == undefined) {
+      if (this.state.twitter === undefined && this.state.instagram === undefined) {
         return (
           <View />
         );
       }
-      if (this.state.twitter != undefined && this.state.instagram == undefined) {
+      if (this.state.twitter !== undefined && this.state.instagram === undefined) {
         return (
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-            <Text
-              style={{ color: '#FFFFFF' }}
-              onPress={() => Linking.openURL(`http://twitter.com/${this.state.twitter}`)}
-            >
-              {' '}
-@
-              {this.state.twitter}
-              {' '}
-
-            </Text>
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <FontAwesome
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
+              name="twitter"
+              size={35}
+              color="#1DA1F2"
+            />
           </View>
         );
       }
-      if (this.state.twitter == undefined && this.state.instagram != undefined) {
+      if (this.state.twitter === undefined && this.state.instagram !== undefined) {
         return (
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <AntDesign name="instagram" size={18} color="#E1306C" />
-            <Text
-              style={{ color: '#FFFFFF' }}
-              onPress={() => Linking.openURL(`http://instagram.com/${this.state.instagram}`)}
-            >
-              {' '}
-@
-              {this.state.instagram}
-              {' '}
-
-            </Text>
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <AntDesign
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
+              name="instagram"
+              size={35}
+              color="#E1306C"
+            />
           </View>
         );
       }
 
       return (
-        <View>
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-            <Text
-              style={{ color: '#FFFFFF' }}
-              onPress={() => Linking.openURL(`http://twitter.com/${this.state.twitter}`)}
-            >
-              {' '}
-@
-              {this.state.twitter}
-              {' '}
-
-            </Text>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <FontAwesome
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
+              name="twitter"
+              size={35}
+              color="#1DA1F2"
+            />
           </View>
 
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <AntDesign name="instagram" size={18} color="#E1306C" />
-            <Text
-              style={{ color: '#FFFFFF' }}
-              onPress={() => Linking.openURL(`http://instagram.com/${this.state.instagram}`)}
-            >
-              {' '}
-@
-              {this.state.instagram}
-              {' '}
-
-            </Text>
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <AntDesign
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
+              name="instagram"
+              size={35}
+              color="#E1306C"
+            />
           </View>
         </View>
       );
@@ -342,7 +323,8 @@ class Profile extends React.Component {
             <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={styles.subheader}>
                 {' '}
-                {this.state.user.username}
+                @
+{this.state.user.username}
                 {' '}
               </Text>
             </View>
@@ -373,7 +355,7 @@ class Profile extends React.Component {
             </View>
 
 
-            <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
+            {/* <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
 
               <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
 
@@ -390,9 +372,12 @@ joined
 
               </Text>
 
+            </View> */}
+
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              { this.renderTwitterAndInstagram() }
             </View>
 
-            {this.renderTwitterAndInstagram()}
 
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
 
@@ -412,14 +397,15 @@ joined
 
 
             </View>
-            {/* <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <TouchableOpacity
                 style={styles.shareButton}
                 onPress={() => this.onShare()}
               >
                 <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
               </TouchableOpacity>
-            </View> */}
+            </View>
 
 
           </View>
@@ -447,7 +433,8 @@ joined
           <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.subheader}>
               {' '}
-              {this.state.user.username}
+              @
+{this.state.user.username}
               {' '}
             </Text>
           </View>
@@ -478,7 +465,7 @@ joined
           </View>
 
 
-          <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
+          {/* <View style={{ flexDirection: 'row', paddingLeft: 25, paddingTop: 15 }}>
 
             <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
 
@@ -495,9 +482,11 @@ joined
 
             </Text>
 
-          </View>
+          </View> */}
 
-          {this.renderTwitterAndInstagram()}
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            { this.renderTwitterAndInstagram() }
+          </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
 
@@ -515,17 +504,16 @@ joined
               <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>settings</Text>
             </TouchableOpacity>
 
-
           </View>
 
-          {/* <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity
               style={styles.shareButton}
               onPress={() => this.onShare()}
             >
               <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>invite friends to traderank</Text>
             </TouchableOpacity>
-          </View> */}
+          </View>
 
 
         </View>

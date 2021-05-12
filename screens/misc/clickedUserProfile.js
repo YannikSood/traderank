@@ -146,7 +146,7 @@ class ClickedUserProfile extends React.Component {
             posterInstagram: result.data.posterInstagram,
             isLoading: false,
           });
-          console.log(`date joined`);
+          console.log('date joined');
         }).catch((error) => {
           console.log(error);
         });
@@ -412,7 +412,7 @@ class ClickedUserProfile extends React.Component {
     renderAlertsButton = () => {
       if (this.state.alertsButtonLoading) {
         return (
-          <View >
+          <View>
             <ActivityIndicator size="small" color="#FFFFFF" />
           </View>
         );
@@ -420,25 +420,25 @@ class ClickedUserProfile extends React.Component {
       if (this.state.hasAlerts) {
         return (
           <View
-            style={{ paddingTop: 26, paddingLeft: 10 }}
+            style={{ paddingLeft: 10 }}
           >
             <TouchableOpacity
-              // style={styles.button2}
+          // style={styles.button2}
               onPress={() => {
                 this.removeUserFromUserAlerts();
               }}
-
             >
 
-              <MaterialCommunityIcons name="bell-check" size={30} color="#FFFFFF" />
+              <MaterialCommunityIcons name="bell-check" size={30} color="#FCAF45" />
             </TouchableOpacity>
 
           </View>
+
         );
       }
       return (
         <View
-          style={{ paddingTop: 26, paddingLeft: 10 }}
+          style={{ paddingLeft: 10 }}
         >
           <TouchableOpacity
             // style={styles.button}
@@ -447,9 +447,11 @@ class ClickedUserProfile extends React.Component {
             }}
           >
 
-            <MaterialCommunityIcons name="bell-cancel" size={30} color="#FFFFFF" />
+            <MaterialCommunityIcons name="bell-cancel" size={30} color="#FCAF45" />
           </TouchableOpacity>
         </View>
+
+
       );
     }
 
@@ -523,67 +525,47 @@ class ClickedUserProfile extends React.Component {
       }
       if (this.state.posterTwitter != undefined && this.state.posterInstagram == undefined) {
         return (
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <FontAwesome
               onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
-            >
-              {' '}
-@
-              {this.state.posterTwitter}
-              {' '}
-
-            </Text>
+              name="twitter"
+              size={35}
+              color="#1DA1F2"
+            />
           </View>
         );
       }
       if (this.state.posterTwitter == undefined && this.state.posterInstagram != undefined) {
         return (
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <AntDesign name="instagram" size={18} color="#E1306C" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <AntDesign
               onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
-            >
-              {' '}
-@
-              {this.state.posterInstagram}
-              {' '}
-
-            </Text>
+              name="instagram"
+              size={35}
+              color="#E1306C"
+            />
           </View>
         );
       }
 
       return (
-        <View>
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <FontAwesome name="twitter" size={19} color="#1DA1F2" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <FontAwesome
               onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
-            >
-              {' '}
-@
-              {this.state.posterTwitter}
-              {' '}
-
-            </Text>
+              name="twitter"
+              size={35}
+              color="#1DA1F2"
+            />
           </View>
 
-          <View style={{ flexDirection: 'row', paddingLeft: 24, paddingTop: 10 }}>
-            <AntDesign name="instagram" size={18} color="#E1306C" />
-            <Text
-              style={{ color: '#FFFFFF' }}
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <AntDesign
               onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
-            >
-              {' '}
-@
-              {this.state.posterInstagram}
-              {' '}
-
-            </Text>
+              name="instagram"
+              size={35}
+              color="#E1306C"
+            />
           </View>
         </View>
       );
@@ -612,8 +594,7 @@ class ClickedUserProfile extends React.Component {
             <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={styles.subheader}>
                 {' '}
-                {this.state.posterUsername}
-'s profile
+                @{this.state.posterUsername}
                 {' '}
               </Text>
             </View>
@@ -665,7 +646,7 @@ class ClickedUserProfile extends React.Component {
               </Text>
             </View>
 
-            <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
+            {/* <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
 
               <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
 
@@ -682,13 +663,13 @@ joined
 
               </Text>
 
-            </View>
+            </View> */}
 
-            { this.renderTwitterAndInstagram() }
 
             {/* { this.renderFollowsYou() } */}
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
               { this.renderFollowButton() }
+              { this.renderTwitterAndInstagram() }
               { this.renderAlertsButton() }
 
             </View>
@@ -717,8 +698,7 @@ joined
           <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.subheader}>
               {' '}
-              {this.state.posterUsername}
-'s profile
+              @{this.state.posterUsername}
               {' '}
             </Text>
           </View>
@@ -761,7 +741,7 @@ joined
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 15 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingTop: 10 }}>
             <Text style={styles.bioText}>
               {' '}
               {this.state.posterBio}
@@ -769,7 +749,7 @@ joined
             </Text>
           </View>
 
-          <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
+          {/* <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 25, paddingTop: 15 }}>
 
             <Text style={{ flexDirection: 'row', color: '#FFFFFF' }}>
 
@@ -786,13 +766,13 @@ joined
 
             </Text>
 
-          </View>
+          </View> */}
 
-          { this.renderTwitterAndInstagram() }
 
           {/* { this.renderFollowsYou() } */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             { this.renderFollowButton() }
+            { this.renderTwitterAndInstagram() }
             { this.renderAlertsButton() }
 
           </View>
@@ -919,7 +899,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   button: {
-    marginTop: 30,
+    // marginTop: 30,
     paddingVertical: 5,
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -931,7 +911,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button2: {
-    marginTop: 30,
+    // marginTop: 30,
     paddingVertical: 5,
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
@@ -943,7 +923,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button3: {
-    marginTop: 30,
+    // marginTop: 30,
     paddingVertical: 5,
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -954,7 +934,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
 
-  }
+  },
 });
 
 export default connect(mapStateToProps)(ClickedUserProfile);

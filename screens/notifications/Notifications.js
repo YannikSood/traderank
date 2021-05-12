@@ -220,12 +220,6 @@ class Notification extends React.Component {
                     </TouchableOpacity>
 
                    
-
-                    <TouchableOpacity  
-                    style = {styles.button} 
-                    onPress={() => this.onShare()} >
-                        <Text style = {styles.buttonText}>invite friends</Text>
-                    </TouchableOpacity>
                 </View>
             )
             
