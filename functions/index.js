@@ -839,7 +839,7 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
         const leaderboardGains = [];
-        let index = 1;
+        let index = data.index;
 
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -885,8 +885,84 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
 
             index++;
           });
-    })
+          resolve(leaderboardGains);
+          return null;
+
+        }).catch(err => {
+            console.log("Error from gainsCollection " + err);
+            reject(err);
+        })
+  
+    });
 });
+
+exports.getMore = functions.https.onCall((data, context) => {
+    return new Promise((resolve, reject) => {
+
+      
+            //   this.setState({ isLoading: true });
+              const lastItemIndex = data.lastItemIndex;
+              let index = lastItemIndex + 2;
+              console.log(index);
+        
+              const today = new Date();
+              const dd = String(today.getDate()).padStart(2, '0');
+              const mm = String(today.getMonth() + 1).padStart(2, '0');
+              const yyyy = today.getFullYear();
+              const newToday = mm + dd + yyyy;
+        
+                admin.firestore()
+                .collection('leaderboard')
+                .doc(newToday).collection('gains')
+                .orderBy('score', 'desc')
+                .startAfter(data.score) //this.state.leaderboardGains[lastItemIndex].score
+                .limit(7)
+                .get()
+                .then((query) => {
+                  const newLBGains = [];
+                  query.forEach((res) => {
+                    const {
+                      username,
+                      uid,
+                      image,
+                      ticker,
+                      security,
+                      description,
+                      percent_gain_loss,
+                      profit_loss,
+                      gain_loss,
+                      date_created,
+                      score,
+                    } = res.data();
+        
+                    newLBGains.push({
+                      key: res.id,
+                      username,
+                      uid,
+                      image,
+                      ticker,
+                      security,
+                      description,
+                      percent_gain_loss,
+                      profit_loss,
+                      gain_loss,
+                      index,
+                      date_created,
+                      score,
+                    });
+        
+                    index++;
+                  });
+                  resolve(newLBGains);
+                  return null;
+    
+                }).catch(err => {
+                    console.log("Errors from getMore " + err);
+                    reject(err);
+                })
+
+    });
+})
 
 exports.getUserNumbers = functions.https.onCall((data, context) => {
 
