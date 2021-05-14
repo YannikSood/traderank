@@ -43,16 +43,18 @@ class LeaderboardGains extends React.Component {
     // security: this.state.security,
     // postID: this.state.postID
     getCollection = async() => {
-      // const leaderboardGains = [];
+       const leaderboardGains = [];
       let index = 1;
-      this.setState({ isLoading: true });
+      //this.setState({ isLoading: true });
       const getGainsCollection = Firebase.functions().httpsCallable('getGainsCollection');
       getGainsCollection({
         index: index
       }).then((result) => {
-        console.log("Result from getCollection: " + result)
+        console.log("Before");
+        console.log("Result from getCollection: " + JSON.stringify(result))
+        console.log("After");
         this.setState({
-          leaderboardGains: result.leaderboardGains,
+          leaderboardGains: result.data,
           isLoading: false,
         });
 
@@ -115,7 +117,7 @@ class LeaderboardGains extends React.Component {
     }
 
     getMore = async() => {
-    //   this.setState({ isLoading: true });
+      //this.setState({ isLoading: true });
       const lastItemIndex = this.state.leaderboardGains.length - 1;
       // let index = lastItemIndex + 2;
       // console.log(index);
@@ -126,9 +128,9 @@ class LeaderboardGains extends React.Component {
         lastItemIndex: lastItemIndex
       })
       .then((result)=> {
-        console.log("Result from getMore: " + result);
+        console.log("Result from getMore: " + JSON.stringify(result));
         this.setState({
-          leaderboardGains: this.state.leaderboardGains.concat(result.newLBGains),
+          leaderboardGains: this.state.leaderboardGains.concat(result.data),
           isLoading: false,
         });
         
@@ -207,7 +209,7 @@ class LeaderboardGains extends React.Component {
           postID={item.key}
           navigation={navigation}
           index={item.index}
-          date_created={item.date_created.toDate()}
+          date_created={item.date_created._secon}
         />
       );
       if (this.state.isLoading) {

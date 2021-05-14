@@ -882,6 +882,7 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
               date_created,
               score,
             });
+            console.log(`leaderboard gains from index: ${leaderboardGains}, index ${index}`);
 
             index++;
           });
@@ -900,7 +901,7 @@ exports.getMore = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
 
       
-            //   this.setState({ isLoading: true });
+            
               const lastItemIndex = data.lastItemIndex;
               let index = lastItemIndex + 2;
               console.log(index);
@@ -915,7 +916,7 @@ exports.getMore = functions.https.onCall((data, context) => {
                 .collection('leaderboard')
                 .doc(newToday).collection('gains')
                 .orderBy('score', 'desc')
-                .startAfter(data.score) //this.state.leaderboardGains[lastItemIndex].score
+                .startAfter(data.score)
                 .limit(7)
                 .get()
                 .then((query) => {
