@@ -133,9 +133,13 @@ class FeedCellClass extends React.Component {
       if (this.state.posterUID == this.state.currentUser) {
         return (
           <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
+
             <View style={styles.buttonContainer}>
 
-              <LikeComponent postID={this.state.postID} />
+              <View style={{paddingTop: 2}}>
+                <LikeComponent postID={this.state.postID} />
+
+              </View>
 
             </View>
 
@@ -151,10 +155,10 @@ class FeedCellClass extends React.Component {
 
             <View style={styles.buttonContainer}>
 
-
-              <Ionicons name="eye-sharp" size={24} color="white" />
-              <Text style={{ color: '#FFFFFF', paddingLeft: 4}}>{this.state.viewsCount}</Text>
-
+              <View style={{ paddingBottom: 2, flexDirection: 'row' }}>
+                <Ionicons name="eye-sharp" size={24} color="white" />
+                <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{this.state.viewsCount}</Text>
+              </View>
 
             </View>
 
@@ -173,8 +177,9 @@ class FeedCellClass extends React.Component {
 
             <View style={styles.buttonContainer}>
 
-
-              <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
+              <View style={{ paddingBottom: 4 }}>
+                <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
+              </View>
 
             </View>
 
@@ -205,9 +210,10 @@ class FeedCellClass extends React.Component {
           <View style={styles.buttonContainer}>
 
 
-            <Ionicons name="eye-sharp" size={24} color="white" />
-            <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{this.state.viewsCount}</Text>
-
+            <View style={{ paddingBottom: 2, flexDirection: 'row' }}>
+              <Ionicons name="eye-sharp" size={24} color="white" />
+              <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{this.state.viewsCount}</Text>
+            </View>
 
           </View>
 

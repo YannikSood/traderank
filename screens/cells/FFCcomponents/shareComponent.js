@@ -93,7 +93,7 @@ class ShareComponent extends Component {
 
      render() {
        return (
-          <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF', paddingBottom: 4 }}>
               <TouchableOpacity
                   style={{ color: '#FFFFFF' }}
                   onPress={this.onShare}

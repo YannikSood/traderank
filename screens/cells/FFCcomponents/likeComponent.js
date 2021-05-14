@@ -266,15 +266,15 @@ class LikeComponent extends React.Component {
       //Connected to "Unlike" functionality
       if (this.state.isAlreadyLiked) {
         return (
-          <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', }}>
                 <TouchableOpacity onPress={() => {
                     this.removeFromLikedDB();
                   }}
                   >
-                    <Ionicons name="ios-heart" size={28} color="#00cc00" />
+                    <Ionicons name="ios-heart" size={26} color="#00cc00" />
 
                   </TouchableOpacity>
-                <Text style={{ color: 'white' }}>
+                <Text style={{ color: 'white', paddingTop: 5 }}>
                     {' '}
                     {this.state.likesCount}
                                     </Text>
@@ -285,17 +285,17 @@ class LikeComponent extends React.Component {
       //Connected to "Like" functionality
 
       return (
-        <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', color: 'FFFFFF'}}>
+        <View style={{ flexDirection: 'row',  color: 'FFFFFF'}}>
                 <TouchableOpacity
                     style={{ color: '#FFFFFF' }}
                     onPress={() => {
                         this.addToLikesDB();
                       }}
                   >
-                    <Ionicons name="ios-heart" size={28} color="white" />
+                    <Ionicons name="ios-heart" size={26} color="white" />
 
                   </TouchableOpacity>
-                <Text style={{ color: 'white' }}>
+                <Text style={{ color: 'white', paddingTop: 5 }}>
                     {' '}
                     {this.state.likesCount}
                                     </Text>

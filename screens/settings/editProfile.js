@@ -22,6 +22,8 @@ class EditProfile extends React.Component {
       newBio: '',
       profilePic: null,
       newProfilePicURL: '',
+      newPicPicked: false,
+      newPicChanged: false,
       oldProfilePic: 'oldProfilePic', //was getting warning that this (source:uri) cannot be blank
       isLoading: false,
       twitter: '',
@@ -48,6 +50,7 @@ class EditProfile extends React.Component {
             this.setState({
               oldBio: doc.data().bio,
               oldProfilePic: doc.data().profilePic,
+              profilePic: doc.data().profilePic,
               twitter: doc.data().twitter,
               instagram: doc.data().instagram,
             });
@@ -111,7 +114,7 @@ class EditProfile extends React.Component {
     }
 
     changeProfilePic = async() => {
-      const response = await fetch(this.state.profilePic.uri);
+      const response = await fetch(this.state.profilePic);
       const file = await response.blob();
       await Firebase
         .storage()
@@ -128,10 +131,11 @@ class EditProfile extends React.Component {
         .set({
           profilePic: this.state.newProfilePicURL,
         }, { merge: true })
+        .then(() => this.setState({ isLoading: false }))
+        .then(() => console.log('new profile pic set on frontend'))
         .catch((error) => {
           console.error('Error writing document to user collection: ', error);
-        })
-        .then(() => this.setState({ isLoading: false }));
+        });
     }
 
     openImagePickerAsync = async() => {
@@ -142,12 +146,16 @@ class EditProfile extends React.Component {
         return;
       }
 
-      const pickerResult = await ImagePicker.launchImageLibraryAsync();
+      const pickerResult = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+      });
 
       try {
         if (pickerResult.cancelled === true) {
           console.log('pickerResult is cancelled');
-          this.setState({ profilePic: null });
+          this.setState({
+            profilePic: this.state.oldProfilePic,
+          });
           return;
         }
 
@@ -155,11 +163,11 @@ class EditProfile extends React.Component {
           console.log('pickerResult not null');
 
           this.setState({
-            isLoading: true,
-            profilePic: pickerResult,
+            profilePic: pickerResult.uri,
+            newPicPicked: true,
           });
 
-          this.changeProfilePic();
+          console.log(this.state.profilePic);
         } else {
           console.log('pickerResult is null');
           return;
@@ -167,15 +175,12 @@ class EditProfile extends React.Component {
       } catch (error) {
         console.log(error);
       }
-      if (pickerResult.cancelled === true) {
-        console.log('pickerResult is cancelled');
-        this.setState({ profilePic: null });
-      }
     };
 
     //Function to update all profile info at once excpet image
-    saveChanges = () => {
-      if (this.state.newBio !== ' ') {
+    saveChanges = async() => {
+      this.setState({ isLoading: true });
+      if (this.state.newBio !== '') {
         this.changeBio();
       }
       if (this.state.twitter !== ' ') {
@@ -183,6 +188,9 @@ class EditProfile extends React.Component {
       }
       if (this.state.instagram !== ' ') {
         this.changeInstagram();
+      }
+      if (this.state.newPicPicked) {
+        this.changeProfilePic();
       }
     }
 
@@ -201,7 +209,7 @@ class EditProfile extends React.Component {
 
             <View style={{ alignItems: 'center' }}>
               <Image
-                source={{ uri: this.state.oldProfilePic }}
+                source={{ uri: this.state.profilePic }}
                 style={styles.thumbnail}
               />
 
@@ -270,7 +278,7 @@ class EditProfile extends React.Component {
                 <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>save changes</Text>
               </TouchableOpacity>
             </View>
-            
+
 
 
             <KeyboardSpacer />
@@ -340,7 +348,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     // marginBottom: 10,
   },
-  
+
 });
 
 export default connect(mapStateToProps)(EditProfile);
