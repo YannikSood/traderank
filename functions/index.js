@@ -834,7 +834,130 @@ exports.getPosterInfo = functions.https.onCall((data, context) => {
 
 
 });
+exports.getLossesCollection = functions.https.onCall((data, context) => {
+    return new Promise((resolve, reject) => {
 
+        let index = data.index;
+        const leaderboardLosses = [];
+
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        const newToday = mm + dd + yyyy;
+
+        admin.firestore().collection('leaderboard').doc(newToday).collection('losses')
+        .orderBy('score', 'desc')
+        .limit(6)
+        .get()
+        .then((query) => {
+          query.forEach((res) => {
+            const {
+              username,
+              uid,
+              image,
+              ticker,
+              security,
+              description,
+              percent_gain_loss,
+              profit_loss,
+              gain_loss,
+              date_created,
+              score,
+            } = res.data();
+
+            leaderboardLosses.push({
+              key: res.id,
+              username,
+              uid,
+              image,
+              ticker,
+              security,
+              description,
+              percent_gain_loss,
+              profit_loss,
+              gain_loss,
+              index,
+              date_created,
+              score,
+            });
+
+            index++;
+          });
+          resolve(leaderboardLosses);
+          return null;
+
+        
+        }).catch(err => {
+            console.log("getLosses: " + err);
+            reject(err);
+        })
+
+    });
+});
+
+exports.getMoreLosses = functions.https.onCall((data, context) => {
+    return new Promise((resolve, reject) => {
+        const lastItemIndex = data.lastItemIndex;
+        let index = lastItemIndex + 2;
+
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        const newToday = mm + dd + yyyy;
+
+        admin.firestore()
+        .collection('leaderboard')
+        .doc(newToday).collection('losses')
+        .orderBy('score', 'desc')
+        .startAfter(data.score)
+        .limit(7)
+        .get()
+        .then((query) => {
+          const newLBLosses = [];
+          query.forEach((res) => {
+            const {
+              username,
+              uid,
+              image,
+              ticker,
+              security,
+              description,
+              percent_gain_loss,
+              profit_loss,
+              gain_loss,
+              date_created,
+              score,
+            } = res.data();
+
+            newLBLosses.push({
+              key: res.id,
+              username,
+              uid,
+              image,
+              ticker,
+              security,
+              description,
+              percent_gain_loss,
+              profit_loss,
+              gain_loss,
+              index,
+              date_created,
+              score,
+            });
+
+            index++;
+          });
+          resolve(newLBLosses);
+          return null;
+        }).catch((err) => {
+            console.log("Error from getMoreLosses " + err);
+            reject(err);
+        })
+    });
+
+});
 exports.getGainsCollection = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -897,7 +1020,7 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
     });
 });
 
-exports.getMore = functions.https.onCall((data, context) => {
+exports.getMoreGains = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
 
       
@@ -958,7 +1081,7 @@ exports.getMore = functions.https.onCall((data, context) => {
                   return null;
     
                 }).catch(err => {
-                    console.log("Errors from getMore " + err);
+                    console.log("Errors from getMoreGains " + err);
                     reject(err);
                 })
 

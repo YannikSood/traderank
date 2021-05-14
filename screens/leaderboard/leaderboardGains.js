@@ -30,18 +30,6 @@ class LeaderboardGains extends React.Component {
       this.getCollection();
     };
 
-    //username: this.state.username,
-    // description: this.state.description,
-    // uid: this.state.uid,
-    // ticker: this.state.ticker,
-    // image: this.state.storage_image_uri,
-    // gain_loss: this.state.gain_loss,
-    // date_created: new Date(),
-    // likesCount: 0,
-    // profit_loss: this.state.profit_loss,
-    // percent_gain_loss: this.state.percent_gain_loss,
-    // security: this.state.security,
-    // postID: this.state.postID
     getCollection = async() => {
        const leaderboardGains = [];
       let index = 1;
@@ -50,9 +38,6 @@ class LeaderboardGains extends React.Component {
       getGainsCollection({
         index: index
       }).then((result) => {
-        console.log("Before");
-        console.log("Result from getCollection: " + JSON.stringify(result))
-        console.log("After");
         this.setState({
           leaderboardGains: result.data,
           isLoading: false,
@@ -61,58 +46,6 @@ class LeaderboardGains extends React.Component {
       }).catch(err => {
         console.log(err);
       })
-      
-
-      // const today = new Date();
-      // const dd = String(today.getDate()).padStart(2, '0');
-      // const mm = String(today.getMonth() + 1).padStart(2, '0');
-      // const yyyy = today.getFullYear();
-      // const newToday = mm + dd + yyyy;
-
-      // await Firebase.firestore().collection('leaderboard').doc(newToday).collection('gains')
-      //   .orderBy('score', 'desc')
-      //   .limit(6)
-      //   .get()
-      //   .then((query) => {
-      //     query.forEach((res) => {
-      //       const {
-      //         username,
-      //         uid,
-      //         image,
-      //         ticker,
-      //         security,
-      //         description,
-      //         percent_gain_loss,
-      //         profit_loss,
-      //         gain_loss,
-      //         date_created,
-      //         score,
-      //       } = res.data();
-
-      //       leaderboardGains.push({
-      //         key: res.id,
-      //         username,
-      //         uid,
-      //         image,
-      //         ticker,
-      //         security,
-      //         description,
-      //         percent_gain_loss,
-      //         profit_loss,
-      //         gain_loss,
-      //         index,
-      //         date_created,
-      //         score,
-      //       });
-
-      //       index++;
-      //     });
-
-      //     this.setState({
-      //       leaderboardGains,
-      //       isLoading: false,
-      //     });
-      //   });
         
     }
 
@@ -122,13 +55,12 @@ class LeaderboardGains extends React.Component {
       // let index = lastItemIndex + 2;
       // console.log(index);
 
-      const getMore = Firebase.functions().httpsCallable('getMore');
-      getMore({
+      const getMoreGains = Firebase.functions().httpsCallable('getMoreGains');
+      getMoreGains({
         score: this.state.leaderboardGains[lastItemIndex].score,
         lastItemIndex: lastItemIndex
       })
       .then((result)=> {
-        console.log("Result from getMore: " + JSON.stringify(result));
         this.setState({
           leaderboardGains: this.state.leaderboardGains.concat(result.data),
           isLoading: false,
@@ -139,58 +71,6 @@ class LeaderboardGains extends React.Component {
         console.log("Error from leadarboard gains getMore");
       })
 
-      // const today = new Date();
-      // const dd = String(today.getDate()).padStart(2, '0');
-      // const mm = String(today.getMonth() + 1).padStart(2, '0');
-      // const yyyy = today.getFullYear();
-      // const newToday = mm + dd + yyyy;
-
-      // await Firebase.firestore().collection('leaderboard').doc(newToday).collection('gains')
-      //   .orderBy('score', 'desc')
-      //   .startAfter(this.state.leaderboardGains[lastItemIndex].score)
-      //   .limit(7)
-      //   .get()
-      //   .then((query) => {
-      //     const newLBGains = [];
-      //     query.forEach((res) => {
-      //       const {
-      //         username,
-      //         uid,
-      //         image,
-      //         ticker,
-      //         security,
-      //         description,
-      //         percent_gain_loss,
-      //         profit_loss,
-      //         gain_loss,
-      //         date_created,
-      //         score,
-      //       } = res.data();
-
-      //       newLBGains.push({
-      //         key: res.id,
-      //         username,
-      //         uid,
-      //         image,
-      //         ticker,
-      //         security,
-      //         description,
-      //         percent_gain_loss,
-      //         profit_loss,
-      //         gain_loss,
-      //         index,
-      //         date_created,
-      //         score,
-      //       });
-
-      //       index++;
-      //     });
-
-      //     this.setState({
-      //       leaderboardGains: this.state.leaderboardGains.concat(newLBGains),
-      //       isLoading: false,
-      //     });
-      //   });
     }
 
     render() {
@@ -209,7 +89,7 @@ class LeaderboardGains extends React.Component {
           postID={item.key}
           navigation={navigation}
           index={item.index}
-          date_created={item.date_created._secon}
+          date_created={new Date(item.date_created.seconds * 1000 + item.date_created.nanoseconds/1000000)}
         />
       );
       if (this.state.isLoading) {
