@@ -30,133 +30,47 @@ class LeaderboardGains extends React.Component {
       this.getCollection();
     };
 
-    //username: this.state.username,
-    // description: this.state.description,
-    // uid: this.state.uid,
-    // ticker: this.state.ticker,
-    // image: this.state.storage_image_uri,
-    // gain_loss: this.state.gain_loss,
-    // date_created: new Date(),
-    // likesCount: 0,
-    // profit_loss: this.state.profit_loss,
-    // percent_gain_loss: this.state.percent_gain_loss,
-    // security: this.state.security,
-    // postID: this.state.postID
     getCollection = async() => {
-      const leaderboardGains = [];
+       const leaderboardGains = [];
       let index = 1;
-      this.setState({ isLoading: true });
-
-      const today = new Date();
-      const dd = String(today.getDate()).padStart(2, '0');
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const yyyy = today.getFullYear();
-      const newToday = mm + dd + yyyy;
-
-      await Firebase.firestore().collection('leaderboard').doc(newToday).collection('gains')
-        .orderBy('score', 'desc')
-        .limit(6)
-        .get()
-        .then((query) => {
-          query.forEach((res) => {
-            const {
-              username,
-              uid,
-              image,
-              ticker,
-              security,
-              description,
-              percent_gain_loss,
-              profit_loss,
-              gain_loss,
-              date_created,
-              score,
-            } = res.data();
-
-            leaderboardGains.push({
-              key: res.id,
-              username,
-              uid,
-              image,
-              ticker,
-              security,
-              description,
-              percent_gain_loss,
-              profit_loss,
-              gain_loss,
-              index,
-              date_created,
-              score,
-            });
-
-            index++;
-          });
-
-          this.setState({
-            leaderboardGains,
-            isLoading: false,
-          });
+     // this.setState({ isLoading: true });
+      const getGainsCollection = Firebase.functions().httpsCallable('getGainsCollection');
+      getGainsCollection({
+        index: index
+      }).then((result) => {
+        this.setState({
+          leaderboardGains: result.data,
+          isLoading: false,
         });
+
+      }).catch(err => {
+        console.log(err);
+      })
+        
     }
 
     getMore = async() => {
-    //   this.setState({ isLoading: true });
+      //this.setState({ isLoading: true });
       const lastItemIndex = this.state.leaderboardGains.length - 1;
-      let index = lastItemIndex + 2;
-      console.log(index);
+      // let index = lastItemIndex + 2;
+      // console.log(index);
 
-      const today = new Date();
-      const dd = String(today.getDate()).padStart(2, '0');
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const yyyy = today.getFullYear();
-      const newToday = mm + dd + yyyy;
-
-      await Firebase.firestore().collection('leaderboard').doc(newToday).collection('gains')
-        .orderBy('score', 'desc')
-        .startAfter(this.state.leaderboardGains[lastItemIndex].score)
-        .limit(7)
-        .get()
-        .then((query) => {
-          const newLBGains = [];
-          query.forEach((res) => {
-            const {
-              username,
-              uid,
-              image,
-              ticker,
-              security,
-              description,
-              percent_gain_loss,
-              profit_loss,
-              gain_loss,
-              date_created,
-              score,
-            } = res.data();
-
-            newLBGains.push({
-              key: res.id,
-              username,
-              uid,
-              image,
-              ticker,
-              security,
-              description,
-              percent_gain_loss,
-              profit_loss,
-              gain_loss,
-              index,
-              date_created,
-              score,
-            });
-
-            index++;
-          });
-
-          this.setState({
-            leaderboardGains: this.state.leaderboardGains.concat(newLBGains),
-            isLoading: false,
-          });
+      const getMoreGains = Firebase.functions().httpsCallable('getMoreGains');
+      getMoreGains({
+        score: this.state.leaderboardGains[lastItemIndex].score,
+        lastItemIndex: lastItemIndex
+      })
+      .then((result)=> {
+        this.setState({
+          leaderboardGains: this.state.leaderboardGains.concat(result.data),
+          isLoading: false,
         });
+        
+      })
+      .catch(err => {
+        console.log("Error from leadarboard gains getMore");
+      })
+
     }
 
     render() {
@@ -175,7 +89,7 @@ class LeaderboardGains extends React.Component {
           postID={item.key}
           navigation={navigation}
           index={item.index}
-          date_created={item.date_created.toDate()}
+          date_created={new Date(item.date_created.seconds * 1000 + item.date_created.nanoseconds/1000000)}
         />
       );
       if (this.state.isLoading) {
