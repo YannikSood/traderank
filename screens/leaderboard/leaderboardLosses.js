@@ -52,7 +52,7 @@ class LeaderboardLosses extends React.Component {
         }
 
         getMore = async() => {
-        //   this.setState({ isLoading: true });
+       // this.setState({ isLoading: true });
           const lastItemIndex = this.state.leaderboardLosses.length - 1;
           const getMoreLosses = Firebase.functions().httpsCallable("getMoreLosses");
           getMoreLosses({

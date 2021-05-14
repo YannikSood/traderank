@@ -33,7 +33,7 @@ class LeaderboardGains extends React.Component {
     getCollection = async() => {
        const leaderboardGains = [];
       let index = 1;
-      //this.setState({ isLoading: true });
+     // this.setState({ isLoading: true });
       const getGainsCollection = Firebase.functions().httpsCallable('getGainsCollection');
       getGainsCollection({
         index: index
