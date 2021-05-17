@@ -10,7 +10,7 @@ class LeaderboardLosses extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: false,
+      isLoading: true,
       leaderboardLosses: [],
       navigation: this.props.navigation,
     };

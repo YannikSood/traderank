@@ -10,7 +10,7 @@ class LeaderboardGains extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: false,
+      isLoading: true,
       leaderboardGains: [],
       navigation: this.props.navigation,
     };
@@ -120,6 +120,7 @@ class LeaderboardGains extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#000000',
   },
 });
