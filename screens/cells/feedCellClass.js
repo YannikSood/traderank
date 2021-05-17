@@ -136,7 +136,7 @@ class FeedCellClass extends React.Component {
 
             <View style={styles.buttonContainer}>
 
-              <View style={{paddingTop: 2}}>
+              <View style={{ paddingTop: 2 }}>
                 <LikeComponent postID={this.state.postID} />
 
               </View>
@@ -312,24 +312,31 @@ class FeedCellClass extends React.Component {
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingBottom: 5 }}>
             { this.renderGainLoss() }
             <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('SingleStockPosts', {
-                    ticker: this.state.ticker,
-                  })
+              onPress={() => this.props.navigation.navigate('SingleStockPosts', {
+                ticker: this.state.ticker,
+              })
                         }
-                  style={{ backgroundColor: '#696969', borderRadius: 15, marginLeft: 0, marginTop: 10, marginLeft: 2, padding: 0 }}
-                >
-                  <Text style={styles.tradeText}>
+              style={{ backgroundColor: 'transparent',
+                borderColor: '#696969',
+                borderWidth: 1,
+                borderRadius: 15,
+                marginTop: 10,
+                marginBottom: 12,
+                marginLeft: 5,
+                padding: 0 }}
+            >
+              <Text style={styles.tradeText}>
                         $
-                    {this.state.ticker}
-                  </Text>
+                {this.state.ticker}
+              </Text>
 
-                </TouchableOpacity>
+            </TouchableOpacity>
 
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#696969', paddingTop: 10, marginLeft: 10 }}>
     #
-                  {this.state.security}
-                  {' '}
-                </Text>
+              {this.state.security}
+              {' '}
+            </Text>
           </View>
 
           <TouchableOpacity onPress={() => this.openImageModal()}>

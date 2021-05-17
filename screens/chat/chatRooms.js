@@ -56,12 +56,7 @@ class ChatRooms extends React.Component {
         .then(() => this.getDailyNotifications())
         .then(() => this.getAnnouncementNotifications())
         .then(() => this.setState({ isLoading: false }));
-      
-
-
-      console.log("A " + this.state.hasAnnouncementNotifications)
-      console.log("DD " + this.state.hasDailyNotifications)
-      console.log("F " + this.state.hasFeedbackNotifications)
+    
     }
 
 

@@ -7,11 +7,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StatusBar } from 'expo-status-bar';
 
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import Firebase from './firebase.js';
 import  rootReducer  from './redux/rootReducer';
-import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 
 //Auth Imports
@@ -27,6 +27,7 @@ import GlobalScreen from './screens/home/GlobalScreen.js';
 import LeaderboardGains from './screens/leaderboard/leaderboardGains';
 import LeaderboardLosses from './screens/leaderboard/leaderboardLosses';
 import Chat from './screens/chat/chat';
+import ThoughtsFeed from './screens/thoughts/thoughts';
 import ChatRooms from './screens/chat/chatRooms';
 import SingleStockChat from './screens/chat/singleStockChat';
 import SingleStockPosts from './screens/misc/singleStockPosts';
@@ -156,7 +157,7 @@ const App = () => (
             title: ' ',
             headerTitleStyle: {
               fontWeight: 'bold',
-              fontSize: 20,
+              fontSize: 25,
               color: '#FFFFFF',
             },
             headerStyle: {
@@ -172,7 +173,7 @@ const App = () => (
             title: 'settings',
             headerTitleStyle: {
               fontWeight: 'bold',
-              fontSize: 20,
+              fontSize: 25,
               color: '#FFFFFF',
             },
             headerStyle: {
@@ -189,7 +190,7 @@ const App = () => (
             title: 'edit profile',
             headerTitleStyle: {
               fontWeight: 'bold',
-              fontSize: 20,
+              fontSize: 25,
               color: '#FFFFFF',
             },
             headerStyle: {
@@ -206,7 +207,7 @@ const App = () => (
             title: 'leaderboard',
             headerTitleStyle: {
               fontWeight: 'bold',
-              fontSize: 20,
+              fontSize: 25,
               color: '#FFFFFF',
             },
             headerStyle: {
@@ -223,7 +224,7 @@ const App = () => (
             title: route.params.ticker,
             headerTitleStyle: {
               fontWeight: 'bold',
-              fontSize: 20,
+              fontSize: 25,
               color: '#FFFFFF',
             },
             headerStyle: {
@@ -240,7 +241,24 @@ const App = () => (
             title: 'search',
             headerTitleStyle: {
               fontWeight: 'bold',
-              fontSize: 20,
+              fontSize: 25,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#121212',
+              shadowColor: 'transparent',
+            },
+            headerBackTitle: '',
+          }}
+        />
+        <Stack.Screen
+          name="ChatRooms"
+          component={chatRoomsStackView}
+          options={{
+            title: 'chat',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 25,
               color: '#FFFFFF',
             },
             headerStyle: {
@@ -355,18 +373,31 @@ const App = () => (
           name="Tabs"
           component={Tabs}
           options={({ navigation }) => ({
-            title: 'traderank',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              fontSize: 24,
-              color: '#FFFFFF',
-            },
+            title: ' ',
+            // headerTitleStyle: {
+            //   fontWeight: 'bold',
+            //   fontSize: 24,
+            //   color: '#FFFFFF',
+            // },
             headerStyle: {
               backgroundColor: '#000000',
               shadowColor: 'transparent',
             },
+            headerLeft: () => (
+              <View style={{ flexDirection: 'row', paddingLeft: 15 }}>
+                <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#FFFFFF' }}>trade</Text>
+                <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#07dbd1' }}>rank</Text>
+              </View>
+            ),
             headerRight: () => (
               <View style={{ flexDirection: 'row' }}>
+
+                <TouchableOpacity
+                  style={{ paddingRight: 20 }}
+                  onPress={() => navigation.navigate('ChatRooms')}
+                >
+                  <Ionicons name="md-chatbubbles" size={25} color="white" />
+                </TouchableOpacity>
 
                 <TouchableOpacity
                   style={{ paddingRight: 20 }}
@@ -456,7 +487,7 @@ function Tabs() {
         }}
       />
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="ChatRooms"
         component={chatRoomsStackView}
         options={{
@@ -465,6 +496,19 @@ function Tabs() {
             <Ionicons name="md-chatbubbles" size={25} color={color} />
           ),
           tabBarBadge: renderChatBadge(),
+
+
+        }}
+      /> */}
+      <Tab.Screen
+        name="Thoughts"
+        component={ThoughtsFeed}
+        options={{
+          tabBarLabel: ' ',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="ios-reader" size={size} color={color} />
+          ),
+          // tabBarBadge: renderChatBadge(),
 
 
         }}
@@ -935,7 +979,6 @@ function singleStockPostStack() {
 }
 
 
-
 //Global feed stack
 function globalFeedStackView() {
   return (
@@ -959,18 +1002,18 @@ function chatRoomsStackView() {
         name="ChatRooms"
         component={ChatRooms}
         options={({ navigation }) => ({
-          headerRight: () => (
-            <View style={{ flexDirection: 'row' }}>
+          // headerRight: () => (
+          //   <View style={{ flexDirection: 'row' }}>
 
-              <TouchableOpacity
-                style={{ paddingRight: 20 }}
-              >
-                <MaterialIcons name="add-box" size={24} color="white" />
-              </TouchableOpacity>
+          //     <TouchableOpacity
+          //       style={{ paddingRight: 20 }}
+          //     >
+          //       <MaterialIcons name="add-box" size={24} color="white" />
+          //     </TouchableOpacity>
 
-            </View>
+          //   </View>
 
-          ),
+          // ),
           title: ' ',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -981,6 +1024,7 @@ function chatRoomsStackView() {
             backgroundColor: '#000000',
             shadowColor: 'transparent',
           },
+          headerLeft: null,
 
         })}
       />
