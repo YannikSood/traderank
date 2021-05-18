@@ -52,8 +52,6 @@ class LeaderboardGains extends React.Component {
     getMore = async() => {
       //this.setState({ isLoading: true });
       const lastItemIndex = this.state.leaderboardGains.length - 1;
-      // let index = lastItemIndex + 2;
-      // console.log(index);
 
       const getMoreGains = Firebase.functions().httpsCallable('getMoreGains');
       getMoreGains({
