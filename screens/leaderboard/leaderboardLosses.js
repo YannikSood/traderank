@@ -38,9 +38,6 @@ class LeaderboardLosses extends React.Component {
           getLossesCollection({
             index: index
           }).then((result) => {
-            console.log("Before");
-            console.log("Result from getLossesCollection: " + JSON.stringify(result))
-            console.log("After");
             this.setState({
               leaderboardLosses: result.data,
               isLoading: false,
@@ -59,9 +56,6 @@ class LeaderboardLosses extends React.Component {
             lastItemIndex: lastItemIndex,
             score: this.state.leaderboardLosses[lastItemIndex].score
           }).then((result) => {
-            console.log("Before More");
-            console.log("Result from getMoreLosses: " + JSON.stringify(result))
-            console.log("After More");
             this.setState({
               leaderboardLosses: this.state.leaderboardLosses.concat(result.data),
               isLoading: false,
