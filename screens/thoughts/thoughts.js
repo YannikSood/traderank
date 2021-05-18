@@ -47,6 +47,7 @@ const ThoughtsFeed = (props) => {
   const [hasLink, setHasLink] = useState(false);
   const [addedLink, setAddedLink] = useState('');
   const [text, setText] = useState('');
+  const [thoughts, setThoughts] = useState([]);
   // const [thoughtsArray, setThoughtsArray] = useState([]);
 
   /**
@@ -63,21 +64,57 @@ const ThoughtsFeed = (props) => {
      * Anytime the postsLoading value changes, this useEffect will run
      */
   useEffect(() => {
+    getCollection();
     setIsLoading(postsLoading);
   }, [postsLoading]);
 
 
-  // const refresh = () => {
-  //   setIsLoading(true);
-  //   fetchCollection();
-  // };
+  const refresh = () => {
+    getCollection();
+  };
 
   // const handleFetchMorePosts = () => {
-  //   fetchMorePosts();
+  //   getMore();
+  // };
+
+  const recalculateCategory = (rowData) => {
+    setSelectedCategory(rowData);
+    getCollection();
+  };
+
+  const getCollection = async() => {
+    setIsLoading(true);
+    const index = 1;
+    const getThoughtsOneCategory = Firebase.functions().httpsCallable('getThoughtsOneCategory');
+    await getThoughtsOneCategory({
+      index,
+      category: selectedCategory,
+    }).then((result) => {
+      setThoughts(result.data);
+      setIsLoading(false);
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+
+  // const getMore = async() => {
+  //   setIsLoading(true);
+  //   const lastItemIndex = thoughts.length - 1;
+  //   const getMoreThoughtsOneCategory = Firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
+  //   getMoreThoughtsOneCategory({
+  //     index: lastItemIndex,
+  //     category: selectedCategory,
+  //     lastThought: thoughts[lastItemIndex],
+  //   }).then((result) => {
+  //     setThoughts(thoughts.concat(result.data));
+  //     setIsLoading(false);
+  //   }).catch((err) => {
+  //     console.log(err);
+  //   });
   // };
 
   //This uses minimal frontend server calls
-  //Uploads picture to storage so I didn't have to learn a new lib. Tired af. 
+  //Uploads picture to storage so I didn't have to learn a new lib. Tired af.
   //TODO: Move pic upload to the backend
   const handleSubmit = async() => {
     console.log(`${selectedId} ${text.trim()} `);
@@ -120,7 +157,7 @@ const ThoughtsFeed = (props) => {
               .put(file);
 
             const url = await Firebase.storage().ref(`screenshots/${user.id}/${docRef.id}`).getDownloadURL();
-            
+
             postNewThought({
               userUID: user.id,
               username: user.username,
@@ -210,22 +247,7 @@ const ThoughtsFeed = (props) => {
   };
 
   const renderItem = ({ item }) => (
-
-    <FeedCellClass
-      username={item.username}
-      description={item.description}
-      image={item.image}
-      security={item.security}
-      ticker={item.ticker}
-      percent_gain_loss={item.percent_gain_loss}
-      profit_loss={item.profit_loss}
-      gain_loss={item.gain_loss}
-      postID={item.key}
-      navigation={navigation}
-      date_created={item.date_created.toDate()}
-      uid={item.uid}
-      viewsCount={item.viewsCount}
-    />
+    <Text style={{ color: '#FFFFFF' }}>{item.description}</Text>
   );
 
 
@@ -395,7 +417,7 @@ const ThoughtsFeed = (props) => {
           style={styles.flatList}
           renderItem={({ item: rowData }) => (
             <TouchableOpacity
-              onPress={() => setSelectedCategory(rowData)}
+              onPress={() => recalculateCategory(rowData)}
               style={rowData === selectedCategory ? styles.selected : styles.unselected}
             >
               <Text style={{ fontWeight: 'bold', color: '#FFFFFF', padding: 6 }}>
@@ -408,18 +430,20 @@ const ThoughtsFeed = (props) => {
         />
       </View>
 
-      {/* <FlatList
-        ref={scrollRef}
-        data={globalPostsArray}
-        renderItem={renderItem}
-        keyExtractor={item => item.key}
-        contentContainerStyle={{ paddingBottom: 50 }}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        onRefresh={refresh}
-        refreshing={isLoading}
-        onEndReached={handleFetchMorePosts}
-      /> */}
+      <View>
+        <FlatList
+          ref={scrollRef}
+          data={thoughts}
+          renderItem={renderItem}
+          keyExtractor={item => item.key}
+          contentContainerStyle={{ marginTop: 25, paddingBottom: 50 }}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          onRefresh={refresh}
+          refreshing={isLoading}
+        />
+      </View>
+
       <TouchableOpacity
         style={styles.createButton}
         onPress={handleOpen}

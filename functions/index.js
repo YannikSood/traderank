@@ -522,6 +522,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
 });
 
 
+//USED IN CREATE WHEN A USER POSTS
 exports.sendUserAlertsNotication = functions.https.onCall((data, context) => {
 
     //data.posterUID
@@ -806,7 +807,9 @@ exports.pullUserInfo = functions.https.onCall((data, context) => {
     });
 
 });
-//clickedUserProfile
+
+
+//USED IN CLICKED PROFILE
 exports.getPosterInfo = functions.https.onCall((data, context) => {
     
     return new Promise((resolve, reject) => {
@@ -836,6 +839,8 @@ exports.getPosterInfo = functions.https.onCall((data, context) => {
 
 
 });
+
+//USED IN LEADERBOARD
 exports.getLossesCollection = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
 
@@ -898,7 +903,7 @@ exports.getLossesCollection = functions.https.onCall((data, context) => {
     });
 });
 
-//for leaderboard losses
+//USED IN LEADERBOARD
 exports.getMoreLosses = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
         const lastItemIndex = data.lastItemIndex;
@@ -961,7 +966,8 @@ exports.getMoreLosses = functions.https.onCall((data, context) => {
     });
 
 });
-//for leaderboard gains 
+
+//USED IN LEADERBOARD
 exports.getGainsCollection = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1023,7 +1029,8 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
   
     });
 });
-//get more gains
+
+//USED IN LEADERBOARD
 exports.getMoreGains = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
 
@@ -1090,7 +1097,8 @@ exports.getMoreGains = functions.https.onCall((data, context) => {
 
     });
 })
-//clickedUserProfile
+
+//USED IN CLICKED PROFILE
 exports.getUserNumbers = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1119,6 +1127,7 @@ exports.getUserNumbers = functions.https.onCall((data, context) => {
 
 });
 
+//USED IN CLICKED PROFILE
 exports.checkIsFollowing = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1153,6 +1162,7 @@ exports.checkIsFollowing = functions.https.onCall((data, context) => {
 
 });
 
+//USED IN CLICKED PROFILE
 exports.checkHasAlerts = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1188,6 +1198,7 @@ exports.checkHasAlerts = functions.https.onCall((data, context) => {
 
 });
 
+//USED IN CLICKED PROFILE
 exports.followUser = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1253,6 +1264,7 @@ exports.followUser = functions.https.onCall((data, context) => {
 
 });
 
+//USED IN CLICKED PROFILE
 exports.unfollowUser = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1314,6 +1326,7 @@ exports.unfollowUser = functions.https.onCall((data, context) => {
 
 });
 
+//USED IN CLICKED PROFILE
 exports.addUserToAlerts = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1342,6 +1355,7 @@ exports.addUserToAlerts = functions.https.onCall((data, context) => {
 
 });
 
+//USED IN CLICKED PROFILE
 exports.removeUserFromAlerts = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1369,6 +1383,7 @@ exports.removeUserFromAlerts = functions.https.onCall((data, context) => {
 });
 
 
+//USED IN CHAT
 exports.sendMentionsNotification = functions.https.onCall((data, context) => {
 
     //RecieverUID, senderUsername, Roomname
@@ -1429,6 +1444,7 @@ exports.sendMentionsNotification = functions.https.onCall((data, context) => {
     });
 });
 
+//USED IN THOUGHTS
 exports.postNewThought = functions.https.onCall((data, context) => {
 
     console.log(data.userUID);
@@ -1574,3 +1590,125 @@ exports.postNewThought = functions.https.onCall((data, context) => {
         });
     }
 });
+
+//USED IN THOUGHTS TO DISPLAY THE ARRAY
+exports.getThoughtsOneCategory = functions.https.onCall((data, context) => {
+
+    //Category
+    //Index?
+    return new Promise((resolve, reject) => {
+        const thoughts = [];
+        let index = data.index;
+
+        admin
+        .firestore()
+        .collection('thoughts')
+        .where("category", "==", data.category)
+        .orderBy('date_created', 'desc')
+        .limit(7)
+        .get()
+        .then((query) => {
+          query.forEach((res) => {
+            const {
+                username,
+                description,
+                image,
+                date_created,
+                likesCount,
+                commentsCount,
+                viewsCount,
+                category,
+                postID,
+                uid,
+                link,
+            } = res.data();
+
+            thoughts.push({
+              key: res.id,
+              username,
+                description,
+                image,
+                date_created,
+                likesCount,
+                commentsCount,
+                viewsCount,
+                category,
+                postID,
+                uid,
+                link,
+            });
+            console.log(`thoughts from index: ${thoughts}, index ${index}`);
+
+            index++;
+          });
+          resolve(thoughts);
+          return null;
+
+        }).catch(err => {
+            console.log("Error from getting first set of thoughts " + err);
+            reject(err);
+        })
+  
+    });
+});
+
+//USED IN THOUGHTS FOR PAGINATION
+exports.getMoreThoughtsOneCategory = functions.https.onCall((data, context) => {
+
+    //Category
+    //Last item index
+    //Last item index date
+    return new Promise((resolve, reject) => {
+                let index = data.index + 2;
+                const thoughts = [];
+
+                admin.firestore()
+                .collection('thoughts')
+                .where("category", "==", data.category)
+                .startAfter(data.lastThought.date_created)
+                .orderBy('date_created', 'desc')
+                .limit(7)
+                .get()
+                .then((query) => {
+                    query.forEach((res) => {
+                      const {
+                          username,
+                          description,
+                          image,
+                          date_created,
+                          likesCount,
+                          commentsCount,
+                          viewsCount,
+                          category,
+                          postID,
+                          uid,
+                          link,
+                      } = res.data();
+          
+                      thoughts.push({
+                        key: res.id,
+                        username,
+                          description,
+                          image,
+                          date_created,
+                          likesCount,
+                          commentsCount,
+                          viewsCount,
+                          category,
+                          postID,
+                          uid,
+                          link,
+                      });
+        
+                    index++;
+                  });
+                  resolve(thoughts);
+                  return null;
+    
+                }).catch(err => {
+                    console.log("Errors from getting more thoughts " + err);
+                    reject(err);
+                })
+
+    });
+})
