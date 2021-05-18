@@ -777,7 +777,7 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
  * })
  * 
  */
-
+//Profile
 exports.pullUserInfo = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
         admin.firestore()
@@ -806,7 +806,7 @@ exports.pullUserInfo = functions.https.onCall((data, context) => {
     });
 
 });
-
+//clickedUserProfile
 exports.getPosterInfo = functions.https.onCall((data, context) => {
     
     return new Promise((resolve, reject) => {
@@ -898,6 +898,7 @@ exports.getLossesCollection = functions.https.onCall((data, context) => {
     });
 });
 
+//for leaderboard losses
 exports.getMoreLosses = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
         const lastItemIndex = data.lastItemIndex;
@@ -960,6 +961,7 @@ exports.getMoreLosses = functions.https.onCall((data, context) => {
     });
 
 });
+//for leaderboard gains 
 exports.getGainsCollection = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
@@ -1021,7 +1023,7 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
   
     });
 });
-
+//get more gains
 exports.getMoreGains = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
 
@@ -1029,7 +1031,6 @@ exports.getMoreGains = functions.https.onCall((data, context) => {
             
               const lastItemIndex = data.lastItemIndex;
               let index = lastItemIndex + 2;
-              console.log(index);
         
               const today = new Date();
               const dd = String(today.getDate()).padStart(2, '0');
@@ -1089,7 +1090,7 @@ exports.getMoreGains = functions.https.onCall((data, context) => {
 
     });
 })
-
+//clickedUserProfile
 exports.getUserNumbers = functions.https.onCall((data, context) => {
 
     return new Promise((resolve, reject) => {
