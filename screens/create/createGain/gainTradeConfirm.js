@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from 'react-native-modal';
 
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../../firebase'
+import Firebase from '../../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,

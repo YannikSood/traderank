@@ -1,3 +1,5 @@
+/* eslint-disable promise/always-return */
+/* eslint-disable promise/no-nesting */
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
@@ -1424,4 +1426,150 @@ exports.sendMentionsNotification = functions.https.onCall((data, context) => {
     .catch((error) => {
         console.error("Error finding user: ", error);
     });
+});
+
+exports.postNewThought = functions.https.onCall((data, context) => {
+
+    console.log(data.userUID);
+    console.log(data.username);
+    console.log(data.description);
+    console.log(data.category);
+    console.log(data.image);
+    console.log(data.link);
+
+    if (data.image !== '') {
+        console.log("in image land");
+
+        return new Promise((resolve, reject) => {
+
+                admin.firestore()
+                .collection('thoughts')
+                .doc(data.docRefID)
+                .set({
+                    username: data.username,
+                    description: data.description,
+                    image: data.image,
+                    date_created: new Date(),
+                    likesCount: 0,
+                    commentsCount: 0,
+                    viewsCount: 0,
+                    category: data.category,
+                    uid: data.userUID,
+                    postID: data.docRefID,
+                    link: data.link
+                })
+                .then(() => {
+                    admin.firestore()
+                    .collection('users')
+                    .doc(data.userUID)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            admin.firestore()
+                            .collection('users')
+                            .doc(data.userUID)
+                            .set({
+                                postCount: doc.data().postCount + 1,
+                            }, { merge: true })
+                            .catch((error) => {
+                                console.error("Error writing document to user collection: ", error);
+                                reject(error);
+                            });
+
+                            let hash = {
+                                isFinished: true,
+                            };
+                            resolve(hash);
+                            return null;
+                        } else {
+                            console.log("No such document!");
+                            return null;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error writing document to user collection: ", error);
+                        reject(error);
+                    });
+                    
+                })
+                .catch((error) => {
+                    console.error("Error writing document to global posts: ", error);
+                    reject(error);
+                });
+
+        });
+    }
+    else {
+        console.log("in no image land");
+        return new Promise((resolve, reject) => {
+
+            admin.firestore()
+            .collection('thoughts')
+            .add({
+                uid: data.userUID,
+            })
+            .then((docRef) => {
+
+                admin.firestore()
+                .collection('thoughts')
+                .doc(docRef.id)
+                .set({
+                    username: data.username,
+                    description: data.description,
+                    image: '',
+                    date_created: new Date(),
+                    likesCount: 0,
+                    commentsCount: 0,
+                    viewsCount: 0,
+                    category: data.category,
+                    postID: docRef.id,
+                    uid: data.userUID,
+                    link: data.link
+                })
+                .then(() => {
+                    admin.firestore()
+                    .collection('users')
+                    .doc(data.userUID)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            admin.firestore()
+                            .collection('users')
+                            .doc(data.userUID)
+                            .set({
+                                postCount: doc.data().postCount + 1,
+                            }, { merge: true })
+                            .catch((error) => {
+                                console.error("Error writing document to user collection: ", error);
+                                reject(error);
+                            });
+
+                            let hash = {
+                                isFinished: true,
+                            };
+                            resolve(hash);
+                            return null;
+                        } else {
+                            console.log("No such document!");
+                            return null;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error writing document to user collection: ", error);
+                        reject(error);
+                    });
+                    
+                })
+                .catch((error) => {
+                    console.error("Error writing document to global posts: ", error);
+                    reject(error);
+                });
+            })
+            .catch((error) => {
+                console.error("Error storing and retrieving image url: ", error);
+                reject(error);
+            });
+
+        });
+    }
 });

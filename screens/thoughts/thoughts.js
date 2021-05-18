@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, Modal, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, Modal, Text, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as Analytics from 'expo-firebase-analytics';
 import { useScrollToTop } from '@react-navigation/native';
 import { MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserComponent';
 import FeedCellClass from '../cells/feedCellClass.js';
 import Firebase from '../../firebase';
@@ -41,10 +42,12 @@ const ThoughtsFeed = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('STOCKS');
-  const [image, setImage] = useState(null);
-  const [link, setLink] = useState(null);
+  const [image, setImage] = useState('');
+  const [hasImage, setHasImage] = useState(false);
+  const [hasLink, setHasLink] = useState(false);
+  const [addedLink, setAddedLink] = useState('');
   const [text, setText] = useState('');
-  const [thoughtsArray, setThoughtsArray] = useState([]);
+  // const [thoughtsArray, setThoughtsArray] = useState([]);
 
   /**
      * The `useEffect()` hook with an empty array replaces your `componentDidMount`
@@ -73,18 +76,15 @@ const ThoughtsFeed = (props) => {
   //   fetchMorePosts();
   // };
 
-  //Check if the flag is null -> Alert
-  //Check if the text is empty (remove all whitespace and check, otherwise we good) -> Alert
-  //Check if there is an image
-  //Check if there is a link
-  //Send it via functions
-  //Close the modal
-  const handleSubmit = () => {
+  //This uses minimal frontend server calls
+  //Uploads picture to storage so I didn't have to learn a new lib. Tired af. 
+  //TODO: Move pic upload to the backend
+  const handleSubmit = async() => {
     console.log(`${selectedId} ${text.trim()} `);
     if (selectedId === null) {
       Alert.alert(
-        'oops!',
-        "category can't be blank",
+        'wait',
+        'pick a category',
         [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],
@@ -99,6 +99,105 @@ const ThoughtsFeed = (props) => {
         ],
         { cancelable: false },
       );
+    }
+    if (text.trim() !== '' && selectedId !== null) {
+      setIsLoading(true);
+      //Send this stuff serverside
+      const postNewThought = Firebase.functions().httpsCallable('postNewThought');
+
+      if (image !== '') {
+        await Firebase.firestore()
+          .collection('thoughts')
+          .add({
+            uid: user.id,
+          })
+          .then(async(docRef) => {
+            const response = await fetch(image);
+            const file = await response.blob();
+            await Firebase
+              .storage()
+              .ref(`screenshots/${user.id}/${docRef.id}`)
+              .put(file);
+
+            const url = await Firebase.storage().ref(`screenshots/${user.id}/${docRef.id}`).getDownloadURL();
+            
+            postNewThought({
+              userUID: user.id,
+              username: user.username,
+              description: text,
+              category: selectedId,
+              image: url,
+              link: addedLink,
+              date_created: new Date(),
+              docRefID: docRef.id,
+            })
+              .then((result) => {
+                setIsLoading(false);
+                setModalOpen(false);
+                Analytics.logEvent('Thought_Posted');
+                Analytics.logEvent(`Thought_Category_${selectedId}`);
+              })
+              .catch((err) => {
+                console.log('Error from posting thought');
+              });
+          });
+      } else {
+        postNewThought({
+          userUID: user.id,
+          username: user.username,
+          description: text,
+          category: selectedId,
+          image,
+          link: addedLink,
+          date_created: new Date(),
+        })
+          .then((result) => {
+            setIsLoading(false);
+            setModalOpen(false);
+            Analytics.logEvent('Thought_Posted');
+            Analytics.logEvent(`Thought_Category_${selectedId}`);
+          })
+          .catch((err) => {
+            console.log('Error from posting thought');
+          });
+      }
+    }
+  };
+
+  const openImagePickerAsync = async() => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      setImage(null);
+      setHasImage(false);
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+    });
+
+    try {
+      if (pickerResult.cancelled === true) {
+        setHasImage(false);
+        console.log('pickerResult is cancelled');
+        return;
+      }
+
+      if (pickerResult !== null) {
+        setHasImage(true);
+        setImage(pickerResult.uri);
+        console.log(image);
+      } else {
+        setImage(null);
+        setHasImage(false);
+        console.log('pickerResult is null');
+        return;
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -129,26 +228,46 @@ const ThoughtsFeed = (props) => {
     />
   );
 
+
   //Image opens image picker, link opens a textbox to show the link?
   const renderModalMenu = () => (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
-      <View style={{ paddingLeft: 80, paddingTop: 10 }}>
-        <Entypo name="image" size={50} color="#696969" />
+      <TouchableOpacity
+        onPress={openImagePickerAsync}
+        style={{ paddingLeft: 80, paddingTop: 10 }}
+      >
+        {hasImage
+          ? <Image source={{ uri: image }} style={styles.thumbnail2} /> : <Entypo name="image" size={50} color="#696969" />}
 
-      </View>
+      </TouchableOpacity>
 
 
       <View style={styles.middleLineStyle} />
 
-      <View style={{ paddingRight: 80, paddingTop: 10 }}>
-        <Entypo name="link" size={50} color="#696969" />
+      {hasLink
+        ? (
+          <TouchableOpacity
+            onPress={() => setHasLink(false)}
+            style={{ paddingRight: 80, paddingTop: 10 }}
+          >
+            <Entypo name="link" size={50} color="#696969" />
 
-      </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => setHasLink(true)}
+            style={{ paddingRight: 80, paddingTop: 10 }}
+          >
+            <Entypo name="link" size={50} color="#696969" />
+
+          </TouchableOpacity>
+        )}
 
 
     </View>
   );
+
 
   const renderSendAndCancel = () => (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
@@ -239,6 +358,23 @@ const ThoughtsFeed = (props) => {
 
           { renderModalMenu() }
           <View style={styles.lineStyle} />
+
+          { hasLink
+            ? (
+              <View style={{ flexDirection: 'row' }}>
+                <TextInput
+                  style={{ width: Dimensions.get('window').width - 20, backgroundColor: '#121212', height: 24, borderBottomWidth: 1, borderColor: '#696969', color: '#0057D9', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
+                  placeholder=" paste a link here"
+                  placeholderTextColor="#696969"
+                  maxLength={480}
+                  value={addedLink}
+                  onChangeText={addedLink => setAddedLink(addedLink)}
+
+                />
+
+
+              </View>
+            ) : (<View />)}
           { renderSendAndCancel() }
 
           {/* <TouchableOpacity
@@ -249,13 +385,13 @@ const ThoughtsFeed = (props) => {
         </View>
 
       </Modal>
-      <View style={{position: 'absolute', left: 0, top: 0}}>
+      <View style={{ position: 'absolute', left: 0, top: 0 }}>
         <FlatList
           horizontal
-          data={flagOptions}
+          data={categories}
           extraData={
-        selectedCategory // for single item
-      }
+          selectedCategory // for single item
+        }
           style={styles.flatList}
           renderItem={({ item: rowData }) => (
             <TouchableOpacity
@@ -271,7 +407,6 @@ const ThoughtsFeed = (props) => {
           keyExtractor={(item, index) => item.toString()}
         />
       </View>
-
 
       {/* <FlatList
         ref={scrollRef}
@@ -307,6 +442,13 @@ const styles = StyleSheet.create({
   },
   view: {
     backgroundColor: '#000000',
+  },
+  thumbnail2: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+    // marginTop: 15,
+    // marginBottom: 15,
   },
   thumbnail: {
     width: 300,
