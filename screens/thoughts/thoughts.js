@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserComponent';
 import ThoughtsCell from '../cells/thoughtsCell';
 import Firebase from '../../firebase';
+import CachedImage from '../image/CachedImage';
 
 const ThoughtsFeed = (props) => {
   /**
@@ -280,7 +281,15 @@ const ThoughtsFeed = (props) => {
 
   const renderThumbnailForImageOrVideo = () => (
     <View>
-      { mediaType === 'image' ? <Image source={{ uri: image }} style={styles.thumbnail2} /> : <AntDesign name="checkcircle" size={50} color="white" /> }
+      
+      { mediaType === 'image' ? 
+      <CachedImage 
+        source={{ uri: `${this.state.image}` }}
+        cacheKey={`${this.state.image}t`}
+        backgroundColor="transparent"
+        style={styles.thumbnail2}
+      /> : 
+      <AntDesign name="checkcircle" size={50} color="white" /> }
     </View>
   );
 

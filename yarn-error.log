@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarnpkg add expo-linking@~2.0.1
+  /usr/local/bin/node /usr/local/bin/yarnpkg add expo-av@~8.7.0
 
 PATH: 
   /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/Users/kylelong/traderank/node_modules/@babel/core/node_modules/ms/index.js'
+  Error: EACCES: permission denied, mkdir '/Users/kylelong/traderank/node_modules/@babel/plugin-proposal-class-properties/node_modules/@babel/helper-compilation-targets/node_modules/@babel/core/node_modules/semver'
 
 npm manifest: 
   {
@@ -41,6 +41,7 @@ npm manifest:
       "autosuggest": "0.0.2",
       "dayjs": "^1.10.4",
       "expo": "^40.0.0",
+      "expo-av": "^9.1.2",
       "expo-firebase-analytics": "~2.6.0",
       "expo-image-picker": "~9.2.0",
       "expo-linking": "~2.0.0",
@@ -72,6 +73,7 @@ npm manifest:
       "react-native-screens": "~2.15.0",
       "react-native-tab-view": "^2.15.2",
       "react-native-timeago": "^0.5.0",
+      "react-native-video": "^5.1.1",
       "react-native-web": "^0.15.0",
       "react-native-windows": "^0.63.18",
       "react-navigation": "^4.4.2",
