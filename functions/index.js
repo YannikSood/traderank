@@ -1453,6 +1453,7 @@ exports.postNewThought = functions.https.onCall((data, context) => {
     console.log(data.category);
     console.log(data.image);
     console.log(data.link);
+    console.log(data.mediaType);
 
     if (data.image !== '') {
         console.log("in image land");
@@ -1473,7 +1474,8 @@ exports.postNewThought = functions.https.onCall((data, context) => {
                     category: data.category,
                     uid: data.userUID,
                     postID: data.docRefID,
-                    link: data.link
+                    link: data.link,
+                    mediaType: data.mediaType
                 })
                 .then(() => {
                     admin.firestore()
@@ -1541,7 +1543,8 @@ exports.postNewThought = functions.https.onCall((data, context) => {
                     category: data.category,
                     postID: docRef.id,
                     uid: data.userUID,
-                    link: data.link
+                    link: data.link,
+                    mediaType: 'none'
                 })
                 .then(() => {
                     admin.firestore()
@@ -1621,6 +1624,7 @@ exports.getThoughtsOneCategory = functions.https.onCall((data, context) => {
                 postID,
                 uid,
                 link,
+                mediaType,
             } = res.data();
 
             thoughts.push({
@@ -1636,6 +1640,7 @@ exports.getThoughtsOneCategory = functions.https.onCall((data, context) => {
                 postID,
                 uid,
                 link,
+                mediaType,
             });
             console.log(`thoughts from index: ${thoughts}, index ${index}`);
 
@@ -1683,6 +1688,7 @@ exports.getMoreThoughtsOneCategory = functions.https.onCall((data, context) => {
                           postID,
                           uid,
                           link,
+                          mediaType,
                       } = res.data();
           
                       thoughts.push({
@@ -1698,6 +1704,7 @@ exports.getMoreThoughtsOneCategory = functions.https.onCall((data, context) => {
                           postID,
                           uid,
                           link,
+                          mediaType,
                       });
         
                     index++;

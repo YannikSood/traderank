@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, Modal, Text, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, Modal, Text, TouchableOpacity, TextInput, Alert, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as Analytics from 'expo-firebase-analytics';
 import { useScrollToTop } from '@react-navigation/native';
-import { MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserComponent';
-import FeedCellClass from '../cells/feedCellClass.js';
+import ThoughtsCell from '../cells/thoughtsCell';
 import Firebase from '../../firebase';
 
 const ThoughtsFeed = (props) => {
@@ -22,8 +22,8 @@ const ThoughtsFeed = (props) => {
 
   // Props
   const { user, navigation, postsLoading } = props;
-  const flagOptions = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'RESEARCH', 'NEWS', 'TIPS', 'QUESTIONS'];
-  const categories = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'RESEARCH', 'NEWS', 'TIPS', 'QUESTIONS'];
+  const flagOptions = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'NEWS', 'TIPS', 'QUESTIONS'];
+  const categories = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'NEWS', 'TIPS', 'QUESTIONS'];
 
   /**
      * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
@@ -48,6 +48,7 @@ const ThoughtsFeed = (props) => {
   const [addedLink, setAddedLink] = useState('');
   const [text, setText] = useState('');
   const [thoughts, setThoughts] = useState([]);
+  const [mediaType, setMediaType] = useState('');
   // const [thoughtsArray, setThoughtsArray] = useState([]);
 
   /**
@@ -68,6 +69,9 @@ const ThoughtsFeed = (props) => {
     setIsLoading(postsLoading);
   }, [postsLoading]);
 
+  useEffect(() => {
+    getCollection();
+  }, [selectedCategory]);
 
   const refresh = () => {
     getCollection();
@@ -79,7 +83,15 @@ const ThoughtsFeed = (props) => {
 
   const recalculateCategory = (rowData) => {
     setSelectedCategory(rowData);
-    getCollection();
+  };
+
+  const clearAfterPost = () => {
+    setSelectedId(null);
+    setImage('');
+    setHasImage(false);
+    setHasLink(false);
+    setAddedLink('');
+    setText('');
   };
 
   const getCollection = async() => {
@@ -167,10 +179,12 @@ const ThoughtsFeed = (props) => {
               link: addedLink,
               date_created: new Date(),
               docRefID: docRef.id,
+              mediaType,
             })
               .then((result) => {
                 setIsLoading(false);
                 setModalOpen(false);
+                clearAfterPost();
                 Analytics.logEvent('Thought_Posted');
                 Analytics.logEvent(`Thought_Category_${selectedId}`);
               })
@@ -226,7 +240,9 @@ const ThoughtsFeed = (props) => {
       if (pickerResult !== null) {
         setHasImage(true);
         setImage(pickerResult.uri);
+        setMediaType(pickerResult.type);
         console.log(image);
+        console.log(pickerResult.type);
       } else {
         setImage(null);
         setHasImage(false);
@@ -247,9 +263,26 @@ const ThoughtsFeed = (props) => {
   };
 
   const renderItem = ({ item }) => (
-    <Text style={{ color: '#FFFFFF' }}>{item.description}</Text>
+
+    <ThoughtsCell
+      username={item.username}
+      description={item.description}
+      image={item.image}
+      postID={item.key}
+      navigation={navigation}
+      date_created={item.date_created}
+      uid={item.uid}
+      viewsCount={item.viewsCount}
+      link={item.link}
+      mediaType={item.mediaType}
+    />
   );
 
+  const renderThumbnailForImageOrVideo = () => (
+    <View>
+      { mediaType === 'image' ? <Image source={{ uri: image }} style={styles.thumbnail2} /> : <AntDesign name="checkcircle" size={50} color="white" /> }
+    </View>
+  );
 
   //Image opens image picker, link opens a textbox to show the link?
   const renderModalMenu = () => (
@@ -257,10 +290,10 @@ const ThoughtsFeed = (props) => {
 
       <TouchableOpacity
         onPress={openImagePickerAsync}
-        style={{ paddingLeft: 80, paddingTop: 10 }}
+        style={{ marginLeft: Dimensions.get('window').width / 5, paddingTop: 10 }}
       >
         {hasImage
-          ? <Image source={{ uri: image }} style={styles.thumbnail2} /> : <Entypo name="image" size={50} color="#696969" />}
+          ? renderThumbnailForImageOrVideo() : <Entypo name="image" size={50} color="#696969" /> }
 
       </TouchableOpacity>
 
@@ -271,7 +304,7 @@ const ThoughtsFeed = (props) => {
         ? (
           <TouchableOpacity
             onPress={() => setHasLink(false)}
-            style={{ paddingRight: 80, paddingTop: 10 }}
+            style={{ marginRight: Dimensions.get('window').width / 5, paddingTop: 10 }}
           >
             <Entypo name="link" size={50} color="#696969" />
 
@@ -279,7 +312,7 @@ const ThoughtsFeed = (props) => {
         ) : (
           <TouchableOpacity
             onPress={() => setHasLink(true)}
-            style={{ paddingRight: 80, paddingTop: 10 }}
+            style={{ marginRight: Dimensions.get('window').width / 5, paddingTop: 10 }}
           >
             <Entypo name="link" size={50} color="#696969" />
 
@@ -296,14 +329,14 @@ const ThoughtsFeed = (props) => {
 
       <TouchableOpacity
         onPress={handleClose}
-        style={{ paddingLeft: 70 }}
+        style={{ paddingLeft: Dimensions.get('window').width / 5.75 }}
       >
         <MaterialIcons name="cancel" size={70} color="red" />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={handleSubmit}
-        style={{ paddingRight: 70 }}
+        style={{ paddingRight: Dimensions.get('window').width / 5.75 }}
       >
         <MaterialCommunityIcons name="send-circle" size={70} color="#07dbd1" />
       </TouchableOpacity>
@@ -319,7 +352,7 @@ const ThoughtsFeed = (props) => {
       extraData={
         selectedId // for single item
       }
-      style={styles.flatList}
+      style={styles.flatListModal}
       renderItem={({ item: rowData }) => (
         <TouchableOpacity
           onPress={() => setSelectedId(rowData)}
@@ -346,15 +379,16 @@ const ThoughtsFeed = (props) => {
   return (
     <View style={styles.container}>
       <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalOpen}
-        onRequestClose={() => {
+          animationType="slide"
+          transparent={false}
+          visible={modalOpen}
+          onRequestClose={() => {
           setModalOpen(!modalOpen);
         }}
-      >
+        >
 
-        <View style={{ backgroundColor: '#121212', flex: 1, paddingTop: 50 }}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ backgroundColor: '#121212', flex: 1, paddingTop: 50 }}>
 
           <View style={{ paddingLeft: 5 }}>
             <UnclickableUserComponent uid={user.id} navigation={props.navigation} />
@@ -365,7 +399,7 @@ const ThoughtsFeed = (props) => {
           <View style={styles.lineStyle} />
 
           <TextInput
-            style={{ backgroundColor: '#121212', height: 240, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
+            style={{ backgroundColor: '#121212', height: 180, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
             placeholder="what's on your mind?"
             placeholderTextColor="#696969"
             maxLength={480}
@@ -405,8 +439,24 @@ const ThoughtsFeed = (props) => {
             <MaterialCommunityIcons name="pencil-circle" size={70} color="#07dbd1" />
           </TouchableOpacity> */}
         </View>
+        </TouchableWithoutFeedback>
 
-      </Modal>
+        </Modal>
+
+      <View>
+        <FlatList
+          ref={scrollRef}
+          data={thoughts}
+          renderItem={renderItem}
+          keyExtractor={item => item.key}
+          contentContainerStyle={{ marginTop: 45, paddingBottom: 50 }}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          onRefresh={refresh}
+          refreshing={isLoading}
+        />
+      </View>
+
       <View style={{ position: 'absolute', left: 0, top: 0 }}>
         <FlatList
           horizontal
@@ -427,20 +477,6 @@ const ThoughtsFeed = (props) => {
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => item.toString()}
-        />
-      </View>
-
-      <View>
-        <FlatList
-          ref={scrollRef}
-          data={thoughts}
-          renderItem={renderItem}
-          keyExtractor={item => item.key}
-          contentContainerStyle={{ marginTop: 25, paddingBottom: 50 }}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          onRefresh={refresh}
-          refreshing={isLoading}
         />
       </View>
 
@@ -585,6 +621,11 @@ const styles = StyleSheet.create({
   },
 
   flatList: {
+    height: 50,
+    backgroundColor: '#000000',
+    flexGrow: 0,
+  },
+  flatListModal: {
     height: 50,
     backgroundColor: 'transparent',
     flexGrow: 0,
