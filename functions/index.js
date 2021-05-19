@@ -1608,7 +1608,7 @@ exports.getThoughtsOneCategory = functions.https.onCall((data, context) => {
         .collection('thoughts')
         .where("category", "==", data.category)
         .orderBy('date_created', 'desc')
-        .limit(7)
+        .limit(9)
         .get()
         .then((query) => {
           query.forEach((res) => {
@@ -1663,6 +1663,7 @@ exports.getMoreThoughtsOneCategory = functions.https.onCall((data, context) => {
     //Category
     //Last item index
     //Last item index date
+    console.log(`thoughts from index: ${data.lastThought}, index ${data.index}`);
     return new Promise((resolve, reject) => {
                 let index = data.index + 2;
                 const thoughts = [];
@@ -1670,8 +1671,8 @@ exports.getMoreThoughtsOneCategory = functions.https.onCall((data, context) => {
                 admin.firestore()
                 .collection('thoughts')
                 .where("category", "==", data.category)
-                .startAfter(data.lastThought.date_created)
                 .orderBy('date_created', 'desc')
+                .startAfter(data.lastThought)
                 .limit(7)
                 .get()
                 .then((query) => {

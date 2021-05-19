@@ -150,6 +150,8 @@ const GlobalScreen = (props) => {
     const lastItemIndex = globalPostsArray.length - 1;
     Analytics.logEvent('More_5_Loaded');
 
+    console.log((globalPostsArray[lastItemIndex].date_created));
+
     await Firebase.firestore()
       .collection('globalPosts')
       .orderBy('date_created', 'desc')

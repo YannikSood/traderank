@@ -10,6 +10,7 @@ import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserCo
 import ThoughtsCell from '../cells/thoughtsCell';
 import Firebase from '../../firebase';
 
+//TODO: Add links + link previews
 const ThoughtsFeed = (props) => {
   /**
      * Any refs that you have in the component will be instantiated as a constant at the top of the function with the `useRef()` hook (which you will import from react),
@@ -109,21 +110,20 @@ const ThoughtsFeed = (props) => {
     });
   };
 
-  // const getMore = async() => {
-  //   setIsLoading(true);
-  //   const lastItemIndex = thoughts.length - 1;
-  //   const getMoreThoughtsOneCategory = Firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
-  //   getMoreThoughtsOneCategory({
-  //     index: lastItemIndex,
-  //     category: selectedCategory,
-  //     lastThought: thoughts[lastItemIndex],
-  //   }).then((result) => {
-  //     setThoughts(thoughts.concat(result.data));
-  //     setIsLoading(false);
-  //   }).catch((err) => {
-  //     console.log(err);
-  //   });
-  // };
+  const getMore = async() => {
+    const lastItemIndex = thoughts.length - 1;
+    console.log(thoughts[lastItemIndex].date_created);
+    // const getMoreThoughtsOneCategory = Firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
+    // getMoreThoughtsOneCategory({
+    //   index: lastItemIndex,
+    //   category: selectedCategory,
+    //   lastThought: thoughts[lastItemIndex].date_created.toDate(),
+    // }).then((result) => {
+    //   setThoughts(thoughts.concat(result.data));
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
+  };
 
   //This uses minimal frontend server calls
   //Uploads picture to storage so I didn't have to learn a new lib. Tired af.
@@ -233,6 +233,7 @@ const ThoughtsFeed = (props) => {
     try {
       if (pickerResult.cancelled === true) {
         setHasImage(false);
+        setImage('');
         console.log('pickerResult is cancelled');
         return;
       }
@@ -244,12 +245,14 @@ const ThoughtsFeed = (props) => {
         console.log(image);
         console.log(pickerResult.type);
       } else {
-        setImage(null);
+        setImage('');
         setHasImage(false);
         console.log('pickerResult is null');
         return;
       }
     } catch (error) {
+      setHasImage(false);
+      setImage('');
       console.log(error);
     }
   };
@@ -285,20 +288,20 @@ const ThoughtsFeed = (props) => {
   );
 
   //Image opens image picker, link opens a textbox to show the link?
-  const renderModalMenu = () => (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+  // const renderModalMenu = () => (
+  //   <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 
-      <TouchableOpacity
-        onPress={openImagePickerAsync}
-        style={{ marginLeft: Dimensions.get('window').width / 5, paddingTop: 10 }}
-      >
-        {hasImage
-          ? renderThumbnailForImageOrVideo() : <Entypo name="image" size={50} color="#696969" /> }
+  //     <TouchableOpacity
+  //       onPress={openImagePickerAsync}
+  //       style={{ paddingTop: 10 }}
+  //     >
+  //       {hasImage
+  //         ? renderThumbnailForImageOrVideo() : <Entypo name="image" size={50} color="#696969" /> }
 
-      </TouchableOpacity>
+  //     </TouchableOpacity>
 
 
-      <View style={styles.middleLineStyle} />
+      {/* <View style={styles.middleLineStyle} />
 
       {hasLink
         ? (
@@ -317,11 +320,11 @@ const ThoughtsFeed = (props) => {
             <Entypo name="link" size={50} color="#696969" />
 
           </TouchableOpacity>
-        )}
+        )} */}
 
 
-    </View>
-  );
+  //   </View>
+  // );
 
 
   const renderSendAndCancel = () => (
@@ -329,14 +332,23 @@ const ThoughtsFeed = (props) => {
 
       <TouchableOpacity
         onPress={handleClose}
-        style={{ paddingLeft: Dimensions.get('window').width / 5.75 }}
+        style={{ paddingLeft: Dimensions.get('window').width / 5, paddingRight: 25 }}
       >
         <MaterialIcons name="cancel" size={70} color="red" />
       </TouchableOpacity>
 
       <TouchableOpacity
+        onPress={openImagePickerAsync}
+        // style={{ paddingTop: 10 }}
+      >
+        {hasImage
+          ? renderThumbnailForImageOrVideo() : <MaterialCommunityIcons name="image-plus" size={70} color="#696969" /> }
+
+      </TouchableOpacity>
+
+      <TouchableOpacity
         onPress={handleSubmit}
-        style={{ paddingRight: Dimensions.get('window').width / 5.75 }}
+        style={{ paddingRight: Dimensions.get('window').width / 5, paddingLeft: 25 }}
       >
         <MaterialCommunityIcons name="send-circle" size={70} color="#07dbd1" />
       </TouchableOpacity>
@@ -412,10 +424,10 @@ const ThoughtsFeed = (props) => {
           <View style={styles.lineStyle} />
           {/* add image, Link, and flair*/}
 
-          { renderModalMenu() }
-          <View style={styles.lineStyle} />
+          {/* { renderModalMenu() } */}
+          {/* <View style={styles.lineStyle} /> */}
 
-          { hasLink
+          {/* { hasLink
             ? (
               <View style={{ flexDirection: 'row' }}>
                 <TextInput
@@ -430,14 +442,9 @@ const ThoughtsFeed = (props) => {
 
 
               </View>
-            ) : (<View />)}
+            ) : (<View />)} */}
           { renderSendAndCancel() }
 
-          {/* <TouchableOpacity
-            onPress={handleClose}
-          >
-            <MaterialCommunityIcons name="pencil-circle" size={70} color="#07dbd1" />
-          </TouchableOpacity> */}
         </View>
         </TouchableWithoutFeedback>
 
@@ -454,6 +461,7 @@ const ThoughtsFeed = (props) => {
           showsVerticalScrollIndicator={false}
           onRefresh={refresh}
           refreshing={isLoading}
+          onEndReached={getMore}
         />
       </View>
 
@@ -504,10 +512,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   thumbnail2: {
-    width: 50,
-    height: 50,
+    width: 55,
+    height: 55,
     borderRadius: 5,
-    // marginTop: 15,
+    marginTop: 10,
     // marginBottom: 15,
   },
   thumbnail: {
