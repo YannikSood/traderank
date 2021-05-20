@@ -16,10 +16,6 @@ class ProfilePic extends React.Component {
     render() {
         return (
             <View >
-                {/* <Image
-                    source={{ uri: this.state.storage_image_uri }}
-                    style={styles.thumbnail}
-                /> */}
                 <CachedImage
                   source={{ uri: `${this.state.storage_image_uri}` }}
                   cacheKey={`${this.state.storage_image_uri}t`}

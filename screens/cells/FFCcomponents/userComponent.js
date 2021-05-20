@@ -103,6 +103,12 @@ class UserComponent extends React.Component {
                             source={{ uri: this.state.posterPic }}
                             style={styles.thumbnail}
                         />
+                        {/* <CachedImage
+                          source={{ uri: `${this.state.posterPic}` }}
+                          cacheKey={`${this.state.posterPic}t`}
+                          backgroundColor="transparent"
+                          style={styles.thumbnail}
+                        /> */}
                         <Text style ={styles.tradeText}> {this.state.posterUsername}</Text>
                         
                     </TouchableOpacity>
