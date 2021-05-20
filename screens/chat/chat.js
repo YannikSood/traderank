@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Analytics from 'expo-firebase-analytics';
 import algoliasearch from 'algoliasearch/lite';
 import MiscUserComponent from '../cells/FollowCellComps/userComponent';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 const client = algoliasearch('5BS4R91W97', '0207d80e22ad5ab4d65fe92fed7958d7');
 const index = client.initIndex('usernames');
 
@@ -39,11 +39,11 @@ class Chat extends React.Component {
   async componentDidMount() {
     // console.log(this.state.roomName)
 
-    const userUID = Firebase.auth().currentUser.uid;
+    const userUID = firebase.auth().currentUser.uid;
     // get user info from firestore
     Analytics.setCurrentScreen(`ChatRoom_${this.state.roomName}`);
 
-    await Firebase.firestore().collection('users').doc(userUID).get()
+    await firebase.firestore().collection('users').doc(userUID).get()
       .then((doc) => {
         const data = doc.data();
         this.setState({
@@ -63,14 +63,14 @@ class Chat extends React.Component {
 
 
     getCurrentMessages = async() => {
-      Firebase.firestore()
+      firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('chatNotifications')
         .doc(this.state.roomName)
         .set({ hasChatNotifications: false }, { merge: true });
 
-      await Firebase
+      await firebase
         .firestore()
         .collection('chatRooms')
         .doc(this.state.roomName)
@@ -101,7 +101,7 @@ class Chat extends React.Component {
 
             if (messages[i].user.id === this.state.currentUser.id) {
               if (messages[i].user.avatar !== this.state.currentUser.avatar) {
-                Firebase.firestore().collection('chat').doc(messages[i]._id).set({
+                firebase.firestore().collection('chat').doc(messages[i]._id).set({
                   user: {
                     _id: this.state.currentUser.id,
                     name: this.state.currentUser.name,
@@ -127,7 +127,7 @@ class Chat extends React.Component {
     onSend = async(message) => {
       this.setState({ isTyping: true });
       const messageID = uuidv4();
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('chatRooms')
         .doc(this.state.roomName)
         .collection('messages')
@@ -175,7 +175,7 @@ class Chat extends React.Component {
     }
 
     sendChatNotification = async() => {
-      const sendChatNotifications = Firebase.functions().httpsCallable('sendChatNotifications');
+      const sendChatNotifications = firebase.functions().httpsCallable('sendChatNotifications');
       sendChatNotifications({
         senderUID: this.state.currentUser.id,
         roomName: this.state.roomName,
@@ -191,7 +191,7 @@ class Chat extends React.Component {
     getProfile = async(user) => {
       //Make sure the user is not clicking on their own profile. If they are, redirect them to the profile tab.
       //Removes the chance of them following themselves or having to show a different profile
-      if (Firebase.auth().currentUser.uid === user._id) {
+      if (firebase.auth().currentUser.uid === user._id) {
         // console.log(`${user.id} self`);
         this.props.navigation.navigate('Profile');
       } else {
@@ -215,7 +215,7 @@ class Chat extends React.Component {
     writeToUserNotifications = async(uid, message) => {
       console.log('Inside writeToUserNotifications', uid, message);
       if (this.state.currentUser.id != uid) {
-        const sendMentionsNotification = Firebase.functions().httpsCallable('sendMentionsNotification');
+        const sendMentionsNotification = firebase.functions().httpsCallable('sendMentionsNotification');
         sendMentionsNotification({
           senderUID:  this.state.currentUser.id,
           recieverUID: uid,

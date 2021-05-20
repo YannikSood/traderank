@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Text, KeyboardAvoidingView, Alert, Image, TouchableWithoutFeedback, Keyboard,} from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import * as ImagePicker from 'expo-image-picker';
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import * as Analytics from 'expo-firebase-analytics';
@@ -36,12 +36,12 @@ class Signup3 extends React.Component {
                 //Username, uid, email, [following, followers, post all 0] and profile pic
                     await this.uploadToStorage()
 
-                    await Firebase.firestore()
+                    await firebase.firestore()
                     .collection('users')
-                    .doc(Firebase.auth().currentUser.uid)
+                    .doc(firebase.auth().currentUser.uid)
                     .set ({
                         username: this.state.username,
-                        email: Firebase.auth().currentUser.email,
+                        email: firebase.auth().currentUser.email,
                         profilePic: this.state.storage_image_uri,
                         followerCount: 0,
                         followingCount: 0,
@@ -56,21 +56,21 @@ class Signup3 extends React.Component {
                     .catch(function(error) {
                         console.error("Error writing document to user collection: ", error);
                     })
-                    // .then(() => this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.uid, this.state.username))
+                    // .then(() => this.props.authUser(firebase.auth().currentUser.uid, firebase.auth().currentUser.uid, this.state.username))
                     // .then(() => this.props.navigation.navigate('Tabs'))
                     // .then(() => this.setState({ isLoading: false}))
 
                     //Now add a reference to the usernames so you can check n shit
-                    await Firebase.firestore()
+                    await firebase.firestore()
                     .collection('usernames')
                     .doc(this.state.username)
                     .set ({
-                        uid: Firebase.auth().currentUser.uid
+                        uid: firebase.auth().currentUser.uid
                     })
                     .catch(function(error) {
                         console.error("Error writing document to user collection: ", error);
                     })
-                    .then(() => this.props.authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.uid, this.state.username))
+                    .then(() => this.props.authUser(firebase.auth().currentUser.uid, firebase.auth().currentUser.uid, this.state.username))
                     .then(() => this.props.navigation.navigate('Tabs'))
                     .then(() => this.setState({ isLoading: false}))
                     
@@ -96,7 +96,7 @@ class Signup3 extends React.Component {
               this.setState({ isLoading: false})
         }
         else {
-            await Firebase.firestore()
+            await firebase.firestore()
             .collection('usernames')
             .doc(this.state.username)
             .get()
@@ -155,12 +155,12 @@ class Signup3 extends React.Component {
     uploadToStorage = async() => {
         const response = await fetch(this.state.profilePic.uri);
         const file = await response.blob();
-        await Firebase
+        await firebase
         .storage()
-        .ref(`profilePictures/${Firebase.auth().currentUser.uid}`)
+        .ref(`profilePictures/${firebase.auth().currentUser.uid}`)
         .put(file);
 
-        const url = await Firebase.storage().ref(`profilePictures/${Firebase.auth().currentUser.uid}`).getDownloadURL();
+        const url = await firebase.storage().ref(`profilePictures/${firebase.auth().currentUser.uid}`).getDownloadURL();
         this.setState({
             storage_image_uri: url
         })

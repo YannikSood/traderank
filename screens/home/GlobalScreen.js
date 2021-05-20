@@ -7,7 +7,7 @@ import { useScrollToTop } from '@react-navigation/native';
 import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
 import FeedCellClass from '../cells/feedCellClass.js';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 // import PostsReducer from '../../redux/Posts.Reducer';
 
 // Convert your React.Component to a function (functional component)
@@ -49,7 +49,7 @@ const GlobalScreen = (props) => {
   useEffect(() => {
     // useScrollToTop(scrollRef);
     fetchCollection();
-    Analytics.setUserId(Firebase.auth().currentUser.uid);
+    Analytics.setUserId(firebase.auth().currentUser.uid);
     Analytics.setCurrentScreen('GlobalScreen');
     fetchPermissions();
   }, []);
@@ -87,7 +87,7 @@ const GlobalScreen = (props) => {
         return token;
       })
       .then((token) => {
-        Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).set({
+        firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).set({
           token,
           pushStatus: pushStatus,
         }, { merge: true });
@@ -103,7 +103,7 @@ const GlobalScreen = (props) => {
     const tempGlobalPostsArray = [];
     Analytics.logEvent('First_5_Loaded');
 
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('globalPosts')
       .orderBy('date_created', 'desc')
       .limit(5)
@@ -152,7 +152,7 @@ const GlobalScreen = (props) => {
 
     console.log((globalPostsArray[lastItemIndex].date_created));
 
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('globalPosts')
       .orderBy('date_created', 'desc')
       .startAfter(globalPostsArray[lastItemIndex].date_created)

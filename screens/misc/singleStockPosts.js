@@ -7,7 +7,7 @@ import { useScrollToTop } from '@react-navigation/native';
 import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
 import FeedCellClass from '../cells/feedCellClass.js';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 // import PostsReducer from '../../redux/Posts.Reducer';
 
 
@@ -55,7 +55,7 @@ const SingleStockPosts = ({ props, route, navigation }) => {
   useEffect(() => {
     // useScrollToTop(scrollRef);
     fetchCollection();
-    Analytics.setUserId(Firebase.auth().currentUser.uid);
+    Analytics.setUserId(firebase.auth().currentUser.uid);
     Analytics.setCurrentScreen('SingleStockPosts_');
   }, []);
 
@@ -81,7 +81,7 @@ const SingleStockPosts = ({ props, route, navigation }) => {
     const tempGlobalPostsArray = [];
     Analytics.logEvent('First_5_Loaded');
 
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('globalPosts')
       .where('ticker', '==', ticker)
       .orderBy('date_created', 'desc')
@@ -129,7 +129,7 @@ const SingleStockPosts = ({ props, route, navigation }) => {
     const lastItemIndex = globalPostsArray.length - 1;
     Analytics.logEvent('More_5_Loaded');
 
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('globalPosts')
       .where('ticker', '==', ticker)
       .orderBy('date_created', 'desc')

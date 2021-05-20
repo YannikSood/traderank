@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Firebase from '../../../firebase';
+import firebase from '../../../firebase';
 import { clearUser } from '../../../redux/app-redux';
 
 const mapStateToProps = state => ({
@@ -29,7 +29,7 @@ class CommentIconComponent extends React.Component {
 
     //Get the poster userID
     getPostCommentsCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()

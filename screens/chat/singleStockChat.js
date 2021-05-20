@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect }from 'react'
 import { View, StyleSheet, ActivityIndicator, Text, TextInput, Dimensions, FlatList } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import Moment from 'moment'
 import { Ionicons } from '@expo/vector-icons';
 import 'react-native-get-random-values';
@@ -35,11 +35,11 @@ class SingleStockChat extends React.Component {
     async componentDidMount (){
         // console.log(this.state.roomName)
 
-        let userUID = Firebase.auth().currentUser.uid
+        let userUID = firebase.auth().currentUser.uid
         // get user info from firestore
         Analytics.setCurrentScreen(`ChatRoom_${this.state.ticker}`)
 
-        await Firebase.firestore().collection("users").doc(userUID).get()
+        await firebase.firestore().collection("users").doc(userUID).get()
         .then(doc => {
             const data = doc.data()
             this.setState({
@@ -59,14 +59,14 @@ class SingleStockChat extends React.Component {
     
 
     getCurrentMessages = async() => {
-      Firebase.firestore()
+      firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('chatNotifications')
         .doc(this.state.ticker)
         .set({ hasChatNotifications: false }, { merge: true });
 
-      await Firebase
+      await firebase
         .firestore()
         .collection('chatRooms')
         .doc(this.state.ticker)
@@ -97,7 +97,7 @@ class SingleStockChat extends React.Component {
 
             if (messages[i].user.id === this.state.currentUser.id) {
               if (messages[i].user.avatar !== this.state.currentUser.avatar) {
-                Firebase.firestore().collection('chat').doc(messages[i]._id).set({
+                firebase.firestore().collection('chat').doc(messages[i]._id).set({
                   user: {
                     _id: this.state.currentUser.id,
                     name: this.state.currentUser.name,
@@ -123,7 +123,7 @@ class SingleStockChat extends React.Component {
     onSend = async(message) => {
       this.setState({ isTyping: true });
       const messageID = uuidv4();
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('chatRooms')
         .doc(this.state.ticker)
         .collection('messages')
@@ -171,7 +171,7 @@ class SingleStockChat extends React.Component {
     }
 
     sendChatNotification = async() => {
-      const sendChatNotifications = Firebase.functions().httpsCallable('sendChatNotifications');
+      const sendChatNotifications = firebase.functions().httpsCallable('sendChatNotifications');
       sendChatNotifications({
         senderUID: this.state.currentUser.id,
         ticker: this.state.ticker,
@@ -187,7 +187,7 @@ class SingleStockChat extends React.Component {
     getProfile = async(user) => {
       //Make sure the user is not clicking on their own profile. If they are, redirect them to the profile tab.
       //Removes the chance of them following themselves or having to show a different profile
-      if (Firebase.auth().currentUser.uid === user._id) {
+      if (firebase.auth().currentUser.uid === user._id) {
         // console.log(`${user.id} self`);
         this.props.navigation.navigate('Profile');
       } else {
@@ -212,7 +212,7 @@ class SingleStockChat extends React.Component {
         console.log("Inside writeToUserNotifications", uid, message);
         if (this.state.currentUser.id != uid) {
 
-            const sendMentionsNotification = Firebase.functions().httpsCallable('sendMentionsNotification');
+            const sendMentionsNotification = firebase.functions().httpsCallable('sendMentionsNotification');
             sendMentionsNotification({
                 senderUID:  this.state.currentUser.id,
                 recieverUID: uid,

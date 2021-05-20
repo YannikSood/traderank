@@ -1,28 +1,30 @@
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 
 // Optionally import the services that you want to use
-import "firebase/auth";
+import 'firebase/auth';
 //import "firebase/database";
-import "firebase/firestore";
-import "firebase/functions";
-import "firebase/storage";
+import 'firebase/firestore';
+import 'firebase/functions';
+import 'firebase/storage';
 // import 'firebase/analytics';
 
 
-// Initialize Firebase
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Initialize firebase
+// For firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyBQ8dx9bkh9MHUbq5qeEKWlRYFHYAJD-uY",
-    authDomain: "traderank-288df.firebaseapp.com",
-    databaseURL: "https://traderank-288df.firebaseio.com",
-    projectId: "traderank-288df",
-    storageBucket: "traderank-288df.appspot.com",
-    messagingSenderId: "763046292820",
-    appId: "1:763046292820:web:fcc9a159f42abb83eeacc1",
-    measurementId: "G-XVT6SG0SP8"
-  };
-  
-// Initialize Firebase
-let Firebase = firebase.initializeApp(firebaseConfig)
+  apiKey: 'AIzaSyBQ8dx9bkh9MHUbq5qeEKWlRYFHYAJD-uY',
+  authDomain: 'traderank-288df.firebaseapp.com',
+  databaseURL: 'https://traderank-288df.firebaseio.com',
+  projectId: 'traderank-288df',
+  storageBucket: 'traderank-288df.appspot.com',
+  messagingSenderId: '763046292820',
+  appId: '1:763046292820:web:fcc9a159f42abb83eeacc1',
+  measurementId: 'G-XVT6SG0SP8',
+};
 
-export default Firebase
+// Initialize firebase
+
+firebase.initializeApp(firebaseConfig);
+// export const Time_stamp = firebase.firestore.Timestamp;
+
+export default firebase;

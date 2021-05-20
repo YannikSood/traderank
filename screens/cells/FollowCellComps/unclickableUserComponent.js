@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import Firebase from '../../../firebase'
+import firebase from '../../../firebase'
 import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -21,7 +21,7 @@ class UnclickableUserComponent extends React.Component {
       username: '',
       profilePic: '',
       isLoading: true,
-      currentUserUID: Firebase.auth().currentUser.uid,
+      currentUserUID: firebase.auth().currentUser.uid,
     };
   }
 
@@ -30,7 +30,7 @@ class UnclickableUserComponent extends React.Component {
   }
 
     getPosterUsername = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.uid)
         .get()

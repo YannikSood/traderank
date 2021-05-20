@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, ActivityIndicator, Image } from 'react-native'
-import Firebase from '../../../firebase'
+import firebase from '../../../firebase'
 
 
 class ProfilePic extends React.Component {

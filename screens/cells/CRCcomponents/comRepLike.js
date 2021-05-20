@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../../firebase'
+import firebase from '../../../firebase'
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -14,7 +14,7 @@ class CommentReplyLikeComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      likerUID: Firebase.auth().currentUser.uid,
+      likerUID: firebase.auth().currentUser.uid,
       likerUsername: this.props.user.username,
       postID: this.props.postID,
       commentID: this.props.commentID, //Top level comment ID
@@ -37,7 +37,7 @@ class CommentReplyLikeComponent extends React.Component {
 
     //Get the poster userID
     getPosterUID = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')
@@ -56,7 +56,7 @@ class CommentReplyLikeComponent extends React.Component {
             }
         });
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .get()
@@ -74,7 +74,7 @@ class CommentReplyLikeComponent extends React.Component {
 
     //Check to see if a user has liked a post
     hasLiked = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .collection('commentLikes')
@@ -99,7 +99,7 @@ class CommentReplyLikeComponent extends React.Component {
     //----------------------------------------------------------
     //Get the like count for initialization purposes upon mounting. Set likesCount to what the globalPosts ref says.
     getLikeCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')
@@ -123,7 +123,7 @@ class CommentReplyLikeComponent extends React.Component {
     addToLikeCount = async() => {
       Analytics.logEvent('Comment_Liked');
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')
@@ -137,7 +137,7 @@ class CommentReplyLikeComponent extends React.Component {
             commentLikes: this.state.commentLikes + 1,
           }),);
 
-      // await Firebase.firestore()
+      // await firebase.firestore()
       // .collection('users')
       // .doc(this.state.likerUID)
       // .set ({
@@ -151,7 +151,7 @@ class CommentReplyLikeComponent extends React.Component {
     }
 
     subtractFromLikeCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')
@@ -165,7 +165,7 @@ class CommentReplyLikeComponent extends React.Component {
             commentLikes: this.state.commentLikes - 1,
           }),);
 
-      // await Firebase.firestore()
+      // await firebase.firestore()
       // .collection('users')
       // .doc(this.state.likerUID)
       // .set ({
@@ -182,7 +182,7 @@ class CommentReplyLikeComponent extends React.Component {
     //----------------------------------------------------------
     //We now have all 3 variables. Time to start adding to the database. First, we add User1 to the global and post "likes" collection
     addToLikesDB = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('commentLikes')
         .doc(this.state.commentReplyID)
         .collection('commentLikes')
@@ -201,7 +201,7 @@ class CommentReplyLikeComponent extends React.Component {
 
     //Under users, they have a list of all the posts they have liked, stored for future display purposes (If liked, then shown the correct logo, and vice versa)
     addToUserList = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .collection('commentLikes')
@@ -218,7 +218,7 @@ class CommentReplyLikeComponent extends React.Component {
     //----------------------------------------------------------
     //Unlike functionality. Delete the document from the post likes collection
     removeFromLikedDB = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('commentLikes')
         .doc(this.state.commentReplyID)
         .collection('commentLikes')
@@ -235,7 +235,7 @@ class CommentReplyLikeComponent extends React.Component {
 
     //Unlike functionality. Delete the document from the user likes collection
     removeFromUserList = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .collection('commentLikes')
@@ -248,7 +248,7 @@ class CommentReplyLikeComponent extends React.Component {
 
     writeToUserNotifications = async() => {
         if (this.state.likerUID != this.state.posterUID) {
-            await Firebase.firestore()
+            await firebase.firestore()
             .collection('users')
             .doc(this.state.posterUID)
             .collection('notifications')
@@ -266,7 +266,7 @@ class CommentReplyLikeComponent extends React.Component {
                 console.error("Error writing document to user posts: ", error);
             });
 
-            const writeNotification = Firebase.functions().httpsCallable('writeNotification');
+            const writeNotification = firebase.functions().httpsCallable('writeNotification');
             writeNotification({ 
                 type: 3,
                 senderUID: this.state.likerUID,
@@ -288,7 +288,7 @@ class CommentReplyLikeComponent extends React.Component {
 
 
     removeFromUserNotifications = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.posterUID)
         .collection('notifications')

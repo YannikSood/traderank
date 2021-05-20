@@ -8,7 +8,8 @@ import { MaterialCommunityIcons, Entypo, MaterialIcons, AntDesign } from '@expo/
 import * as ImagePicker from 'expo-image-picker';
 import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserComponent';
 import ThoughtsCell from '../cells/thoughtsCell';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
+import 'firebase/firestore';
 
 //TODO: Add links + link previews
 const ThoughtsFeed = (props) => {
@@ -98,7 +99,7 @@ const ThoughtsFeed = (props) => {
   const getCollection = async() => {
     setIsLoading(true);
     const index = 1;
-    const getThoughtsOneCategory = Firebase.functions().httpsCallable('getThoughtsOneCategory');
+    const getThoughtsOneCategory = firebase.functions().httpsCallable('getThoughtsOneCategory');
     await getThoughtsOneCategory({
       index,
       category: selectedCategory,
@@ -113,16 +114,24 @@ const ThoughtsFeed = (props) => {
   const getMore = async() => {
     const lastItemIndex = thoughts.length - 1;
     console.log(thoughts[lastItemIndex].date_created);
-    // const getMoreThoughtsOneCategory = Firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
-    // getMoreThoughtsOneCategory({
-    //   index: lastItemIndex,
-    //   category: selectedCategory,
-    //   lastThought: thoughts[lastItemIndex].date_created.toDate(),
-    // }).then((result) => {
-    //   setThoughts(thoughts.concat(result.data));
-    // }).catch((err) => {
-    //   console.log(err);
-    // });
+    const seconds = thoughts[lastItemIndex].date_created._seconds;
+    // console.log(seconds);
+    const nanoseconds = thoughts[lastItemIndex].date_created._nanoseconds;
+    // console.log(nanoseconds);
+    const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds);
+    // const lastTime = new Time_stamp(seconds, nanoseconds);
+    console.log(lastTime);
+
+    const getMoreThoughtsOneCategory = firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
+    getMoreThoughtsOneCategory({
+      index: lastItemIndex,
+      category: selectedCategory,
+      lastThought: lastTime,
+    }).then((result) => {
+      setThoughts(thoughts.concat(result.data));
+    }).catch((err) => {
+      console.log(err);
+    });
   };
 
   //This uses minimal frontend server calls
@@ -152,10 +161,10 @@ const ThoughtsFeed = (props) => {
     if (text.trim() !== '' && selectedId !== null) {
       setIsLoading(true);
       //Send this stuff serverside
-      const postNewThought = Firebase.functions().httpsCallable('postNewThought');
+      const postNewThought = firebase.functions().httpsCallable('postNewThought');
 
       if (image !== '') {
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('thoughts')
           .add({
             uid: user.id,
@@ -163,12 +172,12 @@ const ThoughtsFeed = (props) => {
           .then(async(docRef) => {
             const response = await fetch(image);
             const file = await response.blob();
-            await Firebase
+            await firebase
               .storage()
               .ref(`screenshots/${user.id}/${docRef.id}`)
               .put(file);
 
-            const url = await Firebase.storage().ref(`screenshots/${user.id}/${docRef.id}`).getDownloadURL();
+            const url = await firebase.storage().ref(`screenshots/${user.id}/${docRef.id}`).getDownloadURL();
 
             postNewThought({
               userUID: user.id,
@@ -301,7 +310,7 @@ const ThoughtsFeed = (props) => {
   //     </TouchableOpacity>
 
 
-      {/* <View style={styles.middleLineStyle} />
+  { /* <View style={styles.middleLineStyle} />
 
       {hasLink
         ? (
@@ -320,7 +329,7 @@ const ThoughtsFeed = (props) => {
             <Entypo name="link" size={50} color="#696969" />
 
           </TouchableOpacity>
-        )} */}
+        )} */ }
 
 
   //   </View>
@@ -391,43 +400,43 @@ const ThoughtsFeed = (props) => {
   return (
     <View style={styles.container}>
       <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalOpen}
-          onRequestClose={() => {
+        animationType="slide"
+        transparent={false}
+        visible={modalOpen}
+        onRequestClose={() => {
           setModalOpen(!modalOpen);
         }}
-        >
+      >
 
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ backgroundColor: '#121212', flex: 1, paddingTop: 50 }}>
 
-          <View style={{ paddingLeft: 5 }}>
-            <UnclickableUserComponent uid={user.id} navigation={props.navigation} />
-          </View>
+            <View style={{ paddingLeft: 5 }}>
+              <UnclickableUserComponent uid={user.id} navigation={props.navigation} />
+            </View>
 
-          { renderFlags() }
+            { renderFlags() }
 
-          <View style={styles.lineStyle} />
+            <View style={styles.lineStyle} />
 
-          <TextInput
-            style={{ backgroundColor: '#121212', height: 180, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
-            placeholder="what's on your mind?"
-            placeholderTextColor="#696969"
-            maxLength={480}
-            value={text}
-            onChangeText={text => setText(text)}
-            multiline
-          />
+            <TextInput
+              style={{ backgroundColor: '#121212', height: 180, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
+              placeholder="what's on your mind?"
+              placeholderTextColor="#696969"
+              maxLength={480}
+              value={text}
+              onChangeText={text => setText(text)}
+              multiline
+            />
 
 
-          <View style={styles.lineStyle} />
-          {/* add image, Link, and flair*/}
+            <View style={styles.lineStyle} />
+            {/* add image, Link, and flair*/}
 
-          {/* { renderModalMenu() } */}
-          {/* <View style={styles.lineStyle} /> */}
+            {/* { renderModalMenu() } */}
+            {/* <View style={styles.lineStyle} /> */}
 
-          {/* { hasLink
+            {/* { hasLink
             ? (
               <View style={{ flexDirection: 'row' }}>
                 <TextInput
@@ -443,12 +452,12 @@ const ThoughtsFeed = (props) => {
 
               </View>
             ) : (<View />)} */}
-          { renderSendAndCancel() }
+            { renderSendAndCancel() }
 
-        </View>
+          </View>
         </TouchableWithoutFeedback>
 
-        </Modal>
+      </Modal>
 
       <View>
         <FlatList

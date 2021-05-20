@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, ActivityIndicator } from 'react-native';
 import TimeAgo from 'react-native-timeago';
 import { Ionicons } from '@expo/vector-icons';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import CommentUserComponent from './CFCcomponents/userCommentComponent';
 import CommentLikeComponent from './CFCcomponents/likeComponent';
 import CommentDeleteComponent from './CFCcomponents/deleteComponent';
@@ -14,14 +14,14 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
 
 
   const [isLoading, setIsLoading] = useState(false);
-  const currentUser = Firebase.auth().currentUser.uid;
+  const currentUser = firebase.auth().currentUser.uid;
   const [showDeleteComponent, setShowDeleteComponent] = useState(false);
   const [repliesArray, setRepliesArray] = useState([]);
   const [hasReplies, setHasReplies] = useState(false);
 
   useEffect(() => {
     // setIsLoading(true);
-    if (commentorUID === Firebase.auth().currentUser.uid) {
+    if (commentorUID === firebase.auth().currentUser.uid) {
       setShowDeleteComponent(true);
     }
     getFirstFiveReplies();
@@ -32,7 +32,7 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
     setIsLoading(true);
 
     let tempRepliesArray = [];
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('comments') // collection comments
       .doc(postID) // Which post?
       .collection('comments') //Get comments for this post

@@ -15,7 +15,7 @@ import ProfileBio from './profileComponents/profileBio.js';
 import FeedCellClass from '../cells/feedCellClass';
 
 //Redux
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -34,7 +34,7 @@ class Profile extends React.Component {
       followingCount: 0,
       isLoading: true,
       navigation: this.props.navigation,
-      userUID: Firebase.auth().currentUser.uid,
+      userUID: firebase.auth().currentUser.uid,
       userPostsArray: [],
       modalOpen: false,
       dateJoined: null,
@@ -42,11 +42,11 @@ class Profile extends React.Component {
       instagram: '',
     };
 
-    // console.log(Firebase.auth().currentUser.uid);
+    // console.log(firebase.auth().currentUser.uid);
 
-    this.firestoreRef = Firebase.firestore()
+    this.firestoreRef = firebase.firestore()
       .collection('globalPosts')
-      .where('uid', '==', `${Firebase.auth().currentUser.uid}`)
+      .where('uid', '==', `${firebase.auth().currentUser.uid}`)
       .orderBy('date_created', 'desc')
       .limit(5);
   }
@@ -130,9 +130,9 @@ class Profile extends React.Component {
     getMore = async() => {
       const lastItemIndex = this.state.userPostsArray.length - 1;
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
-        .where('uid', '==', `${Firebase.auth().currentUser.uid}`)
+        .where('uid', '==', `${firebase.auth().currentUser.uid}`)
         .orderBy('date_created', 'desc')
         .startAfter(this.state.userPostsArray[lastItemIndex].date_created)
         .limit(5)
@@ -184,7 +184,7 @@ class Profile extends React.Component {
       //Set it to state
       //Make sure to set isLoading to true when you call the function, and isLoading to false when it returns
 
-      // const getUserInfo = await Firebase.functions().httpsCallable('pullUserInfo');
+      // const getUserInfo = await firebase.functions().httpsCallable('pullUserInfo');
       // getUserInfo({
       //   userUID: this.state.userUID
       // })
@@ -206,7 +206,7 @@ class Profile extends React.Component {
       //     console.log("Error from getUserInfo in Profile.js" + error);
       // });
 
-      Firebase.firestore()
+      firebase.firestore()
         .collection('users')
         .doc(this.state.userUID)
         .get()

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import LikeComponent from './FFCcomponents/likeComponent'
 import UserComponent from './FFCcomponents/userComponent'
 import CommentIconComponent from './FFCcomponents/commentIconComponent'
@@ -29,7 +29,7 @@ class SearchCell extends React.Component{
             // navigation: this.props.navigation,
             // date_created: this.props.date_created,
             isLoading: false,
-            currentUser: Firebase.auth().currentUser.uid,
+            currentUser: firebase.auth().currentUser.uid,
         }
     }
 

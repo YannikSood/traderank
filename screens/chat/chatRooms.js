@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Dimensions, FlatList} from 'react-native';
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 
 class ChatRooms extends React.Component {
     constructor(props) {
@@ -32,15 +32,15 @@ class ChatRooms extends React.Component {
     setChatNotifications = async() => {
       this.setState({ isLoading: true });
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .set({ hasChatNotifications: false }, { merge: true });
     
       
-        await Firebase.firestore()
+        await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('chatNotifications')
         .doc('feedback')
         .get()
@@ -61,9 +61,9 @@ class ChatRooms extends React.Component {
 
 
     getDailyNotifications = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('chatNotifications')
         .doc('daily discussion')
         .get()
@@ -79,9 +79,9 @@ class ChatRooms extends React.Component {
     }
 
     getAnnouncementNotifications = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('chatNotifications')
         .doc('announcements')
         .get()

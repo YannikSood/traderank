@@ -10,7 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
-import Firebase from './firebase.js';
+import firebase from './firebase.js';
 import  rootReducer  from './redux/rootReducer';
 import reduxThunk from 'redux-thunk';
 
@@ -428,9 +428,9 @@ const App = () => (
 function renderBadge() {
   const [badge, setBadge] = useState(null);
 
-  Firebase.firestore()
+  firebase.firestore()
     .collection('users')
-    .doc(Firebase.auth().currentUser.uid)
+    .doc(firebase.auth().currentUser.uid)
     .onSnapshot((doc) => {
       if (doc.data().hasNotifications) {
         setBadge(true);
@@ -445,9 +445,9 @@ function renderBadge() {
 function renderChatBadge() {
   const [badge, setBadge] = useState(null);
 
-  Firebase.firestore()
+  firebase.firestore()
     .collection('users')
-    .doc(Firebase.auth().currentUser.uid)
+    .doc(firebase.auth().currentUser.uid)
     .onSnapshot((doc) => {
       if (doc.data().hasChatNotifications) {
         setBadge(true);

@@ -15,7 +15,7 @@ admin.initializeApp();
 //
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
+//   response.send("Hello from firebase!");
 // });
 
 //When a new user is created in the users collection in database, we can do something
@@ -684,7 +684,7 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
     index
         .saveObject(record)
         .then(() => {
-            console.log('Firebase object indexed in Algolia', data.username);
+            console.log('firebase object indexed in Algolia', data.username);
             return
         })
         .catch(err => {

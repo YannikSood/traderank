@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import LikeComponent from '../cells/FFCcomponents/likeComponent'
 import CommentComponent from '../cells/FFCcomponents/commentComponent'
 
@@ -23,7 +23,7 @@ class ClickedUserPostCell extends React.Component{
             navigation: this.props.navigation,
             cost_basis: this.props.cost_basis,
             isLoading: false,
-            currentUser: Firebase.auth().currentUser.uid,
+            currentUser: firebase.auth().currentUser.uid,
         }
     }
 

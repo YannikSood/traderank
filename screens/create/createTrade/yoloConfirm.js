@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from 'react-native-modal';
 
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../../firebase';
+import firebase from '../../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -35,12 +35,12 @@ class YoloConfirm extends React.Component {
     uploadToStorage = async(docRef) => {
       const response = await fetch(this.state.image.uri);
       const file = await response.blob();
-      await Firebase
+      await firebase
         .storage()
         .ref(`screenshots/${this.state.uid}/${docRef}`)
         .put(file);
 
-      const url = await Firebase.storage().ref(`screenshots/${this.state.uid}/${docRef}`).getDownloadURL();
+      const url = await firebase.storage().ref(`screenshots/${this.state.uid}/${docRef}`).getDownloadURL();
       this.setState({
         postID: docRef,
         storage_image_uri: url,
@@ -55,7 +55,7 @@ class YoloConfirm extends React.Component {
 
       Analytics.logEvent('Trade_Posted');
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .add({
           uid: this.state.uid,
@@ -66,7 +66,7 @@ class YoloConfirm extends React.Component {
         });
 
       //And now we are storing user posts. Now, we do the same thing for global posts, to display in the global feed
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .set({
@@ -91,7 +91,7 @@ class YoloConfirm extends React.Component {
           console.error('Error writing document to global posts: ', error);
         });
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('yolo')
         .doc(this.state.postID)
         .set({
@@ -117,9 +117,9 @@ class YoloConfirm extends React.Component {
         });
 
       //Update post count
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .set({
           postCount: this.state.postCount + 1,
         }, { merge: true })
@@ -127,9 +127,9 @@ class YoloConfirm extends React.Component {
           console.error('Error writing document to user collection: ', error);
         });
 
-      const sendUserAlertsNotication = Firebase.functions().httpsCallable('sendUserAlertsNotication');
+      const sendUserAlertsNotication = firebase.functions().httpsCallable('sendUserAlertsNotication');
       sendUserAlertsNotication({
-        posterUID: Firebase.auth().currentUser.uid,
+        posterUID: firebase.auth().currentUser.uid,
         posterUsername: this.state.username,
         postType: 'yolo',
       })
@@ -173,9 +173,9 @@ class YoloConfirm extends React.Component {
           { cancelable: false },
         );
       } else {
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('users')
-          .doc(Firebase.auth().currentUser.uid)
+          .doc(firebase.auth().currentUser.uid)
           .get()
           .then((doc) => {
             if (doc.exists) {

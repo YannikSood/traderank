@@ -5,7 +5,7 @@ import * as Analytics from 'expo-firebase-analytics';
 import { connect, useDispatch } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import UserComponent from '../cells/FFCcomponents/userComponent';
 import CommentCellClass from '../cells/commentCellClass';
 import CommentComponent from '../cells/FFCcomponents/commentComponent';
@@ -22,7 +22,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
 
 
   const [isLoading, setIsLoading] = useState(false);
-  const currentUser = Firebase.auth().currentUser.uid;
+  const currentUser = firebase.auth().currentUser.uid;
   const [currentUsername, setCurrentUsername] = useState('');
   const [commentsArray, setCommentsArray] = useState([]);
   const [currentViewsCount, setCurrentViewsCount] = useState(0);
@@ -35,7 +35,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
     Analytics.setCurrentScreen('CommentsScreen');
 
 
-    Firebase.firestore()
+    firebase.firestore()
       .collection('users')
       .doc(currentUser)
       .get()
@@ -58,7 +58,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
   };
 
   const setViewsCount = async() => {
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('globalPosts')
       .doc(postID)
       .get()
@@ -71,7 +71,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
         console.log(error);
       });
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(postID)
         .set({
@@ -81,7 +81,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
   };
 
 //   const setViewsCountPartTwo = async() => {
-//     await Firebase.firestore()
+//     await firebase.firestore()
 //     .collection('globalPosts')
 //     .doc(postID)
 //     .set({
@@ -92,7 +92,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
   const fetchCollection = async() => {
     const tempCommentsArray = [];
 
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('comments')
       .doc(postID)
       .collection('comments')
