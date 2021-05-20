@@ -28,6 +28,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
   const [currentViewsCount, setCurrentViewsCount] = useState(0);
   const [replyTo, setReplyTo] = useState('');
   const [replyData, setReplyData] = useState({});
+  const [fetchComments, setFetchComments] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
@@ -51,6 +52,12 @@ const ClickedPostPage = ({ props, route, navigation }) => {
 
     fetchCollection();
   }, []);
+
+  // useEffect(() => {
+  //   fetchCollection();
+  //   setFetchComments(true);
+  // }, [fetchComments])
+
 
   const refresh = () => {
     setIsLoading(true);
@@ -122,6 +129,7 @@ const ClickedPostPage = ({ props, route, navigation }) => {
 
         setCommentsArray(tempCommentsArray);
         setIsLoading(false);
+        // setFetchComments(false);
       });
   };
 
