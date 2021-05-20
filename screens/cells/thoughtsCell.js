@@ -70,7 +70,7 @@ class ThoughtsCell extends React.Component {
                 style={styles.thumbnail}
                 isLooping
                 useNativeControls
-                shouldPlay
+                // shouldPlay
               />
             </View>
           ) }

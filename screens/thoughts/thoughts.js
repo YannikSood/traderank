@@ -113,20 +113,15 @@ const ThoughtsFeed = (props) => {
 
   const getMore = async() => {
     const lastItemIndex = thoughts.length - 1;
-    console.log(thoughts[lastItemIndex].date_created);
     const seconds = thoughts[lastItemIndex].date_created._seconds;
-    // console.log(seconds);
     const nanoseconds = thoughts[lastItemIndex].date_created._nanoseconds;
-    // console.log(nanoseconds);
-    const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds);
-    // const lastTime = new Time_stamp(seconds, nanoseconds);
-    console.log(lastTime);
+    const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds); //-- the firebase timestamp
 
     const getMoreThoughtsOneCategory = firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
     getMoreThoughtsOneCategory({
       index: lastItemIndex,
       category: selectedCategory,
-      lastThought: lastTime,
+      date_created: lastTime.toMillis(),
     }).then((result) => {
       setThoughts(thoughts.concat(result.data));
     }).catch((err) => {
