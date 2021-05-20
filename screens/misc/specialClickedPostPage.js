@@ -11,7 +11,7 @@ import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent';
 import UserComponent from '../cells/FFCcomponents/userComponent';
 import CommentCellClass from '../cells/commentCellClass';
 import CommentComponent from '../cells/FFCcomponents/commentComponent';
-
+import CachedImage from '../image/CachedImage';
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
 });
@@ -203,11 +203,12 @@ $
           >
 
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
-
-              <Image
-                  source={{ uri: this.state.image }}
+              <CachedImage
+                  source={{ uri: `${this.state.image}` }}
+                  cacheKey={`${this.state.image}t`}
+                  backgroundColor="transparent"
                   style={styles.fullScreenImage}
-                />
+              />
             </View>
           </Modal>
 
@@ -248,10 +249,12 @@ $
             style={{ alignItems: 'center', marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2 }}
           >
 
-            <Image
-              source={{ uri: this.state.image }}
-              style={styles.thumbnail}
-            />
+              <CachedImage
+                  source={{ uri: `${this.state.image}` }}
+                  cacheKey={`${this.state.image}t`}
+                  backgroundColor="transparent"
+                  style={styles.thumbnail}
+              />
           </TouchableOpacity>
 
 

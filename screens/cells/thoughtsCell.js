@@ -58,10 +58,7 @@ class ThoughtsCell extends React.Component {
           { this.state.mediaType === 'image' ? (
             <TouchableOpacity onPress={() => this.openImageModal()}>
               <View style={styles.thumbnailContainer}>
-              {/* <Image
-                source={{ uri: this.state.image }}
-                style={styles.thumbnail}
-              /> */}
+    
                  <CachedImage
                   source={{ uri: `${this.state.image}` }}
                   cacheKey={`${this.state.image}t`}
@@ -104,11 +101,6 @@ class ThoughtsCell extends React.Component {
           >
 
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
-
-              {/* <Image
-                source={{ uri: this.state.image }}
-                style={styles.fullScreenImage}
-              /> */}
                 <CachedImage
                   source={{ uri: `${this.state.image}` }}
                   cacheKey={`${this.state.image}t`}
