@@ -8,8 +8,9 @@ import { MaterialCommunityIcons, Entypo, MaterialIcons, AntDesign } from '@expo/
 import * as ImagePicker from 'expo-image-picker';
 import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserComponent';
 import ThoughtsCell from '../cells/thoughtsCell';
-import firebase from '../../firebase';
-import 'firebase/firestore';
+import Firebase from '../../firebase';
+import CachedImage from '../image/CachedImage';
+
 
 //TODO: Add links + link previews
 const ThoughtsFeed = (props) => {
@@ -287,7 +288,15 @@ const ThoughtsFeed = (props) => {
 
   const renderThumbnailForImageOrVideo = () => (
     <View>
-      { mediaType === 'image' ? <Image source={{ uri: image }} style={styles.thumbnail2} /> : <AntDesign name="checkcircle" size={50} color="white" /> }
+      
+      { mediaType === 'image' ? 
+      <CachedImage 
+        source={{ uri: `${this.state.image}` }}
+        cacheKey={`${this.state.image}t`}
+        backgroundColor="transparent"
+        style={styles.thumbnail2}
+      /> : 
+      <AntDesign name="checkcircle" size={50} color="white" /> }
     </View>
   );
 

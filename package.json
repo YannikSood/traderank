@@ -24,7 +24,7 @@
     "autosuggest": "0.0.2",
     "dayjs": "^1.10.4",
     "expo": "^40.0.0",
-    "expo-av": "^9.1.2",
+    "expo-av": "~8.7.0",
     "expo-firebase-analytics": "~2.6.0",
     "expo-image-picker": "~9.2.0",
     "expo-linking": "~2.0.0",
