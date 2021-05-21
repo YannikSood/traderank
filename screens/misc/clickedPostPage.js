@@ -17,7 +17,8 @@ const mapStateToProps = state => ({
 });
 
 //Comments Page, when you click the comment button on a post
-const ClickedPostPage = ({ props, route, navigation }) => {
+const ClickedPostPage = (props) => {
+  const { user, route, navigation } = props;
   const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, date_created } = route.params;
 
 
@@ -71,24 +72,23 @@ const ClickedPostPage = ({ props, route, navigation }) => {
         console.log(error);
       });
 
-      await firebase.firestore()
-        .collection('globalPosts')
-        .doc(postID)
-        .set({
+    await firebase.firestore()
+      .collection('globalPosts')
+      .doc(postID)
+      .set({
         viewsCount: currentViewsCount + 1,
-        }, { merge: true });
-    
+      }, { merge: true });
   };
 
-//   const setViewsCountPartTwo = async() => {
-//     await firebase.firestore()
-//     .collection('globalPosts')
-//     .doc(postID)
-//     .set({
-//       viewsCount: currentViewsCount + 1,
-//     }, { merge: true });
-//   }
- 
+  //   const setViewsCountPartTwo = async() => {
+  //     await firebase.firestore()
+  //     .collection('globalPosts')
+  //     .doc(postID)
+  //     .set({
+  //       viewsCount: currentViewsCount + 1,
+  //     }, { merge: true });
+  //   }
+
   const fetchCollection = async() => {
     const tempCommentsArray = [];
 

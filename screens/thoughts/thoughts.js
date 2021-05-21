@@ -25,8 +25,8 @@ const ThoughtsFeed = (props) => {
 
   // Props
   const { user, navigation, postsLoading } = props;
-  const flagOptions = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'NEWS', 'TIPS', 'QUESTIONS'];
-  const categories = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'NEWS', 'TIPS', 'QUESTIONS'];
+  const flagOptions = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
+  const categories = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
 
   /**
      * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
@@ -44,7 +44,7 @@ const ThoughtsFeed = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('STOCKS');
+  const [selectedCategory, setSelectedCategory] = useState('DISCUSS');
   const [image, setImage] = useState('');
   const [hasImage, setHasImage] = useState(false);
   const [hasLink, setHasLink] = useState(false);

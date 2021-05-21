@@ -7,8 +7,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import firebase from '../../firebase';
 import LikeComponent from './FFCcomponents/likeComponent';
-import UserComponent from './FFCcomponents/userComponent';
-import ShareComponent from './FFCcomponents/shareComponent';
 import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import DeleteComponent from './FFCcomponents/deleteComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
@@ -80,6 +78,89 @@ class ThoughtsCell extends React.Component {
           ) }
         </View>
     )
+
+    renderCellComponents = () => {
+      if (this.state.posterUID === this.state.currentUser) {
+        return (
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
+
+            <View style={styles.buttonContainer}>
+
+              <View style={{ paddingTop: 2 }}>
+                <LikeComponent postID={this.state.postID} />
+
+              </View>
+
+            </View>
+
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => this.showPostPage()}
+            >
+
+
+              <CommentIconComponent postID={this.state.postID} />
+
+            </TouchableOpacity>
+
+            {/* <View style={styles.buttonContainer}>
+
+              <ShareComponent
+                postID={this.state.postID}
+                image={this.state.image}
+                gain_loss={this.state.gain_loss}
+                profit_loss={this.state.profit_loss}
+              />
+
+            </View> */}
+
+
+            <View style={styles.buttonContainer}>
+
+              <View style={{ paddingBottom: 4 }}>
+                <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
+              </View>
+
+            </View>
+
+          </View>
+        );
+      }
+      return (
+
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
+
+          <View style={styles.buttonContainer}>
+
+            <LikeComponent postID={this.state.postID} />
+
+          </View>
+
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => this.showPostPage()}
+          >
+
+
+            <CommentIconComponent postID={this.state.postID} />
+
+          </TouchableOpacity>
+
+          {/* <View style={styles.buttonContainer}>
+
+            <ShareComponent
+              postID={this.state.postID}
+              image={this.state.image}
+              gain_loss={this.state.gain_loss}
+              profit_loss={this.state.profit_loss}
+            />
+
+          </View> */}
+
+
+        </View>
+      );
+    }
 
     render() {
       if (this.state.isLoading) {

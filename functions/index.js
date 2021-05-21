@@ -1488,7 +1488,7 @@ exports.postNewThought = functions.https.onCall((data, context) => {
                             .collection('users')
                             .doc(data.userUID)
                             .set({
-                                postCount: doc.data().postCount + 1,
+                                thoughtsCount: doc.data().thoughtsCount + 1,
                             }, { merge: true })
                             .catch((error) => {
                                 console.error("Error writing document to user collection: ", error);
@@ -1557,7 +1557,7 @@ exports.postNewThought = functions.https.onCall((data, context) => {
                             .collection('users')
                             .doc(data.userUID)
                             .set({
-                                postCount: doc.data().postCount + 1,
+                                thoughtsCount: doc.data().thoughtsCount + 1,
                             }, { merge: true })
                             .catch((error) => {
                                 console.error("Error writing document to user collection: ", error);
