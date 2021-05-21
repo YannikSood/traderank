@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import MiscUserComponent from './FollowCellComps/userComponent';
 
 
@@ -13,7 +13,7 @@ class FollowCell extends React.Component {
       uid: this.props.uid,
       navigation: this.props.navigation,
       isLoading: false,
-      currentUser: Firebase.auth().currentUser.uid,
+      currentUser: firebase.auth().currentUser.uid,
     };
   }
 

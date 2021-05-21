@@ -5,7 +5,7 @@ import Modal from 'react-native-modal';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import { connect } from 'react-redux';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import LikeComponent from '../cells/FFCcomponents/likeComponent';
 import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent';
 import UserComponent from '../cells/FFCcomponents/userComponent';
@@ -34,7 +34,7 @@ class SpecialClickedPostPage extends React.Component {
       postID: this.props.route.params.postID,
       navigation: this.props.navigation,
       isLoading: true,
-      currentUser: Firebase.auth().currentUser.uid,
+      currentUser: firebase.auth().currentUser.uid,
       date_created: this.props.route.params.date_created,
       commentsArray: [],
       modalOpen: false,
@@ -43,7 +43,7 @@ class SpecialClickedPostPage extends React.Component {
       replyData: {},
     };
 
-    this.firestoreRef = Firebase.firestore()
+    this.firestoreRef = firebase.firestore()
       .collection('comments')
       .doc(this.state.postID)
       .collection('comments')
@@ -56,7 +56,7 @@ class SpecialClickedPostPage extends React.Component {
 
     Analytics.logEvent('Post_Clicked');
     Analytics.setCurrentScreen('PostDetailsScreen');
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('globalPosts')
       .doc(this.state.postID)
       .get()
@@ -71,7 +71,7 @@ class SpecialClickedPostPage extends React.Component {
         console.log(error);
       });
 
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('globalPosts')
       .doc(this.state.postID)
       .set({
@@ -403,7 +403,7 @@ $
                   storeReplyData(replyDataObj);
 
                   if (replyDataObj.replyingToUID != this.state.currentUser) {
-                    Firebase.firestore()
+                    firebase.firestore()
                       .collection('users')
                       .doc(replyDataObj.replyingToUID)
                       .collection('notifications')
@@ -421,7 +421,7 @@ $
                         console.error('Error writing document to user posts: ', error);
                       });
 
-                    const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
+                    const sendCommentReplyNotification = firebase.functions().httpsCallable('sendCommentReplyNotification');
                     sendCommentReplyNotification({
                       type: 3,
                       senderUID: this.state.currentUser,

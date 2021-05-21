@@ -11,6 +11,8 @@ import ThoughtsCell from '../cells/thoughtsCell';
 import Firebase from '../../firebase';
 import CachedImage from '../image/CachedImage';
 
+
+//TODO: Add links + link previews
 const ThoughtsFeed = (props) => {
   /**
      * Any refs that you have in the component will be instantiated as a constant at the top of the function with the `useRef()` hook (which you will import from react),
@@ -98,7 +100,7 @@ const ThoughtsFeed = (props) => {
   const getCollection = async() => {
     setIsLoading(true);
     const index = 1;
-    const getThoughtsOneCategory = Firebase.functions().httpsCallable('getThoughtsOneCategory');
+    const getThoughtsOneCategory = firebase.functions().httpsCallable('getThoughtsOneCategory');
     await getThoughtsOneCategory({
       index,
       category: selectedCategory,
@@ -110,21 +112,23 @@ const ThoughtsFeed = (props) => {
     });
   };
 
-  // const getMore = async() => {
-  //   setIsLoading(true);
-  //   const lastItemIndex = thoughts.length - 1;
-  //   const getMoreThoughtsOneCategory = Firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
-  //   getMoreThoughtsOneCategory({
-  //     index: lastItemIndex,
-  //     category: selectedCategory,
-  //     lastThought: thoughts[lastItemIndex],
-  //   }).then((result) => {
-  //     setThoughts(thoughts.concat(result.data));
-  //     setIsLoading(false);
-  //   }).catch((err) => {
-  //     console.log(err);
-  //   });
-  // };
+  const getMore = async() => {
+    const lastItemIndex = thoughts.length - 1;
+    const seconds = thoughts[lastItemIndex].date_created._seconds;
+    const nanoseconds = thoughts[lastItemIndex].date_created._nanoseconds;
+    const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds); //-- the firebase timestamp
+
+    const getMoreThoughtsOneCategory = firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
+    getMoreThoughtsOneCategory({
+      index: lastItemIndex,
+      category: selectedCategory,
+      date_created: lastTime.toMillis(),
+    }).then((result) => {
+      setThoughts(thoughts.concat(result.data));
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
 
   //This uses minimal frontend server calls
   //Uploads picture to storage so I didn't have to learn a new lib. Tired af.
@@ -153,10 +157,10 @@ const ThoughtsFeed = (props) => {
     if (text.trim() !== '' && selectedId !== null) {
       setIsLoading(true);
       //Send this stuff serverside
-      const postNewThought = Firebase.functions().httpsCallable('postNewThought');
+      const postNewThought = firebase.functions().httpsCallable('postNewThought');
 
       if (image !== '') {
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('thoughts')
           .add({
             uid: user.id,
@@ -164,12 +168,12 @@ const ThoughtsFeed = (props) => {
           .then(async(docRef) => {
             const response = await fetch(image);
             const file = await response.blob();
-            await Firebase
+            await firebase
               .storage()
               .ref(`screenshots/${user.id}/${docRef.id}`)
               .put(file);
 
-            const url = await Firebase.storage().ref(`screenshots/${user.id}/${docRef.id}`).getDownloadURL();
+            const url = await firebase.storage().ref(`screenshots/${user.id}/${docRef.id}`).getDownloadURL();
 
             postNewThought({
               userUID: user.id,
@@ -234,6 +238,7 @@ const ThoughtsFeed = (props) => {
     try {
       if (pickerResult.cancelled === true) {
         setHasImage(false);
+        setImage('');
         console.log('pickerResult is cancelled');
         return;
       }
@@ -245,12 +250,14 @@ const ThoughtsFeed = (props) => {
         console.log(image);
         console.log(pickerResult.type);
       } else {
-        setImage(null);
+        setImage('');
         setHasImage(false);
         console.log('pickerResult is null');
         return;
       }
     } catch (error) {
+      setHasImage(false);
+      setImage('');
       console.log(error);
     }
   };
@@ -294,20 +301,20 @@ const ThoughtsFeed = (props) => {
   );
 
   //Image opens image picker, link opens a textbox to show the link?
-  const renderModalMenu = () => (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+  // const renderModalMenu = () => (
+  //   <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 
-      <TouchableOpacity
-        onPress={openImagePickerAsync}
-        style={{ marginLeft: Dimensions.get('window').width / 5, paddingTop: 10 }}
-      >
-        {hasImage
-          ? renderThumbnailForImageOrVideo() : <Entypo name="image" size={50} color="#696969" /> }
+  //     <TouchableOpacity
+  //       onPress={openImagePickerAsync}
+  //       style={{ paddingTop: 10 }}
+  //     >
+  //       {hasImage
+  //         ? renderThumbnailForImageOrVideo() : <Entypo name="image" size={50} color="#696969" /> }
 
-      </TouchableOpacity>
+  //     </TouchableOpacity>
 
 
-      <View style={styles.middleLineStyle} />
+  { /* <View style={styles.middleLineStyle} />
 
       {hasLink
         ? (
@@ -326,11 +333,11 @@ const ThoughtsFeed = (props) => {
             <Entypo name="link" size={50} color="#696969" />
 
           </TouchableOpacity>
-        )}
+        )} */ }
 
 
-    </View>
-  );
+  //   </View>
+  // );
 
 
   const renderSendAndCancel = () => (
@@ -338,14 +345,23 @@ const ThoughtsFeed = (props) => {
 
       <TouchableOpacity
         onPress={handleClose}
-        style={{ paddingLeft: Dimensions.get('window').width / 5.75 }}
+        style={{ paddingLeft: Dimensions.get('window').width / 5, paddingRight: 25 }}
       >
         <MaterialIcons name="cancel" size={70} color="red" />
       </TouchableOpacity>
 
       <TouchableOpacity
+        onPress={openImagePickerAsync}
+        // style={{ paddingTop: 10 }}
+      >
+        {hasImage
+          ? renderThumbnailForImageOrVideo() : <MaterialCommunityIcons name="image-plus" size={70} color="#696969" /> }
+
+      </TouchableOpacity>
+
+      <TouchableOpacity
         onPress={handleSubmit}
-        style={{ paddingRight: Dimensions.get('window').width / 5.75 }}
+        style={{ paddingRight: Dimensions.get('window').width / 5, paddingLeft: 25 }}
       >
         <MaterialCommunityIcons name="send-circle" size={70} color="#07dbd1" />
       </TouchableOpacity>
@@ -388,43 +404,43 @@ const ThoughtsFeed = (props) => {
   return (
     <View style={styles.container}>
       <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalOpen}
-          onRequestClose={() => {
+        animationType="slide"
+        transparent={false}
+        visible={modalOpen}
+        onRequestClose={() => {
           setModalOpen(!modalOpen);
         }}
-        >
+      >
 
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ backgroundColor: '#121212', flex: 1, paddingTop: 50 }}>
 
-          <View style={{ paddingLeft: 5 }}>
-            <UnclickableUserComponent uid={user.id} navigation={props.navigation} />
-          </View>
+            <View style={{ paddingLeft: 5 }}>
+              <UnclickableUserComponent uid={user.id} navigation={props.navigation} />
+            </View>
 
-          { renderFlags() }
+            { renderFlags() }
 
-          <View style={styles.lineStyle} />
+            <View style={styles.lineStyle} />
 
-          <TextInput
-            style={{ backgroundColor: '#121212', height: 180, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
-            placeholder="what's on your mind?"
-            placeholderTextColor="#696969"
-            maxLength={480}
-            value={text}
-            onChangeText={text => setText(text)}
-            multiline
-          />
+            <TextInput
+              style={{ backgroundColor: '#121212', height: 180, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
+              placeholder="what's on your mind?"
+              placeholderTextColor="#696969"
+              maxLength={480}
+              value={text}
+              onChangeText={text => setText(text)}
+              multiline
+            />
 
 
-          <View style={styles.lineStyle} />
-          {/* add image, Link, and flair*/}
+            <View style={styles.lineStyle} />
+            {/* add image, Link, and flair*/}
 
-          { renderModalMenu() }
-          <View style={styles.lineStyle} />
+            {/* { renderModalMenu() } */}
+            {/* <View style={styles.lineStyle} /> */}
 
-          { hasLink
+            {/* { hasLink
             ? (
               <View style={{ flexDirection: 'row' }}>
                 <TextInput
@@ -439,18 +455,13 @@ const ThoughtsFeed = (props) => {
 
 
               </View>
-            ) : (<View />)}
-          { renderSendAndCancel() }
+            ) : (<View />)} */}
+            { renderSendAndCancel() }
 
-          {/* <TouchableOpacity
-            onPress={handleClose}
-          >
-            <MaterialCommunityIcons name="pencil-circle" size={70} color="#07dbd1" />
-          </TouchableOpacity> */}
-        </View>
+          </View>
         </TouchableWithoutFeedback>
 
-        </Modal>
+      </Modal>
 
       <View>
         <FlatList
@@ -463,6 +474,7 @@ const ThoughtsFeed = (props) => {
           showsVerticalScrollIndicator={false}
           onRefresh={refresh}
           refreshing={isLoading}
+          onEndReached={getMore}
         />
       </View>
 
@@ -513,10 +525,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   thumbnail2: {
-    width: 50,
-    height: 50,
+    width: 55,
+    height: 55,
     borderRadius: 5,
-    // marginTop: 15,
+    marginTop: 10,
     // marginBottom: 15,
   },
   thumbnail: {

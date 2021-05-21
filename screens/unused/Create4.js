@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image } fr
 
 import { connect } from 'react-redux';
 
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -33,12 +33,12 @@ class CreateReview extends React.Component {
     uploadToStorage = async(docRef) => {
       const response = await fetch(this.state.image.uri);
       const file = await response.blob();
-      await Firebase
+      await firebase
         .storage()
-        .ref(`screenshots/${Firebase.auth().currentUser.uid}/${docRef}`)
+        .ref(`screenshots/${firebase.auth().currentUser.uid}/${docRef}`)
         .put(file);
 
-      const url = await Firebase.storage().ref(`screenshots/${Firebase.auth().currentUser.uid}/${docRef}`).getDownloadURL();
+      const url = await firebase.storage().ref(`screenshots/${firebase.auth().currentUser.uid}/${docRef}`).getDownloadURL();
       this.setState({
         postID: docRef,
         storage_image_uri: url,
@@ -63,12 +63,12 @@ class CreateReview extends React.Component {
       //get the newly created post ID (docRef.id)
       //pass it to the upload to storagefunction
       //now we have the screenshot stored baby
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('posts')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('posts')
         .add({
-          uid: Firebase.auth().currentUser.uid,
+          uid: firebase.auth().currentUser.uid,
         })
         .then(docRef => this.uploadToStorage(docRef.id))
         .catch((error) => {
@@ -76,15 +76,15 @@ class CreateReview extends React.Component {
         });
 
       //We set the docref.id to this.state.postID in the upload function, so we can access that document directly and add the remaining fields.
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('posts')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('posts')
         .doc(this.state.postID)
         .set({
           username: this.state.username,
           description: this.state.description,
-          uid: Firebase.auth().currentUser.uid,
+          uid: firebase.auth().currentUser.uid,
           ticker: this.state.ticker,
           strike: this.state.strike,
           image: this.state.storage_image_uri,
@@ -101,13 +101,13 @@ class CreateReview extends React.Component {
         });
 
       //And now we are storing user posts. Now, we do the same thing for global posts, to display in the global feed
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .set({
           username: this.state.username,
           description: this.state.description,
-          uid: Firebase.auth().currentUser.uid,
+          uid: firebase.auth().currentUser.uid,
           ticker: this.state.ticker,
           strike: this.state.strike,
           image: this.state.storage_image_uri,

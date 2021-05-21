@@ -3,7 +3,7 @@ import {  Alert, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Ac
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import LikeComponent from './FFCcomponents/likeComponent';
 import UserComponent from './FFCcomponents/userComponent';
 import ShareComponent from './FFCcomponents/shareComponent';
@@ -31,7 +31,7 @@ class FeedCellClass extends React.Component {
       date_created: this.props.date_created,
       viewsCount: this.props.viewsCount,
       isLoading: true,
-      currentUser: Firebase.auth().currentUser.uid,
+      currentUser: firebase.auth().currentUser.uid,
       posterUID: this.props.uid,
       currentUserPosted: false,
       modalOpen: false,

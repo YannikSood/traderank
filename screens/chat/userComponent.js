@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ActivityIndicator } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import { connect } from 'react-redux';
 import { clearUser } from '../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,7 +29,7 @@ class UserComponent extends React.Component {
             username: "",
             profilePic: "",
             isLoading: true,
-            currentUserUID: Firebase.auth().currentUser.uid
+            currentUserUID: firebase.auth().currentUser.uid
         }
         
     }
@@ -39,7 +39,7 @@ class UserComponent extends React.Component {
     }
 
     getPosterUsername = async() => {
-        await Firebase.firestore()
+        await firebase.firestore()
         .collection('users')
         .doc(this.state.uid)
         .get()

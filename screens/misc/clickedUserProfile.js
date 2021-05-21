@@ -9,7 +9,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import * as Analytics from 'expo-firebase-analytics';
 import FeedCellClass from '../cells/feedCellClass';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 
 
 const mapStateToProps = state => ({
@@ -33,7 +33,7 @@ class ClickedUserProfile extends React.Component {
       posterTwitter: '',
       posterInstagram: '',
       //Current user information
-      currentUserUID: Firebase.auth().currentUser.uid,
+      currentUserUID: firebase.auth().currentUser.uid,
       currentUserUsername: '',
       currentFollowingCount: 0,
 
@@ -54,7 +54,7 @@ class ClickedUserProfile extends React.Component {
       hasAlerts: false,
     };
 
-    this.firestoreRef = Firebase.firestore()
+    this.firestoreRef = firebase.firestore()
       .collection('globalPosts')
       .where('uid', '==', this.state.posterUID)
       .orderBy('date_created', 'desc')
@@ -81,7 +81,7 @@ class ClickedUserProfile extends React.Component {
     };
 
     writeToUserNotifications = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.posterUID)
         .collection('notifications')
@@ -99,7 +99,7 @@ class ClickedUserProfile extends React.Component {
           console.error('Error writing document to user posts: ', error);
         });
 
-      const writeNotification = Firebase.functions().httpsCallable('writeNotification');
+      const writeNotification = firebase.functions().httpsCallable('writeNotification');
       writeNotification({
         type: 2,
         senderUID: this.state.currentUserUID,
@@ -116,7 +116,7 @@ class ClickedUserProfile extends React.Component {
     }
 
     removeFromUserNotifications = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.posterUID)
         .collection('notifications')
@@ -129,7 +129,7 @@ class ClickedUserProfile extends React.Component {
 
     //Get the poster UID and the poster username for display purposes
     getPosterInfo = async() => {
-      const getPosterInformation = Firebase.functions().httpsCallable('getPosterInfo');
+      const getPosterInformation = firebase.functions().httpsCallable('getPosterInfo');
       getPosterInformation({
         posterUID: this.state.posterUID,
       })
@@ -151,7 +151,7 @@ class ClickedUserProfile extends React.Component {
           console.log(error);
         });
 
-      const getUserNumbers = Firebase.functions().httpsCallable('getUserNumbers');
+      const getUserNumbers = firebase.functions().httpsCallable('getUserNumbers');
       getUserNumbers({
         currentUserUID: this.state.currentUserUID,
       })
@@ -206,7 +206,7 @@ class ClickedUserProfile extends React.Component {
     getMore = async() => {
       const lastItemIndex = this.state.userPostsArray.length - 1;
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .where('uid', '==', this.state.posterUID)
         .orderBy('date_created', 'desc')
@@ -253,7 +253,7 @@ class ClickedUserProfile extends React.Component {
 
     //If the current user is already following the poster, check here.
     isFollowing = async() => {
-      const isFollowing = Firebase.functions().httpsCallable('checkIsFollowing');
+      const isFollowing = firebase.functions().httpsCallable('checkIsFollowing');
       isFollowing({
         currentUserUID: this.state.currentUserUID,
         posterUID: this.state.posterUID,
@@ -268,7 +268,7 @@ class ClickedUserProfile extends React.Component {
     }
 
     hasAlerts = async() => {
-      const checkHasAlerts = Firebase.functions().httpsCallable('checkHasAlerts');
+      const checkHasAlerts = firebase.functions().httpsCallable('checkHasAlerts');
       checkHasAlerts({
         currentUserUID: this.state.currentUserUID,
         posterUID: this.state.posterUID,
@@ -299,7 +299,7 @@ class ClickedUserProfile extends React.Component {
     }
 
     // followsYou = async() => {
-    //     await Firebase.firestore()
+    //     await firebase.firestore()
     //     .collection('following')
     //     .doc(this.state.posterUID)
     //     .collection('following')
@@ -324,7 +324,7 @@ class ClickedUserProfile extends React.Component {
     followUser = async() => {
       //The current user now follows the poster with logic
       this.setState({ followButtonLoading: true });
-      const followAUser = Firebase.functions().httpsCallable('followUser');
+      const followAUser = firebase.functions().httpsCallable('followUser');
       followAUser({
         currentUserUID: this.state.currentUserUID,
         posterUID: this.state.posterUID,
@@ -348,7 +348,7 @@ class ClickedUserProfile extends React.Component {
     //Unfollow a user
     unfollowUser = async() => {
       //Delete the poster user from the current users following list
-      const unfollowAUser = Firebase.functions().httpsCallable('unfollowUser');
+      const unfollowAUser = firebase.functions().httpsCallable('unfollowUser');
       unfollowAUser({
         currentUserUID: this.state.currentUserUID,
         posterUID: this.state.posterUID,
@@ -472,7 +472,7 @@ class ClickedUserProfile extends React.Component {
 
     addUserToUserAlerts = async() => {
       this.setState({ alertsButtonLoading: true });
-      const addToAlerts = Firebase.functions().httpsCallable('addUserToAlerts');
+      const addToAlerts = firebase.functions().httpsCallable('addUserToAlerts');
       addToAlerts({
         currentUserUID: this.state.currentUserUID,
         posterUID: this.state.posterUID,
@@ -491,7 +491,7 @@ class ClickedUserProfile extends React.Component {
 
     removeUserFromUserAlerts = async() => {
       this.setState({ alertsButtonLoading: true });
-      const removeFromAlerts = Firebase.functions().httpsCallable('removeUserFromAlerts');
+      const removeFromAlerts = firebase.functions().httpsCallable('removeUserFromAlerts');
       removeFromAlerts({
         currentUserUID: this.state.currentUserUID,
         posterUID: this.state.posterUID,

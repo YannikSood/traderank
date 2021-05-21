@@ -6,7 +6,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 //Redux
 import { connect } from 'react-redux';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import { clearUser } from '../../redux/app-redux';
 
 const mapStateToProps = state => ({
@@ -41,9 +41,9 @@ class EditProfile extends React.Component {
 
     //Pull bio from the db, save it to state
     pullBio = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .get()
         .then((doc) => {
           if (doc.exists) {
@@ -64,9 +64,9 @@ class EditProfile extends React.Component {
     changeBio = async() => {
       this.setState({ isLoading: true });
       // This should take us to the right place, adding a temp uid where we need it
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .set({
           bio: this.state.newBio,
         }, { merge: true })
@@ -82,9 +82,9 @@ class EditProfile extends React.Component {
     changeTwitter = async() => {
       this.setState({ isLoading: true });
       // This should take us to the right place, adding a temp uid where we need it
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .set({
           twitter: this.state.twitter,
         }, { merge: true })
@@ -99,9 +99,9 @@ class EditProfile extends React.Component {
     changeInstagram = async() => {
       this.setState({ isLoading: true });
       // This should take us to the right place, adding a temp uid where we need it
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .set({
           instagram: this.state.instagram,
         }, { merge: true })
@@ -116,18 +116,18 @@ class EditProfile extends React.Component {
     changeProfilePic = async() => {
       const response = await fetch(this.state.profilePic);
       const file = await response.blob();
-      await Firebase
+      await firebase
         .storage()
-        .ref(`profilePictures/${Firebase.auth().currentUser.uid}`)
+        .ref(`profilePictures/${firebase.auth().currentUser.uid}`)
         .put(file);
 
-      const url = await Firebase.storage().ref(`profilePictures/${Firebase.auth().currentUser.uid}`).getDownloadURL();
+      const url = await firebase.storage().ref(`profilePictures/${firebase.auth().currentUser.uid}`).getDownloadURL();
       this.setState({
         newProfilePicURL: url,
       });
 
-      await Firebase.firestore().collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+      await firebase.firestore().collection('users')
+        .doc(firebase.auth().currentUser.uid)
         .set({
           profilePic: this.state.newProfilePicURL,
         }, { merge: true })

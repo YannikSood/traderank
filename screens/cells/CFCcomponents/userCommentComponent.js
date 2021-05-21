@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import Firebase from '../../../firebase'
+import firebase from '../../../firebase'
 import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -19,7 +19,7 @@ class CommentUserComponent extends React.Component {
       posterUID: this.props.posterUID,
       navigation: this.props.navigation,
       posterUsername: '',
-      currentUserUID: Firebase.auth().currentUser.uid,
+      currentUserUID: firebase.auth().currentUser.uid,
     };
   }
 
@@ -28,7 +28,7 @@ class CommentUserComponent extends React.Component {
   }
 
     getPosterUsername = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.posterUID)
         .get()

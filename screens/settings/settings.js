@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 import { connect, useDispatch } from 'react-redux';
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import { clearUser } from "../../actions/User.Actions";
 
 
@@ -36,7 +36,7 @@ class Settings extends React.Component {
     logOut = async() => {
       try {
         // this.props.clearUser()
-        await Firebase.auth()
+        await firebase.auth()
           .signOut()
           .then(() => this.props.navigation.navigate('Login'));
       } catch (error) {

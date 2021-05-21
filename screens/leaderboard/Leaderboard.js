@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 
 import LeaderboardCell from '../cells/leaderboardCell';
 
@@ -14,7 +14,7 @@ class Leaderboard extends React.Component {
         var yyyy = today.getFullYear();
         today = mm + dd + yyyy;
 
-        this.firestoreRef = Firebase.firestore().collection('leaderboard').doc(today).collection('gains').orderBy("score", "desc").limit(100);
+        this.firestoreRef = firebase.firestore().collection('leaderboard').doc(today).collection('gains').orderBy("score", "desc").limit(100);
 
         this.state = {
           isLoading: true,

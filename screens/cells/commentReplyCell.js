@@ -3,7 +3,7 @@ import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Ac
 import TimeAgo from 'react-native-timeago';
 import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import CommentUserComponent from './CFCcomponents/userCommentComponent';
 import CommentReplyLikeComponent from './CRCcomponents/comRepLike';
 import CommentDeleteComponent from './CFCcomponents/deleteComponent';
@@ -37,7 +37,7 @@ class CommentReplyCellClass extends React.Component {
   }
 
   // componentDidMount() {
-  //     if (this.state.replierAuthorUID == Firebase.auth().currentUser.uid) {
+  //     if (this.state.replierAuthorUID == firebase.auth().currentUser.uid) {
   //         this.setState({ showDeleteComponent: true })
   //     }
   // }

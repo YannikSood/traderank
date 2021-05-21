@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import LikeComponent from '../cells/FFCcomponents/likeComponent'
 import UserComponent from '../cells/FFCcomponents/userComponent'
 import CommentFeed from '../feeds/commentFeed'
@@ -24,7 +24,7 @@ class ClickedPostPageProfile extends React.Component {
             postID: this.props.route.params.postID,
             navigation: this.props.navigation,
             isLoading: false,
-            currentUser: Firebase.auth().currentUser.uid
+            currentUser: firebase.auth().currentUser.uid
         }
     }
 

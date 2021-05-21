@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import * as Linking from 'expo-linking';
-import Firebase from '../../../firebase';
+import firebase from '../../../firebase';
 
 
 const mapStateToProps = state => ({
@@ -71,7 +71,7 @@ class ShareComponent extends Component {
 
      //Get the post info
      getPost = async() => {
-       await Firebase.firestore()
+       await firebase.firestore()
          .collection('globalPosts')
          .doc(this.state.postID)
          .get()

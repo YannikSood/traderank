@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'rea
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../../firebase';
+import firebase from '../../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -14,7 +14,7 @@ class LikeComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      likerUID: Firebase.auth().currentUser.uid,
+      likerUID: firebase.auth().currentUser.uid,
       likerUsername: this.props.user.username, //<------------------ Issue is here
       postID: this.props.postID,
       isAlreadyLiked: false,
@@ -36,7 +36,7 @@ class LikeComponent extends React.Component {
 
     //Get the poster userID
     getPosterUID = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -54,7 +54,7 @@ class LikeComponent extends React.Component {
 
     //Check to see if a user has liked a post
     hasLiked = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .collection('likes')
@@ -81,7 +81,7 @@ class LikeComponent extends React.Component {
     //----------------------------------------------------------
     //Get the like count for initialization purposes upon mounting. Set likesCount to what the globalPosts ref says.
     getLikeCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -100,7 +100,7 @@ class LikeComponent extends React.Component {
     //Add to like count, for both the global and user post references
     addToLikeCount = async() => {
       Analytics.logEvent('Post_Liked');
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .set({
@@ -113,7 +113,7 @@ class LikeComponent extends React.Component {
     }
 
     subtractFromLikeCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .set({
@@ -130,7 +130,7 @@ class LikeComponent extends React.Component {
     //We now have all 3 variables. Time to start adding to the database. First, we add User1 to the global and post "likes" collection
     addToLikesDB = async() => {
       this.setState({ isLoading: true });
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('likes')
         .doc(this.state.postID)
         .collection('likes')
@@ -149,7 +149,7 @@ class LikeComponent extends React.Component {
 
     //Under users, they have a list of all the posts they have liked, stored for future display purposes (If liked, then shown the correct logo, and vice versa)
     addToUserList = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .collection('likes')
@@ -167,7 +167,7 @@ class LikeComponent extends React.Component {
     //Unlike functionality. Delete the document from the post likes collection
     removeFromLikedDB = async() => {
       this.setState({ isLoading: true });
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('likes')
         .doc(this.state.postID)
         .collection('likes')
@@ -184,7 +184,7 @@ class LikeComponent extends React.Component {
 
     //Unlike functionality. Delete the document from the user likes collection
     removeFromUserList = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.likerUID)
         .collection('likes')
@@ -197,7 +197,7 @@ class LikeComponent extends React.Component {
 
     writeToUserNotifications = async() => {
       if (this.state.likerUID != this.state.posterUID) {
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('users')
           .doc(this.state.posterUID)
           .collection('notifications')
@@ -215,7 +215,7 @@ class LikeComponent extends React.Component {
             console.error('Error writing document to user posts: ', error);
           });
 
-        const writeNotification = Firebase.functions().httpsCallable('writeNotification');
+        const writeNotification = firebase.functions().httpsCallable('writeNotification');
         writeNotification({
           type: 0,
           senderUID: this.state.likerUID,
@@ -236,7 +236,7 @@ class LikeComponent extends React.Component {
 
 
     removeFromUserNotifications = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.posterUID)
         .collection('notifications')

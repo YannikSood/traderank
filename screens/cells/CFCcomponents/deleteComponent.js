@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import Firebase from '../../../firebase'
+import firebase from '../../../firebase'
 import { clearUser } from '../../../redux/app-redux';
 
 const mapStateToProps = state => ({
@@ -13,7 +13,7 @@ class CommentDeleteComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      commentorUID: Firebase.auth().currentUser.uid,
+      commentorUID: firebase.auth().currentUser.uid,
       postID: this.props.postID,
       commentID: this.props.commentID,
       currentCommentCount: 0,
@@ -34,7 +34,7 @@ class CommentDeleteComponent extends React.Component {
   }
 
     getCurrentCommentsCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -51,7 +51,7 @@ class CommentDeleteComponent extends React.Component {
 
     //count of reply ocunt
     getReplyCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')
@@ -71,7 +71,7 @@ class CommentDeleteComponent extends React.Component {
     //Lower comment count in global post
     //SOme fucking issue here that I cant sort out
     lowerCommentCountGlobalPosts = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .set({
@@ -88,7 +88,7 @@ class CommentDeleteComponent extends React.Component {
 
     //Delete comment itself from comments/postid/comment
     deleteCommentFromCommentsDB = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')

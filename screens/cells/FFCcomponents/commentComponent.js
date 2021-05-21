@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { clearUser } from '../../../redux/app-redux';
-import Firebase from '../../../firebase';
+import firebase from '../../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -17,7 +17,7 @@ class CommentComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      commentorUID: Firebase.auth().currentUser.uid,
+      commentorUID: firebase.auth().currentUser.uid,
       commentorUsername: this.props.user.username,
       postID: this.props.postID,
       posterUID: ' ',
@@ -30,7 +30,7 @@ class CommentComponent extends React.Component {
       replyTo: this.props.replyTo,
       replyData: this.props.replyData,
       replyCount: 0,
-      currentUser: Firebase.auth().currentUser.uid,
+      currentUser: firebase.auth().currentUser.uid,
     };
   }
 
@@ -75,7 +75,7 @@ class CommentComponent extends React.Component {
   }
 
     updateCommentCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -93,7 +93,7 @@ class CommentComponent extends React.Component {
 
     //Get the poster userID
     getPosterUID = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -110,7 +110,7 @@ class CommentComponent extends React.Component {
         });
 
       //Get the comments count of a user, how many comments they have posted
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.commentorUID)
         .get()
@@ -128,7 +128,7 @@ class CommentComponent extends React.Component {
 
     //get number of replies associated with the comment
     getReplyCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .collection('comments')
@@ -177,7 +177,7 @@ class CommentComponent extends React.Component {
 
 
         //This should take us to the right place, adding a temp uid where we need it
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('comments')
           .doc(this.state.postID)
           .collection('comments')
@@ -196,7 +196,7 @@ class CommentComponent extends React.Component {
             });
 
 
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('globalPosts')
           .doc(this.state.postID)
           .set({
@@ -206,7 +206,7 @@ class CommentComponent extends React.Component {
                 console.error("Error writing document to user posts: ", error);
             });
 
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('users')
           .doc(this.state.commentorUID)
           .set({
@@ -228,7 +228,7 @@ class CommentComponent extends React.Component {
       //increment replyCOunt to comments -> postId -> comments
       if (this.state.replyTo.length > 0) { //isReplying
         //Send reply
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('comments') // collection comments
           .doc(this.state.replyData.postID) // Which post?
           .collection('comments') //Get comments for this post
@@ -261,7 +261,7 @@ class CommentComponent extends React.Component {
         this.getReplyCount();
 
         //increase replyCount in Db
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('comments')
           .doc(this.state.replyData.postID)
           .collection('comments')
@@ -279,7 +279,7 @@ class CommentComponent extends React.Component {
                   });
 
         //Update Post global CommentCount
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('globalPosts')
           .doc(this.state.postID)
           .set({
@@ -292,7 +292,7 @@ class CommentComponent extends React.Component {
 
         //Send notification that user has replied to comment
         if (this.state.replyData.replyingToUID != this.state.currentUser) {
-          Firebase.firestore()
+          firebase.firestore()
             .collection('users')
             .doc(this.state.replyData.replyingToUID)
             .collection('notifications')
@@ -310,7 +310,7 @@ class CommentComponent extends React.Component {
                                 console.error("Error writing document to user posts: ", error);
                             });
 
-          const sendCommentReplyNotification = Firebase.functions().httpsCallable('sendCommentReplyNotification');
+          const sendCommentReplyNotification = firebase.functions().httpsCallable('sendCommentReplyNotification');
           sendCommentReplyNotification({
             type: 3,
             senderUID: this.state.currentUser,
@@ -334,7 +334,7 @@ class CommentComponent extends React.Component {
 
     writeToUserNotifications = async() => {
       if (this.state.commentorUID != this.state.posterUID) {
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('users')
           .doc(this.state.posterUID)
           .collection('notifications')
@@ -352,7 +352,7 @@ class CommentComponent extends React.Component {
                 console.error("Error writing document to user posts: ", error);
             });
 
-        const writeNotification = Firebase.functions().httpsCallable('writeNotification');
+        const writeNotification = firebase.functions().httpsCallable('writeNotification');
         writeNotification({
           type: 1,
           senderUID: this.state.commentorUID,
@@ -372,7 +372,7 @@ class CommentComponent extends React.Component {
     }
 
     removeFromUserNotifications = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.posterUID)
         .collection('notifications')

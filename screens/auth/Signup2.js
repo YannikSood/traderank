@@ -5,7 +5,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 //redux
 import { connect, useDispatch } from 'react-redux';
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import { authUser } from '../../actions/User.Actions';
 
 
@@ -30,7 +30,7 @@ const Signup2 = ({ props, route, navigation }) => {
       Analytics.logEvent('sign_up');
       //If this is true, upload the profile pic to storage, then initialize a new user to the database with
       //Username, uid, email, [following, followers, post all 0] and profile pic
-      await Firebase.auth()
+      await firebase.auth()
         .createUserWithEmailAndPassword(email.trim().toLowerCase(), password)
         .then(() => addUserToDB())
         .then(() => addUserToUsernames())
@@ -59,12 +59,12 @@ const Signup2 = ({ props, route, navigation }) => {
   };
 
   const addUserToDB = async() => {
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('users')
-      .doc(Firebase.auth().currentUser.uid)
+      .doc(firebase.auth().currentUser.uid)
       .set({
         username: username.trim().replace(/[^\w\s]/gi, ''),
-        email: Firebase.auth().currentUser.email,
+        email: firebase.auth().currentUser.email,
         profilePic: 'https://firebasestorage.googleapis.com/v0/b/traderank-288df.appspot.com/o/profilePictures%2Fnoimage.jpeg?alt=media&token=873305d1-e583-4c9c-b60a-42cd080ae822',
         followerCount: 0,
         followingCount: 0,
@@ -80,16 +80,16 @@ const Signup2 = ({ props, route, navigation }) => {
   };
 
   const addUserToUsernames = async() => {
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('usernames')
       .doc(username.trim().replace(/[^\w\s]/gi, ''))
       .set({
-        uid: Firebase.auth().currentUser.uid,
+        uid: firebase.auth().currentUser.uid,
       })
       .catch((error) => {
         console.error('Error writing document to user collection: ', error);
       })
-      .then(() => dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, username)))
+      .then(() => dispatch(authUser(firebase.auth().currentUser.uid, firebase.auth().currentUser.email, username)))
       .then(() => navigation.navigate('Tabs'))
       .then(() => navigation.reset({
         index: 0,
@@ -97,10 +97,10 @@ const Signup2 = ({ props, route, navigation }) => {
       }))
       .then(() => setIsLoading(false));
 
-    const addUserToAlgolia = Firebase.functions().httpsCallable('addUserToAlgolia');
+    const addUserToAlgolia = firebase.functions().httpsCallable('addUserToAlgolia');
     addUserToAlgolia({
       username: username.trim().replace(/[^\w\s]/gi, ''),
-      uid: Firebase.auth().currentUser.uid,
+      uid: firebase.auth().currentUser.uid,
     })
       .then((result) => {
         console.log(result);

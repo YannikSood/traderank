@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList, Share } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import FeedCellClass from '../cells/feedCellClass.js';
 
 
@@ -24,9 +24,9 @@ class FriendsScreen extends React.Component {
 
     Analytics.setCurrentScreen('FollowingScreen');
 
-    await Firebase.firestore()
+    await firebase.firestore()
       .collection('following')
-      .doc(Firebase.auth().currentUser.uid)
+      .doc(firebase.auth().currentUser.uid)
       .collection('following')
       .get()
       .then((following) => {
@@ -34,7 +34,7 @@ class FriendsScreen extends React.Component {
         following.forEach((user) => {
           followingUsers.push(user.id);
         });
-        followingUsers.push(Firebase.auth().currentUser.uid);
+        followingUsers.push(firebase.auth().currentUser.uid);
         this.setState({ followingUsers });
       })
       .then(() => this.getCollection());
@@ -87,9 +87,9 @@ class FriendsScreen extends React.Component {
       Analytics.logEvent('First_5_Following_Loaded');
 
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('following')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('following')
         .get()
         .then((following) => {
@@ -97,14 +97,14 @@ class FriendsScreen extends React.Component {
           following.forEach((user) => {
             followingUsers.push(user.id);
           });
-          followingUsers.push(Firebase.auth().currentUser.uid);
+          followingUsers.push(firebase.auth().currentUser.uid);
           this.setState({ followingUsers });
         });
 
       const followingPosts = [];
 
       this.state.followingUsers.forEach((res) => {
-        Firebase.firestore()
+        firebase.firestore()
           .collection('globalPosts')
           .where('uid', '==', res)
           .orderBy('date_created', 'desc')
@@ -160,7 +160,7 @@ class FriendsScreen extends React.Component {
       Analytics.logEvent('More_5_Following_Loaded');
 
       this.state.followingUsers.forEach((res) => {
-        Firebase.firestore()
+        firebase.firestore()
           .collection('globalPosts')
           .where('uid', '==', res)
           .orderBy('date_created', 'desc')

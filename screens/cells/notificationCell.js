@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
 import TimeAgo from 'react-native-timeago';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import UserComponent from './FFCcomponents/userComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
 
@@ -35,7 +35,7 @@ class NotificationCellClass extends React.Component {
   }
 
     getUsernames = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.senderUID)
         .get()
@@ -52,7 +52,7 @@ class NotificationCellClass extends React.Component {
     }
 
     showPostCommentsPage = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()
@@ -88,7 +88,7 @@ class NotificationCellClass extends React.Component {
     }
 
     showPostPage = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .get()

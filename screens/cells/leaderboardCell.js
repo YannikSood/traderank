@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import LikeComponent from './FFCcomponents/likeComponent';
 import UserComponent from './FFCcomponents/userComponent';
 import CommentComponent from './FFCcomponents/commentComponent';
@@ -26,7 +26,7 @@ class LeaderboardCell extends React.Component {
       index: this.props.index,
       date_created: this.props.date_created,
       isLoading: false,
-      currentUser: Firebase.auth().currentUser.uid,
+      currentUser: firebase.auth().currentUser.uid,
     };
   }
 

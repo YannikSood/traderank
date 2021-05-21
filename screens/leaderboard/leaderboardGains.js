@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native';
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 
 import LeaderboardCell from '../cells/leaderboardCell';
 
@@ -34,7 +34,7 @@ class LeaderboardGains extends React.Component {
        const leaderboardGains = [];
       let index = 1;
      // this.setState({ isLoading: true });
-      const getGainsCollection = Firebase.functions().httpsCallable('getGainsCollection');
+      const getGainsCollection = firebase.functions().httpsCallable('getGainsCollection');
       getGainsCollection({
         index: index
       }).then((result) => {
@@ -53,7 +53,7 @@ class LeaderboardGains extends React.Component {
       //this.setState({ isLoading: true });
       const lastItemIndex = this.state.leaderboardGains.length - 1;
 
-      const getMoreGains = Firebase.functions().httpsCallable('getMoreGains');
+      const getMoreGains = firebase.functions().httpsCallable('getMoreGains');
       getMoreGains({
         score: this.state.leaderboardGains[lastItemIndex].score,
         lastItemIndex: lastItemIndex

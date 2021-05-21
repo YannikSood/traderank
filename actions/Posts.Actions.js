@@ -1,5 +1,5 @@
 import * as Analytics from 'expo-firebase-analytics';
-import Firebase from '../firebase';
+import firebase from '../firebase';
 
 import {
   GLOBAL_POSTS,
@@ -11,7 +11,7 @@ export const fetchCollection = () => (dispatch) => {
   const globalPostsArray = [];
   Analytics.logEvent('First_5_Loaded');
 
-  return Firebase.firestore()
+  return firebase.firestore()
     .collection('globalPosts')
     .orderBy('date_created', 'desc')
     .limit(5)
@@ -62,7 +62,7 @@ export const fetchMorePosts = () => (dispatch, getState) => {
   const lastItemIndex = array.length - 1;
   Analytics.logEvent('More_5_Loaded');
 
-  Firebase.firestore()
+  firebase.firestore()
     .collection('globalPosts')
     .orderBy('date_created', 'desc')
     .startAfter(array[lastItemIndex].date_created)

@@ -4,7 +4,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 //redux
 import { connect, useDispatch } from 'react-redux';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 
 
 const mapStateToProps = state => ({
@@ -48,7 +48,7 @@ class Signup extends React.Component {
         );
         this.setState({ isLoading: false });
       } else {
-        await Firebase.firestore()
+        await firebase.firestore()
           .collection('usernames')
           .doc(this.state.username.trim().replace(/[^\w\s]/gi, ''))
           .get()

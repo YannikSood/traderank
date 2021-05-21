@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native'
-import Firebase from '../../../firebase'
+import firebase from '../../../firebase'
 
 
 class ProfileBio extends React.Component {

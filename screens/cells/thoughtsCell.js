@@ -5,7 +5,7 @@ import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import { Video, AVPlaybackStatus } from 'expo-av';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import LikeComponent from './FFCcomponents/likeComponent';
 import UserComponent from './FFCcomponents/userComponent';
 import ShareComponent from './FFCcomponents/shareComponent';
@@ -30,7 +30,7 @@ class ThoughtsCell extends React.Component {
       date_created: this.props.date_created,
       viewsCount: this.props.viewsCount,
       isLoading: true,
-      currentUser: Firebase.auth().currentUser.uid,
+      currentUser: firebase.auth().currentUser.uid,
       posterUID: this.props.uid,
       currentUserPosted: false,
       mediaType: this.props.mediaType,
@@ -74,7 +74,7 @@ class ThoughtsCell extends React.Component {
                 style={styles.thumbnail}
                 isLooping
                 useNativeControls
-                shouldPlay
+                // shouldPlay
               />
             </View>
           ) }

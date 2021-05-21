@@ -1,7 +1,7 @@
 //Pass props, render using cells, display single user feed using flatlistimport React from 'react'
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import CurrentUserPostCell from '../cells/currentUserPostCell';
 
 
@@ -12,11 +12,11 @@ class CurrentUserPostFeed extends React.Component {
         this.state = {
           isLoading: true,
           userPostsArray: [],
-          userUID: Firebase.auth().currentUser.uid,
+          userUID: firebase.auth().currentUser.uid,
           navigation: this.props.navigation
         };
         this.firestoreRef = 
-        Firebase.firestore()
+        firebase.firestore()
         .collection('posts')
         .doc(this.state.userUID)
         .collection('posts')

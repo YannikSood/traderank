@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions,  Image, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import { clearUser } from '../../redux/app-redux';
 
 import FollowCell from '../cells/followCell';
@@ -26,7 +26,7 @@ class ClickedFollowPage extends React.Component {
       userFollowerFollowingArray: [],
     };
 
-    this.firestoreRef = Firebase.firestore()
+    this.firestoreRef = firebase.firestore()
       .collection(this.state.followers_following)
       .doc(this.state.clickedUID)
       .collection(this.state.followers_following);
@@ -66,7 +66,7 @@ class ClickedFollowPage extends React.Component {
 
     //     const lastItemIndex = this.state.userPostsArray.length - 1
 
-    //     await Firebase.firestore()
+    //     await firebase.firestore()
     //     .collection('globalPosts')
     //     .where("uid", "==", this.state.posterUID)
     //     .orderBy("date_created", "desc")

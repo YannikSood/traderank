@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 import DeleteComponent from '../cells/CUPFcomponents/deleteComponent'
 import LikeComponent from '../cells/FFCcomponents/likeComponent'
 import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent'
@@ -23,7 +23,7 @@ class CurrentUserPostCell extends React.Component{
             postID: this.props.postID,
             navigation: this.props.navigation,
             isLoading: false,
-            currentUser: Firebase.auth().currentUser.uid,
+            currentUser: firebase.auth().currentUser.uid,
             date_created: this.props.date_created,
         }
     }

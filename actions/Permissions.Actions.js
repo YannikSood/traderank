@@ -1,6 +1,6 @@
 import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
-import Firebase from '../firebase';
+import firebase from '../firebase';
 
 import {
   PUSH_STATUS,
@@ -22,7 +22,7 @@ export const fetchPermissions = () => (dispatch, getState) => Permissions.getAsy
   })
   .then((token) => {
     const { PermissionsReducer: { pushStatus } } = getState(); // This allows you to access the current redux store
-    Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).set({
+    firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).set({
       token,
       pushStatus,
     }, { merge: true });

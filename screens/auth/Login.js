@@ -4,7 +4,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 //redux
 import { connect, useDispatch } from 'react-redux';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import { authUser } from '../../actions/User.Actions';
 
 
@@ -39,15 +39,15 @@ const Login = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    Firebase.auth().onAuthStateChanged((authedUser) => {
+    firebase.auth().onAuthStateChanged((authedUser) => {
       if (authedUser) {
-        Firebase.firestore()
+        firebase.firestore()
           .collection('users')
-          .doc(Firebase.auth().currentUser.uid)
+          .doc(firebase.auth().currentUser.uid)
           .get()
           .then((doc) => {
             if (doc.exists) {
-              dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username));
+              dispatch(authUser(firebase.auth().currentUser.uid, firebase.auth().currentUser.email, doc.data().username));
 
               navigation.reset({
                 index: 0,
@@ -67,7 +67,7 @@ const Login = (props) => {
 
   const handleLogin = async() => {
     try {
-      await Firebase.auth()
+      await firebase.auth()
         .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
         .catch((error) => {
           Alert.alert(
@@ -91,14 +91,14 @@ const Login = (props) => {
   };
 
   const getLoginInfo = async() => {
-    const docRef = Firebase.firestore().collection('users');
+    const docRef = firebase.firestore().collection('users');
 
     docRef
-      .doc(Firebase.auth().currentUser.uid)
+      .doc(firebase.auth().currentUser.uid)
       .get()
       .then((doc) => {
         if (doc.exists) {
-          dispatch(authUser(Firebase.auth().currentUser.uid, Firebase.auth().currentUser.email, doc.data().username));
+          dispatch(authUser(firebase.auth().currentUser.uid, firebase.auth().currentUser.email, doc.data().username));
         } else {
           console.log('Username not found!');
         }

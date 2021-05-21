@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Share, FlatList } from 'react-native'
-import Firebase from '../../firebase'
+import firebase from '../../firebase'
 
 import NotificationCellClass from '../cells/notificationCell';
 import * as Analytics from 'expo-firebase-analytics';
@@ -9,7 +9,7 @@ class Notification extends React.Component {
     constructor(props) {
         super(props);
 
-        // this.firestoreRef = Firebase.firestore().collection('users').doc(Firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc").limit(5)
+        // this.firestoreRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc").limit(5)
 
         this.state = {
           isLoading: true,
@@ -69,9 +69,9 @@ class Notification extends React.Component {
     // postID: this.state.postID
     getCollection = async() => {
 
-            Firebase.firestore()
+            firebase.firestore()
             .collection('users')
-            .doc(Firebase.auth().currentUser.uid)
+            .doc(firebase.auth().currentUser.uid)
             .set({
                 hasNotifications: false
             }, {merge: true})
@@ -79,9 +79,9 @@ class Notification extends React.Component {
             const notificationsArray = [];
 
 
-            await Firebase.firestore()
+            await firebase.firestore()
             .collection('users')
-            .doc(Firebase.auth().currentUser.uid)
+            .doc(firebase.auth().currentUser.uid)
             .collection('notifications')
             .orderBy("date_created", "desc")
             .limit(7)
@@ -128,10 +128,10 @@ class Notification extends React.Component {
     getMore = async() => {
         const lastItemIndex = this.state.notificationsArray.length - 1
 
-        await Firebase
+        await firebase
         .firestore()
         .collection('users')
-        .doc(Firebase.auth().currentUser.uid)
+        .doc(firebase.auth().currentUser.uid)
         .collection('notifications')
         .orderBy("date_created", "desc")
         .startAfter(this.state.notificationsArray[lastItemIndex].date_created)

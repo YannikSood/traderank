@@ -1,6 +1,6 @@
 {
   "name": "functions",
-  "description": "Cloud Functions for Firebase",
+  "description": "Cloud Functions for firebase",
   "scripts": {
     "lint": "eslint .",
     "serve": "firebase emulators:start --only functions",

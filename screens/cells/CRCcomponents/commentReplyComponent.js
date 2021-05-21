@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import { clearUser } from '../../../redux/app-redux';
-import Firebase from '../../../firebase';
+import firebase from '../../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -17,7 +17,7 @@ class ReplyCommentComponent extends React.Component {
     super(props);
     this.state = {
       //same props as replyToData obj
-      commentorUID: Firebase.auth().currentUser.uid,
+      commentorUID: firebase.auth().currentUser.uid,
       commentorUsername: this.props.user.username,
       commentText: `@${this.props.replyData.replierUsername}`,
       commentsCount: 0, //how many comments for this post (regular comments, top level replies, sub replies)
@@ -30,10 +30,10 @@ class ReplyCommentComponent extends React.Component {
   }
 
   async componentDidMount() {
-    const userUID = Firebase.auth().currentUser.uid;
+    const userUID = firebase.auth().currentUser.uid;
 
 
-    await Firebase.firestore().collection('users').doc(userUID).get()
+    await firebase.firestore().collection('users').doc(userUID).get()
       .then((doc) => {
         data = doc.data();
         this.setState({
@@ -47,7 +47,7 @@ class ReplyCommentComponent extends React.Component {
 
      //get number of replies associated with the comment
      getReplyCount = async() => {
-       await Firebase.firestore()
+       await firebase.firestore()
          .collection('comments')
          .doc(this.state.replyData.postID)
          .collection('comments')
@@ -65,7 +65,7 @@ class ReplyCommentComponent extends React.Component {
      }
 
     updateCommentCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.replyData.postID)
         .get()
@@ -83,7 +83,7 @@ class ReplyCommentComponent extends React.Component {
 
     setUserCommentCount = async() => {
       //Get the comments count of a user, how many comments they have posted
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.replyData.replierAuthorUID)
         .get()
@@ -126,7 +126,7 @@ class ReplyCommentComponent extends React.Component {
       //increment replyCOunt to comments -> postId -> comments
 
       //Send reply
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments') // collection comments
         .doc(this.state.replyData.postID) // Which post?
         .collection('comments') //Get comments for this post
@@ -153,7 +153,7 @@ class ReplyCommentComponent extends React.Component {
 
       //get reply count first from calling async function
       //increase replyCount in Db
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.replyData.postID)
         .collection('comments')
@@ -171,7 +171,7 @@ class ReplyCommentComponent extends React.Component {
                   });
 
       //Update Post global CommentCount
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.replyData.postID)
         .set({
@@ -182,7 +182,7 @@ class ReplyCommentComponent extends React.Component {
                   });
 
       //update comment count for user
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.replyData.replierAuthorUID)
         .set({

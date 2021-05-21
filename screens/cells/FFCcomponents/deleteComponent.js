@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import Firebase from '../../../firebase'
+import firebase from '../../../firebase'
 import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -15,7 +15,7 @@ class DeleteComponent extends React.Component {
     super(props);
     this.state = {
       postID: this.props.postID,
-      currentUserUID: Firebase.auth().currentUser.uid,
+      currentUserUID: firebase.auth().currentUser.uid,
       deleteConfirmModal: false,
       isLoading: false,
       gain_loss: this.props.postType,
@@ -30,7 +30,7 @@ class DeleteComponent extends React.Component {
         isLoading: true,
       });
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.currentUserUID)
         .get()
@@ -46,7 +46,7 @@ class DeleteComponent extends React.Component {
         });
 
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('globalPosts')
         .doc(this.state.postID)
         .delete()
@@ -55,7 +55,7 @@ class DeleteComponent extends React.Component {
         })
         .then(() => this.reducePostCount());
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection(this.state.gain_loss)
         .doc(this.state.postID)
         .delete()
@@ -63,7 +63,7 @@ class DeleteComponent extends React.Component {
             console.error("Error deleting ", error);
         });
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('comments')
         .doc(this.state.postID)
         .delete()
@@ -71,7 +71,7 @@ class DeleteComponent extends React.Component {
             console.error("Error deleting ", error);
         });
 
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('likes')
         .doc(this.state.postID)
         .delete()
@@ -79,14 +79,14 @@ class DeleteComponent extends React.Component {
             console.error("Error deleting ", error);
         });
 
-      await Firebase
+      await firebase
         .storage()
         .ref(`screenshots/${this.state.currentUserUID}/${this.state.postID}`)
         .delete();
     }
 
     reducePostCount = async() => {
-      await Firebase.firestore()
+      await firebase.firestore()
         .collection('users')
         .doc(this.state.currentUserUID)
         .set({
