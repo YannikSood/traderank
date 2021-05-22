@@ -50,6 +50,7 @@ const ClickedPostPage = (props) => {
   
 
   useEffect(() => {
+    clearStorage(); 
     setReplyTo('');
     getPosterUID();
     setIsLoading(true);
@@ -74,8 +75,37 @@ const ClickedPostPage = (props) => {
     fetchCollection();
   }, []);
 
+  const clearReplyTo = async() => {
+    try {
+      const value = await AsyncStorage.removeItem('replyTo');
+  
+    } catch (e) {
+      // error reading value
+      console.log(`Error clearing replyTo: ${e}`);
+    }
+  };
+
+  const clearReplyData = async() => {
+    try {
+      const value = await AsyncStorage.removeItem('replyData');
+    } catch (e) {
+      // error reading value
+      console.log(`Error clearing replyData: ${e}`);
+    }
+  };
+
+
+
+
+  const clearStorage = () => {
+    clearReplyTo();
+    clearReplyData();
+  }
+
   useEffect(() => {
+    
     updateCommentCount();
+
     const getReplyTo = async() => {
       try {
         const value = await AsyncStorage.getItem('replyTo');
@@ -89,6 +119,7 @@ const ClickedPostPage = (props) => {
     };
     getReplyTo();
 
+
     const getReplyData = async() => {
       try {
         const jsonValue = await AsyncStorage.getItem('replyData');
@@ -99,6 +130,8 @@ const ClickedPostPage = (props) => {
       }
     };
     getReplyData();
+
+
 
   }, [replyTo])
 
@@ -111,6 +144,7 @@ const ClickedPostPage = (props) => {
   const addComment = () => {
     if (replyTo.length > 0) {
       addReplyComment();
+      fetchCollection(); //makes it refresh after comment is added
     } else {
       addCommentToDB(); //regular comment
       fetchCollection(); //makes it refresh after comment is added
@@ -133,7 +167,7 @@ const ClickedPostPage = (props) => {
         .collection('replies') //Create a collection for said comment
         .add({ //Add to this collection, and automatically generate iD for this new comment
           postID: replyData.postID,
-          commentID: eplyData.commentID,
+          commentID: replyData.commentID,
           commentText: commentText,
           replyingToUsername: replyData.replyingToUsername,
           replyingToUID: replyData.replyingToUID,
@@ -148,7 +182,7 @@ const ClickedPostPage = (props) => {
                   console.error("Error: ", error);
               });
 
-      /*
+              /*
                TODO:
               */
 
@@ -699,7 +733,6 @@ $
                     style={styles.inputBox}
                     value={commentText}
                     onChangeText={(commentText) => {
-                        console.log("comment from clickedPostPage: " + commentText);
                         setCommentText(commentText);
                       }}
                     placeholder=" Add a comment..."
