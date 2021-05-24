@@ -267,7 +267,7 @@ class YoloConfirm extends React.Component {
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 
                         <TextInput
-                           style={styles.inputBox}
+                           style={{ backgroundColor: '#121212', height: 180, width: Dimensions.get('window').width - 40, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
                            value={this.state.description}
                            onChangeText={description => this.setState({ description })}
                            placeholder="I love tendies... "
@@ -303,8 +303,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   container: {
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     backgroundColor: '#000000',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,

@@ -8,8 +8,9 @@ import { MaterialCommunityIcons, Entypo, MaterialIcons, AntDesign } from '@expo/
 import * as ImagePicker from 'expo-image-picker';
 import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserComponent';
 import ThoughtsCell from '../cells/thoughtsCell';
-import firebase from '../../firebase';
-import 'firebase/firestore';
+import Firebase from '../../firebase';
+import CachedImage from '../image/CachedImage';
+
 
 //TODO: Add links + link previews
 const ThoughtsFeed = (props) => {
@@ -24,8 +25,8 @@ const ThoughtsFeed = (props) => {
 
   // Props
   const { user, navigation, postsLoading } = props;
-  const flagOptions = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'NEWS', 'TIPS', 'QUESTIONS'];
-  const categories = ['STOCKS', 'OPTIONS', 'CRYPTOS', 'MEMES', 'NEWS', 'TIPS', 'QUESTIONS'];
+  const flagOptions = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
+  const categories = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
 
   /**
      * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
@@ -43,7 +44,7 @@ const ThoughtsFeed = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('STOCKS');
+  const [selectedCategory, setSelectedCategory] = useState('DISCUSS');
   const [image, setImage] = useState('');
   const [hasImage, setHasImage] = useState(false);
   const [hasLink, setHasLink] = useState(false);
@@ -113,20 +114,15 @@ const ThoughtsFeed = (props) => {
 
   const getMore = async() => {
     const lastItemIndex = thoughts.length - 1;
-    console.log(thoughts[lastItemIndex].date_created);
     const seconds = thoughts[lastItemIndex].date_created._seconds;
-    // console.log(seconds);
     const nanoseconds = thoughts[lastItemIndex].date_created._nanoseconds;
-    // console.log(nanoseconds);
-    const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds);
-    // const lastTime = new Time_stamp(seconds, nanoseconds);
-    console.log(lastTime);
+    const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds); //-- the firebase timestamp
 
     const getMoreThoughtsOneCategory = firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
     getMoreThoughtsOneCategory({
       index: lastItemIndex,
       category: selectedCategory,
-      lastThought: lastTime,
+      date_created: lastTime.toMillis(),
     }).then((result) => {
       setThoughts(thoughts.concat(result.data));
     }).catch((err) => {
@@ -292,7 +288,15 @@ const ThoughtsFeed = (props) => {
 
   const renderThumbnailForImageOrVideo = () => (
     <View>
-      { mediaType === 'image' ? <Image source={{ uri: image }} style={styles.thumbnail2} /> : <AntDesign name="checkcircle" size={50} color="white" /> }
+      
+      { mediaType === 'image' ? 
+      <CachedImage 
+        source={{ uri: `${this.state.image}` }}
+        cacheKey={`${this.state.image}t`}
+        backgroundColor="transparent"
+        style={styles.thumbnail2}
+      /> : 
+      <AntDesign name="checkcircle" size={50} color="white" /> }
     </View>
   );
 

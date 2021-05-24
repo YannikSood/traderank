@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, ActivityIndicator, Image } from 'react-native'
-import firebase from '../../../firebase'
-
+import Firebase from '../../../firebase'
+import CachedImage from '../../image/CachedImage';
 
 class ProfilePic extends React.Component {
     
@@ -16,9 +16,11 @@ class ProfilePic extends React.Component {
     render() {
         return (
             <View >
-                <Image
-                    source={{ uri: this.state.storage_image_uri }}
-                    style={styles.thumbnail}
+                <CachedImage
+                  source={{ uri: `${this.state.storage_image_uri}` }}
+                  cacheKey={`${this.state.storage_image_uri}t`}
+                  backgroundColor="transparent"
+                  style={styles.thumbnail}
                 />
             </View>
         )

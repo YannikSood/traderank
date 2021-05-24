@@ -1490,7 +1490,7 @@ exports.postNewThought = functions.https.onCall((data, context) => {
                             .collection('users')
                             .doc(data.userUID)
                             .set({
-                                postCount: doc.data().postCount + 1,
+                                thoughtsCount: doc.data().thoughtsCount + 1,
                             }, { merge: true })
                             .catch((error) => {
                                 console.error("Error writing document to user collection: ", error);
@@ -1559,7 +1559,7 @@ exports.postNewThought = functions.https.onCall((data, context) => {
                             .collection('users')
                             .doc(data.userUID)
                             .set({
-                                postCount: doc.data().postCount + 1,
+                                thoughtsCount: doc.data().thoughtsCount + 1,
                             }, { merge: true })
                             .catch((error) => {
                                 console.error("Error writing document to user collection: ", error);
@@ -1598,21 +1598,14 @@ exports.postNewThought = functions.https.onCall((data, context) => {
 
 //USED IN THOUGHTS TO DISPLAY THE ARRAY
 exports.getThoughtsOneCategory = functions.https.onCall((data, context) => {
-
-    //Category
-    //Index?
-    return new Promise((resolve, reject) => {
+    return admin.firestore()
+      .collection('thoughts')
+      .where("category", "==", data.category)
+      .orderBy('date_created', 'desc')
+      .limit(9)
+      .get()
+      .then((query) => {
         const thoughts = [];
-        let index = data.index;
-
-        admin
-        .firestore()
-        .collection('thoughts')
-        .where("category", "==", data.category)
-        .orderBy('date_created', 'desc')
-        .limit(9)
-        .get()
-        .then((query) => {
           query.forEach((res) => {
             const {
                 username,
@@ -1644,81 +1637,66 @@ exports.getThoughtsOneCategory = functions.https.onCall((data, context) => {
                 link,
                 mediaType,
             });
-            console.log(`thoughts from index: ${thoughts}, index ${index}`);
-
-            index++;
-          });
-          resolve(thoughts);
-          return null;
-
-        }).catch(err => {
-            console.log("Error from getting first set of thoughts " + err);
-            reject(err);
-        })
-  
-    });
+        });
+        return thoughts;
+    })
+    .catch(err => {
+    console.error("Error from getting first set of thoughts ", err);
+    // rethrow errors for client
+    throw new functions.https.HttpsError('unknown', err.message);
+  });
 });
+
 
 //USED IN THOUGHTS FOR PAGINATION
 exports.getMoreThoughtsOneCategory = functions.https.onCall((data, context) => {
-
-    //Category
-    //Last item index
-    //Last item index date
-    console.log(`thoughts from index: ${data.lastThought}, index ${data.index}`);
-    return new Promise((resolve, reject) => {
-                let index = data.index + 2;
-                const thoughts = [];
-
-                admin.firestore()
-                .collection('thoughts')
-                .where("category", "==", data.category)
-                .orderBy('date_created', 'desc')
-                .startAfter(data.lastThought)
-                .limit(7)
-                .get()
-                .then((query) => {
-                    query.forEach((res) => {
-                      const {
-                          username,
-                          description,
-                          image,
-                          date_created,
-                          likesCount,
-                          commentsCount,
-                          viewsCount,
-                          category,
-                          postID,
-                          uid,
-                          link,
-                          mediaType,
-                      } = res.data();
-          
-                      thoughts.push({
-                        key: res.id,
-                        username,
-                          description,
-                          image,
-                          date_created,
-                          likesCount,
-                          commentsCount,
-                          viewsCount,
-                          category,
-                          postID,
-                          uid,
-                          link,
-                          mediaType,
-                      });
-        
-                    index++;
-                  });
-                  resolve(thoughts);
-                  return null;
+    return admin.firestore()
+      .collection('thoughts')
+      .where("category", "==", data.category) 
+      .orderBy('date_created', 'desc')
+      .startAfter(new Date(data.date_created))
+      .limit(7)
+      .get()
+      .then((query) => {
+        const thoughts = [];
+            query.forEach((res) => {
+                const {
+                    username,
+                    description,
+                    image,
+                    date_created,
+                    likesCount,
+                    commentsCount,
+                    viewsCount,
+                    category,
+                    postID,
+                    uid,
+                    link,
+                    mediaType,
+                } = res.data();
     
-                }).catch(err => {
-                    console.log("Errors from getting more thoughts " + err);
-                    reject(err);
-                })
+                thoughts.push({
+                key: res.id,
+                username,
+                    description,
+                    image,
+                    date_created,
+                    likesCount,
+                    commentsCount,
+                    viewsCount,
+                    category,
+                    postID,
+                    uid,
+                    link,
+                    mediaType,
+                });
 
-    });
-})
+            });
+            return thoughts;
+        })
+        .catch(err => {
+        console.error("Error from getting more thoughts ", err);
+        // rethrow errors for client
+        throw new functions.https.HttpsError('unknown', err.message);
+        });
+});
