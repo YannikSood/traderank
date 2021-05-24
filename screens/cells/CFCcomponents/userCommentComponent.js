@@ -19,12 +19,14 @@ class CommentUserComponent extends React.Component {
       posterUID: this.props.posterUID,
       navigation: this.props.navigation,
       posterUsername: '',
+      profilePic: '',
       currentUserUID: firebase.auth().currentUser.uid,
     };
   }
 
   componentDidMount() {
     this.getPosterUsername();
+  
   }
 
     getPosterUsername = async() => {
@@ -34,8 +36,10 @@ class CommentUserComponent extends React.Component {
         .get()
         .then((doc) => {
             if (doc.exists) {
+              console.log(`${doc.data().username} ${doc.data().profilePic}`);
                 this.setState ({
                     posterUsername: doc.data().username,
+                    profilePic: doc.data().profilePic,
                     isLoading: false
                 })
             } else {
@@ -78,7 +82,7 @@ class CommentUserComponent extends React.Component {
                         onPress={() => this.getProfile()} >
 
                         
-                        <Text style ={styles.tradeText}> {this.state.posterUsername}</Text>
+                        <Text style ={styles.tradeText}> {this.state.posterUsername}---</Text>
                         
                     </TouchableOpacity>
                 </View>
