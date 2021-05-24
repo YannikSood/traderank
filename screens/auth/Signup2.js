@@ -69,6 +69,7 @@ const Signup2 = ({ props, route, navigation }) => {
         followerCount: 0,
         followingCount: 0,
         postCount: 0,
+        thoughtsCount: 0,
         bio: '',
         userLevel: 0,
         score: 0,

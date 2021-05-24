@@ -10,7 +10,7 @@ import ShareComponent from './FFCcomponents/shareComponent';
 import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import DeleteComponent from './FFCcomponents/deleteComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
-
+import CachedImage from '../image/CachedImage';
 
 //The cell you see when you scroll through the home screen
 
@@ -263,9 +263,11 @@ class FeedCellClass extends React.Component {
 
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
-              <Image
-                source={{ uri: this.state.image }}
-                style={styles.fullScreenImage}
+              <CachedImage
+                  source={{ uri: `${this.state.image}` }}
+                  cacheKey={`${this.state.image}t`}
+                  backgroundColor="transparent"
+                  style={styles.fullScreenImage}
               />
             </View>
           </Modal>
@@ -341,9 +343,12 @@ class FeedCellClass extends React.Component {
 
           <TouchableOpacity onPress={() => this.openImageModal()}>
             <View style={styles.thumbnailContainer}>
-              <Image
-                source={{ uri: this.state.image }}
-                style={styles.thumbnail}
+
+                 <CachedImage
+                  source={{ uri: `${this.state.image}` }}
+                  cacheKey={`${this.state.image}t`}
+                  backgroundColor="transparent"
+                  style={styles.thumbnail}
               />
             </View>
           </TouchableOpacity>

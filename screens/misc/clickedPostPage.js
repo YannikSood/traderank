@@ -458,24 +458,23 @@ const ClickedPostPage = (props) => {
         console.log(error);
       });
 
-      await firebase.firestore()
-        .collection('globalPosts')
-        .doc(postID)
-        .set({
+    await firebase.firestore()
+      .collection('globalPosts')
+      .doc(postID)
+      .set({
         viewsCount: currentViewsCount + 1,
-        }, { merge: true });
-    
+      }, { merge: true });
   };
 
-//   const setViewsCountPartTwo = async() => {
-//     await firebase.firestore()
-//     .collection('globalPosts')
-//     .doc(postID)
-//     .set({
-//       viewsCount: currentViewsCount + 1,
-//     }, { merge: true });
-//   }
- 
+  //   const setViewsCountPartTwo = async() => {
+  //     await firebase.firestore()
+  //     .collection('globalPosts')
+  //     .doc(postID)
+  //     .set({
+  //       viewsCount: currentViewsCount + 1,
+  //     }, { merge: true });
+  //   }
+
   const fetchCollection = async() => {
     const tempCommentsArray = [];
 

@@ -13,6 +13,7 @@ import ProfilePic from './profileComponents/profilePic.js';
 import ProfileStats from './profileComponents/profileStats.js';
 import ProfileBio from './profileComponents/profileBio.js';
 import FeedCellClass from '../cells/feedCellClass';
+import ThoughtsCell from '../cells/thoughtsCell';
 
 //Redux
 import firebase from '../../firebase';
@@ -36,10 +37,12 @@ class Profile extends React.Component {
       navigation: this.props.navigation,
       userUID: firebase.auth().currentUser.uid,
       userPostsArray: [],
+      userThoughtsArray: [],
       modalOpen: false,
       dateJoined: null,
       twitter: '',
       instagram: '',
+      postType: 'TRADES',
     };
 
     // console.log(firebase.auth().currentUser.uid);
@@ -176,36 +179,106 @@ class Profile extends React.Component {
         });
     }
 
+    getThoughtsCollection = async() => {
+      const userThoughtsArray = [];
+
+      await firebase.firestore()
+        .collection('thoughts')
+        .where('uid', '==', `${firebase.auth().currentUser.uid}`)
+        .orderBy('date_created', 'desc')
+        .limit(10)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((res) => {
+            const {
+              username,
+              description,
+              image,
+              date_created,
+              likesCount,
+              commentsCount,
+              viewsCount,
+              category,
+              postID,
+              uid,
+              link,
+              mediaType,
+            } = res.data();
+
+            userThoughtsArray.push({
+              key: res.id,
+              username,
+              description,
+              image,
+              date_created,
+              likesCount,
+              commentsCount,
+              viewsCount,
+              category,
+              postID,
+              uid,
+              link,
+              mediaType,
+            });
+          });
+
+          this.setState({
+            userThoughtsArray,
+          });
+        });
+    }
+
+    getMoreThoughts = async() => {
+      const lastItemIndex = this.state.userThoughtsArray.length - 1;
+
+      await firebase.firestore()
+        .collection('thoughts')
+        .where('uid', '==', `${firebase.auth().currentUser.uid}`)
+        .orderBy('date_created', 'desc')
+        .startAfter(this.state.userThoughtsArray[lastItemIndex].date_created)
+        .limit(7)
+        .get()
+        .then((querySnapshot) => {
+          const newThoughtsArray = [];
+          querySnapshot.forEach((res) => {
+            const {
+              username,
+              uid,
+              image,
+              ticker,
+              security,
+              description,
+              percent_gain_loss,
+              profit_loss,
+              gain_loss,
+              date_created,
+              viewsCount,
+            } = res.data();
+
+            newThoughtsArray.push({
+              key: res.id,
+              username,
+              uid,
+              image,
+              ticker,
+              security,
+              description,
+              percent_gain_loss,
+              profit_loss,
+              gain_loss,
+              date_created,
+              viewsCount,
+            });
+          });
+
+
+          this.setState({
+            userPostsArray: this.state.userThoughtsArray.concat(newThoughtsArray),
+          });
+        });
+    }
+
     pullUserInfo = async() => {
-      //Call a firebase function
-      //Pass this.state.userUID
-      //get all the information down there using the function
-      //Return the information from the function
-      //Set it to state
-      //Make sure to set isLoading to true when you call the function, and isLoading to false when it returns
-
-      // const getUserInfo = await firebase.functions().httpsCallable('pullUserInfo');
-      // getUserInfo({
-      //   userUID: this.state.userUID
-      // })
-      // .then((result) => {
-
-      //     this.setState({
-      //       postCount: result.data.postCount,
-      //       followerCount: result.data.followerCount,
-      //       followingCount: result.data.followingCount,
-      //       storage_image_uri: result.data.storage_image_uri,
-      //       bio: result.data.bio,
-      //       dateJoined: result.data.dateJoined,
-      //       twitter: result.data.twitter,
-      //       instagram: result.data.instagram,
-      //       isLoading: false,
-      //     });
-
-      // }).catch((error) => {
-      //     console.log("Error from getUserInfo in Profile.js" + error);
-      // });
-
       firebase.firestore()
         .collection('users')
         .doc(this.state.userUID)
@@ -324,7 +397,7 @@ class Profile extends React.Component {
               <Text style={styles.subheader}>
                 {' '}
                 @
-{this.state.user.username}
+                {this.state.user.username}
                 {' '}
               </Text>
             </View>
@@ -434,7 +507,7 @@ joined
             <Text style={styles.subheader}>
               {' '}
               @
-{this.state.user.username}
+              {this.state.user.username}
               {' '}
             </Text>
           </View>
@@ -524,7 +597,7 @@ joined
     render() {
       const { navigation } = this.props;
       const renderItem = ({ item }) => (
-
+        // { this.state.postType === 'TRADES' ?
         <FeedCellClass
           username={item.username}
           description={item.description}
@@ -540,6 +613,22 @@ joined
           uid={item.uid}
           viewsCount={item.viewsCount}
         />
+
+        //   :
+        //     <ThoughtsCell
+        //       username={item.username}
+        //       description={item.description}
+        //       image={item.image}
+        //       postID={item.key}
+        //       navigation={navigation}
+        //       date_created={item.date_created}
+        //       uid={item.uid}
+        //       viewsCount={item.viewsCount}
+        //       link={item.link}
+        //       mediaType={item.mediaType}
+        //     />
+
+        // }
       );
 
       if (this.state.isLoading) {
