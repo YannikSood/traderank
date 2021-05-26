@@ -19,7 +19,9 @@ class LeaderboardGains extends React.Component {
   componentDidMount() {
     Analytics.logEvent('Leaderboard_Gains_Clicked');
     this.getCollection();
+    this.setThoughtCount();
   }
+  
 
   //   componentWillUnmount() {
   //     this.unsubscribe();
@@ -47,6 +49,20 @@ class LeaderboardGains extends React.Component {
         console.log(err);
       })
         
+    }
+    setThoughtCount = async() => {
+
+      const setThoughtCount = firebase.functions().httpsCallable('setThoughtCount');
+      setThoughtCount({
+
+      })
+      .then((result) => {
+          console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
     }
 
     getMore = async() => {
