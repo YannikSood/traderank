@@ -45,8 +45,8 @@ class ThoughtsDetails extends React.Component {
   async componentDidMount() {
     //Not replying ot anyone
     //update replyingTo storage variable here?
-    Analytics.logEvent('Post_Clicked');
-    Analytics.setCurrentScreen('PostDetailsScreen');
+    Analytics.logEvent('Thoughts_Details_Clicked');
+    Analytics.setCurrentScreen('ThoughtsDetailsScreen');
     await firebase.firestore()
       .collection('thoughts')
       .doc(this.state.postID)

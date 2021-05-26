@@ -62,6 +62,7 @@ import SpecialClickedPostPage from './screens/misc/specialClickedPostPage';
 import ClickedUserProfile from './screens/misc/clickedUserProfile';
 import ClickedFollowPage from './screens/misc/clickedFollowPage';
 import ThoughtsDetails from './screens/misc/thoughtsDetails';
+import ThoughtsComments from './screens/misc/thoughtsComments';
 
 const createStoreWithMiddleware = compose(applyMiddleware(reduxThunk)(createStore));
 const store = createStoreWithMiddleware(rootReducer);
@@ -339,6 +340,23 @@ const App = () => (
           component={ThoughtsDetails}
           options={{
             title: 'thought details',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#121212',
+              shadowColor: 'transparent',
+            },
+            headerBackTitle: '',
+          }}
+        />
+        <Stack.Screen
+          name="ThoughtsComments"
+          component={ThoughtsComments}
+          options={{
+            title: 'comments',
             headerTitleStyle: {
               fontWeight: 'bold',
               fontSize: 20,

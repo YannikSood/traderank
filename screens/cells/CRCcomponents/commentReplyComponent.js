@@ -76,7 +76,7 @@ class ReplyCommentComponent extends React.Component {
             });
           } else {
             // doc.data() will be undefined in this case
-            console.log('No such document!');
+            console.log('No such document comment count update!');
           }
         });
     }
@@ -94,7 +94,7 @@ class ReplyCommentComponent extends React.Component {
             });
           } else {
             // doc.data() will be undefined in this case
-            console.log('No such document!');
+            console.log('No such document user comment count!');
           }
         });
     }

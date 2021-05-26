@@ -1,15 +1,16 @@
 import React, { useState, useEffect }  from 'react';
-import {  FlatList, View, Text, StyleSheet, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
+import {  FlatList, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button, Modal } from 'react-native';
 import TimeAgo from 'react-native-timeago';
 import * as Analytics from 'expo-firebase-analytics';
 import { connect, useDispatch } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Video, AVPlaybackStatus } from 'expo-av';
 import firebase from '../../firebase';
-import UserComponent from '../cells/FFCcomponents/userComponent';
+import MiscUserComponent from '../cells/FollowCellComps/userComponent';
+import CachedImage from '../image/CachedImage';
 import CommentCellClass from '../cells/commentCellClass';
-import CommentComponent from '../cells/FFCcomponents/commentComponent';
-// import ReplyButton from './replyButton';
+import CommentComponent from '../cells/TFCcomponents/commentComponent';
 
 
 const mapStateToProps = state => ({
@@ -19,36 +20,22 @@ const mapStateToProps = state => ({
 //Comments Page, when you click the comment button on a post
 const ThoughtsComments = (props) => {
   const { user, route, navigation } = props;
-  const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, date_created } = route.params;
+  const { username, image, description, postID, posterUID, viewsCount, link, mediaType } = route.params;
 
-
-  const [isLoading, setIsLoading] = useState(false);
   const currentUser = firebase.auth().currentUser.uid;
-  const [currentUsername, setCurrentUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [commentsArray, setCommentsArray] = useState([]);
   const [currentViewsCount, setCurrentViewsCount] = useState(0);
   const [replyTo, setReplyTo] = useState('');
   const [replyData, setReplyData] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
-    Analytics.logEvent('Comments_Clicked');
-    Analytics.setCurrentScreen('CommentsScreen');
+    Analytics.logEvent('Thoughts_Comments_Clicked');
+    Analytics.setCurrentScreen('ThoughtsCommentsScreen');
 
-
-    firebase.firestore()
-      .collection('users')
-      .doc(currentUser)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          setCurrentUsername(doc.data().username);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    console.log(`username: ${username} postID: ${postID} posterUID: ${posterUID}`);
 
     fetchCollection();
   }, []);
@@ -69,11 +56,11 @@ const ThoughtsComments = (props) => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log('issue with views count');
       });
 
     await firebase.firestore()
-      .collection('th')
+      .collection('thoughts')
       .doc(postID)
       .set({
         viewsCount: currentViewsCount + 1,
@@ -122,56 +109,39 @@ const ThoughtsComments = (props) => {
 
         setCommentsArray(tempCommentsArray);
         setIsLoading(false);
-      });
+      })
+      .catch(() => console.log('issue with comments'));
   };
 
-  const renderGainLoss = () => {
-    if (gain_loss === 'gain') {
-      return (
-        <Text style={styles.pnlContainer}>
-          <Text style={styles.gainText}>
-$
-            {profit_loss}
-          </Text>
-          <Text style={styles.regularTradeText}>  🚀  </Text>
-          <Text style={styles.gainText}>
-            {percent_gain_loss}
-%
-          </Text>
-        </Text>
+  const renderImageOrVideo = () => (
+    <View>
+      { mediaType === 'image' ? (
+        <TouchableOpacity onPress={() => openImageModal()}>
+          <View style={styles.thumbnailContainer}>
 
-      );
-    }
-    if (gain_loss === 'loss') {
-      return (
-        <Text style={styles.pnlContainer}>
-          <Text style={styles.lossText}>
--$
-            {profit_loss}
-          </Text>
-          <Text style={styles.tradeText}>  🥴  </Text>
-          <Text style={styles.lossText}>
--
-            {percent_gain_loss}
-%
-          </Text>
-        </Text>
-      );
-    }
-    return (
-      <Text style={styles.pnlContainer}>
-        <Text style={styles.yoloText}>
-$
-          {profit_loss}
-          {' '}
-🙏  trade
-        </Text>
-      </Text>
-    );
-  };
+            <CachedImage
+              source={{ uri: `${image}` }}
+              cacheKey={`${image}t`}
+              backgroundColor="transparent"
+              style={styles.thumbnail}
+            />
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.thumbnailContainer}>
+          <Video
+            source={{ uri: image }}
+            style={styles.thumbnail}
+            isLooping
+            useNativeControls
+            // shouldPlay
+          />
+        </View>
+      ) }
+    </View>
+  );
 
   const renderListHeader = () => {
-    setViewsCount();
     if (isLoading) {
       return (
         <View style={styles.noCommentsContainer}>
@@ -182,29 +152,28 @@ $
     return (
       <View style={getContainerStyle()}>
 
+        {/* <Modal
+          isVisible={modalOpen}
+          animationIn="fadeIn"
+          onSwipeComplete={() => closeImageModal()}
+          swipeDirection="down"
+        >
+
+          <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+            <CachedImage
+              source={{ uri: `${image}` }}
+              cacheKey={`${image}t`}
+              backgroundColor="transparent"
+              style={styles.fullScreenImage}
+            />
+          </View>
+        </Modal> */}
+
         <View>
-          <View style={{ flexDirection: 'row', padding: 6, justifyContent: 'space-between', alignItems: 'left' }}>
 
-            <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
-              <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
-                <UserComponent
-                  postID={postID}
-                  navigation={navigation}
-                />
-              </View>
-
-            </View>
-
-            <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
-              <Text style={styles.tradeText}>
-$
-                {ticker}
-              </Text>
-              <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
-#
-                {security}
-                {' '}
-              </Text>
+          <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
+            <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
+              <MiscUserComponent uid={posterUID} navigation={navigation} />
             </View>
 
 
@@ -214,20 +183,27 @@ $
         <View style={styles.descriptionContainer}>
 
           <Text style={styles.descriptionText}>
-            {' '}
             {description}
           </Text>
 
         </View>
 
-        <View style={styles.timeContainer}>
-          <TimeAgo style={{ color: '#696969' }} time={date_created} />
-        </View>
+        { mediaType === 'none' ? <View /> : (
+          renderImageOrVideo()
+        ) }
 
-        <View style={styles.lineStyle} />
+        {/* { this.renderCellComponents() } */}
 
       </View>
     );
+  };
+
+  const openImageModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setModalOpen(false);
   };
 
   const getContainerStyle = () => {
@@ -284,7 +260,7 @@ $
               replyingToUsername: `${item.commentorUsername}`,
               replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
               replierAuthorUID: `${currentUser}`, //person sending the reply
-              replierUsername: `${currentUsername}`,
+              replierUsername: `${username}`,
               commentLikes: 0,
               //may need to change
             };

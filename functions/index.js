@@ -1153,16 +1153,16 @@ exports.setThoughtCount = functions.https.onCall((data, context) => {
     .get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            
-            admin.firestore()
-            .collection('users')
-            .doc(doc.data().uid)
-            .set({
-                thoughtsCount: 0
-            })
-            .catch(err => {
-                console.log("Err from setThoughtCount: " + err);
-            })
+            console.log("docID: " + doc.id)
+            // admin.firestore()
+            // .collection('users')
+            // .doc(doc.id)
+            // .set({
+            //     thoughtsCount: 0
+            // }, { merge: true })
+            // .catch(err => {
+            //     console.log("Err from setThoughtCount: " + err);
+            // })
             
         })
         return null
