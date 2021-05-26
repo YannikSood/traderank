@@ -15,7 +15,7 @@ class LikeComponent extends React.Component {
     super(props);
     this.state = {
       likerUID: firebase.auth().currentUser.uid,
-      likerUsername: this.props.user.username, 
+      likerUsername: this.props.user.username,
       postID: this.props.postID,
       isAlreadyLiked: false,
       likesCount: 0,
@@ -196,13 +196,13 @@ class LikeComponent extends React.Component {
     }
 
     writeToUserNotifications = async() => {
-      if (this.state.likerUID != this.state.posterUID) {
+      if (this.state.likerUID !== this.state.posterUID) {
         await firebase.firestore()
           .collection('users')
           .doc(this.state.posterUID)
           .collection('notifications')
           .add({
-            type: 0,
+            type: 10,
             senderUID: this.state.likerUID,
             recieverUID: this.state.posterUID,
             postID: this.state.postID,
@@ -217,7 +217,7 @@ class LikeComponent extends React.Component {
 
         const writeNotification = firebase.functions().httpsCallable('writeNotification');
         writeNotification({
-          type: 0,
+          type: 10,
           senderUID: this.state.likerUID,
           recieverUID: this.state.posterUID,
           postID: this.state.postID,
@@ -229,8 +229,6 @@ class LikeComponent extends React.Component {
           .catch((error) => {
             console.log(error);
           });
-      } else {
-
       }
     }
 

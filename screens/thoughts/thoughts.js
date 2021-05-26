@@ -8,7 +8,7 @@ import { MaterialCommunityIcons, Entypo, MaterialIcons, AntDesign } from '@expo/
 import * as ImagePicker from 'expo-image-picker';
 import UnclickableUserComponent from '../cells/FollowCellComps/unclickableUserComponent';
 import ThoughtsCell from '../cells/thoughtsCell';
-import Firebase from '../../firebase';
+import firebase from '../../firebase';
 import CachedImage from '../image/CachedImage';
 
 

@@ -420,7 +420,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                     messages.push({
                         "to": doc.data().token,
                         "sound": "default",
-                        "title":"you got a like!",
+                        "title":"👀",
                         "body": data.senderUsername + " liked your post!"
                     });
     
@@ -439,7 +439,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                     messages.push({
                         "to": doc.data().token,
                         "sound": "default",
-                        "title":"you got a comment!",
+                        "title":"👀",
                         "body": data.senderUsername + " commented on your post!"
                     });
     
@@ -458,7 +458,7 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                     messages.push({
                         "to": doc.data().token,
                         "sound": "default",
-                        "title":"you got a new follower!",
+                        "title":"👀",
                         "body": data.senderUsername + " followed you!"
                     });
     
@@ -477,8 +477,27 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                     messages.push({
                         "to": doc.data().token,
                         "sound": "default",
-                        "title":"your comment got a like!",
+                        "title":"👀",
                         "body": data.senderUsername + " liked your comment!"
+                    });
+    
+                    //Post it to expo
+                    
+                    fetch('https://exp.host/--/api/v2/push/send', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(messages)
+                    });
+                }
+                else if (data.type === 10) {
+                    messages.push({
+                        "to": doc.data().token,
+                        "sound": "default",
+                        "title":"👀",
+                        "body": data.senderUsername + " liked your thought!"
                     });
     
                     //Post it to expo

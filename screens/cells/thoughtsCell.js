@@ -6,9 +6,9 @@ import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import firebase from '../../firebase';
-import LikeComponent from './FFCcomponents/likeComponent';
-import CommentIconComponent from './FFCcomponents/commentIconComponent';
-import DeleteComponent from './FFCcomponents/deleteComponent';
+import LikeComponent from './TFCcomponents/likeComponent';
+// import CommentIconComponent from './FFCcomponents/commentIconComponent';
+// import DeleteComponent from './FFCcomponents/deleteComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
 import CachedImage from '../image/CachedImage';
 
@@ -93,7 +93,7 @@ class ThoughtsCell extends React.Component {
 
             </View>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.buttonContainer}
               onPress={() => this.showPostPage()}
             >
@@ -101,7 +101,7 @@ class ThoughtsCell extends React.Component {
 
               <CommentIconComponent postID={this.state.postID} />
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* <View style={styles.buttonContainer}>
 
@@ -115,13 +115,13 @@ class ThoughtsCell extends React.Component {
             </View> */}
 
 
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
 
               <View style={{ paddingBottom: 4 }}>
                 <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
               </View>
 
-            </View>
+            </View> */}
 
           </View>
         );
@@ -136,7 +136,7 @@ class ThoughtsCell extends React.Component {
 
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.buttonContainer}
             onPress={() => this.showPostPage()}
           >
@@ -144,7 +144,7 @@ class ThoughtsCell extends React.Component {
 
             <CommentIconComponent postID={this.state.postID} />
 
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* <View style={styles.buttonContainer}>
 
@@ -195,7 +195,7 @@ class ThoughtsCell extends React.Component {
             {/* <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}> */}
 
             <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
-              <View style={{ flexDirection: 'row', paddingLeft: 17 }}>
+              <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
                 <MiscUserComponent uid={this.state.posterUID} navigation={this.state.navigation} />
               </View>
 
@@ -206,7 +206,6 @@ class ThoughtsCell extends React.Component {
           <View style={styles.descriptionContainer}>
 
             <Text style={styles.descriptionText}>
-
               {this.state.description}
             </Text>
 
@@ -215,6 +214,8 @@ class ThoughtsCell extends React.Component {
           { this.state.mediaType === 'none' ? <View /> : (
             this.renderImageOrVideo()
           ) }
+
+          { this.renderCellComponents() }
 
         </View>
       );
