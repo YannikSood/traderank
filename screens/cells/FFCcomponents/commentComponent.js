@@ -418,7 +418,6 @@ class CommentComponent extends React.Component {
 
                 <TouchableOpacity onPress={() => { this.addComment(); }}>
                     <MaterialCommunityIcons name="message" size={30} color="white" />
-
                   </TouchableOpacity>
               </View>
           </TouchableWithoutFeedback>
