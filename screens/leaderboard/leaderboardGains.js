@@ -20,6 +20,7 @@ class LeaderboardGains extends React.Component {
     Analytics.logEvent('Leaderboard_Gains_Clicked');
     this.getCollection();
   }
+  
 
   //   componentWillUnmount() {
   //     this.unsubscribe();
@@ -48,6 +49,7 @@ class LeaderboardGains extends React.Component {
       })
         
     }
+
 
     getMore = async() => {
       //this.setState({ isLoading: true });

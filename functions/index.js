@@ -1146,7 +1146,37 @@ exports.getUserNumbers = functions.https.onCall((data, context) => {
 
 });
 
-exports.
+exports.setThoughtCount = functions.https.onCall((data, context) => {
+
+    admin.firestore()
+    .collection('users')
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            
+            admin.firestore()
+            .collection('users')
+            .doc(doc.data().uid)
+            .set({
+                thoughtsCount: 0
+            })
+            .catch(err => {
+                console.log("Err from setThoughtCount: " + err);
+            })
+            
+        })
+        return null
+    })
+    .catch((error) => {
+        console.error("Error finding user: ", error);
+    });
+
+    return (
+        true
+    )
+
+});
+
 
 //USED IN CLICKED PROFILE
 exports.checkIsFollowing = functions.https.onCall((data, context) => {
