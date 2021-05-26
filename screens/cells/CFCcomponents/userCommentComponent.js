@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import firebase from '../../../firebase'
 import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
-
+import CachedImage from '../../image/CachedImage';
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
 });
@@ -21,6 +21,7 @@ class CommentUserComponent extends React.Component {
       posterUsername: '',
       profilePic: '',
       currentUserUID: firebase.auth().currentUser.uid,
+      isLoading: true
     };
   }
 
@@ -36,7 +37,6 @@ class CommentUserComponent extends React.Component {
         .get()
         .then((doc) => {
             if (doc.exists) {
-              console.log(`${doc.data().username} ${doc.data().profilePic}`);
                 this.setState ({
                     posterUsername: doc.data().username,
                     profilePic: doc.data().profilePic,
@@ -76,13 +76,19 @@ class CommentUserComponent extends React.Component {
         }    
         
             return (
-                <View >
+                <View>
                     <TouchableOpacity 
-                        style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5 }} 
+                        style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingLeft: 5 }} 
                         onPress={() => this.getProfile()} >
+                        <CachedImage
+                              source={{ uri: `${this.state.profilePic}` }}
+                              cacheKey={`${this.state.profilePic}t`}
+                              backgroundColor="transparent"
+                              style={styles.thumbnail}
+                         />
 
                         
-                        <Text style ={styles.tradeText}> {this.state.posterUsername}---</Text>
+                        <Text style ={styles.tradeText}> {this.state.posterUsername}</Text>
                         
                     </TouchableOpacity>
                 </View>
@@ -103,6 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignContent: 'center',
     color: '#FFFFFF',
+    marginBottom: 20
   },
   modalContainer: {
     marginTop: 75,
@@ -129,6 +136,11 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
+  thumbnailImage: {
+    width:  Dimensions.get('window').width - 50,
+    height: 300,
+    borderRadius: 15,
+  }
 });
 
 export default connect(mapStateToProps)(CommentUserComponent);

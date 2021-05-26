@@ -75,7 +75,7 @@ class CommentReplyCellClass extends React.Component {
 
             <View style={styles.timeContainer}>
 
-              <TimeAgo style={{ color: '#696969' }} time={this.state.date_created} />
+              <TimeAgo style={{ color: '#696969', marginTop: 5 }} time={this.state.date_created} />
 
             </View>
           </View>
@@ -140,7 +140,7 @@ class CommentReplyCellClass extends React.Component {
 
           <View style={styles.timeContainer}>
 
-            <TimeAgo style={{ color: '#696969' }} time={this.state.date_created} />
+            <TimeAgo style={{ color: '#696969', marginTop: 5 }} time={this.state.date_created} />
 
           </View>
 
