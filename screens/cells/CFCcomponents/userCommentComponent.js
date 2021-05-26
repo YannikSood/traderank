@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignContent: 'center',
     color: '#FFFFFF',
-    marginBottom: 20
+    marginBottom: 5
   },
   modalContainer: {
     marginTop: 75,

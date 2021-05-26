@@ -115,7 +115,7 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
 
           <View style={styles.timeContainer}>
 
-            <TimeAgo style={{ color: '#696969', marginTop: 5 }} time={date_created} />
+            <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={date_created} />
 
           </View>
         </View>
@@ -192,7 +192,7 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
 
         <View style={styles.timeContainer}>
 
-          <TimeAgo style={{ color: '#696969', marginTop: 5 }} time={date_created} />
+          <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={date_created} />
 
         </View>
 
