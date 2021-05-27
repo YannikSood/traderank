@@ -416,7 +416,7 @@ const ThoughtsFeed = (props) => {
           <View style={{ backgroundColor: '#121212', flex: 1, paddingTop: 50 }}>
 
             <View style={{ paddingLeft: 5 }}>
-              <UnclickableUserComponent uid={user.id} navigation={props.navigation} />
+              <UnclickableUserComponent uid={firebase.auth().currentUser.uid} navigation={props.navigation} />
             </View>
 
             { renderFlags() }
