@@ -34,9 +34,15 @@ class LeaderboardLosses extends React.Component {
         getCollection = async() => {
           let index = 1;
          // this.setState({ isLoading: true });
+         const today = new Date();
+         const dd = String(today.getDate()).padStart(2, '0');
+         const mm = String(today.getMonth() + 1).padStart(2, '0');
+         const yyyy = today.getFullYear();
+         const newToday = mm + dd + yyyy;
           const getLossesCollection = firebase.functions().httpsCallable("getLossesCollection");
           getLossesCollection({
-            index: index
+            index: index,
+            newToday: newToday
           }).then((result) => {
             this.setState({
               leaderboardLosses: result.data,
@@ -51,10 +57,16 @@ class LeaderboardLosses extends React.Component {
         getMore = async() => {
        // this.setState({ isLoading: true });
           const lastItemIndex = this.state.leaderboardLosses.length - 1;
+          const today = new Date();
+          const dd = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const yyyy = today.getFullYear();
+          const newToday = mm + dd + yyyy;
           const getMoreLosses = firebase.functions().httpsCallable("getMoreLosses");
           getMoreLosses({
             lastItemIndex: lastItemIndex,
-            score: this.state.leaderboardLosses[lastItemIndex].score
+            score: this.state.leaderboardLosses[lastItemIndex].score,
+            newToday: newToday
           }).then((result) => {
             this.setState({
               leaderboardLosses: this.state.leaderboardLosses.concat(result.data),

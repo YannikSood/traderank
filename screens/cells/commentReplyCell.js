@@ -27,7 +27,7 @@ class CommentReplyCellClass extends React.Component {
       date_created: this.props.date_created,
       postID: this.props.postID,
       replierAuthorUID: this.props.replierAuthorUID,
-      replierUsername: this.props.replierUsername,
+      replierUsername: this.props.replierUsername, //if I reply to a reply this is the author of who I am replying to
       replyingToUID: this.props.replyingToUID,
       replyingToUsername: this.props.replyingToUsername,
       showDeleteComponent: false,
@@ -36,11 +36,11 @@ class CommentReplyCellClass extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //     if (this.state.replierAuthorUID == firebase.auth().currentUser.uid) {
-  //         this.setState({ showDeleteComponent: true })
-  //     }
-  // }
+  componentDidMount() {
+      // if (this.state.replierAuthorUID == firebase.auth().currentUser.uid) {
+      //     this.setState({ showDeleteComponent: true })
+      // }
+  }
 
 
   render() {
@@ -75,7 +75,7 @@ class CommentReplyCellClass extends React.Component {
 
             <View style={styles.timeContainer}>
 
-              <TimeAgo style={{ color: '#696969' }} time={this.state.date_created} />
+              <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={this.state.date_created} />
 
             </View>
           </View>
@@ -95,7 +95,8 @@ class CommentReplyCellClass extends React.Component {
 
 
           </View>
-          {this.state.isReplying
+          
+          {this.state.isReplying 
                                 && <ReplyCommentComponent replyData={replyData} />
 
                         }
@@ -139,7 +140,7 @@ class CommentReplyCellClass extends React.Component {
 
           <View style={styles.timeContainer}>
 
-            <TimeAgo style={{ color: '#696969' }} time={this.state.date_created} />
+            <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={this.state.date_created} />
 
           </View>
 
@@ -158,7 +159,18 @@ class CommentReplyCellClass extends React.Component {
             color="white"
             onPress={() => {
               this.setState({ isReplying: true });
+              const storeReplyTo = async(value) => {
+                try {
+                  await AsyncStorage.setItem('replyTo', value);
+                } catch (e) {
+                  // saving error
+                }
+              };
+  
+              storeReplyTo(`${this.props.replierUsername}`);
+              console.log("Comment reply cell...: " + this.props.replierUsername);
             }}
+            
           />
 
 

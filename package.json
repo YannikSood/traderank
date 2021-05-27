@@ -33,7 +33,7 @@
     "expo-status-bar": "~1.0.3",
     "firebase": "7.9.0",
     "firebase-admin": "^9.4.2",
-    "firebase-functions": "^3.13.0",
+    "firebase-functions": "^3.14.1",
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-autosuggest": "^10.1.0",

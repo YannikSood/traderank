@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
 import firebase from '../../../firebase'
 import { clearUser } from '../../../redux/app-redux';
-
+import { Ionicons } from '@expo/vector-icons';
+import CachedImage from '../../image/CachedImage';
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
 });
@@ -19,12 +19,15 @@ class CommentUserComponent extends React.Component {
       posterUID: this.props.posterUID,
       navigation: this.props.navigation,
       posterUsername: '',
+      profilePic: '',
       currentUserUID: firebase.auth().currentUser.uid,
+      isLoading: true
     };
   }
 
   componentDidMount() {
     this.getPosterUsername();
+  
   }
 
     getPosterUsername = async() => {
@@ -33,15 +36,16 @@ class CommentUserComponent extends React.Component {
         .doc(this.state.posterUID)
         .get()
         .then((doc) => {
-          if (doc.exists) {
-            this.setState({
-              posterUsername: doc.data().username,
-              isLoading: false,
-            });
-          } else {
-            // doc.data() will be undefined in this case
-            console.log('No such document username!');
-          }
+            if (doc.exists) {
+                this.setState ({
+                    posterUsername: doc.data().username,
+                    profilePic: doc.data().profilePic,
+                    isLoading: false
+                })
+            } else {
+                // doc.data() will be undefined in this case
+                    console.log("No such document!");
+            }
         });
     }
 
@@ -60,32 +64,37 @@ class CommentUserComponent extends React.Component {
 
 
     render() {
-      //We want to render a profile pic and username side by side lookin nice and clickable.
-      //When clicked, the modal opens with all the user info.
-      //You can follow/unfollow from here.
-      if (this.state.isLoading) {
-        return (
+        //We want to render a profile pic and username side by side lookin nice and clickable. 
+        //When clicked, the modal opens with all the user info. 
+        //You can follow/unfollow from here.    
+        if(this.state.isLoading){
+            return(
               <View>
-                <ActivityIndicator size="small" color="#9E9E9E" />
+                <ActivityIndicator size="small" color="#9E9E9E"/>
               </View>
-        );
-      }
+            )
+        }    
+        
+            return (
+                <View>
+                    <TouchableOpacity 
+                        style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingLeft: 5 }} 
+                        onPress={() => this.getProfile()} >
+                        <CachedImage
+                              source={{ uri: `${this.state.profilePic}` }}
+                              cacheKey={`${this.state.profilePic}t`}
+                              backgroundColor="transparent"
+                              style={styles.thumbnail}
+                         />
 
-      return (
-              <View>
-                  <TouchableOpacity
-                      style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5 }}
-                      onPress={() => this.getProfile()}>
-
-
-                      <Text style={styles.tradeText}> 
-{' '}
-{this.state.posterUsername}
-</Text>
-
+                        
+                        <Text style ={styles.tradeText}> {this.state.posterUsername}</Text>
+                        
                     </TouchableOpacity>
                 </View>
-      );
+            )
+        
+        
     }
 }
 
@@ -100,6 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignContent: 'center',
     color: '#FFFFFF',
+    marginBottom: 5
   },
   modalContainer: {
     marginTop: 75,
@@ -126,6 +136,11 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
+  thumbnailImage: {
+    width:  Dimensions.get('window').width - 50,
+    height: 300,
+    borderRadius: 15,
+  }
 });
 
 export default connect(mapStateToProps)(CommentUserComponent);
