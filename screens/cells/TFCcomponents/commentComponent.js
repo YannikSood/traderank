@@ -295,7 +295,7 @@ class CommentComponent extends React.Component {
             .doc(this.state.replyData.replyingToUID)
             .collection('notifications')
             .add({
-              type: 6,
+              type: 12,
               senderUID: this.state.currentUser,
               recieverUID: this.state.replyData.replyingToUID,
               postID: this.state.postID,
@@ -308,13 +308,16 @@ class CommentComponent extends React.Component {
               console.error('Error writing document to user posts: ', error);
             });
 
-          const sendCommentReplyNotification = firebase.functions().httpsCallable('sendCommentReplyNotification');
+          const sendCommentReplyNotification = firebase.functions().httpsCallable('writeNotification');
           sendCommentReplyNotification({
-            type: 3,
+            type: 12,
             senderUID: this.state.currentUser,
             recieverUID: this.state.replyData.replyingToUID,
             postID: this.state.postID,
             senderUsername: this.props.user.username,
+            read: false,
+            date_created: new Date(),
+            recieverToken: '',
           })
             .then((result) => {
               console.log(result);
@@ -336,7 +339,7 @@ class CommentComponent extends React.Component {
           .doc(this.state.posterUID)
           .collection('notifications')
           .add({
-            type: 1,
+            type: 11,
             senderUID: this.state.commentorUID,
             recieverUID: this.state.posterUID,
             postID: this.state.postID,
@@ -351,7 +354,7 @@ class CommentComponent extends React.Component {
 
         const writeNotification = firebase.functions().httpsCallable('writeNotification');
         writeNotification({
-          type: 1,
+          type: 11,
           senderUID: this.state.commentorUID,
           recieverUID: this.state.posterUID,
           postID: this.state.postID,

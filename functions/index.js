@@ -512,6 +512,46 @@ exports.writeNotification = functions.https.onCall((data, context) => {
                     });
                 }
 
+                else if (data.type === 11) {
+                    messages.push({
+                        "to": doc.data().token,
+                        "sound": "default",
+                        "title":"👀",
+                        "body": data.senderUsername + " commented on your thought!"
+                    });
+    
+                    //Post it to expo
+                    
+                    fetch('https://exp.host/--/api/v2/push/send', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(messages)
+                    });
+                }
+
+                else if (data.type === 12) {
+                    messages.push({
+                        "to": doc.data().token,
+                        "sound": "default",
+                        "title":"👀",
+                        "body": data.senderUsername + " replied to your comment!"
+                    });
+    
+                    //Post it to expo
+                    
+                    fetch('https://exp.host/--/api/v2/push/send', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(messages)
+                    });
+                }
+
                 return (
                     "notification written"
                 )
@@ -1154,15 +1194,15 @@ exports.setThoughtCount = functions.https.onCall((data, context) => {
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             console.log("docID: " + doc.id)
-            // admin.firestore()
-            // .collection('users')
-            // .doc(doc.id)
-            // .set({
-            //     thoughtsCount: 0
-            // }, { merge: true })
-            // .catch(err => {
-            //     console.log("Err from setThoughtCount: " + err);
-            // })
+            admin.firestore()
+            .collection('users')
+            .doc(doc.id)
+            .set({
+                thoughtsCount: 0
+            }, { merge: true })
+            .catch(err => {
+                console.log("Err from setThoughtCount: " + err);
+            })
             
         })
         return null
