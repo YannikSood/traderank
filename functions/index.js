@@ -1163,38 +1163,6 @@ exports.getUserNumbers = functions.https.onCall((data, context) => {
 });
 
 
-exports.setThoughtCount = functions.https.onCall((data, context) => {
-
-    admin.firestore()
-    .collection('users')
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            console.log("docID: " + doc.id)
-            admin.firestore()
-            .collection('users')
-            .doc(doc.id)
-            .set({
-                thoughtsCount: 0
-            }, { merge: true })
-            .catch(err => {
-                console.log("Err from setThoughtCount: " + err);
-            })
-            
-        })
-        return null
-    })
-    .catch((error) => {
-        console.error("Error finding user: ", error);
-    });
-
-    return (
-        true
-    )
-
-});
-
-
 
 //USED IN CLICKED PROFILE
 exports.checkIsFollowing = functions.https.onCall((data, context) => {
@@ -1766,4 +1734,28 @@ exports.getMoreThoughtsOneCategory = functions.https.onCall((data, context) => {
         // rethrow errors for client
         throw new functions.https.HttpsError('unknown', err.message);
         });
+});
+
+exports.setProfilePic = functions.https.onCall((data, context) => {
+
+    return new Promise((resolve, reject) => {
+
+        admin.firestore().collection('users')
+        .doc(data.uid)
+        .set({
+          profilePic: data.newPic,
+        }, { merge: true })
+        .then(() => {
+            let hash = {
+                done: true
+            };
+            resolve(hash);
+            return null;
+        }).catch(err => {
+            console.log(`Error when checking if current user is following clicked user: ${err}`);
+            reject(err);
+        })
+    });
+
+
 });

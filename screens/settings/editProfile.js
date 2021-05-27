@@ -114,6 +114,7 @@ class EditProfile extends React.Component {
     }
 
     changeProfilePic = async() => {
+      this.setState({ isLoading: true });
       const response = await fetch(this.state.profilePic);
       const file = await response.blob();
       await firebase
@@ -126,15 +127,17 @@ class EditProfile extends React.Component {
         newProfilePicURL: url,
       });
 
-      await firebase.firestore().collection('users')
-        .doc(firebase.auth().currentUser.uid)
-        .set({
-          profilePic: this.state.newProfilePicURL,
-        }, { merge: true })
-        .then(() => this.setState({ isLoading: false }))
-        .then(() => console.log('new profile pic set on frontend'))
-        .catch((error) => {
-          console.error('Error writing document to user collection: ', error);
+
+      const setProfilePic = firebase.functions().httpsCallable('setProfilePic');
+      setProfilePic({
+        newPic: this.state.newProfilePicURL,
+        uid: firebase.auth().currentUser.uid,
+      })
+        .then((result) => {
+          this.setState({ isLoading: false });
+        })
+        .catch((err) => {
+          console.log('Error from posting thought');
         });
     }
 
@@ -278,7 +281,6 @@ class EditProfile extends React.Component {
                 <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>save changes</Text>
               </TouchableOpacity>
             </View>
-
 
 
             <KeyboardSpacer />

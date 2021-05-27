@@ -20,52 +20,42 @@ class Create extends React.Component {
     Analytics.setCurrentScreen('CreateScreen');
   }
 
-    navigateToYolo = () => {
-      const setThoughtCount = firebase.functions().httpsCallable('setThoughtCount');
-      setThoughtCount()
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
 
-    render() {
-      return (
-        <View style={styles.container}>
-          {/* <Text style={styles.headerText}>get ranked</Text> */}
+  render() {
+    return (
+      <View style={styles.container}>
+        {/* <Text style={styles.headerText}>get ranked</Text> */}
 
-          {/* <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}> */}
-          <View style={{ flexDirection: 'column' }}>
-            <Text style={styles.subheaderText}>holding?</Text>
+        {/* <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}> */}
+        <View style={{ flexDirection: 'column' }}>
+          <Text style={styles.subheaderText}>holding?</Text>
 
-            <TouchableOpacity
-              onPress={() => this.navigateToYolo()}
-              style={styles.yoloButton}
-            >
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('YoloScreenshot')}
+            style={styles.yoloButton}
+          >
 
-              <Text style={styles.buttonText}>post trade 🙏</Text>
+            <Text style={styles.buttonText}>post trade 🙏</Text>
 
-            </TouchableOpacity>
+          </TouchableOpacity>
 
-            <Text style={styles.subheaderText}>sold!</Text>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('GainScreenshot')}
-              style={styles.gainButton}
-            >
-              <Text style={styles.buttonText}>post gains 🚀</Text>
-            </TouchableOpacity>
+          <Text style={styles.subheaderText}>sold!</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('GainScreenshot')}
+            style={styles.gainButton}
+          >
+            <Text style={styles.buttonText}>post gains 🚀</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('LossScreenshot')}
-              style={styles.lossButton}
-            >
-              <Text style={styles.buttonText}>post losses 🤡</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('LossScreenshot')}
+            style={styles.lossButton}
+          >
+            <Text style={styles.buttonText}>post losses 🤡</Text>
+          </TouchableOpacity>
+        </View>
 
-          {/* <View style = {{flexDirection: 'column', paddingRight: 25}}>
+        {/* <View style = {{flexDirection: 'column', paddingRight: 25}}>
                         <Text style={styles.subheaderText}>memes [soon]</Text>
 
                         <TouchableOpacity
@@ -89,14 +79,14 @@ class Create extends React.Component {
                             style={styles.lossButton}>
                                 <Text style={styles.buttonText}>post losses 🤡</Text>
                         </TouchableOpacity> */}
-          {/* </View> */}
+        {/* </View> */}
 
-          {/* </View> */}
+        {/* </View> */}
 
 
-        </View>
-      );
-    }
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

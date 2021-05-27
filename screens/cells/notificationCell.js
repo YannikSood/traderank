@@ -160,18 +160,18 @@ class NotificationCellClass extends React.Component {
       // console.log(this.state.Tusername)
       this.state.navigation.push('ThoughtsDetails',
         {
-          Tusername: this.state.Tusername,
-          Tdescription: this.state.Tdescription,
-          Timage: this.state.Timage,
-          Tdate_created: this.state.Tdate_created,
-          TlikesCount: this.state.TlikesCount,
-          TcommentsCount: this.state.TcommentsCount,
-          TviewsCount: this.state.TviewsCount,
-          Tcategory: this.state.Tcategory,
-          TpostID: this.state.TpostID,
-          Tuid: this.state.Tuid,
-          Tlink: this.state.Tlink,
-          TmediaType: this.state.TmediaType,
+          username: this.state.Tusername,
+          description: this.state.Tdescription,
+          image: this.state.Timage,
+          date_created: this.state.Tdate_created,
+          likesCount: this.state.TlikesCount,
+          commentsCount: this.state.TcommentsCount,
+          viewsCount: this.state.TviewsCount,
+          category: this.state.Tcategory,
+          postID: this.state.TpostID,
+          uid: this.state.Tuid,
+          link: this.state.Tlink,
+          mediaType: this.state.TmediaType,
 
         });
     }
@@ -200,18 +200,18 @@ class NotificationCellClass extends React.Component {
       // console.log(this.state.Tusername)
       this.state.navigation.push('ThoughtsComments',
         {
-          Tusername: this.state.Tusername,
-          Tdescription: this.state.Tdescription,
-          Timage: this.state.Timage,
-          Tdate_created: this.state.Tdate_created,
-          TlikesCount: this.state.TlikesCount,
-          TcommentsCount: this.state.TcommentsCount,
-          TviewsCount: this.state.TviewsCount,
-          Tcategory: this.state.Tcategory,
-          TpostID: this.state.TpostID,
-          Tuid: this.state.Tuid,
-          Tlink: this.state.Tlink,
-          TmediaType: this.state.TmediaType,
+          username: this.state.Tusername,
+          description: this.state.Tdescription,
+          image: this.state.Timage,
+          date_created: this.state.Tdate_created,
+          likesCount: this.state.TlikesCount,
+          commentsCount: this.state.TcommentsCount,
+          viewsCount: this.state.TviewsCount,
+          category: this.state.Tcategory,
+          postID: this.state.TpostID,
+          posterUID: this.state.Tuid,
+          link: this.state.Tlink,
+          mediaType: this.state.TmediaType,
 
         });
     }

@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import firebase from '../../firebase';
 import LikeComponent from './TFCcomponents/likeComponent';
+import DeleteComponent from './TFCcomponents/deleteComponent';
 import CommentIconComponent from './TFCcomponents/commentIconComponent';
 // import DeleteComponent from './FFCcomponents/deleteComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
@@ -134,13 +135,13 @@ class ThoughtsCell extends React.Component {
             </View> */}
 
 
-            {/* <View style={styles.buttonContainer}>
+            <View style={styles.buttonContainer}>
 
               <View style={{ paddingBottom: 4 }}>
-                <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
+                <DeleteComponent postID={this.state.postID} />
               </View>
 
-            </View> */}
+            </View>
 
           </View>
         );

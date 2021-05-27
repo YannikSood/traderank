@@ -6,10 +6,12 @@ import { Ionicons, Entypo } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import { connect } from 'react-redux';
 import firebase from '../../firebase';
-import LikeComponent from '../cells/FFCcomponents/likeComponent';
-import CommentIconComponent from '../cells/FFCcomponents/commentIconComponent';
+import LikeComponent from '../cells/TFCcomponents/likeComponent';
+import DeleteComponent from '../cells/TFCcomponents/deleteComponent';
+import CommentIconComponent from '../cells/TFCcomponents/commentIconComponent';
 import MiscUserComponent from '../cells/FollowCellComps/userComponent';
 import CachedImage from '../image/CachedImage';
+import { Video, AVPlaybackStatus } from 'expo-av';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -22,24 +24,23 @@ class ThoughtsDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: this.props.route.params.Tusername,
-      image: this.props.route.params.Timage,
-      description: this.props.route.params.Tdescription,
-      postID: this.props.route.params.TpostID,
-      link: this.props.route.params.Tlink,
+      username: this.props.route.params.username,
+      image: this.props.route.params.image,
+      description: this.props.route.params.description,
+      postID: this.props.route.params.postID,
+      link: this.props.route.params.link,
       navigation: this.props.route.params.navigation,
-      date_created: this.props.route.params.Tdate_created,
-      viewsCount: this.props.route.params.TviewsCount,
+      date_created: this.props.route.params.date_created,
+      viewsCount: this.props.route.params.viewsCount,
       isLoading: true,
       currentUser: firebase.auth().currentUser.uid,
-      posterUID: this.props.route.params.Tuid,
-      mediaType: this.props.route.params.TmediaType,
+      posterUID: this.props.route.params.uid,
+      mediaType: this.props.route.params.mediaType,
       modalOpen: false,
       commentsArray: [],
       currentViewsCount: 0,
     };
     // console.log(this.props.Tusername + " username")
-
   }
 
   async componentDidMount() {
@@ -72,6 +73,8 @@ class ThoughtsDetails extends React.Component {
     this.getCollection();
   }
 
+
+
     componentWillUnmount = () => {
       console.log('unmounted post');
     }
@@ -84,35 +87,121 @@ class ThoughtsDetails extends React.Component {
       });
     }
 
-    showPostPage = () => {
-      console.log(this.state.date_created);
-      this.state.navigation.push('ClickedPostPage',
+
+    showThoughtsCommentsPage = async() => {
+      // console.log(this.state.Tusername)
+      this.props.navigation.push('ThoughtsComments',
         {
           username: this.state.username,
-          image: this.state.image,
-          ticker: this.state.ticker,
-          security: this.state.security,
           description: this.state.description,
-          profit_loss: this.state.profit_loss,
-          percent_gain_loss: this.state.percent_gain_loss,
-          gain_loss: this.state.gain_loss,
-          postID: this.state.postID,
+          image: this.state.image,
           date_created: this.state.date_created,
+          likesCount: this.state.likesCount,
+          commentsCount: this.state.commentsCount,
+          viewsCount: this.state.viewsCount,
+          category: this.state.category,
+          postID: this.state.postID,
+          posterUID: this.state.posterUID,
+          link: this.state.link,
+          mediaType: this.state.mediaType,
         });
     }
 
     _refresh = () => {
       this.setState({ isLoading: true });
-      this.firestoreRef.onSnapshot(this.getCollection);
+      this.getCollection()
     };
+
+    renderCellComponents = () => {
+      if (this.state.posterUID === this.state.currentUser) {
+        return (
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
+
+            <View style={styles.buttonContainer}>
+
+              <View style={{ paddingTop: 2 }}>
+                <LikeComponent postID={this.state.postID} />
+
+              </View>
+
+            </View>
+
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => this.showThoughtsCommentsPage()}
+            >
+
+
+              <CommentIconComponent postID={this.state.postID} />
+
+            </TouchableOpacity>
+
+            {/* <View style={styles.buttonContainer}>
+
+              <ShareComponent
+                postID={this.state.postID}
+                image={this.state.image}
+                gain_loss={this.state.gain_loss}
+                profit_loss={this.state.profit_loss}
+              />
+
+            </View> */}
+
+
+            <View style={styles.buttonContainer}>
+
+              <View style={{ paddingBottom: 4 }}>
+                <DeleteComponent postID={this.state.postID} />
+              </View>
+
+            </View>
+
+          </View>
+        );
+      }
+      return (
+
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
+
+          <View style={styles.buttonContainer}>
+
+            <LikeComponent postID={this.state.postID} />
+
+          </View>
+
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => this.showThoughtsCommentsPage()}
+          >
+
+
+            <CommentIconComponent postID={this.state.postID} />
+
+          </TouchableOpacity>
+
+          {/* <View style={styles.buttonContainer}>
+
+            <ShareComponent
+              postID={this.state.postID}
+              image={this.state.image}
+              gain_loss={this.state.gain_loss}
+              profit_loss={this.state.profit_loss}
+            />
+
+          </View> */}
+
+
+        </View>
+      );
+    }
 
     renderImageOrVideo = () => (
       <View>
         { this.state.mediaType === 'image' ? (
           <TouchableOpacity onPress={() => this.openImageModal()}>
             <View style={styles.thumbnailContainer}>
-  
-               <CachedImage
+
+              <CachedImage
                 source={{ uri: `${this.state.image}` }}
                 cacheKey={`${this.state.image}t`}
                 backgroundColor="transparent"
@@ -132,7 +221,7 @@ class ThoughtsDetails extends React.Component {
           </View>
         ) }
       </View>
-  )
+    )
 
     renderListHeader = () => {
       if (this.state.isLoading) {
@@ -153,12 +242,12 @@ class ThoughtsDetails extends React.Component {
           >
 
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
-                <CachedImage
-                  source={{ uri: `${this.state.image}` }}
-                  cacheKey={`${this.state.image}t`}
-                  backgroundColor="transparent"
-                  style={styles.fullScreenImage}
-                />
+              <CachedImage
+                source={{ uri: `${this.state.image}` }}
+                cacheKey={`${this.state.image}t`}
+                backgroundColor="transparent"
+                style={styles.fullScreenImage}
+              />
             </View>
           </Modal>
 
@@ -186,11 +275,13 @@ class ThoughtsDetails extends React.Component {
             this.renderImageOrVideo()
           ) }
 
-          {/* { this.renderCellComponents() } */}
+          { this.renderCellComponents() }
 
         </View>
-      )
+      );
     }
+
+
 
     getContainerStyle = () => {
       if (this.state.commentsArray.length == 0) {
@@ -381,6 +472,14 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     marginTop: 15,
     // margin: 10
+  },
+  thumbnailContainer: {
+    // flex: 1,
+    // justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingBottom: 10,
+    paddingRight: 25,
+    // backgroundColor: '#121212',
   },
 });
 

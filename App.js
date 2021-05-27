@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StatusBar } from 'expo-status-bar';
 
-import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import firebase from './firebase.js';
@@ -428,12 +428,12 @@ const App = () => (
             headerRight: () => (
               <View style={{ flexDirection: 'row' }}>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{ paddingRight: 20 }}
                   onPress={() => navigation.navigate('ChatRooms')}
                 >
                   <Ionicons name="md-chatbubbles" size={25} color="white" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                   style={{ paddingRight: 20 }}
@@ -518,7 +518,7 @@ function Tabs() {
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ios-home" size={size} color={color} />
+            <FontAwesome5 name="piggy-bank" size={size} color={color} />
           ),
         }}
       />
@@ -542,7 +542,7 @@ function Tabs() {
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ios-reader" size={size} color={color} />
+            <FontAwesome5 name="comment-dollar" size={size} color={color} />
           ),
           // tabBarBadge: renderChatBadge(),
 
