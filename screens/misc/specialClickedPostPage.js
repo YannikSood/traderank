@@ -42,12 +42,6 @@ class SpecialClickedPostPage extends React.Component {
       replyTo: '',
       replyData: {},
     };
-
-    this.firestoreRef = firebase.firestore()
-      .collection('comments')
-      .doc(this.state.postID)
-      .collection('comments')
-      .orderBy('date_created', 'asc');
   }
 
   async componentDidMount() {
@@ -85,35 +79,12 @@ class SpecialClickedPostPage extends React.Component {
       console.log('unmounted post');
     }
 
-    getCollection = (querySnapshot) => {
+    getCollection = () => {
       const commentsArray = [];
-      // querySnapshot.forEach((res) => {
-      // const {
-      //     commentLikes,
-      //     commentText,
-      //     commentorUID,
-      //     commentorUsername,
-      //     date_created,
-      //     replyCount} = res.data();
-
-      //     commentsArray.push({
-      //         key: res.id,
-      //         commentLikes,
-      //         commentText,
-      //         commentorUID,
-      //         commentorUsername,
-      //         date_created,
-      //         replyCount
-
-      //     });
-      // });
-
       this.setState({
         commentsArray,
         isLoading: false,
       });
-
-      // console.log(this.state.commentsArray)
     }
 
     showPostPage = () => {
@@ -336,127 +307,13 @@ $
 
     render() {
       const { navigation } = this.props;
-      /*
-                button = {
-                    <ReplyButton
-                     postID = {this.state.postID}
-                     commentID={item.key}
-                     replyingToUsername = {item.commentorUsername}
-                     replyTo={item.commentorUsername}
-                     replyingToUID={item.commentorUID}
-                     replierUsername={this.props.user.username}
-                     replierAuthorUID={this.state.currentUser}
-                     commentLikes={0}
-
-                    />
-                }
-        */
-      const renderItem = ({ item }) => (
-
-        <CommentCellClass
-          key={item.key}
-          commentLikes={item.commentLikes}
-          commentText={item.commentText}
-          commentorUID={item.commentorUID}
-          commentorUsername={item.commentorUsername}
-          navigation={navigation}
-          date_created={item.date_created.toDate()}
-          commentID={item.key}
-          postID={this.state.postID}
-          replyCount={item.replyCount}
-          button={(
-            <TouchableOpacity
-              onPress={() => {
-                  //StoreReplyTo
-                  const storeReplyTo = async(value) => {
-                    try {
-                      await AsyncStorage.setItem('replyTo', value);
-                    } catch (e) {
-                      // saving error
-                    }
-                  };
-                  storeReplyTo(`${item.commentorUsername}`);
-                  this.setState({ replyTo: `${item.commentorUsername}` });
-
-                  //sotre who to reply to
-                  const replyDataObj = {
-                    postID: `${this.state.postID}`, //post the comment I am replying to
-                    commentID: `${item.key}`, //Id of the comment I am replying to
-                    replyingToUsername: `${item.commentorUsername}`,
-                    replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
-                    replierAuthorUID: `${this.state.currentUser}`, //person sending the reply
-                    replierUsername: `${this.props.user.username}`,
-                    commentLikes: 0,
-                    //may need to change
-                  };
-
-                  //replyData that will be stored in the DB
-                  const storeReplyData = async(value) => {
-                    try {
-                      const jsonValue = JSON.stringify(value);
-                      await AsyncStorage.setItem('replyData', jsonValue);
-                    } catch (e) {
-                      // saving error
-                    }
-                  };
-                  this.setState({ replyData: replyDataObj });
-                  storeReplyData(replyDataObj);
-
-                  if (replyDataObj.replyingToUID != this.state.currentUser) {
-                    firebase.firestore()
-                      .collection('users')
-                      .doc(replyDataObj.replyingToUID)
-                      .collection('notifications')
-                      .add({
-                        type: 6,
-                        senderUID: this.state.currentUser,
-                        recieverUID: replyDataObj.replyingToUID,
-                        postID: this.state.postID,
-                        read: false,
-                        date_created: new Date(),
-                        recieverToken: '',
-                      })
-                      .then(docref => this.setState({ notificationUID: docref.id }))
-                      .catch((error) => {
-                        console.error('Error writing document to user posts: ', error);
-                      });
-
-                    const sendCommentReplyNotification = firebase.functions().httpsCallable('sendCommentReplyNotification');
-                    sendCommentReplyNotification({
-                      type: 3,
-                      senderUID: this.state.currentUser,
-                      recieverUID: replyDataObj.replyingToUID,
-                      postID: this.state.postID,
-                      senderUsername: this.props.user.username,
-                    })
-                      .then((result) => {
-                        console.log(result);
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
-                  } else {
-
-                  }
-                }}
-            >
-
-              <View style={{ paddingLeft: 15, paddingRight: 15 }}>
-
-                  <Entypo name="reply" size={22} color="white" />
-
-                </View>
-            </TouchableOpacity>
-)}
-        />
-      );
 
       return (
         <View style={{ backgroundColor: '#000000' }}>
 
           <FlatList
-                        // data={this.state.commentsArray}
-            renderItem={renderItem}
+            // data={this.state.commentsArray}
+            // renderItem={renderItem}
             keyExtractor={(item, index) => String(index)} //keyExtractor={item => item.key}
             ListHeaderComponent={this.renderListHeader}
             contentContainerStyle={{ paddingBottom: Dimensions.get('window').height }}
@@ -465,15 +322,6 @@ $
             onRefresh={this._refresh}
             refreshing={this.state.isLoading}
           />
-
-          <KeyboardAvoidingView
-            style={styles.commentFooter}
-            behavior="padding"
-            enabled
-            keyboardVerticalOffset={100}
-          >
-            <CommentComponent postID={this.state.postID} replyTo={this.state.replyTo} replyData={this.state.replyData} />
-          </KeyboardAvoidingView>
         </View>
 
       );

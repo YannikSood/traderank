@@ -52,7 +52,7 @@ class CommentReplyLikeComponent extends React.Component {
                 })
             } else {
                 // doc.data() will be undefined in this case
-                    console.log("No such document!");
+                    console.log("No such document poster uid!");
             }
         });
 
@@ -67,7 +67,7 @@ class CommentReplyLikeComponent extends React.Component {
                 })
             } else {
                 // doc.data() will be undefined in this case
-                    console.log("No such document!");
+                    console.log("No such document! user like count");
             }
         });
     }

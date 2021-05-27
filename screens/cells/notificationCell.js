@@ -27,6 +27,18 @@ class NotificationCellClass extends React.Component {
       gain_loss: '',
       date_created: new Date(),
       navigation: this.props.navigation,
+      Tusername: '',
+      Tdescription: '',
+      Timage: '',
+      Tdate_created: new Date(),
+      TlikesCount: '',
+      TcommentsCount: '',
+      TviewsCount: '',
+      Tcategory: '',
+      TpostID: '',
+      Tuid: '',
+      Tlink: '',
+      TmediaType: '',
     };
   }
 
@@ -106,6 +118,7 @@ class NotificationCellClass extends React.Component {
               date_created: doc.data().date_created.toDate(),
             });
           }
+
         });
 
       this.state.navigation.push('SpecialClickedPostPage',
@@ -123,6 +136,47 @@ class NotificationCellClass extends React.Component {
         });
     }
 
+
+    showThoughtsPage = async() => {
+      await firebase.firestore()
+        .collection('thoughts')
+        .doc(this.state.postID)
+        .get()
+        .then((doc) => {
+          this.setState({
+            Tusername: doc.data().username,
+            Tdescription: doc.data().description,
+            Timage: doc.data().image,
+            Tdate_created: doc.data().date_created,
+            TlikesCount: doc.data().likesCount,
+            TcommentsCount: doc.data().commentsCount,
+            TviewsCount: doc.data().viewsCount,
+            Tcategory: doc.data().category,
+            TpostID: doc.data().postID,
+            Tuid: doc.data().uid,
+            Tlink: doc.data().link,
+            TmediaType: doc.data().mediaType,
+          })
+        });
+        // console.log(this.state.Tusername)
+        this.state.navigation.push('ThoughtsDetails',
+        {
+          Tusername: this.state.Tusername,
+          Tdescription: this.state.Tdescription,
+          Timage: this.state.Timage,
+          Tdate_created: this.state.Tdate_created,
+          TlikesCount: this.state.TlikesCount,
+          TcommentsCount: this.state.TcommentsCount,
+          TviewsCount: this.state.TviewsCount,
+          Tcategory: this.state.Tcategory,
+          TpostID: this.state.TpostID,
+          Tuid: this.state.Tuid,
+          Tlink: this.state.Tlink,
+          TmediaType: this.state.TmediaType,
+        
+        })
+        
+    }
 
     determineFormat = () => {
       if (this.state.type == 0) {
@@ -295,6 +349,32 @@ class NotificationCellClass extends React.Component {
 
                 <Text style={styles.textStyle2}> replied to your comment</Text>
 
+
+              </View>
+              <View style={styles.timeContainer}>
+
+                <TimeAgo style={{ color: '#696969' }} time={this.state.notification_date_created} />
+
+              </View>
+            </View>
+
+            {/* <View style = {styles.lineStyle} /> */}
+          </TouchableOpacity>
+        );
+      }
+
+      if (this.state.type == 10) {
+        return (
+          <TouchableOpacity
+            style={styles.feedCell}
+            onPress={() => this.showThoughtsPage()}
+          >
+            <View style={{ flexDirection: 'column' }}>
+              <View style={{ flexDirection: 'row' }}>
+
+                <MiscUserComponent uid={this.state.senderUID} navigation={this.state.navigation} />
+
+                <Text style={styles.textStyle2}> liked your thought</Text>
 
               </View>
               <View style={styles.timeContainer}>

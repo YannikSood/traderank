@@ -76,7 +76,7 @@ class CommentComponent extends React.Component {
 
     updateCommentCount = async() => {
       await firebase.firestore()
-        .collection('globalPosts')
+        .collection('thoughts')
         .doc(this.state.postID)
         .get()
         .then((doc) => {
@@ -94,7 +94,7 @@ class CommentComponent extends React.Component {
     //Get the poster userID
     getPosterUID = async() => {
       await firebase.firestore()
-        .collection('globalPosts')
+        .collection('thoughts')
         .doc(this.state.postID)
         .get()
         .then((doc) => {
@@ -167,13 +167,11 @@ class CommentComponent extends React.Component {
           ],
           { cancelable: false },
         );
-      }
-      else {
+      } else {
         this.setState({ isLoading: true });
         Analytics.logEvent('User_Posted_Comment');
 
         //Replying to a comment
-
 
 
         //This should take us to the right place, adding a temp uid where we need it
@@ -192,19 +190,19 @@ class CommentComponent extends React.Component {
           .then(() => this.setState({ commentText: ' ' }))
           .then(() => this.writeToUserNotifications())
           .catch((error) => {
-                console.error("Error storing and retrieving image url: ", error);
-            });
+            console.error('Error storing and retrieving image url: ', error);
+          });
 
 
         await firebase.firestore()
-          .collection('globalPosts')
+          .collection('thoughts')
           .doc(this.state.postID)
           .set({
             commentsCount: this.state.commentsCount + 1,
           }, { merge: true })
           .catch((error) => {
-                console.error("Error writing document to user posts: ", error);
-            });
+            console.error('Error writing document to user posts: ', error);
+          });
 
         await firebase.firestore()
           .collection('users')
@@ -213,10 +211,10 @@ class CommentComponent extends React.Component {
             score: this.state.userScore + 1,
           }, { merge: true })
           .then(() => this.setState({
-              userScore: this.state.userScore + 1,
-              isLoading: false,
-            }),)
-.then(() => this.updateCommentCount());
+            userScore: this.state.userScore + 1,
+            isLoading: false,
+          }))
+          .then(() => this.updateCommentCount());
       }
     }
 
@@ -250,8 +248,8 @@ class CommentComponent extends React.Component {
             });
           })
           .catch((error) => {
-                    console.error("Error: ", error);
-                });
+            console.error('Error: ', error);
+          });
 
         /*
                  TODO:
@@ -275,19 +273,19 @@ class CommentComponent extends React.Component {
             });
           })
           .catch((error) => {
-                      console.error("Error writing document to comments when updating replyCount: ", error);
-                  });
+            console.error('Error writing document to comments when updating replyCount: ', error);
+          });
 
         //Update Post global CommentCount
         await firebase.firestore()
-          .collection('globalPosts')
+          .collection('thoughts')
           .doc(this.state.postID)
           .set({
             commentsCount: this.state.commentsCount + 1,
           }, { merge: true })
           .catch((error) => {
-                      console.error("Error writing document to user posts: ", error);
-                  });
+            console.error('Error writing document to user posts: ', error);
+          });
 
 
         //Send notification that user has replied to comment
@@ -307,8 +305,8 @@ class CommentComponent extends React.Component {
             })
             .then(docref => this.setState({ notificationUID: docref.id }))
             .catch((error) => {
-                                console.error("Error writing document to user posts: ", error);
-                            });
+              console.error('Error writing document to user posts: ', error);
+            });
 
           const sendCommentReplyNotification = firebase.functions().httpsCallable('sendCommentReplyNotification');
           sendCommentReplyNotification({
@@ -324,8 +322,7 @@ class CommentComponent extends React.Component {
             .catch((error) => {
               console.log(error);
             });
-        }
-        else {
+        } else {
 
         }
       }
@@ -349,8 +346,8 @@ class CommentComponent extends React.Component {
           })
           .then(docref => this.setState({ notificationUID: docref.id }))
           .catch((error) => {
-                console.error("Error writing document to user posts: ", error);
-            });
+            console.error('Error writing document to user posts: ', error);
+          });
 
         const writeNotification = firebase.functions().httpsCallable('writeNotification');
         writeNotification({
@@ -391,36 +388,36 @@ class CommentComponent extends React.Component {
       if (this.state.isLoading) {
         return (
           <View style={styles.inputBox}>
-                <ActivityIndicator size="large" color="#9E9E9E" />
-              </View>
+            <ActivityIndicator size="large" color="#9E9E9E" />
+          </View>
         );
       }
       return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <View
-                style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 15, marginBottom: 15 }}
-              >
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 15, marginBottom: 15 }}
+          >
 
-                <TextInput
-                    style={styles.inputBox}
-                    value={this.state.commentText}
-                    onChangeText={(commentText) => {
-                        // console.log("comment from commentComponent: " + this.state.commentText);
-                        this.setState({ commentText });
-                      }}
-                    placeholder=" Add a comment..."
-                    placeholderTextColor="#696969"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    multiline
-                    maxLength={400}
-                  />
+            <TextInput
+              style={styles.inputBox}
+              value={this.state.commentText}
+              onChangeText={(commentText) => {
+                // console.log("comment from commentComponent: " + this.state.commentText);
+                this.setState({ commentText });
+              }}
+              placeholder=" Add a comment..."
+              placeholderTextColor="#696969"
+              autoCapitalize="none"
+              autoCorrect={false}
+              multiline
+              maxLength={400}
+            />
 
-                <TouchableOpacity onPress={() => { this.addComment(); }}>
-                    <MaterialCommunityIcons name="message" size={30} color="white" />
-                  </TouchableOpacity>
-              </View>
-          </TouchableWithoutFeedback>
+            <TouchableOpacity onPress={() => { this.addComment(); }}>
+              <MaterialCommunityIcons name="message" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
       );
     }
 }

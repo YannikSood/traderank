@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import * as Analytics from 'expo-firebase-analytics';
+import firebase from '../../firebase';
 
 class Create extends React.Component {
 
@@ -20,6 +21,17 @@ class Create extends React.Component {
         Analytics.setCurrentScreen("CreateScreen")
     }
 
+    navigateToYolo = () => {
+        const setThoughtCount = firebase.functions().httpsCallable('setThoughtCount');
+        setThoughtCount()
+        .then((result) => {
+            console.log(result);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+
+    }
     
     render() {
         return (
@@ -31,7 +43,7 @@ class Create extends React.Component {
                         <Text style={styles.subheaderText}>holding?</Text>
 
                         <TouchableOpacity 
-                            onPress={() => this.props.navigation.navigate('YoloScreenshot')}
+                            onPress={() => this.navigateToYolo()}
                             style={styles.yoloButton}>
 
                                 <Text style={styles.buttonText}>post trade 🙏</Text>

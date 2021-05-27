@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import firebase from '../../../firebase'
-import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
+import firebase from '../../../firebase';
+import { clearUser } from '../../../redux/app-redux';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -35,16 +35,16 @@ class MiscUserComponent extends React.Component {
         .doc(this.state.uid)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    username: doc.data().username,
-                    profilePic: doc.data().profilePic,
-                    isLoading: false
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document!");
-            }
+          if (doc.exists) {
+            this.setState({
+              username: doc.data().username,
+              profilePic: doc.data().profilePic,
+              isLoading: false,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            console.log('No such document!');
+          }
         });
     }
 
@@ -62,41 +62,44 @@ class MiscUserComponent extends React.Component {
 
 
     render() {
-        //We want to render a profile pic and username side by side lookin nice and clickable. 
-        //When clicked, the modal opens with all the user info. 
-        //You can follow/unfollow from here.    
-        if(this.state.isLoading){
-            return(
-                <View >
-                    <TouchableOpacity 
-                        style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }} 
-                        onPress={() => this.getProfile()} >
+      //We want to render a profile pic and username side by side lookin nice and clickable.
+      //When clicked, the modal opens with all the user info.
+      //You can follow/unfollow from here.
+      if (this.state.isLoading) {
+        return (
+          <View>
+            <TouchableOpacity
+              style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }}
+              onPress={() => this.getProfile()}
+            >
 
-                        <ActivityIndicator size="small" color="#9E9E9E"/>
-                        
-                    </TouchableOpacity>
-                </View>
-                
-            )
-        }    
-        
-            return (
-                <View >
-                    <TouchableOpacity 
-                        style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 5 }} 
-                        onPress={() => this.getProfile()} >
+              <ActivityIndicator size="small" color="#9E9E9E" />
 
-                        <Image
-                            source={{ uri: this.state.profilePic }}
-                            style={styles.thumbnail}
-                        />
-                        <Text style ={styles.tradeText}> {this.state.username}</Text>
-                        
-                    </TouchableOpacity>
-                </View>
-            )
-        
-        
+            </TouchableOpacity>
+          </View>
+
+        );
+      }
+
+      return (
+        <View>
+          <TouchableOpacity
+            style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 5 }}
+            onPress={() => this.getProfile()}
+          >
+
+            <Image
+              source={{ uri: this.state.profilePic }}
+              style={styles.thumbnail}
+            />
+            <Text style={styles.tradeText}>
+              {' '}
+              {this.state.username}
+            </Text>
+
+          </TouchableOpacity>
+        </View>
+      );
     }
 }
 
@@ -111,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignContent: 'center',
     color: '#FFFFFF',
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   modalContainer: {
     marginTop: 75,

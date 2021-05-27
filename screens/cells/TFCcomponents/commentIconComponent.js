@@ -30,7 +30,7 @@ class CommentIconComponent extends React.Component {
     //Get the poster userID
     getPostCommentsCount = async() => {
       await firebase.firestore()
-        .collection('globalPosts')
+        .collection('thoughts')
         .doc(this.state.postID)
         .get()
         .then((doc) => {
@@ -40,7 +40,7 @@ class CommentIconComponent extends React.Component {
             });
           } else {
             // doc.data() will be undefined in this case
-            console.log('No such document comments count!');
+            console.log('No such document!');
           }
         });
     }

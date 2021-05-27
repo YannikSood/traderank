@@ -6,9 +6,9 @@ import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import firebase from '../../firebase';
-import LikeComponent from './FFCcomponents/likeComponent';
-import CommentIconComponent from './FFCcomponents/commentIconComponent';
-import DeleteComponent from './FFCcomponents/deleteComponent';
+import LikeComponent from './TFCcomponents/likeComponent';
+import CommentIconComponent from './TFCcomponents/commentIconComponent';
+// import DeleteComponent from './FFCcomponents/deleteComponent';
 import MiscUserComponent from './FollowCellComps/userComponent';
 import CachedImage from '../image/CachedImage';
 
@@ -51,18 +51,37 @@ class ThoughtsCell extends React.Component {
       this.setState({ modalOpen: false });
     }
 
+    showThoughtsCommentsPage = async() => {
+      // console.log(this.state.Tusername)
+      this.state.navigation.push('ThoughtsComments',
+        {
+          username: this.state.username,
+          description: this.state.description,
+          image: this.state.image,
+          date_created: this.state.date_created,
+          likesCount: this.state.likesCount,
+          commentsCount: this.state.commentsCount,
+          viewsCount: this.state.viewsCount,
+          category: this.state.category,
+          postID: this.state.postID,
+          posterUID: this.state.posterUID,
+          link: this.state.link,
+          mediaType: this.state.mediaType,
+        });
+    }
+
     renderImageOrVideo = () => (
         <View>
           { this.state.mediaType === 'image' ? (
             <TouchableOpacity onPress={() => this.openImageModal()}>
               <View style={styles.thumbnailContainer}>
-    
+
                  <CachedImage
-                  source={{ uri: `${this.state.image}` }}
-                  cacheKey={`${this.state.image}t`}
-                  backgroundColor="transparent"
-                  style={styles.thumbnail}
-                />
+                   source={{ uri: `${this.state.image}` }}
+                   cacheKey={`${this.state.image}t`}
+                   backgroundColor="transparent"
+                   style={styles.thumbnail}
+                 />
               </View>
             </TouchableOpacity>
           ) : (
@@ -95,7 +114,7 @@ class ThoughtsCell extends React.Component {
 
             <TouchableOpacity
               style={styles.buttonContainer}
-              onPress={() => this.showPostPage()}
+              onPress={() => this.showThoughtsCommentsPage()}
             >
 
 
@@ -115,13 +134,13 @@ class ThoughtsCell extends React.Component {
             </View> */}
 
 
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
 
               <View style={{ paddingBottom: 4 }}>
                 <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
               </View>
 
-            </View>
+            </View> */}
 
           </View>
         );
@@ -138,7 +157,7 @@ class ThoughtsCell extends React.Component {
 
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() => this.showPostPage()}
+            onPress={() => this.showThoughtsCommentsPage()}
           >
 
 
@@ -195,7 +214,7 @@ class ThoughtsCell extends React.Component {
             {/* <View style={{flexDirection: 'column', padding: 6, justifyContent: 'center', alignItems: 'left' }}> */}
 
             <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
-              <View style={{ flexDirection: 'row', paddingLeft: 17 }}>
+              <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
                 <MiscUserComponent uid={this.state.posterUID} navigation={this.state.navigation} />
               </View>
 
@@ -206,7 +225,6 @@ class ThoughtsCell extends React.Component {
           <View style={styles.descriptionContainer}>
 
             <Text style={styles.descriptionText}>
-
               {this.state.description}
             </Text>
 
@@ -215,6 +233,8 @@ class ThoughtsCell extends React.Component {
           { this.state.mediaType === 'none' ? <View /> : (
             this.renderImageOrVideo()
           ) }
+
+          { this.renderCellComponents() }
 
         </View>
       );
