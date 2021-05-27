@@ -36,8 +36,14 @@ class LeaderboardGains extends React.Component {
       let index = 1;
      // this.setState({ isLoading: true });
       const getGainsCollection = firebase.functions().httpsCallable('getGainsCollection');
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      const newToday = mm + dd + yyyy;
       getGainsCollection({
-        index: index
+        index: index,
+        newToday: newToday
       }).then((result) => {
         this.setState({
           leaderboardGains: result.data,
@@ -54,11 +60,16 @@ class LeaderboardGains extends React.Component {
     getMore = async() => {
       //this.setState({ isLoading: true });
       const lastItemIndex = this.state.leaderboardGains.length - 1;
-
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      const newToday = mm + dd + yyyy;
       const getMoreGains = firebase.functions().httpsCallable('getMoreGains');
       getMoreGains({
         score: this.state.leaderboardGains[lastItemIndex].score,
-        lastItemIndex: lastItemIndex
+        lastItemIndex: lastItemIndex,
+        newToday: newToday
       })
       .then((result)=> {
         this.setState({
