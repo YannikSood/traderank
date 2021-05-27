@@ -847,13 +847,7 @@ exports.getLossesCollection = functions.https.onCall((data, context) => {
         let index = data.index;
         const leaderboardLosses = [];
 
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        const newToday = mm + dd + yyyy;
-
-        admin.firestore().collection('leaderboard').doc(newToday).collection('losses')
+        admin.firestore().collection('leaderboard').doc(data.newToday).collection('losses')
         .orderBy('score', 'desc')
         .limit(6)
         .get()
@@ -909,15 +903,11 @@ exports.getMoreLosses = functions.https.onCall((data, context) => {
         const lastItemIndex = data.lastItemIndex;
         let index = lastItemIndex + 2;
 
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        const newToday = mm + dd + yyyy;
+
 
         admin.firestore()
         .collection('leaderboard')
-        .doc(newToday).collection('losses')
+        .doc(data.newToday).collection('losses')
         .orderBy('score', 'desc')
         .startAfter(data.score)
         .limit(7)
@@ -974,13 +964,7 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
         const leaderboardGains = [];
         let index = data.index;
 
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        const newToday = mm + dd + yyyy;
-
-        admin.firestore().collection('leaderboard').doc(newToday).collection('gains')
+        admin.firestore().collection('leaderboard').doc(data.newToday).collection('gains')
         .orderBy('score', 'desc')
         .limit(6)
         .get()
@@ -1034,20 +1018,12 @@ exports.getGainsCollection = functions.https.onCall((data, context) => {
 exports.getMoreGains = functions.https.onCall((data, context) => {
     return new Promise((resolve, reject) => {
 
-      
-            
               const lastItemIndex = data.lastItemIndex;
               let index = lastItemIndex + 2;
-        
-              const today = new Date();
-              const dd = String(today.getDate()).padStart(2, '0');
-              const mm = String(today.getMonth() + 1).padStart(2, '0');
-              const yyyy = today.getFullYear();
-              const newToday = mm + dd + yyyy;
-        
+
                 admin.firestore()
                 .collection('leaderboard')
-                .doc(newToday).collection('gains')
+                .doc(data.newToday).collection('gains')
                 .orderBy('score', 'desc')
                 .startAfter(data.score)
                 .limit(7)
