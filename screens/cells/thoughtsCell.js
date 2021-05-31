@@ -29,6 +29,7 @@ class ThoughtsCell extends React.Component {
       date_created: this.props.date_created,
       viewsCount: this.props.viewsCount,
       isLoading: true,
+      commentsCount: this.props.commentsCount,
       currentUser: firebase.auth().currentUser.uid,
       posterUID: this.props.uid,
       currentUserPosted: false,
