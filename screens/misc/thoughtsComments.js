@@ -61,7 +61,7 @@ const ThoughtsComments = (props) => {
         console.log(error);
       });
 
-    console.log(`username: ${username} postID: ${postID} posterUID: ${posterUID}`);
+  
 
     fetchCollection();
   }, []);
@@ -197,7 +197,7 @@ const ThoughtsComments = (props) => {
 
       //Update Post global CommentCount
       await firebase.firestore()
-        .collection('globalPosts')
+        .collection('thoughts')
         .doc(postID)
         .set({
           commentsCount: commentsCount + 1,
@@ -290,7 +290,7 @@ const ThoughtsComments = (props) => {
 
 
       await firebase.firestore()
-        .collection('globalPosts')
+        .collection('thoughts')
         .doc(postID)
         .set({
           commentsCount: commentsCount + 1,
@@ -321,7 +321,7 @@ const ThoughtsComments = (props) => {
       //Get the poster userID
       const getPosterUID = async() => {
         await firebase.firestore()
-          .collection('globalPosts')
+          .collection('thoughts')
           .doc(postID)
           .get()
           .then((doc) => {
@@ -330,7 +330,7 @@ const ThoughtsComments = (props) => {
               setCommentsCount(doc.data().commentsCount);
             } else {
               // doc.data() will be undefined in this case
-              console.log('No such document!');
+              console.log('No such document from getPosterUID!');
             }
           });
   
@@ -344,14 +344,14 @@ const ThoughtsComments = (props) => {
               setUserScore(doc.data().score)
             } else {
               // doc.data() will be undefined in this case
-              console.log('No such document!');
+              console.log('No such document for getComment counts of users!');
             }
           });
       }
 
       const updateCommentCount = async() => {
         await firebase.firestore()
-          .collection('globalPosts')
+          .collection('thoughts')
           .doc(postID)
           .get()
           .then((doc) => {
@@ -359,7 +359,7 @@ const ThoughtsComments = (props) => {
               setCommentsCount(doc.data().commentsCount);
             } else {
               // doc.data() will be undefined in this case
-              console.log('No such document!');
+              console.log('No such document from updateCommentCount!');
             }
           });
       }
@@ -445,14 +445,7 @@ const ThoughtsComments = (props) => {
       }, { merge: true });
   };
 
-  //   const setViewsCountPartTwo = async() => {
-  //     await firebase.firestore()
-  //     .collection('globalPosts')
-  //     .doc(postID)
-  //     .set({
-  //       viewsCount: currentViewsCount + 1,
-  //     }, { merge: true });
-  //   }
+
 
   const fetchCollection = async() => {
     const tempCommentsArray = [];
