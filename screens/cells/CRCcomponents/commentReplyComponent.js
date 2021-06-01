@@ -100,6 +100,7 @@ class ReplyCommentComponent extends React.Component {
     }
 
     addComment = async() => {
+      console.log("CLICKED...");
       if (this.state.commentText.trim().length == 0 || this.state.commentText.trim() == '') {
         Alert.alert(
           'no empty comments!',
