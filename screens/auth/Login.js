@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Alert, Dimensions} from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 
 //redux
 import { connect, useDispatch } from 'react-redux';
@@ -119,29 +120,40 @@ const Login = (props) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
 
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', paddingTop: Dimensions.get('window').height / 5, paddingBottom: 50 }}>
           <Text style={styles.headerPartOneText}>trade</Text>
           <Text style={styles.headerPartTwoText}>rank</Text>
         </View>
 
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ paddingTop: 15 }}>
+            <MaterialCommunityIcons name="email-outline" size={24} color="#696969" />
+          </View>
+          
+          <TextInput
+            style={styles.inputBox}
+            value={email}
+            onChangeText={text => setEmail(text)}
+            placeholder="email"
+            placeholderTextColor="#d3d3d3"
+            autoCapitalize="none"
+          />
+        </View>
+        
 
-        <TextInput
-          style={styles.inputBox}
-          value={email}
-          onChangeText={text => setEmail(text)}
-          placeholder="email"
-          placeholderTextColor="#696969"
-          autoCapitalize="none"
-        />
-
-        <TextInput
-          style={styles.inputBox}
-          value={password}
-          onChangeText={text => setPassword(text)}
-          placeholder="password"
-          placeholderTextColor="#696969"
-          secureTextEntry
-        />
+        <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
+          <View style={{ paddingTop: 15 }}>
+            <AntDesign name="lock" size={24} color="#696969" />
+          </View>
+          <TextInput
+            style={styles.inputBox}
+            value={password}
+            onChangeText={text => setPassword(text)}
+            placeholder="password"
+            placeholderTextColor="#d3d3d3"
+            secureTextEntry
+          />
+        </View>
 
         <TouchableOpacity
           style={styles.button}
@@ -151,12 +163,12 @@ const Login = (props) => {
         </TouchableOpacity>
 
         <Button
-          title="no account? sign up"
+          title="sign up"
           onPress={() => navigation.navigate('Signup')}
         />
 
         <Button
-          title="forgot password"
+          title="forgot?"
           onPress={() => navigation.navigate('ForgotPassword')}
         />
 
@@ -171,32 +183,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     backgroundColor: '#000000',
   },
   inputBox: {
     width: '85%',
     margin: 10,
-    padding: 15,
+    paddingBottom: 5,
+    paddingTop: 5,
     fontSize: 16,
-    borderColor: '#d3d3d3',
+    borderColor: '#696969',
     borderBottomWidth: 1,
-    textAlign: 'center',
+    // textAlign: 'center',
     color: '#FFFFFF',
   },
   button: {
-    marginTop: 30,
-    marginBottom: 20,
+    // marginTop: 30,
+    marginBottom: 15,
     paddingVertical: 5,
     alignItems: 'center',
-    backgroundColor: '#5233FF',
+    backgroundColor: '#07dbd1',
     borderRadius: 5,
-    width: 200,
+    width: 150,
   },
   buttonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#121212',
   },
   buttonSignup: {
     fontSize: 12,

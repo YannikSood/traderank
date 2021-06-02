@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, TouchableWithoutFeedback, Keyboard, Alert, Linking } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button, TouchableWithoutFeedback, Keyboard, Alert, Linking, Dimensions } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 //redux
 import { connect, useDispatch } from 'react-redux';
@@ -26,8 +27,8 @@ class Signup extends React.Component {
     handleSignUp = async() => {
     //   console.log(this.state.username);
       try {
-        this.props.navigation.navigate('Register', {
-            username: this.state.username,
+        this.props.navigation.navigate('Signup2', {
+          username: this.state.username,
         });
       } catch (error) {
         console.log(error);
@@ -79,24 +80,28 @@ class Signup extends React.Component {
             style={styles.container}
           >
 
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', paddingTop: Dimensions.get('window').height / 5, paddingBottom: 50 }}>
               <Text style={styles.headerPartOneText}>trade</Text>
               <Text style={styles.headerPartTwoText}>rank</Text>
             </View>
 
 
-            <TextInput
-              style={styles.inputBox}
-              value={this.state.username.trim().replace(/[^\w\s]/gi, '')}
-              onChangeText={username => this.setState({ username })}
-              placeholder="username"
-              placeholderTextColor="#696969"
-              autoCapitalize="none"
-              autoCorrect={false}
-              maxLength={20}
-            />
+            <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
+              <View style={{ paddingTop: 15 }}>
+                <FontAwesome5 name="user-astronaut" size={24} color="#696969" />
+              </View>
+              <TextInput
+                style={styles.inputBox}
+                value={this.state.username.trim().replace(/[^\w\s]/gi, '')}
+                onChangeText={username => this.setState({ username })}
+                placeholder="username"
+                placeholderTextColor="#d3d3d3"
+                autoCapitalize="none"
+                autoCorrect={false}
+                maxLength={20}
+              />
+            </View>
 
-            <Text style={styles.labelText}>💡 pick something anonymous for privacy</Text>
 
             <TouchableOpacity
               style={styles.button}
@@ -104,6 +109,8 @@ class Signup extends React.Component {
             >
               <Text style={styles.buttonText}>next</Text>
             </TouchableOpacity>
+
+            <Text style={styles.labelText}>💡 pick something anonymous for privacy</Text>
 
           </View>
         </TouchableWithoutFeedback>
@@ -116,31 +123,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   inputBox: {
     width: '85%',
     margin: 10,
-    padding: 15,
+    paddingBottom: 5,
+    paddingTop: 5,
     fontSize: 16,
-    borderColor: '#d3d3d3',
+    borderColor: '#696969',
     borderBottomWidth: 1,
-    textAlign: 'center',
+    // textAlign: 'center',
     color: '#FFFFFF',
   },
   button: {
-    marginTop: 30,
+    // marginTop: 30,
     marginBottom: 20,
     paddingVertical: 5,
     alignItems: 'center',
-    backgroundColor: '#5233FF',
+    backgroundColor: '#07dbd1',
     borderRadius: 5,
-    width: 200,
+    width: 150,
   },
   buttonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#121212',
   },
   buttonSignup: {
     fontSize: 12,
@@ -161,9 +169,9 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   labelText: {
-    fontSize: 16,
-    color: '#FFFFFF'
-},
+    // fontSize: 16,
+    color: '#d3d3d3',
+  },
 });
 
 export default connect(mapStateToProps)(Signup);

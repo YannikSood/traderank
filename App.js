@@ -107,6 +107,7 @@ const App = () => (
           name="Login"
           component={Login}
           options={{
+            title: null,
             headerLeft: null,
             headerTitleStyle: {
               fontWeight: 'bold',
@@ -114,7 +115,7 @@ const App = () => (
               color: '#FFFFFF',
             },
             headerStyle: {
-              backgroundColor: '#121212',
+              backgroundColor: '#000000',
               shadowColor: 'transparent',
             },
           }}
@@ -123,22 +124,7 @@ const App = () => (
           name="Signup"
           component={Signup}
           options={{
-            // headerLeft: null,
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              fontSize: 20,
-              color: '#FFFFFF',
-            },
-            headerStyle: {
-              backgroundColor: '#121212',
-              shadowColor: 'transparent',
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={Signup2}
-          options={{
+            title: null,
             headerLeft: null,
             headerTitleStyle: {
               fontWeight: 'bold',
@@ -146,7 +132,24 @@ const App = () => (
               color: '#FFFFFF',
             },
             headerStyle: {
-              backgroundColor: '#121212',
+              backgroundColor: '#000000',
+              shadowColor: 'transparent',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Signup2"
+          component={Signup2}
+          options={{
+            title: null,
+            headerLeft: null,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#000000',
               shadowColor: 'transparent',
             },
           }}
