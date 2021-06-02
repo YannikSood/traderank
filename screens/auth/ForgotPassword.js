@@ -106,7 +106,7 @@ const ForgotPassword = (props) => {
         </View>
 
 
-        <View style={{ flexDirection: 'row', paddingBottom: 25  }}>
+        <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
           <View style={{ paddingTop: 15 }}>
             <MaterialCommunityIcons name="email-outline" size={24} color="#696969" />
           </View>
@@ -118,6 +118,7 @@ const ForgotPassword = (props) => {
             placeholder="email"
             placeholderTextColor="#696969"
             autoCapitalize="none"
+            autoFocus={false}
           />
         </View>
 

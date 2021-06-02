@@ -137,6 +137,7 @@ const Login = (props) => {
             placeholder="email"
             placeholderTextColor="#d3d3d3"
             autoCapitalize="none"
+            autoFocus={false}
           />
         </View>
         

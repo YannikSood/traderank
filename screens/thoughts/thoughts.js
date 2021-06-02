@@ -25,8 +25,8 @@ const ThoughtsFeed = (props) => {
 
   // Props
   const { user, navigation, postsLoading } = props;
-  const flagOptions = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
-  const categories = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
+  const flagOptions = ['DISCUSS', 'MEMES', 'MOVES'];
+  const categories = ['DISCUSS', 'MEMES', 'MOVES'];
 
   /**
      * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
@@ -291,8 +291,8 @@ const ThoughtsFeed = (props) => {
       
       { mediaType === 'image' ? 
       <CachedImage 
-        source={{ uri: `${this.state.image}` }}
-        cacheKey={`${this.state.image}t`}
+        source={{ uri: `${image}` }}
+        cacheKey={`${image}t`}
         backgroundColor="transparent"
         style={styles.thumbnail2}
       /> : 

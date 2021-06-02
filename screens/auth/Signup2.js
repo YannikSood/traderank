@@ -143,6 +143,7 @@ const Signup2 = ({ props, route, navigation }) => {
             placeholder="email"
             placeholderTextColor="#d3d3d3"
             autoCapitalize="none"
+            autoFocus={false}
           />
         </View>
 

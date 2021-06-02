@@ -152,7 +152,7 @@ $
 
     _refresh = () => {
       this.setState({ isLoading: true });
-      this.firestoreRef.onSnapshot(this.getCollection);
+      this.getCollection();
     };
 
     renderListHeader = () => {

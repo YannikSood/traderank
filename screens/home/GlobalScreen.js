@@ -22,7 +22,7 @@ const GlobalScreen = (props) => {
   useScrollToTop(scrollRef);
 
   // Props
-  const { navigation, globalPosts, postsLoading } = props;
+  const { user, navigation, globalPosts, postsLoading } = props;
 
   /**
      * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
@@ -48,6 +48,7 @@ const GlobalScreen = (props) => {
   // Effects
   useEffect(() => {
     // useScrollToTop(scrollRef);
+    checkFirstTime();
     fetchCollection();
     Analytics.setUserId(firebase.auth().currentUser.uid);
     Analytics.setCurrentScreen('GlobalScreen');
@@ -89,11 +90,23 @@ const GlobalScreen = (props) => {
       .then((token) => {
         firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).set({
           token,
-          pushStatus: pushStatus,
+          pushStatus,
         }, { merge: true });
       })
       .catch((error) => {
         console.log('Error while registering device push token', error);
+      });
+  };
+
+  const checkFirstTime = async() => {
+    await firebase.firestore()
+      .collection('users')
+      .doc(user.id)
+      .get()
+      .then((doc) => {
+        if (doc.data().firstOpen) {
+          console.log('first_open');
+        }
       });
   };
 
@@ -345,8 +358,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps  = (state) => {
-  const { PostsReducer } = state;
+  const { PostsReducer, UserReducer } = state;
   return {
+    user: UserReducer.user,
     globalPosts: PostsReducer.globalPosts,
     postsLoading: PostsReducer.postsLoading,
   };
