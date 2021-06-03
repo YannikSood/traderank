@@ -51,9 +51,9 @@ const ClickedPostPage = (props) => {
 
   useEffect(() => {
     // console.log(`POST ID: ${postID}`);
-    if(replyData.length === 0){
-      getReplyData();
-    }
+    // if(Object.keys(replyData).length !== 0){
+    //   getReplyData();
+    // }
     clearStorage(); 
     setReplyTo('');
     getPosterUID();
@@ -169,6 +169,11 @@ const ClickedPostPage = (props) => {
     getReplyData();
 
   }, [commentText])
+  
+  //refreshes comments array once one is deleted
+  useEffect(() => {
+    fetchCollection();
+  }, [commentsArray])
 
 
   const refresh = () => {
@@ -692,6 +697,7 @@ $
       commentID={item.key}
       postID={postID}
       replyCount={item.replyCount}
+      extraData={commentsArray}
       button={(
         <TouchableOpacity
           onPress={() => {
