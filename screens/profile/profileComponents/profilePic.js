@@ -9,19 +9,33 @@ class ProfilePic extends React.Component {
         super(props)
         this.state = {
             storage_image_uri: this.props.storage_image_uri,
+            isLoaded: false
         }
     }
-    //---------------------------------------------------------------
+    componentDidMount(){
+        setTimeout(
+            function() {
+                this.setState({isLoaded: true});
+            }
+            .bind(this),
+            1500
+          );
+    }
 
     render() {
+        
         return (
-            <View >
+            <View>
+                { this.state.isLoaded === true ? 
                 <CachedImage
                   source={{ uri: `${this.state.storage_image_uri}` }}
                   cacheKey={`${this.state.storage_image_uri}t`}
                   backgroundColor="transparent"
                   style={styles.thumbnail}
                 />
+                :
+                <ActivityIndicator size="large" color="#9E9E9E" />
+            }
             </View>
         )
     }
