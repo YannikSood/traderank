@@ -168,7 +168,7 @@ const ClickedPostPage = (props) => {
     };
     getReplyData();
 
-  })
+  }, [commentText])
 
 
   const refresh = () => {

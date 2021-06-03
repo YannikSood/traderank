@@ -100,7 +100,7 @@ class UserComponent extends React.Component {
                         onPress={() => this.getProfile()} >
 
                         <Image
-                            source={{ uri: this.state.posterPic }}
+                            source={ this.state.posterPic ? { uri: this.state.posterPic } : null}
                             style={styles.thumbnail}
                         />
                         {/* <CachedImage

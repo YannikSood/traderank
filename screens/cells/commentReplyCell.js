@@ -5,6 +5,7 @@ import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from '../../firebase';
 import CommentUserComponent from './CFCcomponents/userCommentComponent';
+import CommentLikeComponent from './CFCcomponents/likeComponent';
 import CommentReplyLikeComponent from './CRCcomponents/comRepLike';
 import CommentDeleteComponent from './CFCcomponents/deleteComponent';
 import ReplyCommentComponent from './CRCcomponents/commentReplyComponent';
@@ -130,12 +131,18 @@ const CommentReplyCellClass = (props) => {
 
         <Text style={styles.commentTextColor}>{props.commentText}</Text>
 
-        <View style={{ paddingLeft: 20, paddingRight: 15 }}>
+        <View style={{ flexDirection:"row" }}>
 
+        <CommentLikeComponent
+            postID={replyData.postID}
+            commentID={replyData.commentID}
+            navigation={navigation}
+          />
 
           <Entypo
             name="reply"
             size={22}
+            style={{ paddingLeft: 12}}
             color="white"
             onPress={() => {
               storeReplyTo(`${props.replierUsername}`);
