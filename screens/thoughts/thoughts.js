@@ -188,8 +188,8 @@ const ThoughtsFeed = (props) => {
             })
               .then((result) => {
                 setIsLoading(false);
-                setModalOpen(false);
                 clearAfterPost();
+                setModalOpen(false);
                 Analytics.logEvent('Thought_Posted');
                 Analytics.logEvent(`Thought_Category_${selectedId}`);
               })
@@ -209,6 +209,7 @@ const ThoughtsFeed = (props) => {
         })
           .then((result) => {
             setIsLoading(false);
+            clearAfterPost();
             setModalOpen(false);
             Analytics.logEvent('Thought_Posted');
             Analytics.logEvent(`Thought_Category_${selectedId}`);
