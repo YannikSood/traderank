@@ -534,15 +534,15 @@ const styles = StyleSheet.create({
   textStyle: {
     color: '#FFFFFF',
     // paddingLeft: 20,
-    paddingTop: 5,
+    paddingTop: 14,
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 16,
   },
   textStyle2: {
     color: '#FFFFFF',
-    paddingTop: 16,
-    fontWeight: 'bold',
-    fontSize: 14,
+    paddingTop: 15,
+    // fontWeight: 'bold',
+    fontSize: 16,
   },
 
 });
