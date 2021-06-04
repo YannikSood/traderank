@@ -21,7 +21,7 @@ const CommentReplyCellClass = (props) => {
   const { user, route, navigation } = props;
   // replierUsername: if I reply to a reply this is the author of who I am replying to
   const [isLoading, setIsLoading] = useState(false);
-  // const [showDeleteComponent, setShowDeleteComponent] = useState(false);
+  const [showDeleteComponent, setShowDeleteComponent] = useState(false);
 
   const storeReplyData = async(value) => {
     try {
@@ -60,7 +60,7 @@ const CommentReplyCellClass = (props) => {
       </View>
     );
   }
-  // if (showDeleteComponent) {
+  if (showDeleteComponent) {
     return (
       <View style={styles.commentFeedCell}>
 
@@ -76,7 +76,6 @@ const CommentReplyCellClass = (props) => {
           <View style={styles.timeContainer}>
 
             <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={props.date_created} />
-
           </View>
         </View>
 
@@ -90,7 +89,6 @@ const CommentReplyCellClass = (props) => {
             color="white"
             onPress={() => {
               storeReplyTo(`${props.replierUsername}`);
-              console.log(`Comment reply cell...: ${props.replierUsername}`);
             }}
           />
 
@@ -100,59 +98,58 @@ const CommentReplyCellClass = (props) => {
 
       </View>
     );
-  // }
+  }
 
-  // return (
-
-
-  //   <View style={styles.commentFeedCell}>
-
-  //     <View style={styles.lineStyle} />
-
-  //     <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
-  //       <CommentUserComponent
-  //         key={props.commentID}
-  //         posterUID={props.replierAuthorUID}
-  //         navigation={navigation}
-  //       />
-
-  //       <View style={styles.timeContainer}>
-
-  //         <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={props.date_created} />
-
-  //       </View>
+  return (
 
 
-  //     </View>
+    <View style={styles.commentFeedCell}>
+
+      <View style={styles.lineStyle} />
+
+      <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+        <CommentUserComponent
+          key={props.commentID}
+          posterUID={props.replierAuthorUID}
+          navigation={navigation}
+        />
+
+        <View style={styles.timeContainer}>
+
+          <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={props.date_created} />
+
+        </View>
 
 
-  //     <Text style={styles.commentTextColor}>{props.commentText}</Text>
-
-  //     <View style={{ flexDirection: 'row' }}>
-
-  //       <CommentLikeComponent
-  //         postID={replyData.postID}
-  //         commentID={replyData.commentID}
-  //         navigation={navigation}
-  //       />
-
-  //       <Entypo
-  //         name="reply"
-  //         size={22}
-  //         style={{ paddingLeft: 12 }}
-  //         color="white"
-  //         onPress={() => {
-  //           storeReplyTo(`${props.replierUsername}`);
-  //           console.log('Comment reply cell...: ');
-  //           console.log(replyData);
-  //         }}
-  //       />
+      </View>
 
 
-  //     </View>
-  //   </View>
+      <Text style={styles.commentTextColor}>{props.commentText}</Text>
 
-  // );
+      <View style={{ flexDirection: 'row' }}>
+
+        <CommentLikeComponent
+          postID={props.postID}
+          commentID={props.commentID}
+          navigation={navigation}
+        />
+
+        <Entypo
+          name="reply"
+          size={22}
+          style={{ paddingLeft: 12 }}
+          color="white"
+          onPress={() => {
+            storeReplyTo(`${props.replierUsername}`);
+            console.log(`Comment reply cell...: ${props.replierUsername}`);
+          }}
+        />
+
+
+      </View>
+    </View>
+
+  );
 };
 
 

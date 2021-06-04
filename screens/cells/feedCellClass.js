@@ -40,10 +40,11 @@ class FeedCellClass extends React.Component {
 
   componentDidMount() {
     setTimeout(
-      () => {
-        this.setState({ isLoaded: true });
-      },
-      500,
+      function() {
+          this.setState({isLoaded: true});
+      }
+      .bind(this),
+      500
     );
     if (this.state.isLoaded === false) {
       return (
@@ -269,18 +270,16 @@ class FeedCellClass extends React.Component {
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
 
-              { this.state.isLoaded === true
-                ? (
-                  <CachedImage
-                    source={{ uri: `${this.state.image}` }}
-                    cacheKey={`${this.state.image}t`}
-                    backgroundColor="transparent"
-                    style={styles.fullScreenImage}
-                  />
-                )
-                : <ActivityIndicator size="large" color="#9E9E9E" />
+            { this.state.isLoaded === true ? 
+                <CachedImage
+                  source={{ uri: `${this.state.image}` }}
+                  cacheKey={`${this.state.image}t`}
+                  backgroundColor="transparent"
+                  style={styles.fullScreenImage}
+                />
+                :
+                <ActivityIndicator size="large" color="#9E9E9E" />
             }
-
 
             </View>
           </Modal>
@@ -307,9 +306,7 @@ class FeedCellClass extends React.Component {
                             }
                             style={styles.subscriptionCell}>
                                 <Text style={styles.buttonText}>📌 announcements </Text>
-
                                 { this.renderAnnouncementBadge() }
-
                         </TouchableOpacity> */}
 
           </View>
@@ -357,17 +354,15 @@ class FeedCellClass extends React.Component {
           <TouchableOpacity onPress={() => this.openImageModal()}>
             <View style={styles.thumbnailContainer}>
 
-
-              { this.state.isLoaded === true
-                ? (
-                  <CachedImage
-                    source={{ uri: `${this.state.image}` }}
-                    cacheKey={`${this.state.image}t`}
-                    backgroundColor="transparent"
-                    style={styles.thumbnail}
-                  />
-                )
-                : <ActivityIndicator size="large" color="#9E9E9E" />
+            { this.state.isLoaded === true ? 
+                        <CachedImage
+                        source={{ uri: `${this.state.image}` }}
+                        cacheKey={`${this.state.image}t`}
+                        backgroundColor="transparent"
+                        style={styles.thumbnail}
+                    />
+                            :
+                            <ActivityIndicator size="large" color="#9E9E9E" />
               }
             </View>
           </TouchableOpacity>
