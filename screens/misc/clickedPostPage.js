@@ -221,7 +221,8 @@ const ClickedPostPage = (props) => {
           date_created: new Date(),
         })
         .then(() => {
-          setCommentText('')
+          setCommentText('');
+          setReplyTo('');
         })
         .catch((error) => {
                   console.error("Error: ", error);
