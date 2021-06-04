@@ -5,6 +5,7 @@ import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from '../../firebase';
 import CommentUserComponent from './CFCcomponents/userCommentComponent';
+import CommentLikeComponent from './CFCcomponents/likeComponent';
 import CommentReplyLikeComponent from './CRCcomponents/comRepLike';
 import CommentDeleteComponent from './CFCcomponents/deleteComponent';
 import ReplyCommentComponent from './CRCcomponents/commentReplyComponent';
@@ -16,51 +17,50 @@ import ReplyCommentComponent from './CRCcomponents/commentReplyComponent';
 //Comment reply reply component
 
 
-class CommentReplyCellClass extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-      commentID: this.props.commentID,
-      topCommentID: this.props.topCommentID,
-      commentText: this.props.commentText,
-      date_created: this.props.date_created,
-      postID: this.props.postID,
-      replierAuthorUID: this.props.replierAuthorUID,
-      replierUsername: this.props.replierUsername, //if I reply to a reply this is the author of who I am replying to
-      replyingToUID: this.props.replyingToUID,
-      replyingToUsername: this.props.replyingToUsername,
-      showDeleteComponent: false,
-      isReplying: false,
-      // button: this.props.button,
-    };
-  }
+const CommentReplyCellClass = (props) => {
+  const { user, route, navigation} = props;
+   // replierUsername: if I reply to a reply this is the author of who I am replying to
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteComponent, setShowDeleteComponent] = useState(false);
 
-  componentDidMount() {
-      // if (this.state.replierAuthorUID == firebase.auth().currentUser.uid) {
-      //     this.setState({ showDeleteComponent: true })
-      // }
-  }
+  const storeReplyData = async(value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem('replyData', jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
 
 
-  render() {
+  const storeReplyTo = async(value) => {
+    try {
+      await AsyncStorage.setItem('replyTo', value);
+    } catch (e) {
+      // saving error
+      console.log("Error storing replyTo value...");
+    }
+  };
+
     const replyData = {
-      commentID: this.props.commentID,
-      topCommentID: this.props.topCommentID,
-      postID: this.props.postID,
-      replierAuthorUID: this.props.replierAuthorUID,
-      replierUsername: this.props.replierUsername,
-      replyingToUID: this.props.replyingToUID,
-      replyingToUsername: this.props.replyingToUsername,
+      commentID: props.commentID,
+      topCommentID: props.topCommentID,
+      postID: props.postID,
+      replierAuthorUID: props.replierAuthorUID,
+      replierUsername: props.replierUsername,
+      replyingToUID: props.replyingToUID,
+      replyingToUsername: props.replyingToUsername,
     };
-    if (this.state.isLoading) {
+    storeReplyData(replyData);
+
+    if (isLoading) {
       return (
         <View style={styles.commentFeedCell}>
           <ActivityIndicator size="large" color="#9E9E9E" />
         </View>
       );
     }
-    if (this.state.showDeleteComponent) {
+    if (showDeleteComponent) {
       return (
         <View style={styles.commentFeedCell}>
 
@@ -68,20 +68,20 @@ class CommentReplyCellClass extends React.Component {
 
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <CommentUserComponent
-              key={this.state.commentID}
-              posterUID={this.state.replierAuthorUID}
-              navigation={this.props.navigation}
+              key={props.commentID}
+              posterUID={props.replierAuthorUID}
+              navigation={navigation}
             />
 
             <View style={styles.timeContainer}>
 
-              <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={this.state.date_created} />
+              <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={props.date_created} />
 
             </View>
           </View>
 
 
-          <Text style={styles.commentTextColor}>{this.state.commentText}</Text>
+          <Text style={styles.commentTextColor}>{props.commentText}</Text>
 
           <View style={{ paddingLeft: 15, paddingRight: 15 }}>
             <Entypo
@@ -89,35 +89,16 @@ class CommentReplyCellClass extends React.Component {
               size={22}
               color="white"
               onPress={() => {
-                this.setState({ isReplying: true });
+                storeReplyTo(`${props.replierUsername}`);
+                console.log("Comment reply cell...: " + props.replierUsername);
               }}
             />
 
 
           </View>
+
           
-          {this.state.isReplying 
-                                && <ReplyCommentComponent replyData={replyData} />
 
-                        }
-
-
-          {/* <View style={{flexDirection: 'row'}}>
-                            <CommentReplyLikeComponent
-                                postID={this.state.postID}
-                                commentID= {this.state.topCommentID} //Top level comment ID
-                                commentReplyID= {this.state.commentID} //Sub level comment ID
-                                navigation={this.props.navigation}
-                            />
-
-                            <CommentDeleteComponent
-                                postID={this.state.postID}
-                                commentID={this.state.commentID}
-                                navigation={this.props.navigation}
-                            />
-
-
-                        </View> */}
 
 
         </View>
@@ -133,14 +114,14 @@ class CommentReplyCellClass extends React.Component {
 
         <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
           <CommentUserComponent
-            key={this.state.commentID}
-            posterUID={this.state.replierAuthorUID}
-            navigation={this.props.navigation}
+            key={props.commentID}
+            posterUID={props.replierAuthorUID}
+            navigation={navigation}
           />
 
           <View style={styles.timeContainer}>
 
-            <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={this.state.date_created} />
+            <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={props.date_created} />
 
           </View>
 
@@ -148,55 +129,35 @@ class CommentReplyCellClass extends React.Component {
         </View>
 
 
-        <Text style={styles.commentTextColor}>{this.state.commentText}</Text>
+        <Text style={styles.commentTextColor}>{props.commentText}</Text>
 
-        <View style={{ paddingLeft: 20, paddingRight: 15 }}>
+        <View style={{ flexDirection:"row" }}>
 
+        <CommentLikeComponent
+            postID={replyData.postID}
+            commentID={replyData.commentID}
+            navigation={navigation}
+          />
 
           <Entypo
             name="reply"
             size={22}
+            style={{ paddingLeft: 12}}
             color="white"
             onPress={() => {
-              this.setState({ isReplying: true });
-              const storeReplyTo = async(value) => {
-                try {
-                  await AsyncStorage.setItem('replyTo', value);
-                } catch (e) {
-                  // saving error
-                }
-              };
-  
-              storeReplyTo(`${this.props.replierUsername}`);
-              console.log("Comment reply cell...: " + this.props.replierUsername);
+              storeReplyTo(`${props.replierUsername}`);
+              console.log("Comment reply cell...: ");
+              console.log(replyData);
             }}
             
           />
 
 
         </View>
-
-
-        {this.state.isReplying
-                               && <ReplyCommentComponent replyData={replyData} />
-                        }
-
-
-        {/* <View style={{flexDirection: 'row'}}>
-
-                            <CommentReplyLikeComponent
-                                postID={this.state.postID}
-                                commentID= {this.state.topCommentID} //Top level comment ID
-                                commentReplyID= {this.state.commentID} //Sub level comment ID
-                                navigation={this.props.navigation}
-                            />
-                        </View> */}
-
-
       </View>
 
     );
-  }
+  
 }
 
 

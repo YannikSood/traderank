@@ -50,6 +50,10 @@ const ClickedPostPage = (props) => {
   
 
   useEffect(() => {
+    // console.log(`POST ID: ${postID}`);
+    // if(Object.keys(replyData).length !== 0){
+    //   getReplyData();
+    // }
     clearStorage(); 
     setReplyTo('');
     getPosterUID();
@@ -102,6 +106,16 @@ const ClickedPostPage = (props) => {
     clearReplyData();
   }
 
+  const getReplyData = async() => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('replyData');
+      setReplyData(JSON.parse(jsonValue));
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
+
   useEffect(() => {
     
     updateCommentCount();
@@ -110,6 +124,29 @@ const ClickedPostPage = (props) => {
       try {
         const value = await AsyncStorage.getItem('replyTo');
         if (value !== null) {
+          setCommentText(`@${value}`);
+          setReplyTo(value);
+        }
+      } catch (e) {
+        // error reading value
+      }
+    };
+    getReplyTo();
+
+
+
+    getReplyData();
+
+
+
+  }, [replyTo])
+
+  //listening to replyTo from misc/screens/cells/commentReplyCell.js
+  useEffect(() => {
+    const getReplyTo = async() => {
+      try {
+        const value = await AsyncStorage.getItem('replyTo');
+        if (value !== null && value !== replyTo) {
           setCommentText(`@${value}`);
           setReplyTo(value);
         }
@@ -131,9 +168,12 @@ const ClickedPostPage = (props) => {
     };
     getReplyData();
 
-
-
-  }, [replyTo])
+  }, [commentText])
+  
+  //refreshes comments array once one is deleted
+  useEffect(() => {
+    fetchCollection();
+  }, [commentsArray])
 
 
   const refresh = () => {
@@ -145,6 +185,7 @@ const ClickedPostPage = (props) => {
     if (replyTo.length > 0) {
       addReplyComment();
       fetchCollection(); //makes it refresh after comment is added
+      setCommentText('');
     } else {
       addCommentToDB(); //regular comment
       fetchCollection(); //makes it refresh after comment is added
@@ -157,13 +198,21 @@ const ClickedPostPage = (props) => {
       make sure wehn go back it reloads commentComponents and that should fix it
       */
     //increment replyCOunt to comments -> postId -> comments
+    console.log("ADDING REPLY COMMENT...");
+    console.log(replyData);
     if (replyTo.length > 0) { //isReplying
       //Send reply
+      let commentId = replyData.commentID;
+      if(replyData.hasOwnProperty('topCommentID')){
+        commentId = replyData.topCommentID;
+        console.log(`topCommentID ${commentId}`);
+        console.log(`postId: ${replyData.postID}`);
+      }
       await firebase.firestore()
         .collection('comments') // collection comments
         .doc(replyData.postID) // Which post?
         .collection('comments') //Get comments for this post
-        .doc(replyData.commentID) //Get the specific comment we want to reply to
+        .doc(commentId) //Get the specific comment we want to reply to
         .collection('replies') //Create a collection for said comment
         .add({ //Add to this collection, and automatically generate iD for this new comment
           postID: replyData.postID,
@@ -180,7 +229,7 @@ const ClickedPostPage = (props) => {
         })
         .catch((error) => {
                   console.error("Error: ", error);
-              });
+        });
 
               /*
                TODO:
@@ -194,7 +243,7 @@ const ClickedPostPage = (props) => {
         .collection('comments')
         .doc(replyData.postID)
         .collection('comments')
-        .doc(replyData.commentID)
+        .doc(commentId)
         .set({
           replyCount: replyCount + 1,
         }, { merge: true })
@@ -648,6 +697,7 @@ $
       commentID={item.key}
       postID={postID}
       replyCount={item.replyCount}
+      extraData={commentsArray}
       button={(
         <TouchableOpacity
           onPress={() => {
@@ -675,7 +725,7 @@ $
               commentLikes: 0,
               //may need to change
             };
-            console.log(replyDataObj);
+            // console.log(replyDataObj);
 
             //replyData that will be stored in the DB
             const storeReplyData = async(value) => {

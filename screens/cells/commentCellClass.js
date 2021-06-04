@@ -9,7 +9,7 @@ import CommentDeleteComponent from './CFCcomponents/deleteComponent';
 import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import CommentReplyCellClass from './commentReplyCell';
 
-const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation }) => {
+const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation, extraData }) => {
 //   const { commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation } = props.params;
 
 
@@ -18,6 +18,7 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
   const [showDeleteComponent, setShowDeleteComponent] = useState(false);
   const [repliesArray, setRepliesArray] = useState([]);
   const [hasReplies, setHasReplies] = useState(false);
+
 
   useEffect(() => {
     // setIsLoading(true);
@@ -130,11 +131,11 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
             navigation={navigation}
           />
 
-          {/* <CommentDeleteComponent
-                            postID={this.state.postID}
-                            commentID={this.state.commentID}
-                            navigation={this.props.navigation}
-                        />  */}
+          <CommentDeleteComponent
+            postID={postID}
+            commentID={commentID}
+            navigation={navigation}
+          /> 
 
           {button}
 
