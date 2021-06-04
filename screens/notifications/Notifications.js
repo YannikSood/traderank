@@ -208,7 +208,7 @@ class Notification extends React.Component {
         );
       }
 
-      if (this.state.notificationsArray.length == 0) {
+      if (this.state.notificationsArray.length === 0) {
         return (
           <View style={styles.container}>
             <Text style={styles.buttonText}>no notifications yet! try this:</Text>

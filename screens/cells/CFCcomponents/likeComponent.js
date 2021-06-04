@@ -169,6 +169,7 @@ class CommentLikeComponent extends React.Component {
     //----------------------------------------------------------
     //We now have all 3 variables. Time to start adding to the database. First, we add User1 to the global and post "likes" collection
     addToLikesDB = async() => {
+      console.log(this.state.commentID);
       await firebase.firestore()
         .collection('commentLikes')
         .doc(this.state.commentID)
@@ -234,7 +235,8 @@ class CommentLikeComponent extends React.Component {
     }
 
     writeToUserNotifications = async() => {
-      if (this.state.likerUID != this.state.posterUID) {
+      if (this.state.likerUID !== this.state.posterUID) {
+        console.log('in here 1');
         await firebase.firestore()
           .collection('users')
           .doc(this.state.posterUID)
@@ -267,8 +269,39 @@ class CommentLikeComponent extends React.Component {
           .catch((error) => {
             console.log(error);
           });
-      } else {
 
+        // await firebase.firestore()
+        //   .collection('users')
+        //   .doc(this.state.posterUID)
+        //   .collection('notifications')
+        //   .add({
+        //     type: 3,
+        //     senderUID: this.state.likerUID,
+        //     recieverUID: this.state.posterUID,
+        //     postID: this.state.postID,
+        //     read: false,
+        //     date_created: new Date(),
+        //     recieverToken: '',
+        //   })
+        //   .then(docref => this.setState({ notificationUID: docref.id }))
+        //   .catch((error) => {
+        //     console.error('Error writing document to user posts: ', error);
+        //   });
+
+        // const writeNotification = firebase.functions().httpsCallable('writeNotification');
+        // writeNotification({
+        //   type: 3,
+        //   senderUID: this.state.likerUID,
+        //   recieverUID: this.state.posterUID,
+        //   postID: this.state.postID,
+        //   senderUsername: this.state.likerUsername,
+        // })
+        //   .then((result) => {
+        //     console.log(result);
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
       }
     }
 
@@ -292,17 +325,16 @@ class CommentLikeComponent extends React.Component {
       if (this.state.isAlreadyLiked) {
         return (
           <View style={styles.container}>
-            <TouchableOpacity onPress={() => {
-                  this.removeFromLikedDB();
-                }}
-                >
-                  <Ionicons name="ios-heart" size={20} color="#00cc00" />
+            <TouchableOpacity onPress={() => this.removeFromLikedDB()
+            }
+            >
+              <Ionicons name="ios-heart" size={20} color="#00cc00" />
 
-                </TouchableOpacity>
+            </TouchableOpacity>
             <Text style={{ color: '#FFFFFF', paddingTop: 2 }}>
-                  {' '}
-                  {this.state.commentLikes}
-                </Text>
+              {' '}
+              {this.state.commentLikes}
+            </Text>
           </View>
         );
       }
@@ -311,17 +343,16 @@ class CommentLikeComponent extends React.Component {
 
       return (
         <View style={styles.container}>
-          <TouchableOpacity onPress={() => {
-                  this.addToLikesDB();
-                }}
-                >
-                  <Ionicons name="ios-heart" size={20} color="white" />
+          <TouchableOpacity onPress={() => this.addToLikesDB()
+          }
+          >
+            <Ionicons name="ios-heart" size={20} color="white" />
 
-                </TouchableOpacity>
+          </TouchableOpacity>
           <Text style={{ color: '#FFFFFF', paddingTop: 2 }}>
-                  {' '}
-                  {this.state.commentLikes}
-                </Text>
+            {' '}
+            {this.state.commentLikes}
+          </Text>
         </View>
       );
     }
