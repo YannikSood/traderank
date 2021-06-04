@@ -30,7 +30,7 @@ class FeedCellClass extends React.Component {
       navigation: this.props.navigation,
       date_created: this.props.date_created,
       viewsCount: this.props.viewsCount,
-      isLoading: true,
+      isLoaded: false,
       currentUser: firebase.auth().currentUser.uid,
       posterUID: this.props.uid,
       currentUserPosted: false,
@@ -39,19 +39,25 @@ class FeedCellClass extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.isLoading) {
-      this.setState({ isLoading: false });
+    setTimeout(
+      function() {
+          this.setState({isLoaded: true});
+      }
+      .bind(this),
+      500
+    );
+    if (this.state.isLoaded === false) {
       return (
         <View style={{ flexDirection: 'row', color: '#FFFFFF' }}>
           <ActivityIndicator size="large" color="#9E9E9E" />
         </View>
       );
+      this.setState({ isLoaded: true });
     }
 
     if (this.state.posterUID == this.state.currentUser) {
       this.setState({ currentUserPosted: true });
     }
-    this.setState({ isLoading: false });
   }
 
     renderGainLoss = () => {
@@ -243,7 +249,7 @@ class FeedCellClass extends React.Component {
 
 
     render() {
-      if (this.state.isLoading) {
+      if (this.state.isLoaded === false) {
         return (
           <View style={styles.gainFeedCell}>
             <ActivityIndicator size="large" color="#9E9E9E" />
@@ -263,12 +269,20 @@ class FeedCellClass extends React.Component {
 
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
-              <CachedImage
+
+
+            { this.state.isLoaded === true ? 
+                <CachedImage
                   source={{ uri: `${this.state.image}` }}
                   cacheKey={`${this.state.image}t`}
                   backgroundColor="transparent"
                   style={styles.fullScreenImage}
-              />
+                />
+                :
+                <ActivityIndicator size="large" color="#9E9E9E" />
+            }
+            
+
             </View>
           </Modal>
 
@@ -294,9 +308,7 @@ class FeedCellClass extends React.Component {
                             }
                             style={styles.subscriptionCell}>
                                 <Text style={styles.buttonText}>📌 announcements </Text>
-
                                 { this.renderAnnouncementBadge() }
-
                         </TouchableOpacity> */}
 
           </View>
@@ -344,12 +356,18 @@ class FeedCellClass extends React.Component {
           <TouchableOpacity onPress={() => this.openImageModal()}>
             <View style={styles.thumbnailContainer}>
 
-                 <CachedImage
-                  source={{ uri: `${this.state.image}` }}
-                  cacheKey={`${this.state.image}t`}
-                  backgroundColor="transparent"
-                  style={styles.thumbnail}
-              />
+                
+
+            { this.state.isLoaded === true ? 
+                        <CachedImage
+                        source={{ uri: `${this.state.image}` }}
+                        cacheKey={`${this.state.image}t`}
+                        backgroundColor="transparent"
+                        style={styles.thumbnail}
+                    />
+                            :
+                            <ActivityIndicator size="large" color="#9E9E9E" />
+              }
             </View>
           </TouchableOpacity>
 

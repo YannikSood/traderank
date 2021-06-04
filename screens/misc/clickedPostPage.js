@@ -82,7 +82,6 @@ const ClickedPostPage = (props) => {
   const clearReplyTo = async() => {
     try {
       const value = await AsyncStorage.removeItem('replyTo');
-  
     } catch (e) {
       // error reading value
       console.log(`Error clearing replyTo: ${e}`);
@@ -186,6 +185,7 @@ const ClickedPostPage = (props) => {
       addReplyComment();
       fetchCollection(); //makes it refresh after comment is added
       setCommentText('');
+      clearStorage();
     } else {
       addCommentToDB(); //regular comment
       fetchCollection(); //makes it refresh after comment is added
