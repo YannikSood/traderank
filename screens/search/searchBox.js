@@ -1,6 +1,7 @@
-import React from 'react';
-import { StyleSheet, View, TextInput, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, TextInput, Dimensions, Text } from 'react-native';
 import PropTypes from 'prop-types';
+import InfiniteHits from './infiniteHits';
 import { connectSearchBox} from 'react-instantsearch-native';
 
 const styles = StyleSheet.create({
@@ -22,16 +23,28 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
+  blank: {
+    backgroundColor: '#000000'
+  }
 });
-const SearchBox = ({ currentRefinement, refine }) => {    
+const SearchBox = ({ currentRefinement, refine, navigation }) => {    
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
         onChangeText={value => refine(value)}
         value={currentRefinement}
-        placeholder="Search for people..."
+        placeholder="Search for people '@riahlexis' or tickers '$AMC'"
       />
+         { currentRefinement.length > 0 && 
+           <InfiniteHits navigation={navigation} />
+         }
+         {/* {
+           currentRefinement.length > 0 ?
+           <InfiniteHits navigation={navigation} /> :
+           <View style={styles.blank}><Text>Search</Text> </View>
+         } */}
     </View>
   )
 };

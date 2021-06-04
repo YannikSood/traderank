@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import { StyleSheet, Text, View, Container, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { InstantSearch, connectRefinementList } from 'react-instantsearch-native';
+import { InstantSearch, connectRefinementList, Index, Configure } from 'react-instantsearch-native';
 import SearchBox from './searchBox';
 import InfiniteHits from './infiniteHits';
 import RefinementList from './refinementList';
@@ -13,7 +13,7 @@ const VirtualRefinementList = connectRefinementList(() => null);
 //Need to put this in secret file and add that to .gitignore
 const searchClient = algoliasearch(
     '5BS4R91W97', 
-    '1dd2a5427b3daed5059c1dc62bdd2197'
+    '0207d80e22ad5ab4d65fe92fed7958d7'
   );
 
 class Search extends Component {
@@ -78,21 +78,21 @@ class Search extends Component {
         return (
             <View style={styles.container}>
                 <View style = {styles.searchContainer}>
+                  
                     <InstantSearch
                             searchClient={searchClient} 
-                            indexName="usernames"
+                            indexName="tickers"
                             refresh={refresh}
                             searchState={searchState}
                             onSearchStateChange={this.onSearchStateChange}
                             root={this.root}
                     >
-                         {/* <VirtualRefinementList attribute="username" /> */}
-                    <SearchBox />
-                        {/* <RefinementList attribute="username" limit={5} /> */}
+                              <SearchBox navigation={this.state.navigation} />
 
-                        <InfiniteHits navigation={this.state.navigation} />
-
-                        {/* <Highlight key={index} attribute="username" hit={item} navigation={navigation} /> */}
+            
+                    <Index indexName="usernames"><Configure hitsPerPage={8} /></Index>
+                    <Index indexName="tickers"><Configure hitsPerPage={8} /></Index>
+       
                      </InstantSearch> 
                                         
                 </View>

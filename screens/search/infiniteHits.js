@@ -28,8 +28,11 @@ const InfiniteHits = ({ hits, hasMore, refineNext, navigation, index }) => (
       onEndReached={() => hasMore && refineNext()}
       renderItem={({ item }) => (
 
-      <View>
-        <MiscUserComponent uid = {item.uid} navigation = {navigation} />  
+      <View  style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 5 }}>
+        {/* <MiscUserComponent uid = {item.uid} navigation = {navigation} />   */}
+        <Text style={{ fontSize: 16, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingLeft: 10 }}>
+          {item.ticker}
+        </Text>
       </View>
     )}
   />
