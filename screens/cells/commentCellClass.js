@@ -131,11 +131,11 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
             navigation={navigation}
           />
 
-          <CommentDeleteComponent
+          {/* <CommentDeleteComponent
             postID={postID}
             commentID={commentID}
             navigation={navigation}
-          /> 
+          />  */}
 
           {button}
 
