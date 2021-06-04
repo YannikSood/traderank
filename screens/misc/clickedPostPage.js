@@ -169,7 +169,7 @@ const ClickedPostPage = (props) => {
 
   }, [commentText])
   
-  //refreshes comments array once one is deleted
+  // refreshes comments array once one is deleted
   useEffect(() => {
     fetchCollection();
   }, [commentsArray])
