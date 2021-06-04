@@ -48,7 +48,6 @@ const GlobalScreen = (props) => {
   // Effects
   useEffect(() => {
     // useScrollToTop(scrollRef);
-    checkFirstTime();
     fetchCollection();
     Analytics.setUserId(firebase.auth().currentUser.uid);
     Analytics.setCurrentScreen('GlobalScreen');
@@ -97,20 +96,6 @@ const GlobalScreen = (props) => {
         console.log('Error while registering device push token', error);
       });
   };
-
-  const checkFirstTime = async() => {
-    await firebase.firestore()
-      .collection('users')
-      .doc(user.id)
-      .get()
-      .then((doc) => {
-        if (doc.data().firstOpen) {
-          console.log('first_open');
-        }
-      });
-  };
-
-  //
 
   const fetchCollection = async() => {
     const tempGlobalPostsArray = [];

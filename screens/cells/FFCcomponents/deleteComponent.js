@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import firebase from '../../../firebase'
-import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
+import firebase from '../../../firebase';
+import { clearUser } from '../../../redux/app-redux';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -20,6 +20,7 @@ class DeleteComponent extends React.Component {
       isLoading: false,
       gain_loss: this.props.postType,
       postCount: 0,
+      deleteClicked: false,
     };
   }
 
@@ -35,14 +36,14 @@ class DeleteComponent extends React.Component {
         .doc(this.state.currentUserUID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    postCount: doc.data().postCount
-                })
-            } else {
-                // doc.data() will be undefined in this case, so this wont even come up honestly
-                console.log("No such document!");
-            }
+          if (doc.exists) {
+            this.setState({
+              postCount: doc.data().postCount,
+            });
+          } else {
+            // doc.data() will be undefined in this case, so this wont even come up honestly
+            console.log('No such document!');
+          }
         });
 
 
@@ -51,7 +52,7 @@ class DeleteComponent extends React.Component {
         .doc(this.state.postID)
         .delete()
         .catch((error) => {
-            console.error("Error deleting ", error);
+          console.error('Error deleting ', error);
         })
         .then(() => this.reducePostCount());
 
@@ -60,7 +61,7 @@ class DeleteComponent extends React.Component {
         .doc(this.state.postID)
         .delete()
         .catch((error) => {
-            console.error("Error deleting ", error);
+          console.error('Error deleting ', error);
         });
 
       await firebase.firestore()
@@ -68,7 +69,7 @@ class DeleteComponent extends React.Component {
         .doc(this.state.postID)
         .delete()
         .catch((error) => {
-            console.error("Error deleting ", error);
+          console.error('Error deleting ', error);
         });
 
       await firebase.firestore()
@@ -76,7 +77,7 @@ class DeleteComponent extends React.Component {
         .doc(this.state.postID)
         .delete()
         .catch((error) => {
-            console.error("Error deleting ", error);
+          console.error('Error deleting ', error);
         });
 
       await firebase
@@ -93,9 +94,10 @@ class DeleteComponent extends React.Component {
           postCount: this.state.postCount - 1,
         }, { merge: true })
         .then(() => this.setState({
-            postCount: this.state.postCount - 1,
-            isLoading: false,
-          }),);
+          postCount: this.state.postCount - 1,
+          isLoading: false,
+          deleteClicked: true,
+        }));
     }
 
     showDeletionAlert = () => {
@@ -119,20 +121,25 @@ class DeleteComponent extends React.Component {
       //Once confirmed, delete the post using deletePost
       if (this.state.isLoading) {
         return (
-              <View style={styles.activityContainer}>
-                <ActivityIndicator size="large" color="#9E9E9E" />
-              </View>
+          <View style={styles.activityContainer}>
+            <ActivityIndicator size="large" color="#9E9E9E" />
+          </View>
+        );
+      }
+      if (this.state.deleteClicked) {
+        return (
+          <View />
         );
       }
       return (
-          <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}>
 
-              <TouchableOpacity onPress={() => this.showDeletionAlert()}>
+          <TouchableOpacity onPress={() => this.showDeletionAlert()}>
 
-                  <Ionicons name="md-trash" size={22} color="white" />
+            <Ionicons name="md-trash" size={22} color="white" />
 
-                </TouchableOpacity>
-            </View>
+          </TouchableOpacity>
+        </View>
       );
     }
 }

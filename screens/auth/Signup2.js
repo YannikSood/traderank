@@ -75,6 +75,8 @@ const Signup2 = ({ props, route, navigation }) => {
         userLevel: 0,
         score: 0,
         signupDate: new Date(),
+        hasNotifications: true,
+        firstOpen: true,
       })
       .catch((error) => {
         console.error('Error writing document to user collection: ', error);

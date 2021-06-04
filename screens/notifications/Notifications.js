@@ -1,59 +1,73 @@
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Share, FlatList } from 'react-native'
-import firebase from '../../firebase'
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Share, FlatList } from 'react-native';
+import * as Analytics from 'expo-firebase-analytics';
+import firebase from '../../firebase';
 
 import NotificationCellClass from '../cells/notificationCell';
-import * as Analytics from 'expo-firebase-analytics';
 
 class Notification extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        // this.firestoreRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc").limit(5)
+    // this.firestoreRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('notifications').orderBy("date_created", "desc").limit(5)
 
-        this.state = {
-          isLoading: true,
-          notificationsArray: [],
-          navigation: this.props.navigation
-        };
-    }
+    this.state = {
+      isLoading: true,
+      notificationsArray: [],
+      navigation: this.props.navigation,
+    };
+  }
 
-    componentDidMount() {
-        this.getCollection()
-        Analytics.logEvent("Notifications_Clicked")
-        Analytics.setCurrentScreen("NotificationScreen")
-    }
-    
-    // componentDidUpdate() {
-    //     this.getCollection()
-    // }
+  componentDidMount() {
+    this.getCollection();
+    this.checkFirstTime();
+    Analytics.logEvent('Notifications_Clicked');
+    Analytics.setCurrentScreen('NotificationScreen');
+  }
+
+  // componentDidUpdate() {
+  //     this.getCollection()
+  // }
 
     _refresh = () => {
-        this.setState({ isLoading: true });
-        this.getCollection()
+      this.setState({ isLoading: true });
+      this.getCollection();
     };
 
-    onShare = async () => {
-        try {
-            const result = await Share.share({
-                title: 'you are invited',
-                message: 'hey! i want you to join traderank!!', 
-                url: 'https://apps.apple.com/us/app/traderank/id1546959332'
-            });
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
-            }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
+    onShare = async() => {
+      try {
+        const result = await Share.share({
+          title: 'you are invited',
+          message: 'hey! i want you to join traderank!!',
+          url: 'https://apps.apple.com/us/app/traderank/id1546959332',
+        });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
           }
-        } catch (error) {
-          alert(error.message);
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
         }
-      };
-    
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    checkFirstTime = async() => {
+      await firebase.firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .get()
+        .then((doc) => {
+          if (doc.data().firstOpen) {
+            console.log('first_open');
+            this.props.navigation.navigate('Onboarding');
+          }
+        });
+    };
+
 
     //username: this.state.username,
     // description: this.state.description,
@@ -68,206 +82,199 @@ class Notification extends React.Component {
     // security: this.state.security,
     // postID: this.state.postID
     getCollection = async() => {
+      firebase.firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          hasNotifications: false,
+        }, { merge: true });
 
-            firebase.firestore()
-            .collection('users')
-            .doc(firebase.auth().currentUser.uid)
-            .set({
-                hasNotifications: false
-            }, {merge: true})
-
-            const notificationsArray = [];
+      const notificationsArray = [];
 
 
-            await firebase.firestore()
-            .collection('users')
-            .doc(firebase.auth().currentUser.uid)
-            .collection('notifications')
-            .orderBy("date_created", "desc")
-            .limit(7)
-            .get()
-            .then(function(querySnapshot) {
+      await firebase.firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('notifications')
+        .orderBy('date_created', 'desc')
+        .limit(7)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((res) => {
+            const {
+              type,
+              senderUID,
+              recieverUID,
+              postID,
+              read,
+              recieverToken,
+              date_created,
+              mention,
+              chatRoom,
+            } = res.data();
 
-                querySnapshot.forEach((res) => {
-                    const { 
-                        type,
-                        senderUID,
-                        recieverUID,
-                        postID,
-                        read,
-                        recieverToken,
-                        date_created,
-                        mention,
-                        chatRoom
-                        } = res.data();
+            notificationsArray.push({
+              key: res.id,
+              type,
+              senderUID,
+              recieverUID,
+              postID,
+              read,
+              recieverToken,
+              date_created,
+              mention,
+              chatRoom,
+            });
+          });
 
-                        notificationsArray.push({
-                            key: res.id,
-                            type,
-                            senderUID,
-                            recieverUID,
-                            postID,
-                            read,
-                            recieverToken,
-                            date_created,
-                            mention,
-                            chatRoom
-                        });
-
-                });
-
-                this.setState({
-                    notificationsArray,
-                    isLoading: false,   
-                });
-
-            }.bind(this))
-
+          this.setState({
+            notificationsArray,
+            isLoading: false,
+          });
+        });
     }
 
     getMore = async() => {
-        const lastItemIndex = this.state.notificationsArray.length - 1
+      const lastItemIndex = this.state.notificationsArray.length - 1;
 
-        await firebase
+      await firebase
         .firestore()
         .collection('users')
         .doc(firebase.auth().currentUser.uid)
         .collection('notifications')
-        .orderBy("date_created", "desc")
+        .orderBy('date_created', 'desc')
         .startAfter(this.state.notificationsArray[lastItemIndex].date_created)
         .limit(7)
         .get()
-        .then(function(querySnapshot) {
+        .then((querySnapshot) => {
+          const newNotificationsArray = [];
 
-            const newNotificationsArray = []
+          querySnapshot.forEach((res) => {
+            const {
+              type,
+              senderUID,
+              recieverUID,
+              postID,
+              read,
+              recieverToken,
+              date_created,
+              mention,
+              chatRoom,
+            } = res.data();
 
-            querySnapshot.forEach((res) => {
-                const { 
-                    type,
-                    senderUID,
-                    recieverUID,
-                    postID,
-                    read,
-                    recieverToken,
-                    date_created,
-                    mention,
-                    chatRoom
-                    } = res.data();
-
-                    newNotificationsArray.push({
-                        key: res.id,
-                        type,
-                        senderUID,
-                        recieverUID,
-                        postID,
-                        read,
-                        recieverToken,
-                        date_created,
-                        mention,
-                        chatRoom
-                    });
-                });
-
-                
-            this.setState({
-                notificationsArray: [...new Set(this.state.notificationsArray.concat(newNotificationsArray))]
+            newNotificationsArray.push({
+              key: res.id,
+              type,
+              senderUID,
+              recieverUID,
+              postID,
+              read,
+              recieverToken,
+              date_created,
+              mention,
+              chatRoom,
             });
+          });
 
 
-        }.bind(this))
+          this.setState({
+            notificationsArray: [...new Set(this.state.notificationsArray.concat(newNotificationsArray))],
+          });
+        });
     }
 
     render() {
-        const { navigation } = this.props;
-        const renderItem = ({ item }) => (
-    
-            <NotificationCellClass 
-                type={item.type} 
-                senderUID={item.senderUID} 
-                recieverUID={item.recieverUID}
-                postID={item.postID}
-                read={item.read}
-                recieverToken={item.recieverToken}
-                date_created={item.date_created.toDate()}
-                navigation={navigation}
-                mention={item.mention}
-                chatRoom={item.chatRoom}
-            />
-        );
-        if(this.state.isLoading){
-            return(
-              <View style={styles.container}>
-                <ActivityIndicator size="large" color="#9E9E9E"/>
-              </View>
-            )
-        }    
+      const { navigation } = this.props;
+      const renderItem = ({ item }) => (
 
-        if(this.state.notificationsArray.length == 0) {
-            return (
-                <View style={styles.container}>
-                    <Text style = {styles.buttonText}>no notifications yet! do something:</Text>
-
-                    <TouchableOpacity 
-                        style = {styles.button} 
-                        onPress={() => this.props.navigation.navigate('EditProfile')} >
-                        <Text style = {styles.buttonText}>edit profile</Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                        style = {styles.button} 
-                        onPress={() => this.props.navigation.navigate('Create')} >
-                        <Text style = {styles.buttonText}>post something</Text>
-                    </TouchableOpacity>
-
-                   
-                </View>
-            )
-            
-        }
-
+        <NotificationCellClass
+          type={item.type}
+          senderUID={item.senderUID}
+          recieverUID={item.recieverUID}
+          postID={item.postID}
+          read={item.read}
+          recieverToken={item.recieverToken}
+          date_created={item.date_created.toDate()}
+          navigation={navigation}
+          mention={item.mention}
+          chatRoom={item.chatRoom}
+        />
+      );
+      if (this.state.isLoading) {
         return (
-            <View style={styles.listContainer}>
-                <FlatList
-                    data={this.state.notificationsArray}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => String(index)}
-                    contentContainerStyle={{ paddingBottom: 50 }}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}
-                    onRefresh={this._refresh}
-                    refreshing={this.state.isLoading}
-                    onEndReached={() => {this.getMore()}}
-                />
-              </View>   
-        )
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color="#9E9E9E" />
+          </View>
+        );
+      }
+
+      if (this.state.notificationsArray.length == 0) {
+        return (
+          <View style={styles.container}>
+            <Text style={styles.buttonText}>no notifications yet! try this:</Text>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => this.props.navigation.navigate('EditProfile')}
+            >
+              <Text style={styles.buttonText}>edit profile</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => this.props.navigation.navigate('Create')}
+            >
+              <Text style={styles.buttonText}>post something</Text>
+            </TouchableOpacity>
+
+
+          </View>
+        );
+      }
+
+      return (
+        <View style={styles.listContainer}>
+          <FlatList
+            data={this.state.notificationsArray}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => String(index)}
+            contentContainerStyle={{ paddingBottom: 50 }}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            onRefresh={this._refresh}
+            refreshing={this.state.isLoading}
+            onEndReached={() => { this.getMore(); }}
+          />
+        </View>
+      );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#000000'
-    },
-    listContainer: {
-        backgroundColor: '#000000'
-    },
-    button: {
-        marginTop: 30,
-        paddingVertical: 5,
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-        borderWidth: 1,
-        borderColor: '#FFFFFF',
-        borderRadius: 5,
-        width: 300
-    },
-    buttonText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff'
-    },
-})
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000000',
+  },
+  listContainer: {
+    backgroundColor: '#000000',
+  },
+  button: {
+    marginTop: 30,
+    paddingVertical: 5,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+    borderRadius: 5,
+    width: 300,
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+});
 
-export default Notification
+export default Notification;
