@@ -18,7 +18,7 @@ class ProfilePic extends React.Component {
                 this.setState({isLoaded: true});
             }
             .bind(this),
-            1500
+            500
           );
     }
 
