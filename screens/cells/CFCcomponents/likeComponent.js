@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
@@ -23,12 +23,14 @@ class CommentLikeComponent extends React.Component {
       posterUID: ' ',
       userLikesCount: 0,
       notificationUID: '',
+      isLoading: false,
     };
   }
 
   //Do this every time the component mounts
   //----------------------------------------------------------
   componentDidMount() {
+    this.setState({ isLoading: true });
     this.hasLiked();
     this.getLikeCount();
     this.getPosterUID();
@@ -81,11 +83,13 @@ class CommentLikeComponent extends React.Component {
           if (doc.exists) {
             this.setState({
               isAlreadyLiked: true,
+              isLoading: false,
             });
           } else {
             // doc.data() will be undefined in this case
             this.setState({
               isAlreadyLiked: false,
+              isLoading: false,
             });
           }
         });
@@ -128,16 +132,7 @@ class CommentLikeComponent extends React.Component {
         }, { merge: true })
         .then(() => this.setState({
           commentLikes: this.state.commentLikes + 1,
-        }));
-
-      await firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .set({
-          likesCount: this.state.userLikesCount + 1,
-        }, { merge: true })
-        .then(() => this.setState({
-          userLikesCount: this.state.userLikesCount + 1,
+          isLoading: false,
         }));
     }
 
@@ -152,16 +147,7 @@ class CommentLikeComponent extends React.Component {
         }, { merge: true })
         .then(() => this.setState({
           commentLikes: this.state.commentLikes - 1,
-        }));
-
-      await firebase.firestore()
-        .collection('users')
-        .doc(this.state.likerUID)
-        .set({
-          likesCount: this.state.userLikesCount - 1,
-        }, { merge: true })
-        .then(() => this.setState({
-          userLikesCount: this.state.userLikesCount - 1,
+          isLoading: false,
         }));
     }
 
@@ -169,6 +155,7 @@ class CommentLikeComponent extends React.Component {
     //----------------------------------------------------------
     //We now have all 3 variables. Time to start adding to the database. First, we add User1 to the global and post "likes" collection
     addToLikesDB = async() => {
+      this.setState({ isLoading: true });
       await firebase.firestore()
         .collection('commentLikes')
         .doc(this.state.commentID)
@@ -205,6 +192,8 @@ class CommentLikeComponent extends React.Component {
     //----------------------------------------------------------
     //Unlike functionality. Delete the document from the post likes collection
     removeFromLikedDB = async() => {
+      this.setState({ isLoading: true });
+
       await firebase.firestore()
         .collection('commentLikes')
         .doc(this.state.commentID)
@@ -287,6 +276,20 @@ class CommentLikeComponent extends React.Component {
 
 
     render() {
+      if (this.state.isLoading) {
+        return (
+          <View>
+            <TouchableOpacity
+              style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }}
+            >
+
+              <ActivityIndicator size="small" color="#9E9E9E" />
+
+            </TouchableOpacity>
+          </View>
+
+        );
+      }
       //If the post is liked, show the filled in heart with the number of likes beside it.
       //Connected to "Unlike" functionality
       if (this.state.isAlreadyLiked) {
