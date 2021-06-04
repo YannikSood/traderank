@@ -7,7 +7,7 @@ import CommentUserComponent from './CFCcomponents/userCommentComponent';
 import CommentLikeComponent from './CFCcomponents/likeComponent';
 import CommentDeleteComponent from './CFCcomponents/deleteComponent';
 import CommentIconComponent from './FFCcomponents/commentIconComponent';
-import CommentReplyCellClass from './commentReplyCell';
+import CommentReplyCellClass from './commentReplyCell'; 
 
 const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation, extraData }) => {
 //   const { commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation } = props.params;
@@ -131,11 +131,11 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
             navigation={navigation}
           />
 
-          <CommentDeleteComponent
+          {/* <CommentDeleteComponent
             postID={postID}
             commentID={commentID}
             navigation={navigation}
-          /> 
+          />  */}
 
           {button}
 
