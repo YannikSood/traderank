@@ -198,19 +198,15 @@ const ClickedPostPage = (props) => {
       make sure wehn go back it reloads commentComponents and that should fix it
       */
     //increment replyCOunt to comments -> postId -> comments
-    console.log("ADDING REPLY COMMENT...");
-    console.log(replyData);
     if (replyTo.length > 0) { //isReplying
       //Send reply
       let commentId = replyData.commentID;
       if(replyData.hasOwnProperty('topCommentID')){
         commentId = replyData.topCommentID;
-        console.log(`topCommentID ${commentId}`);
-        console.log(`postId: ${replyData.postID}`);
       }
       await firebase.firestore()
         .collection('comments') // collection comments
-        .doc(replyData.postID) // Which post?
+        .doc(postID) // Which post?
         .collection('comments') //Get comments for this post
         .doc(commentId) //Get the specific comment we want to reply to
         .collection('replies') //Create a collection for said comment
@@ -231,17 +227,13 @@ const ClickedPostPage = (props) => {
                   console.error("Error: ", error);
         });
 
-              /*
-               TODO:
-              */
-
       //get reply count first from calling async function
       getReplyCount();
 
       //increase replyCount in Db
       await firebase.firestore()
         .collection('comments')
-        .doc(replyData.postID)
+        .doc(postID)
         .collection('comments')
         .doc(commentId)
         .set({

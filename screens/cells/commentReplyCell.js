@@ -76,7 +76,6 @@ const CommentReplyCellClass = (props) => {
             <View style={styles.timeContainer}>
 
               <TimeAgo style={{ color: '#696969', marginTop: 13 }} time={props.date_created} />
-
             </View>
           </View>
 
@@ -90,7 +89,7 @@ const CommentReplyCellClass = (props) => {
               color="white"
               onPress={() => {
                 storeReplyTo(`${props.replierUsername}`);
-                console.log("Comment reply cell...: " + props.replierUsername);
+
               }}
             />
 
@@ -134,8 +133,8 @@ const CommentReplyCellClass = (props) => {
         <View style={{ flexDirection:"row" }}>
 
         <CommentLikeComponent
-            postID={replyData.postID}
-            commentID={replyData.commentID}
+            postID={props.postID}
+            commentID={props.commentID}
             navigation={navigation}
           />
 
@@ -146,8 +145,7 @@ const CommentReplyCellClass = (props) => {
             color="white"
             onPress={() => {
               storeReplyTo(`${props.replierUsername}`);
-              console.log("Comment reply cell...: ");
-              console.log(replyData);
+              console.log("Comment reply cell...: " + props.replierUsername);
             }}
             
           />
