@@ -342,18 +342,18 @@ const ThoughtsFeed = (props) => {
 
 
   const renderSendAndCancel = () => (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
+    <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 25 }}>
 
       <TouchableOpacity
         onPress={handleClose}
-        style={{ paddingLeft: Dimensions.get('window').width / 5, paddingRight: 25 }}
+        style={{ padding: 20 }}
       >
         <MaterialIcons name="cancel" size={70} color="red" />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={openImagePickerAsync}
-        // style={{ paddingTop: 10 }}
+        style={{ padding: 20 }}
       >
         {hasImage
           ? renderThumbnailForImageOrVideo() : <MaterialCommunityIcons name="image-plus" size={70} color="#696969" /> }
@@ -362,7 +362,7 @@ const ThoughtsFeed = (props) => {
 
       <TouchableOpacity
         onPress={handleSubmit}
-        style={{ paddingRight: Dimensions.get('window').width / 5, paddingLeft: 25 }}
+        style={{ padding: 20 }}
       >
         <MaterialCommunityIcons name="send-circle" size={70} color="#07dbd1" />
       </TouchableOpacity>
