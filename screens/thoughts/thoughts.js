@@ -101,7 +101,7 @@ const ThoughtsFeed = (props) => {
     setIsLoading(true);
     const index = 1;
     const getThoughtsOneCategory = firebase.functions().httpsCallable('getThoughtsOneCategory');
-    await getThoughtsOneCategory({
+    return getThoughtsOneCategory({
       index,
       category: selectedCategory,
     }).then((result) => {
@@ -119,7 +119,7 @@ const ThoughtsFeed = (props) => {
     const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds); //-- the firebase timestamp
 
     const getMoreThoughtsOneCategory = firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
-    getMoreThoughtsOneCategory({
+    return getMoreThoughtsOneCategory({
       index: lastItemIndex,
       category: selectedCategory,
       date_created: lastTime.toMillis(),
@@ -646,6 +646,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#000000',
     flexGrow: 0,
+    paddingRight: Dimensions.get('window').width,
   },
   flatListModal: {
     height: 50,
