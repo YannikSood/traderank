@@ -40,7 +40,7 @@ class ClickedUserProfile extends React.Component {
       //Other Stuff
       isLoading: true,
       navigation: this.props.navigation,
-      isFollowing: false,
+      isFollowing: true,
       followButtonLoading: false,
       alertsButtonLoading: false,
 
@@ -518,12 +518,12 @@ class ClickedUserProfile extends React.Component {
     }
 
     renderTwitterAndInstagram = () => {
-      if (this.state.posterTwitter == undefined && this.state.posterInstagram == undefined) {
+      if (this.state.posterTwitter === undefined && this.state.posterInstagram === undefined) {
         return (
           <View />
         );
       }
-      if (this.state.posterTwitter != undefined && this.state.posterInstagram == undefined) {
+      if (this.state.posterTwitter !== undefined && this.state.posterInstagram === undefined) {
         return (
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <FontAwesome
@@ -535,7 +535,7 @@ class ClickedUserProfile extends React.Component {
           </View>
         );
       }
-      if (this.state.posterTwitter == undefined && this.state.posterInstagram != undefined) {
+      if (this.state.posterTwitter === undefined && this.state.posterInstagram !== undefined) {
         return (
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <AntDesign
@@ -594,7 +594,8 @@ class ClickedUserProfile extends React.Component {
             <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={styles.subheader}>
                 {' '}
-                @{this.state.posterUsername}
+                @
+{this.state.posterUsername}
                 {' '}
               </Text>
             </View>
@@ -698,7 +699,8 @@ joined
           <View style={{ flexDirection: 'row', paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.subheader}>
               {' '}
-              @{this.state.posterUsername}
+              @
+{this.state.posterUsername}
               {' '}
             </Text>
           </View>

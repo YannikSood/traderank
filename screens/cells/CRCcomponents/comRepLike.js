@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { clearUser } from '../../../redux/app-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
-import firebase from '../../../firebase'
+import { clearUser } from '../../../redux/app-redux';
+import firebase from '../../../firebase';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -46,14 +46,14 @@ class CommentReplyLikeComponent extends React.Component {
         .doc(this.state.commentReplyID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    posterUID: doc.data().commentorUID
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document poster uid!");
-            }
+          if (doc.exists) {
+            this.setState({
+              posterUID: doc.data().commentorUID,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            console.log('No such document poster uid!');
+          }
         });
 
       await firebase.firestore()
@@ -61,14 +61,14 @@ class CommentReplyLikeComponent extends React.Component {
         .doc(this.state.likerUID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    userLikesCount: doc.data().likesCount
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document! user like count");
-            }
+          if (doc.exists) {
+            this.setState({
+              userLikesCount: doc.data().likesCount,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            console.log('No such document! user like count');
+          }
         });
     }
 
@@ -81,16 +81,16 @@ class CommentReplyLikeComponent extends React.Component {
         .doc(this.state.commentReplyID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    isAlreadyLiked: true
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                this.setState ({
-                    isAlreadyLiked: false
-                })
-            }
+          if (doc.exists) {
+            this.setState({
+              isAlreadyLiked: true,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            this.setState({
+              isAlreadyLiked: false,
+            });
+          }
         });
     }
 
@@ -108,14 +108,14 @@ class CommentReplyLikeComponent extends React.Component {
         .doc(this.state.commentReplyID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    commentLikes: doc.data().commentLikes
-                })
-            } else {
-                // doc.data() will be undefined in this case, so this wont even come up honestly
-                console.log("No such document!");
-            }
+          if (doc.exists) {
+            this.setState({
+              commentLikes: doc.data().commentLikes,
+            });
+          } else {
+            // doc.data() will be undefined in this case, so this wont even come up honestly
+            console.log('No such document!');
+          }
         });
     }
 
@@ -134,8 +134,8 @@ class CommentReplyLikeComponent extends React.Component {
           commentLikes: this.state.commentLikes + 1,
         }, { merge: true })
         .then(() => this.setState({
-            commentLikes: this.state.commentLikes + 1,
-          }),);
+          commentLikes: this.state.commentLikes + 1,
+        }) );
 
       // await firebase.firestore()
       // .collection('users')
@@ -162,8 +162,8 @@ class CommentReplyLikeComponent extends React.Component {
           commentLikes: this.state.commentLikes - 1,
         }, { merge: true })
         .then(() => this.setState({
-            commentLikes: this.state.commentLikes - 1,
-          }),);
+          commentLikes: this.state.commentLikes - 1,
+        }) );
 
       // await firebase.firestore()
       // .collection('users')
@@ -191,7 +191,7 @@ class CommentReplyLikeComponent extends React.Component {
           username: this.state.likerUsername,
         })
         .catch((error) => {
-            console.error("Error writing document to user posts: ", error);
+          console.error('Error writing document to user posts: ', error);
         })
         .then(() => this.addToUserList())
         .then(() => this.setState({ isAlreadyLiked: true }))
@@ -210,7 +210,7 @@ class CommentReplyLikeComponent extends React.Component {
           username: this.state.likerUsername,
         })
         .catch((error) => {
-            console.error("Error writing document to user posts: ", error);
+          console.error('Error writing document to user posts: ', error);
         });
     }
 
@@ -225,7 +225,7 @@ class CommentReplyLikeComponent extends React.Component {
         .doc(this.state.likerUID)
         .delete()
         .catch((error) => {
-            console.error("Error writing document to user posts: ", error);
+          console.error('Error writing document to user posts: ', error);
         })
         .then(() => this.removeFromUserList())
         .then(() => this.setState({ isAlreadyLiked: false }))
@@ -242,48 +242,48 @@ class CommentReplyLikeComponent extends React.Component {
         .doc(this.state.commentReplyID)
         .delete()
         .catch((error) => {
-            console.error("Error writing document to user posts: ", error);
+          console.error('Error writing document to user posts: ', error);
         });
     }
 
     writeToUserNotifications = async() => {
-        if (this.state.likerUID != this.state.posterUID) {
-            await firebase.firestore()
-            .collection('users')
-            .doc(this.state.posterUID)
-            .collection('notifications')
-            .add({
-                type: 3,
-                senderUID: this.state.likerUID,
-                recieverUID: this.state.posterUID,
-                postID: this.state.postID,
-                read: false,
-                date_created: new Date(),
-                recieverToken: ""
-            })
-            .then((docref) => this.setState({notificationUID: docref.id}))
-            .catch(function(error) {
+      if (this.state.likerUID != this.state.posterUID) {
+        await firebase.firestore()
+          .collection('users')
+          .doc(this.state.posterUID)
+          .collection('notifications')
+          .add({
+            type: 3,
+            senderUID: this.state.likerUID,
+            recieverUID: this.state.posterUID,
+            postID: this.state.postID,
+            read: false,
+            date_created: new Date(),
+            recieverToken: '',
+          })
+          .then(docref => this.setState({ notificationUID: docref.id }))
+          .catch((error) => {
                 console.error("Error writing document to user posts: ", error);
             });
 
-            const writeNotification = firebase.functions().httpsCallable('writeNotification');
-            writeNotification({ 
-                type: 3,
-                senderUID: this.state.likerUID,
-                recieverUID: this.state.posterUID,
-                postID: this.state.postID,
-                senderUsername: this.state.likerUsername
-            })
-            .then((result) => {
-                console.log(result)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        }   
-        else {
-            
-        }
+        const writeNotification = firebase.functions().httpsCallable('writeNotification');
+        writeNotification({
+          type: 3,
+          senderUID: this.state.likerUID,
+          recieverUID: this.state.posterUID,
+          postID: this.state.postID,
+          senderUsername: this.state.likerUsername,
+        })
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      else {
+
+      }
     }
 
 
@@ -295,42 +295,49 @@ class CommentReplyLikeComponent extends React.Component {
         .doc(this.state.notificationUID)
         .delete()
         .catch((error) => {
-            console.error("Error writing document to user posts: ", error);
+          console.error('Error writing document to user posts: ', error);
         });
     }
 
 
     render() {
-        //If the post is liked, show the filled in heart with the number of likes beside it. 
-        //Connected to "Unlike" functionality
-        if (this.state.isAlreadyLiked) {
-            return (
-                <View style={styles.container}>
-                    <TouchableOpacity onPress={() => {
-                            this.removeFromLikedDB()
-                        }}> 
-                        <Ionicons name="ios-heart" size={20} color='#00cc00' />
-                        
+      //If the post is liked, show the filled in heart with the number of likes beside it.
+      //Connected to "Unlike" functionality
+      if (this.state.isAlreadyLiked) {
+        return (
+              <View style={styles.container}>
+                  <TouchableOpacity onPress={() => {
+                      this.removeFromLikedDB();
+                    }}
+                    >
+                      <Ionicons name="ios-heart" size={20} color="#00cc00" />
+
                     </TouchableOpacity>
-                    <Text style={{color: '#FFFFFF', paddingTop: 2}}>  {this.state.commentLikes}</Text>
+                  <Text style={{ color: '#FFFFFF', paddingTop: 2 }}>  
+{' '}
+{this.state.commentLikes}
+</Text>
                 </View>
-            )
-        }
-        //If the post is not liked, show the slashed heart with the number of likes beside it. 
-        //Connected to "Like" functionality
-        
-            return (
-                <View style={styles.container}>
-                    <TouchableOpacity onPress={() => {
-                            this.addToLikesDB()
-                        }}> 
-                        <Ionicons name="ios-heart" size={20} color="white"/>
-                        
+        );
+      }
+      //If the post is not liked, show the slashed heart with the number of likes beside it.
+      //Connected to "Like" functionality
+
+      return (
+              <View style={styles.container}>
+                  <TouchableOpacity onPress={() => {
+                      this.addToLikesDB();
+                    }}
+                    >
+                      <Ionicons name="ios-heart" size={20} color="white" />
+
                     </TouchableOpacity>
-                    <Text style={{color: '#FFFFFF', paddingTop: 2}}>  {this.state.commentLikes}</Text>
+                  <Text style={{ color: '#FFFFFF', paddingTop: 2 }}>  
+{' '}
+{this.state.commentLikes}
+</Text>
                 </View>
-            )
-        
+      );
     }
 }
 

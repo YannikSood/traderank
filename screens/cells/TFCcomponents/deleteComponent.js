@@ -18,6 +18,7 @@ class DeleteComponent extends React.Component {
       currentUserUID: firebase.auth().currentUser.uid,
       isLoading: false,
       thoughtsCount: 0,
+      deleteClicked: false,
     };
   }
 
@@ -85,6 +86,7 @@ class DeleteComponent extends React.Component {
         .then(() => this.setState({
           thoughtsCount: this.state.thoughtsCount - 1,
           isLoading: false,
+          deleteClicked: true,
         }));
     }
 
@@ -112,6 +114,11 @@ class DeleteComponent extends React.Component {
           <View style={styles.activityContainer}>
             <ActivityIndicator size="large" color="#9E9E9E" />
           </View>
+        );
+      }
+      if (this.state.deleteClicked) {
+        return (
+          <View />
         );
       }
       return (

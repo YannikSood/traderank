@@ -10,9 +10,9 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
+import reduxThunk from 'redux-thunk';
 import firebase from './firebase.js';
 import  rootReducer  from './redux/rootReducer';
-import reduxThunk from 'redux-thunk';
 
 //Auth Imports
 import Login from './screens/auth/Login.js';
@@ -47,6 +47,11 @@ import YoloTrade from './screens/create/createTrade/yoloInfo';
 import YoloNumbers from './screens/create/createTrade/yoloNumbers';
 import YoloConfirm from './screens/create/createTrade/yoloConfirm';
 
+//Onboarding Flow
+import OnboardingScreen1 from './screens/onboarding/OnboardingScreen1';
+import OnboardingScreen2 from './screens/onboarding/OnboardingScreen2';
+import OnboardingScreen3 from './screens/onboarding/OnboardingScreen3';
+import OnboardingScreen4 from './screens/onboarding/OnboardingScreen4';
 
 //Cells
 import FeedCellClass from './screens/cells/feedCellClass.js';
@@ -70,6 +75,7 @@ const store = createStoreWithMiddleware(rootReducer);
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const CreateStack = createStackNavigator();
+const OnboardingStack = createStackNavigator();
 const TopTab = createMaterialTopTabNavigator();
 
 
@@ -107,6 +113,7 @@ const App = () => (
           name="Login"
           component={Login}
           options={{
+            title: null,
             headerLeft: null,
             headerTitleStyle: {
               fontWeight: 'bold',
@@ -114,7 +121,7 @@ const App = () => (
               color: '#FFFFFF',
             },
             headerStyle: {
-              backgroundColor: '#121212',
+              backgroundColor: '#000000',
               shadowColor: 'transparent',
             },
           }}
@@ -123,22 +130,7 @@ const App = () => (
           name="Signup"
           component={Signup}
           options={{
-            // headerLeft: null,
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              fontSize: 20,
-              color: '#FFFFFF',
-            },
-            headerStyle: {
-              backgroundColor: '#121212',
-              shadowColor: 'transparent',
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={Signup2}
-          options={{
+            title: null,
             headerLeft: null,
             headerTitleStyle: {
               fontWeight: 'bold',
@@ -146,7 +138,24 @@ const App = () => (
               color: '#FFFFFF',
             },
             headerStyle: {
-              backgroundColor: '#121212',
+              backgroundColor: '#000000',
+              shadowColor: 'transparent',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Signup2"
+          component={Signup2}
+          options={{
+            title: null,
+            headerLeft: null,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#000000',
               shadowColor: 'transparent',
             },
           }}
@@ -350,6 +359,24 @@ const App = () => (
               shadowColor: 'transparent',
             },
             headerBackTitle: '',
+          }}
+        />
+        <Stack.Screen
+          name="Onboarding"
+          component={createOnboardingStack}
+          options={{
+            title: null,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#000000',
+              shadowColor: 'transparent',
+            },
+            headerTitle: null,
+            headerLeft: null,
           }}
         />
         <Stack.Screen
@@ -868,6 +895,50 @@ function createFlowStack() {
   );
 }
 
+//Create flow stack
+function createOnboardingStack() {
+  return (
+    <OnboardingStack.Navigator
+      initialRouteName="OnboardingScreen1"
+    >
+
+      <OnboardingStack.Screen
+        name="OnboardingScreen1"
+        component={OnboardingScreen1}
+        options={{
+          headerShown: false,
+          headerLeft: null,
+        }}
+      />
+
+      <OnboardingStack.Screen
+        name="OnboardingScreen2"
+        component={OnboardingScreen2}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <OnboardingStack.Screen
+        name="OnboardingScreen3"
+        component={OnboardingScreen3}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <OnboardingStack.Screen
+        name="OnboardingScreen4"
+        component={OnboardingScreen4}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+    </OnboardingStack.Navigator>
+  );
+}
 
 //Home top tabs
 function HomeTopTabs() {

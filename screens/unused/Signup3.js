@@ -7,7 +7,7 @@ import * as Analytics from 'expo-firebase-analytics';
 
 //redux
 import { connect } from 'react-redux';
-import { authUser } from './../../redux/app-redux';
+import { authUser } from '../../redux/app-redux';
 
 const mapStateToProps = (state) => {
     return {

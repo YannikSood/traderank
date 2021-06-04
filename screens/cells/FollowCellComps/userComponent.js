@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import firebase from '../../../firebase';
 import { clearUser } from '../../../redux/app-redux';
+import CachedImage from '../../image/CachedImage';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -21,6 +22,7 @@ class MiscUserComponent extends React.Component {
       username: '',
       profilePic: '',
       isLoading: true,
+      isLoaded: false,
       currentUserUID: firebase.auth().currentUser.uid,
     };
   }
@@ -40,6 +42,7 @@ class MiscUserComponent extends React.Component {
               username: doc.data().username,
               profilePic: doc.data().profilePic,
               isLoading: false,
+              isLoaded: true
             });
           } else {
             // doc.data() will be undefined in this case
@@ -92,6 +95,17 @@ class MiscUserComponent extends React.Component {
               source={{ uri: this.state.profilePic }}
               style={styles.thumbnail}
             />
+            { this.state.isLoaded
+                ? (
+                  <CachedImage
+                    source={{ uri: `${this.state.profilePic}` }}
+                    cacheKey={`${this.state.profilePic}t`}
+                    backgroundColor="transparent"
+                    style={styles.fullScreenImage}
+                  />
+                )
+                : <ActivityIndicator size="large" color="#9E9E9E" />
+            }
             <Text style={styles.tradeText}>
               {' '}
               {this.state.username}

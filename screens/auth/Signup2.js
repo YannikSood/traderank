@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Text, Linking, Alert,  TouchableWithoutFeedback, Keyboard  } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Text, Linking, Alert,  TouchableWithoutFeedback, Keyboard, Dimensions  } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 
 //redux
 import { connect, useDispatch } from 'react-redux';
@@ -74,6 +75,8 @@ const Signup2 = ({ props, route, navigation }) => {
         userLevel: 0,
         score: 0,
         signupDate: new Date(),
+        hasNotifications: true,
+        firstOpen: true,
       })
       .catch((error) => {
         console.error('Error writing document to user collection: ', error);
@@ -125,28 +128,41 @@ const Signup2 = ({ props, route, navigation }) => {
         style={styles.container}
       >
 
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', paddingTop: Dimensions.get('window').height / 5, paddingBottom: 50 }}>
           <Text style={styles.headerPartOneText}>trade</Text>
           <Text style={styles.headerPartTwoText}>rank</Text>
         </View>
 
-        <TextInput
-          style={styles.inputBox}
-          value={email}
-          onChangeText={text => setEmail(text)}
-          placeholder="email"
-          placeholderTextColor="#696969"
-          autoCapitalize="none"
-        />
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ paddingTop: 15 }}>
+            <MaterialCommunityIcons name="email-outline" size={24} color="#696969" />
+          </View>
 
-        <TextInput
-          style={styles.inputBox}
-          value={password}
-          onChangeText={text => setPassword(text)}
-          placeholder="password"
-          placeholderTextColor="#696969"
-          secureTextEntry
-        />
+          <TextInput
+            style={styles.inputBox}
+            value={email}
+            onChangeText={text => setEmail(text)}
+            placeholder="email"
+            placeholderTextColor="#d3d3d3"
+            autoCapitalize="none"
+            autoFocus={false}
+          />
+        </View>
+
+
+        <View style={{ flexDirection: 'row', paddingBottom: 25 }}>
+          <View style={{ paddingTop: 15 }}>
+            <AntDesign name="lock" size={24} color="#696969" />
+          </View>
+          <TextInput
+            style={styles.inputBox}
+            value={password}
+            onChangeText={text => setPassword(text)}
+            placeholder="password"
+            placeholderTextColor="#d3d3d3"
+            secureTextEntry
+          />
+        </View>
 
 
         <TouchableOpacity
@@ -156,25 +172,32 @@ const Signup2 = ({ props, route, navigation }) => {
           <Text style={styles.buttonText}>sign up</Text>
         </TouchableOpacity>
 
-
         <Text style={{ color: '#FFFFFF', paddingTop: 5, paddingBottom: 5 }}>
-                            clicking signup means you agree to our
+           by signing up, you agree to our
         </Text>
+        <View style={{ flexDirection: 'row' }}>
 
-        <Text
-          style={{ color: '#5233FF', padding: 4 }}
-          onPress={() => Linking.openURL('http://socialtradinginc.com/#terms')}
-        >
+
+          <Text
+            style={{ color: '#5233FF', padding: 4 }}
+            onPress={() => Linking.openURL('http://socialtradinginc.com/#terms')}
+          >
                         Terms of Service
-        </Text>
+          </Text>
 
+          <Text style={{ color: '#FFFFFF', padding: 4}}>
+           &
+          </Text>
 
-        <Text
-          style={{ color: '#5233FF', padding: 4 }}
-          onPress={() => Linking.openURL('http://socialtradinginc.com/#pri')}
-        >
+          <Text
+            style={{ color: '#5233FF', padding: 4 }}
+            onPress={() => Linking.openURL('http://socialtradinginc.com/#pri')}
+          >
                         Privacy Policy
-        </Text>
+          </Text>
+        </View>
+
+
         <KeyboardSpacer />
       </View>
     </TouchableWithoutFeedback>
@@ -184,33 +207,34 @@ const Signup2 = ({ props, route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    // justifyContent: 'center',
     backgroundColor: '#000000',
   },
   inputBox: {
     width: '85%',
     margin: 10,
-    padding: 15,
+    paddingBottom: 5,
+    paddingTop: 5,
     fontSize: 16,
-    borderColor: '#d3d3d3',
+    borderColor: '#696969',
     borderBottomWidth: 1,
-    textAlign: 'center',
+    // textAlign: 'center',
     color: '#FFFFFF',
   },
   button: {
-    marginTop: 30,
+    // marginTop: 30,
     marginBottom: 20,
     paddingVertical: 5,
     alignItems: 'center',
-    backgroundColor: '#5233FF',
+    backgroundColor: '#07dbd1',
     borderRadius: 5,
-    width: 200,
+    width: 150,
   },
   buttonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#121212',
   },
   buttonSignup: {
     fontSize: 12,
@@ -229,12 +253,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     alignContent: 'center',
-  },
-  thumbnail: {
-    width: 200,
-    height: 200,
-    // resizeMode: "contain",
-    borderRadius: 100,
   },
 });
 

@@ -196,7 +196,7 @@ class LikeComponent extends React.Component {
     }
 
     writeToUserNotifications = async() => {
-      if (this.state.likerUID != this.state.posterUID) {
+      if (this.state.likerUID !== this.state.posterUID) {
         await firebase.firestore()
           .collection('users')
           .doc(this.state.posterUID)
@@ -249,14 +249,14 @@ class LikeComponent extends React.Component {
       if (this.state.isLoading) {
         return (
           <View>
-                <TouchableOpacity
-                    style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }}
-                  >
+            <TouchableOpacity
+              style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }}
+            >
 
-                    <ActivityIndicator size="small" color="#9E9E9E" />
+              <ActivityIndicator size="small" color="#9E9E9E" />
 
-                  </TouchableOpacity>
-              </View>
+            </TouchableOpacity>
+          </View>
 
         );
       }
@@ -264,40 +264,40 @@ class LikeComponent extends React.Component {
       //Connected to "Unlike" functionality
       if (this.state.isAlreadyLiked) {
         return (
-          <View style={{ flexDirection: 'row', }}>
-                <TouchableOpacity onPress={() => {
-                    this.removeFromLikedDB();
-                  }}
-                  >
-                    <Ionicons name="ios-heart" size={26} color="#00cc00" />
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity onPress={() => {
+              this.removeFromLikedDB();
+            }}
+            >
+              <Ionicons name="ios-heart" size={26} color="#00cc00" />
 
-                  </TouchableOpacity>
-                <Text style={{ color: 'white', paddingTop: 5 }}>
-                    {' '}
-                    {this.state.likesCount}
-                                    </Text>
-              </View>
+            </TouchableOpacity>
+            <Text style={{ color: 'white', paddingTop: 5 }}>
+              {' '}
+              {this.state.likesCount}
+            </Text>
+          </View>
         );
       }
       //If the post is not liked, show the slashed heart with the number of likes beside it.
       //Connected to "Like" functionality
 
       return (
-        <View style={{ flexDirection: 'row',  color: 'FFFFFF'}}>
-                <TouchableOpacity
-                    style={{ color: '#FFFFFF' }}
-                    onPress={() => {
-                        this.addToLikesDB();
-                      }}
-                  >
-                    <Ionicons name="ios-heart" size={26} color="white" />
+        <View style={{ flexDirection: 'row', color: 'FFFFFF' }}>
+          <TouchableOpacity
+            style={{ color: '#FFFFFF' }}
+            onPress={() => {
+              this.addToLikesDB();
+            }}
+          >
+            <Ionicons name="ios-heart" size={26} color="white" />
 
-                  </TouchableOpacity>
-                <Text style={{ color: 'white', paddingTop: 5 }}>
-                    {' '}
-                    {this.state.likesCount}
-                                    </Text>
-              </View>
+          </TouchableOpacity>
+          <Text style={{ color: 'white', paddingTop: 5 }}>
+            {' '}
+            {this.state.likesCount}
+          </Text>
+        </View>
       );
     }
 }

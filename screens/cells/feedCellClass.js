@@ -270,7 +270,6 @@ class FeedCellClass extends React.Component {
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
 
-
             { this.state.isLoaded === true ? 
                 <CachedImage
                   source={{ uri: `${this.state.image}` }}
@@ -281,7 +280,6 @@ class FeedCellClass extends React.Component {
                 :
                 <ActivityIndicator size="large" color="#9E9E9E" />
             }
-            
 
             </View>
           </Modal>
@@ -355,8 +353,6 @@ class FeedCellClass extends React.Component {
 
           <TouchableOpacity onPress={() => this.openImageModal()}>
             <View style={styles.thumbnailContainer}>
-
-                
 
             { this.state.isLoaded === true ? 
                         <CachedImage

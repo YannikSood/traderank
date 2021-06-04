@@ -107,11 +107,18 @@ $
                 onPress={() => this.props.navigation.navigate('SingleStockPosts', {
                   ticker: this.state.ticker,
                 })
-                    }
-                style={{ backgroundColor: '#696969', borderRadius: 15, marginRight: 20, marginTop: 10, padding: 4 }}
+                        }
+                style={{ backgroundColor: 'transparent',
+                  borderColor: '#696969',
+                  borderWidth: 1,
+                  borderRadius: 15,
+                  marginRight: 20,
+                  marginTop: 10,
+                  padding: 2,
+                }}
               >
-                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#FFFFFF' }}>
-                    $
+                <Text style={styles.tradeText}>
+                        $
                   {this.state.ticker}
                 </Text>
 
@@ -171,9 +178,9 @@ const styles = StyleSheet.create({
   tradeText: {
     fontSize: 18,
     fontWeight: 'bold',
-    alignContent: 'center',
-    paddingRight: 10,
-    paddingTop: 15,
+    // alignContent: 'center',
+    // paddingRight: 10,
+    // paddingTop: 15,
     color: '#FFFFFF',
     // paddingTop: 20
   },

@@ -25,8 +25,8 @@ const ThoughtsFeed = (props) => {
 
   // Props
   const { user, navigation, postsLoading } = props;
-  const flagOptions = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
-  const categories = ['DISCUSS', 'NEWS', 'MEMES', 'QUESTIONS', 'STOCKS', 'OPTIONS', 'CRYPTOS'];
+  const flagOptions = ['DISCUSS', 'MEMES', 'MOVES'];
+  const categories = ['DISCUSS', 'MEMES', 'MOVES'];
 
   /**
      * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
@@ -101,7 +101,7 @@ const ThoughtsFeed = (props) => {
     setIsLoading(true);
     const index = 1;
     const getThoughtsOneCategory = firebase.functions().httpsCallable('getThoughtsOneCategory');
-    await getThoughtsOneCategory({
+    return getThoughtsOneCategory({
       index,
       category: selectedCategory,
     }).then((result) => {
@@ -119,7 +119,7 @@ const ThoughtsFeed = (props) => {
     const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds); //-- the firebase timestamp
 
     const getMoreThoughtsOneCategory = firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
-    getMoreThoughtsOneCategory({
+    return getMoreThoughtsOneCategory({
       index: lastItemIndex,
       category: selectedCategory,
       date_created: lastTime.toMillis(),
@@ -188,8 +188,8 @@ const ThoughtsFeed = (props) => {
             })
               .then((result) => {
                 setIsLoading(false);
-                setModalOpen(false);
                 clearAfterPost();
+                setModalOpen(false);
                 Analytics.logEvent('Thought_Posted');
                 Analytics.logEvent(`Thought_Category_${selectedId}`);
               })
@@ -209,6 +209,7 @@ const ThoughtsFeed = (props) => {
         })
           .then((result) => {
             setIsLoading(false);
+            clearAfterPost();
             setModalOpen(false);
             Analytics.logEvent('Thought_Posted');
             Analytics.logEvent(`Thought_Category_${selectedId}`);
@@ -291,8 +292,8 @@ const ThoughtsFeed = (props) => {
       
       { mediaType === 'image' ? 
       <CachedImage 
-        source={{ uri: `${this.state.image}` }}
-        cacheKey={`${this.state.image}t`}
+        source={{ uri: `${image}` }}
+        cacheKey={`${image}t`}
         backgroundColor="transparent"
         style={styles.thumbnail2}
       /> : 
@@ -341,18 +342,18 @@ const ThoughtsFeed = (props) => {
 
 
   const renderSendAndCancel = () => (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
+    <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 25 }}>
 
       <TouchableOpacity
         onPress={handleClose}
-        style={{ paddingLeft: Dimensions.get('window').width / 5, paddingRight: 25 }}
+        style={{ padding: 20 }}
       >
         <MaterialIcons name="cancel" size={70} color="red" />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={openImagePickerAsync}
-        // style={{ paddingTop: 10 }}
+        style={{ padding: 20 }}
       >
         {hasImage
           ? renderThumbnailForImageOrVideo() : <MaterialCommunityIcons name="image-plus" size={70} color="#696969" /> }
@@ -361,7 +362,7 @@ const ThoughtsFeed = (props) => {
 
       <TouchableOpacity
         onPress={handleSubmit}
-        style={{ paddingRight: Dimensions.get('window').width / 5, paddingLeft: 25 }}
+        style={{ padding: 20 }}
       >
         <MaterialCommunityIcons name="send-circle" size={70} color="#07dbd1" />
       </TouchableOpacity>
@@ -645,6 +646,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#000000',
     flexGrow: 0,
+    paddingRight: Dimensions.get('window').width,
   },
   flatListModal: {
     height: 50,

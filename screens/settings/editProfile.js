@@ -250,7 +250,7 @@ class EditProfile extends React.Component {
                 style={styles.socialInputBox}
                 value={this.state.twitter}
                 onChangeText={twitter => this.setState({ twitter })}
-                placeholder={this.state.twitter === null ? 'Enter Twitter username' : this.state.twitter}
+                placeholder={this.state.twitter === null ? 'Enter Twitter username, no @' : this.state.twitter}
                 autoCapitalize="none"
                 placeholderTextColor="#696969"
               />
@@ -265,7 +265,7 @@ class EditProfile extends React.Component {
                 style={styles.socialInputBox}
                 value={this.state.instagram}
                 onChangeText={instagram => this.setState({ instagram })}
-                placeholder={this.state.instagram === null ? 'Enter Instagram username' : this.state.instagram}
+                placeholder={this.state.instagram === null ? 'Enter Instagram username, no @' : this.state.instagram}
                 autoCapitalize="none"
                 placeholderTextColor="#696969"
               />
