@@ -134,7 +134,7 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
                 // saving error
               }
             };
-            setReplyData(replyDataObj);
+           // setReplyData(replyDataObj);
             storeReplyData(replyDataObj);
           }}
         >
