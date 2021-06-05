@@ -6,8 +6,10 @@ import firebase from '../../firebase';
 import CommentUserComponent from './CFCcomponents/userCommentComponent';
 import CommentLikeComponent from './CFCcomponents/likeComponent';
 import CommentDeleteComponent from './CFCcomponents/deleteComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import CommentReplyCellClass from './commentReplyCell'; 
+import { Entypo } from '@expo/vector-icons';
 
 const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation, extraData }) => {
 //   const { commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation } = props.params;
@@ -93,6 +95,57 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
       replyingToUID={item.replyingToUID}
       replyingToUsername={item.replyingToUsername}
       navigation={navigation}
+      button={(
+        <TouchableOpacity
+          onPress={() => {
+            //just set state of replyTo in componentUpdate from async storage
+            //StoreReplyTo
+            const storeReplyTo = async (value) => {
+              try {
+                await AsyncStorage.setItem('replyTo', value);
+              } catch (e) {
+                // saving error
+              }
+            };
+
+            storeReplyTo(`${item.replierUsername}`);
+            console.log(`${item.replierUsername} from commentCellClass`);
+            // setReplyTo(`${item.replierUsername}`);
+
+            // //sotre who to reply to
+            // const replyDataObj = {
+            //   postID: `${postID}`, //post the comment I am replying to
+            //   commentID: `${item.key}`, //Id of the comment I am replying to
+            //   replyingToUsername: `${item.commentorUsername}`,
+            //   replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
+            //   replierAuthorUID: `${currentUser}`, //person sending the reply
+            //   replierUsername: `${item.replierUsername}`,
+            //   commentLikes: 0,
+            //   //may need to change
+            // };
+            // // console.log(replyDataObj);
+
+            // //replyData that will be stored in the DB
+            // const storeReplyData = async(value) => {
+            //   try {
+            //     const jsonValue = JSON.stringify(value);
+            //     await AsyncStorage.setItem('replyData', jsonValue);
+            //   } catch (e) {
+            //     // saving error
+            //   }
+            // };
+            // setReplyData(replyDataObj);
+            // storeReplyData(replyDataObj);
+          }}
+        >
+
+          <View style={{ paddingLeft: 15, paddingRight: 15 }}>
+
+            <Entypo name="reply" size={22} color="white" />
+
+          </View>
+        </TouchableOpacity>
+)}
     />
   );
 

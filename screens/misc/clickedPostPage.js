@@ -47,8 +47,7 @@ const ClickedPostPage = (props) => {
   const [userScore, setUserScore] = useState(0);
   const [replyCount, setReplyCount] = useState(0);
   const [notificationUID, setNotificationUID] = useState(0);
-  
-
+let interval;
   useEffect(() => {
     // console.log(`POST ID: ${postID}`);
     // if(Object.keys(replyData).length !== 0){
@@ -140,39 +139,38 @@ const ClickedPostPage = (props) => {
 
   }, [replyTo])
 
+  const getReplyTo = async() => {
+    try {
+      const value = await AsyncStorage.getItem('replyTo');
+      if (value !== null && value !== replyTo) {
+        setCommentText(`@${value}`);
+        setReplyTo(value);
+        clearInterval(interval);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+
   //listening to replyTo from misc/screens/cells/commentReplyCell.js
   useEffect(() => {
-    const getReplyTo = async() => {
-      try {
-        const value = await AsyncStorage.getItem('replyTo');
-        if (value !== null && value !== replyTo) {
-          setCommentText(`@${value}`);
-          setReplyTo(value);
-        }
-      } catch (e) {
-        // error reading value
-      }
-    };
-    getReplyTo();
-
-
-    const getReplyData = async() => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('replyData');
-        setReplyData(JSON.parse(jsonValue));
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      } catch (e) {
-        // error reading value
-      }
-    };
-    getReplyData();
+    if(commentText.length == 0){
+      interval = setInterval(() => {
+        getReplyTo();
+        getReplyData();
+      }, 1000);
+      return () => clearInterval(interval);
+    }
 
   }, [commentText])
+
+
   
   // refreshes comments array once one is deleted
   useEffect(() => {
     fetchCollection();
-  }, [commentsArray])
+  }, [])
 
 
   const refresh = () => {
@@ -333,7 +331,7 @@ const ClickedPostPage = (props) => {
           replyingToUID: '',
           date_created: new Date(),
         })
-        .then(() => setCommentText(' '))
+        .then(() => setCommentText(''))
         .then(() => writeToUserNotifications())
         .catch((error) => {
               console.error("Error storing and retrieving image url: ", error);
