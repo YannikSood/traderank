@@ -21,35 +21,35 @@ const CommentReplyCellClass = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteComponent, setShowDeleteComponent] = useState(false);
 
-  const storeReplyData = async(value) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem('replyData', jsonValue);
-    } catch (e) {
-      // saving error
-    }
-  };
+  // const storeReplyData = async(value) => {
+  //   try {
+  //     const jsonValue = JSON.stringify(value);
+  //     await AsyncStorage.setItem('replyData', jsonValue);
+  //   } catch (e) {
+  //     // saving error
+  //   }
+  // };
 
 
-  const storeReplyTo = async(value) => {
-    try {
-      await AsyncStorage.setItem('replyTo', value);
-    } catch (e) {
-      // saving error
-      console.log("Error storing replyTo value...");
-    }
-  };
+  // const storeReplyTo = async(value) => {
+  //   try {
+  //     await AsyncStorage.setItem('replyTo', value);
+  //   } catch (e) {
+  //     // saving error
+  //     console.log("Error storing replyTo value...");
+  //   }
+  // };
 
-    const replyData = {
-      commentID: props.commentID,
-      topCommentID: props.topCommentID,
-      postID: props.postID,
-      replierAuthorUID: props.replierAuthorUID,
-      replierUsername: props.replierUsername,
-      replyingToUID: props.replyingToUID,
-      replyingToUsername: props.replyingToUsername,
-    };
-    storeReplyData(replyData);
+  //   const replyData = {
+  //     commentID: props.commentID,
+  //     topCommentID: props.topCommentID,
+  //     postID: props.postID,
+  //     replierAuthorUID: props.replierAuthorUID,
+  //     replierUsername: props.replierUsername,
+  //     replyingToUID: props.replyingToUID,
+  //     replyingToUsername: props.replyingToUsername,
+  //   };
+  //   storeReplyData(replyData);
 
     if (isLoading) {
       return (
