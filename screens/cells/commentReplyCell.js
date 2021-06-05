@@ -10,12 +10,10 @@ import CommentReplyLikeComponent from './CRCcomponents/comRepLike';
 import CommentDeleteComponent from './CFCcomponents/deleteComponent';
 import ReplyCommentComponent from './CRCcomponents/commentReplyComponent';
 
-
 //TODO
 //Comment reply like component
 //Comment reply delete component
 //Comment reply reply component
-
 
 const CommentReplyCellClass = (props) => {
   const { user, route, navigation} = props;
@@ -83,7 +81,8 @@ const CommentReplyCellClass = (props) => {
           <Text style={styles.commentTextColor}>{props.commentText}</Text>
 
           <View style={{ paddingLeft: 15, paddingRight: 15 }}>
-            <Entypo
+            {props.button}
+            {/* <Entypo
               name="reply"
               size={22}
               color="white"
@@ -91,7 +90,7 @@ const CommentReplyCellClass = (props) => {
                 storeReplyTo(`${props.replierUsername}`);
 
               }}
-            />
+            /> */}
 
 
           </View>
@@ -138,17 +137,18 @@ const CommentReplyCellClass = (props) => {
             navigation={navigation}
           />
 
-          <Entypo
+          {/* <Entypo
             name="reply"
             size={22}
             style={{ paddingLeft: 12}}
             color="white"
             onPress={() => {
               storeReplyTo(`${props.replierUsername}`);
-              console.log("Comment reply cell...: " + props.replierUsername);
+              console.log("Comment reply cell: " + props.replierUsername);
             }}
             
-          />
+          /> */}
+          {props.button}
 
 
         </View>
