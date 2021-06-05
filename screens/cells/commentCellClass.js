@@ -11,7 +11,7 @@ import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import CommentReplyCellClass from './commentReplyCell'; 
 import { Entypo } from '@expo/vector-icons';
 
-const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation, extraData }) => {
+const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation, extraData, user }) => {
 //   const { commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation } = props.params;
 
 
@@ -115,15 +115,16 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
             // //sotre who to reply to
             const replyDataObj = {
               postID: `${postID}`, //post the comment I am replying to
-              commentID: `${item.key}`, //Id of the comment I am replying to
-              replyingToUsername: `${item.replyingToUsername}`,
-              replyingToUID: `${item.replyingToUID}`, //person who made the comment I am replying to
-              replierAuthorUID: `${item.replierAuthorUID}`, //person sending the reply
-              replierUsername: `${item.replierUsername}`,
+              commentID: `${commentID}`, //Id of the comment I am replying to
+              replyingToUsername: `${item.replierUsername}`, //item.replyingToUsername}
+              replyingToUID: `${item.replierAuthorUID}`, //person who made the comment I am replying to item.replyingToUID
+              replierAuthorUID: `${currentUser}`, //person sending the reply item.replierAuthorUID
+              replierUsername: `${user.username}`,
               commentLikes: 0,
+              topCommentID: `${commentID}`
               //may need to change
             };
-            // console.log(replyDataObj);
+             console.log(replyDataObj);
 
             //replyData that will be stored in the DB
             const storeReplyData = async(value) => {

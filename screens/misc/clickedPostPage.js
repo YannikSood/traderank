@@ -689,6 +689,7 @@ $
       postID={postID}
       replyCount={item.replyCount}
       extraData={commentsArray}
+      user={user}
       button={(
         <TouchableOpacity
           onPress={() => {
