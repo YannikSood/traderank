@@ -113,29 +113,29 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
             // setReplyTo(`${item.replierUsername}`);
 
             // //sotre who to reply to
-            // const replyDataObj = {
-            //   postID: `${postID}`, //post the comment I am replying to
-            //   commentID: `${item.key}`, //Id of the comment I am replying to
-            //   replyingToUsername: `${item.commentorUsername}`,
-            //   replyingToUID: `${item.commentorUID}`, //person who made the comment I am replying to
-            //   replierAuthorUID: `${currentUser}`, //person sending the reply
-            //   replierUsername: `${item.replierUsername}`,
-            //   commentLikes: 0,
-            //   //may need to change
-            // };
-            // // console.log(replyDataObj);
+            const replyDataObj = {
+              postID: `${postID}`, //post the comment I am replying to
+              commentID: `${item.key}`, //Id of the comment I am replying to
+              replyingToUsername: `${item.replyingToUsername}`,
+              replyingToUID: `${item.replyingToUID}`, //person who made the comment I am replying to
+              replierAuthorUID: `${item.replierAuthorUID}`, //person sending the reply
+              replierUsername: `${item.replierUsername}`,
+              commentLikes: 0,
+              //may need to change
+            };
+            // console.log(replyDataObj);
 
-            // //replyData that will be stored in the DB
-            // const storeReplyData = async(value) => {
-            //   try {
-            //     const jsonValue = JSON.stringify(value);
-            //     await AsyncStorage.setItem('replyData', jsonValue);
-            //   } catch (e) {
-            //     // saving error
-            //   }
-            // };
-            // setReplyData(replyDataObj);
-            // storeReplyData(replyDataObj);
+            //replyData that will be stored in the DB
+            const storeReplyData = async(value) => {
+              try {
+                const jsonValue = JSON.stringify(value);
+                await AsyncStorage.setItem('replyData', jsonValue);
+              } catch (e) {
+                // saving error
+              }
+            };
+            setReplyData(replyDataObj);
+            storeReplyData(replyDataObj);
           }}
         >
 
