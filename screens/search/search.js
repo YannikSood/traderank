@@ -7,6 +7,7 @@ import RefinementList from './refinementList';
 import algoliasearch from 'algoliasearch/lite';
 import Highlight from './highlight';
 import * as Analytics from 'expo-firebase-analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VirtualRefinementList = connectRefinementList(() => null);
 
@@ -16,6 +17,9 @@ const searchClient = algoliasearch(
     '0207d80e22ad5ab4d65fe92fed7958d7'
   );
 
+  /**
+ * Get searchItem and make it be item.ticker or item.username via setInterval 500
+ */
 class Search extends Component {
     
     constructor(props) {
@@ -26,10 +30,14 @@ class Search extends Component {
             userUID: '',
             searchState: {},
             refresh: false,
-            navigation: this.props.navigation
+            navigation: this.props.navigation,
+            searchItem: ''
         }
         Analytics.logEvent("Search_Clicked")
         Analytics.setCurrentScreen("SearchScreen")
+    }
+    componentDidMount(){
+      this.readSearchItem();
     }
     root = {
         Root: View,
@@ -62,6 +70,26 @@ class Search extends Component {
     );
   };
 
+  getSearchItem = async() => {
+    try {
+      const value = await AsyncStorage.getItem('searchItem');
+      if (value !== null) {
+        this.setState({searchItem: value});
+      }
+    } catch (e) {
+      // error reading value
+      console.log(`Error getting searchItem... ${e}`);
+    }
+  };
+
+  readSearchItem = () => {
+    const interval = setInterval(() => {
+      this.getSearchItem();
+      console.log(`searchItem: ${this.state.searchItem}`);
+    }, 100);
+    return () => clearInterval(interval);
+  }
+
 
 
     render() {
@@ -81,17 +109,14 @@ class Search extends Component {
                   
                     <InstantSearch
                             searchClient={searchClient} 
-                            indexName="tickers"
+                            indexName={this.state.searchItem == "username" ? "usernames" : "tickers"}
                             refresh={refresh}
                             searchState={searchState}
                             onSearchStateChange={this.onSearchStateChange}
                             root={this.root}
                     >
-                              <SearchBox navigation={this.state.navigation} />
-
-            
-                    <Index indexName="usernames"><Configure hitsPerPage={8} /></Index>
-                    <Index indexName="tickers"><Configure hitsPerPage={8} /></Index>
+                     <SearchBox navigation={this.state.navigation} />
+      
        
                      </InstantSearch> 
                                         

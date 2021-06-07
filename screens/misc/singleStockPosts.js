@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as Analytics from 'expo-firebase-analytics';
 import { useScrollToTop } from '@react-navigation/native';
