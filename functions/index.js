@@ -747,10 +747,11 @@ exports.addTickerToAlgolia = functions.https.onCall((data, context) => {
     tickerIndex.
         saveObject(record)
         .then(() => {
-            console.log(`${data.ticker} ticker added to Algolia`);
+            console.log('ticker added to Algolia', data.ticker);
+            return 
         })
         .catch(err => {
-            console.log('Error adding ticker to algolia');
+            console.log('Error adding ticker to algolia: ', err);
         })
 
 
