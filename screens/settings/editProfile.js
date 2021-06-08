@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Image, Dimensions, Alert, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
@@ -21,7 +21,6 @@ class EditProfile extends React.Component {
       oldBio: 'Enter Bio',
       newBio: '',
       profilePic: null,
-      newProfilePicURL: '',
       newPicPicked: false,
       newPicChanged: false,
       oldProfilePic: 'oldProfilePic', //was getting warning that this (source:uri) cannot be blank
@@ -145,7 +144,13 @@ class EditProfile extends React.Component {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (permissionResult.granted === false) {
-        alert('Permission to access camera roll is required!');
+        Alert.alert(
+          'we need permission to access your camera roll!',
+          [
+            { text: 'OK', onPress: () => Linking.openURL('app-settings:') },
+          ],
+          { cancelable: false },
+        );
         return;
       }
 
@@ -227,7 +232,7 @@ class EditProfile extends React.Component {
             <View style={styles.lineStyle} />
 
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', padding: 5 }}>
-              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 5 }}> new bio        </Text>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 15, paddingTop: 10 }}> new bio     </Text>
 
               <TextInput
                 style={styles.inputBox}
@@ -244,7 +249,7 @@ class EditProfile extends React.Component {
 
 
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', padding: 5 }}>
-              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7 }}> twitter       </Text>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 15, paddingTop: 10 }}> twitter [no @]</Text>
 
               <TextInput
                 style={styles.socialInputBox}
@@ -259,7 +264,7 @@ class EditProfile extends React.Component {
 
 
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', padding: 5 }}>
-              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, paddingTop: 7 }}> instagram</Text>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 15, paddingTop: 10 }}> instagram [no @]</Text>
 
               <TextInput
                 style={styles.socialInputBox}
@@ -300,8 +305,9 @@ const styles = StyleSheet.create({
   inputBox: {
     width: '85%',
     // margin: 10,
+    paddingTop: 10,
     padding: 15,
-    fontSize: 16,
+    fontSize: 15,
     // borderColor: '#d3d3d3',
     // borderWidth: 1,
     color: '#FFFFFF',
@@ -338,7 +344,7 @@ const styles = StyleSheet.create({
     width: '35%',
     // marginTop: 10,
     padding: 10,
-    fontSize: 14,
+    fontSize: 15,
     // borderColor: '#d3d3d3',
     // borderWidth: 1,
     textAlign: 'center',
