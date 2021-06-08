@@ -66,7 +66,7 @@ const Signup2 = ({ props, route, navigation }) => {
       .set({
         username: username.trim().replace(/[^\w\s]/gi, ''),
         email: firebase.auth().currentUser.email,
-        profilePic: 'https://firebasestorage.googleapis.com/v0/b/traderank-288df.appspot.com/o/profilePictures%2Fnoimage.jpeg?alt=media&token=873305d1-e583-4c9c-b60a-42cd080ae822',
+        profilePic: 'https://firebasestorage.googleapis.com/v0/b/traderank-288df.appspot.com/o/profilePictures%2F2130.jpg?alt=media&token=2b0a9cdc-eceb-473c-ae17-43923bc45d7f',
         followerCount: 0,
         followingCount: 0,
         postCount: 0,
@@ -187,7 +187,7 @@ const Signup2 = ({ props, route, navigation }) => {
                         Terms of Service
           </Text>
 
-          <Text style={{ color: '#FFFFFF', padding: 4}}>
+          <Text style={{ color: '#FFFFFF', padding: 4 }}>
            &
           </Text>
 

@@ -226,7 +226,7 @@ class EditProfile extends React.Component {
             <View style={styles.lineStyle} />
 
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', padding: 5 }}>
-              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 15, paddingTop: 10 }}> new bio     </Text>
+              <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 15, paddingTop: 10 }}> new bio       </Text>
 
               <TextInput
                 style={styles.inputBox}
@@ -335,13 +335,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   socialInputBox: {
-    width: '35%',
+    width: '60%',
     // marginTop: 10,
     padding: 10,
     fontSize: 15,
     // borderColor: '#d3d3d3',
     // borderWidth: 1,
-    textAlign: 'center',
+    // textAlign: 'center',
     color: '#FFFFFF',
   },
   lineStyle: {
