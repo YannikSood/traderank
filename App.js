@@ -584,7 +584,7 @@ function Tabs() {
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-add-circle" size={35} color={color} />
+            <Ionicons name="md-add-circle" size={28} color={color} />
           ),
         }}
 

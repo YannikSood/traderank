@@ -41,7 +41,7 @@ class ClickedUserProfile extends React.Component {
       isLoading: true,
       navigation: this.props.navigation,
       isFollowing: true,
-      followButtonLoading: false,
+      followButtonLoading: true,
       alertsButtonLoading: false,
 
       userPostsArray: [],
@@ -260,6 +260,7 @@ class ClickedUserProfile extends React.Component {
         .then((result) => {
           this.setState({
             isFollowing: result.data.isFollowing,
+            followButtonLoading: false,
           });
         }).catch((error) => {
           console.log(error);
