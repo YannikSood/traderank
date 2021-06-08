@@ -122,22 +122,22 @@ class EditProfile extends React.Component {
         .ref(`profilePictures/${firebase.auth().currentUser.uid}`)
         .put(file);
 
-      const url = await firebase.storage().ref(`profilePictures/${firebase.auth().currentUser.uid}`).getDownloadURL();
-      this.setState({
-        newProfilePicURL: url,
-      });
-
-
-      const setProfilePic = firebase.functions().httpsCallable('setProfilePic');
-      setProfilePic({
-        newPic: this.state.newProfilePicURL,
-        uid: firebase.auth().currentUser.uid,
-      })
-        .then((result) => {
-          this.setState({ isLoading: false });
-        })
-        .catch((err) => {
-          console.log('Error from posting thought');
+      await firebase
+        .storage()
+        .ref(`profilePictures/${firebase.auth().currentUser.uid}`)
+        .getDownloadURL()
+        .then(async(downloadURL) => {
+          const setProfilePic = await firebase.functions().httpsCallable('setProfilePic');
+          setProfilePic({
+            newPic: downloadURL,
+            uid: firebase.auth().currentUser.uid,
+          })
+            .then((result) => {
+              this.setState({ isLoading: false });
+            })
+            .catch((err) => {
+              console.log('Error from posting thought');
+            });
         });
     }
 
