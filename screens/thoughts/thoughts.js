@@ -99,7 +99,7 @@ const ThoughtsFeed = (props) => {
 
   const getCollection = async() => {
     const index = 1;
-    const getThoughtsOneCategory = firebase.functions().httpsCallable('getThoughtsOneCategory');
+    const getThoughtsOneCategory = await firebase.functions().httpsCallable('getThoughtsOneCategory');
     return getThoughtsOneCategory({
       index,
       category: selectedCategory,
@@ -117,7 +117,7 @@ const ThoughtsFeed = (props) => {
     const nanoseconds = thoughts[lastItemIndex].date_created._nanoseconds;
     const lastTime = new firebase.firestore.Timestamp(seconds, nanoseconds); //-- the firebase timestamp
 
-    const getMoreThoughtsOneCategory = firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
+    const getMoreThoughtsOneCategory = await firebase.functions().httpsCallable('getMoreThoughtsOneCategory');
     return getMoreThoughtsOneCategory({
       index: lastItemIndex,
       category: selectedCategory,
