@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, Modal, Text, TouchableOpacity, TextInput, Alert, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, Modal, Text, TouchableOpacity, TextInput, Alert, Linking, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as Analytics from 'expo-firebase-analytics';
 import { useScrollToTop } from '@react-navigation/native';
@@ -68,15 +68,18 @@ const ThoughtsFeed = (props) => {
      * Anytime the postsLoading value changes, this useEffect will run
      */
   useEffect(() => {
+    setIsLoading(true);
     getCollection();
     setIsLoading(postsLoading);
   }, [postsLoading]);
 
   useEffect(() => {
+    setIsLoading(true);
     getCollection();
   }, [selectedCategory]);
 
   const refresh = () => {
+    setIsLoading(true);
     getCollection();
   };
 
@@ -84,9 +87,6 @@ const ThoughtsFeed = (props) => {
   //   getMore();
   // };
 
-  const recalculateCategory = (rowData) => {
-    setSelectedCategory(rowData);
-  };
 
   const clearAfterPost = () => {
     setSelectedId(null);
@@ -98,7 +98,6 @@ const ThoughtsFeed = (props) => {
   };
 
   const getCollection = async() => {
-    setIsLoading(true);
     const index = 1;
     const getThoughtsOneCategory = firebase.functions().httpsCallable('getThoughtsOneCategory');
     return getThoughtsOneCategory({
@@ -227,7 +226,13 @@ const ThoughtsFeed = (props) => {
     if (permissionResult.granted === false) {
       setImage(null);
       setHasImage(false);
-      alert('Permission to access camera roll is required!');
+      Alert.alert(
+        'we need permission to access your camera roll!',
+        [
+          { text: 'OK', onPress: () => Linking.openURL('app-settings:') },
+        ],
+        { cancelable: false },
+      );
       return;
     }
 
@@ -289,15 +294,15 @@ const ThoughtsFeed = (props) => {
 
   const renderThumbnailForImageOrVideo = () => (
     <View>
-      
-      { mediaType === 'image' ? 
-      <CachedImage 
+
+      { mediaType === 'image' 
+      ? <CachedImage
         source={{ uri: `${image}` }}
         cacheKey={`${image}t`}
         backgroundColor="transparent"
         style={styles.thumbnail2}
-      /> : 
-      <AntDesign name="checkcircle" size={50} color="white" /> }
+      /> 
+      : <AntDesign name="checkcircle" size={50} color="white" /> }
     </View>
   );
 
@@ -489,7 +494,7 @@ const ThoughtsFeed = (props) => {
           style={styles.flatList}
           renderItem={({ item: rowData }) => (
             <TouchableOpacity
-              onPress={() => recalculateCategory(rowData)}
+              onPress={() => setSelectedCategory(rowData)}
               style={rowData === selectedCategory ? styles.selected : styles.unselected}
             >
               <Text style={{ fontWeight: 'bold', color: '#FFFFFF', padding: 6 }}>

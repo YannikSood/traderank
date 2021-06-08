@@ -518,12 +518,12 @@ class ClickedUserProfile extends React.Component {
     }
 
     renderTwitterAndInstagram = () => {
-      if (this.state.posterTwitter === undefined && this.state.posterInstagram === undefined) {
+      if (this.state.posterTwitter === null && this.state.posterInstagram === null) {
         return (
           <View />
         );
       }
-      if (this.state.posterTwitter !== undefined && this.state.posterInstagram === undefined) {
+      if (this.state.posterTwitter !== null && this.state.posterInstagram === null) {
         return (
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <FontAwesome
@@ -535,7 +535,37 @@ class ClickedUserProfile extends React.Component {
           </View>
         );
       }
-      if (this.state.posterTwitter === undefined && this.state.posterInstagram !== undefined) {
+      if (this.state.posterTwitter === null && this.state.posterInstagram !== null) {
+        return (
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <AntDesign
+              onPress={() => Linking.openURL(`http://instagram.com/${this.state.posterInstagram}`)}
+              name="instagram"
+              size={35}
+              color="#E1306C"
+            />
+          </View>
+        );
+      }
+
+      if (this.state.posterTwitter === '' && this.state.posterInstagram === '') {
+        return (
+          <View />
+        );
+      }
+      if (this.state.posterTwitter !== '' && this.state.posterInstagram === '') {
+        return (
+          <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
+            <FontAwesome
+              onPress={() => Linking.openURL(`http://twitter.com/${this.state.posterTwitter}`)}
+              name="twitter"
+              size={35}
+              color="#1DA1F2"
+            />
+          </View>
+        );
+      }
+      if (this.state.posterTwitter === '' && this.state.posterInstagram !== '') {
         return (
           <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
             <AntDesign
@@ -595,7 +625,7 @@ class ClickedUserProfile extends React.Component {
               <Text style={styles.subheader}>
                 {' '}
                 @
-{this.state.posterUsername}
+                {this.state.posterUsername}
                 {' '}
               </Text>
             </View>
@@ -700,7 +730,7 @@ joined
             <Text style={styles.subheader}>
               {' '}
               @
-{this.state.posterUsername}
+              {this.state.posterUsername}
               {' '}
             </Text>
           </View>
@@ -848,7 +878,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 20,
     backgroundColor: '#000000',
-    paddingBottom: Dimensions.get('window').height * 0.5,
+    paddingBottom: Dimensions.get('window').height * 0.7,
   },
   tradeText: {
     fontSize: 16,
