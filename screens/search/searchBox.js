@@ -1,7 +1,12 @@
-import React from 'react';
-import { StyleSheet, View, TextInput, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, TextInput, Dimensions, Text } from 'react-native';
 import PropTypes from 'prop-types';
+import InfiniteHits from './infiniteHits';
 import { connectSearchBox} from 'react-instantsearch-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+/**
+ * Set searchItem in async storage to either 'username' or 'ticker'
+ */
 
 const styles = StyleSheet.create({
   container: {
@@ -12,6 +17,7 @@ const styles = StyleSheet.create({
     height: 48,
     padding: 12,
     fontSize: 16,
+    marginBottom: 10,
     width:  Dimensions.get('window').width-20,
     backgroundColor: '#fff',
     borderRadius: 4,
@@ -22,16 +28,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
+  blank: {
+    backgroundColor: '#000000'
+  }
 });
-const SearchBox = ({ currentRefinement, refine }) => {    
+
+const SearchBox = ({ currentRefinement, refine, navigation }) => {    
+
+  const storeSearchItem = async(value) => {
+    try {
+      await AsyncStorage.setItem('searchItem', value);
+    } catch (e) {
+      // saving error
+      console.log(`Error store searchItem... ${e}`);
+    }
+  };
+
+
+  let input = currentRefinement;
+  if(input.length > 0 && input.charAt(0) === '$'){
+    storeSearchItem("ticker");
+  } else{
+    storeSearchItem("username");
+  }
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
         onChangeText={value => refine(value)}
         value={currentRefinement}
-        placeholder="Search for people..."
+        placeholder="Search for people 'riahlexis' or tickers '$AMC'"
       />
+         { currentRefinement.length > 0 && 
+           <InfiniteHits navigation={navigation} />
+         }
     </View>
   )
 };

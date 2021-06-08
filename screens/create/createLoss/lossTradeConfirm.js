@@ -90,6 +90,18 @@ class LossTradeConfirm extends React.Component {
         .catch((error) => {
           console.error('Error writing document to global posts: ', error);
         });
+      
+        //add ticker to algolia 
+        const addTickerToAlgolia = firebase.functions().httpsCallable('addTickerToAlgolia');
+        addTickerToAlgolia({
+          ticker: `$${this.state.ticker}`
+        })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       await firebase.firestore()
         .collection('loss')
