@@ -160,7 +160,6 @@ class EditProfile extends React.Component {
 
       try {
         if (pickerResult.cancelled === true) {
-          console.log('pickerResult is cancelled');
           this.setState({
             profilePic: this.state.oldProfilePic,
           });
@@ -168,16 +167,11 @@ class EditProfile extends React.Component {
         }
 
         if (pickerResult !== null) {
-          console.log('pickerResult not null');
-
           this.setState({
             profilePic: pickerResult.uri,
             newPicPicked: true,
           });
-
-          console.log(this.state.profilePic);
         } else {
-          console.log('pickerResult is null');
           return;
         }
       } catch (error) {

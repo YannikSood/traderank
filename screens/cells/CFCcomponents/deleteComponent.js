@@ -74,7 +74,7 @@ const CommentDeleteComponent = (props) => {
 
     //Delete comment itself from comments/postid/comment
    const deleteCommentFromCommentsDB = async() => {
-     console.log(`Delete component before: postId ${postID} commentID: ${commentID} commentCout: ${currentCommentCount} `);
+    //  console.log(`Delete component before: postId ${postID} commentID: ${commentID} commentCout: ${currentCommentCount} `);
       await firebase.firestore()
         .collection('comments')
         .doc(postID)
@@ -85,7 +85,7 @@ const CommentDeleteComponent = (props) => {
         .catch((error) => {
           console.error('Error writing document to user posts: ', error);
         });
-        console.log(`Delete component after: postId ${postID} commentID: ${commentID} commentCout: ${currentCommentCount} `);
+        // console.log(`Delete component after: postId ${postID} commentID: ${commentID} commentCout: ${currentCommentCount} `);
     }
 
 

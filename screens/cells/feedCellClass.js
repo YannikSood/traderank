@@ -119,7 +119,7 @@ class FeedCellClass extends React.Component {
     }
 
     showPostPage = () => {
-      console.log(this.state.date_created);
+      // console.log(this.state.date_created);
       this.state.navigation.push('ClickedPostPage',
         {
           username: this.state.username,

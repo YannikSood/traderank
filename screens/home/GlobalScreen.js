@@ -83,7 +83,6 @@ const GlobalScreen = (props) => {
 
 
         const token = (await Notifications.getExpoPushTokenAsync()).data;
-        console.log(token);
         return token;
       })
       .then((token) => {
@@ -147,8 +146,6 @@ const GlobalScreen = (props) => {
     // setIsLoading(true);
     const lastItemIndex = globalPostsArray.length - 1;
     Analytics.logEvent('More_5_Loaded');
-
-    console.log((globalPostsArray[lastItemIndex].date_created));
 
     await firebase.firestore()
       .collection('globalPosts')

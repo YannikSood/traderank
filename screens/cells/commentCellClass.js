@@ -109,7 +109,7 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
             };
 
             storeReplyTo(`${item.replierUsername}`);
-            console.log(`${item.replierUsername} from commentCellClass`);
+            // console.log(`${item.replierUsername} from commentCellClass`);
             // setReplyTo(`${item.replierUsername}`);
 
             // //sotre who to reply to
@@ -124,7 +124,7 @@ const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUs
               topCommentID: `${commentID}`
               //may need to change
             };
-             console.log(replyDataObj);
+            //  console.log(replyDataObj);
 
             //replyData that will be stored in the DB
             const storeReplyData = async(value) => {

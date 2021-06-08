@@ -61,10 +61,9 @@ class GainTradeConfirm extends React.Component {
         })
         .then(docRef => this.uploadToStorage(docRef.id))
         .catch((error) => {
-            console.error("Error storing and retrieving image url: ", error);
+          console.error('Error storing and retrieving image url: ', error);
         });
 
-      console.log('addedTODB');
       //And now we are storing user posts. Now, we do the same thing for global posts, to display in the global feed
       await firebase.firestore()
         .collection('globalPosts')
@@ -88,7 +87,7 @@ class GainTradeConfirm extends React.Component {
           viewsCount: 0,
         })
         .catch((error) => {
-            console.error("Error writing document to global posts: ", error);
+          console.error('Error writing document to global posts: ', error);
         });
 
       //And now we are storing user posts. Now, we do the same thing for global posts, to display in the global feed
@@ -114,7 +113,7 @@ class GainTradeConfirm extends React.Component {
           viewsCount: 0,
         })
         .catch((error) => {
-            console.error("Error writing document to global posts: ", error);
+          console.error('Error writing document to global posts: ', error);
         });
 
       //Update post count
@@ -125,7 +124,7 @@ class GainTradeConfirm extends React.Component {
           postCount: this.state.postCount + 1,
         }, { merge: true })
         .catch((error) => {
-            console.error("Error writing document to user collection: ", error);
+          console.error('Error writing document to user collection: ', error);
         });
 
 
@@ -137,14 +136,14 @@ class GainTradeConfirm extends React.Component {
       sendUserAlertsNotication({
         posterUID: firebase.auth().currentUser.uid,
         posterUsername: this.state.username,
-        postType: "gain",
+        postType: 'gain',
       })
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       this.setState({
         isLoading: false,
@@ -173,15 +172,15 @@ class GainTradeConfirm extends React.Component {
           .doc(firebase.auth().currentUser.uid)
           .get()
           .then((doc) => {
-                if (doc.exists) {
-                    this.setState({
-                        postCount: doc.data().postCount,
-                        isLoading: true
-                    })
-                } else {
-                    console.log("No such document!");
-                }
-            })
+            if (doc.exists) {
+              this.setState({
+                postCount: doc.data().postCount,
+                isLoading: true,
+              });
+            } else {
+              console.log('No such document!');
+            }
+          })
           .then(() => this.onSubmit());
       }
     }
@@ -197,21 +196,21 @@ class GainTradeConfirm extends React.Component {
     render() {
       if (this.state.isLoading) {
         return (
-              <View style={styles.activityContainer}>
-                <ActivityIndicator size="large" color="#9E9E9E" />
-              </View>
+          <View style={styles.activityContainer}>
+            <ActivityIndicator size="large" color="#9E9E9E" />
+          </View>
         );
       }
       return (
 
-          <KeyboardAvoidingView
-              style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' }}
-              behavior="padding"
-enabled
-              keyboardVerticalOffset={100}
-            >
-              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                      <View
+        <KeyboardAvoidingView
+          style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' }}
+          behavior="padding"
+          enabled
+          keyboardVerticalOffset={100}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View
                   style={styles.container}
                 >
 
@@ -224,12 +223,12 @@ enabled
 
                           <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
-                              <Image
-                                  source={{ uri: this.state.image.uri }}
-                                  style={styles.fullScreenImage}
-                                />
+                      <Image
+                              source={{ uri: this.state.image.uri }}
+                              style={styles.fullScreenImage}
+                            />
 
-                            </View>
+                    </View>
                         </Modal>
 
 
@@ -260,33 +259,33 @@ enabled
 
                   <View style={{ flexDirection: 'column', justifyContent: 'left', alignItems: 'center' }}>
 
-                      <Text style={styles.labelText}>lastly, caption your trade:</Text>
-                      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                          <Text style={styles.labelText}>lastly, caption your trade:</Text>
+                          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 
-                         <TextInput
-                              style={{ backgroundColor: '#121212', height: 180, width: Dimensions.get('window').width - 40, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
-                              value={this.state.description}
-                              onChangeText={description => this.setState({ description })}
-                              placeholder="I love tendies... "
-                              autoCapitalize="none"
-                              multiline
-                              maxLength={500}
-                            />
-                       </View>
-
+                      <TextInput
+                          style={{ backgroundColor: '#121212', height: 180, width: Dimensions.get('window').width - 40, color: 'white', marginLeft: 12, marginRight: 12, marginTop: 10, marginBottom: 15 }}
+                          value={this.state.description}
+                          onChangeText={description => this.setState({ description })}
+                          placeholder="I love tendies... "
+                          autoCapitalize="none"
+                          multiline
+                          maxLength={500}
+                        />
                     </View>
+
+                        </View>
 
 
                   <TouchableOpacity
-                      onPress={() => this.checkAndNext()}
-                      style={styles.gainButton}
-                    >
-                      <Text style={styles.buttonText}>get ranked🎉</Text>
-                    </TouchableOpacity>
+                          onPress={() => this.checkAndNext()}
+                          style={styles.gainButton}
+                        >
+                          <Text style={styles.buttonText}>get ranked🎉</Text>
+                        </TouchableOpacity>
 
                 </View>
-                    </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       );
     }
 }
@@ -395,5 +394,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(GainTradeConfirm)
-;
+export default connect(mapStateToProps)(GainTradeConfirm);

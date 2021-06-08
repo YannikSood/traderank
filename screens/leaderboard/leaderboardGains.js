@@ -20,7 +20,7 @@ class LeaderboardGains extends React.Component {
     Analytics.logEvent('Leaderboard_Gains_Clicked');
     this.getCollection();
   }
-  
+
 
   //   componentWillUnmount() {
   //     this.unsubscribe();
@@ -32,9 +32,9 @@ class LeaderboardGains extends React.Component {
     };
 
     getCollection = async() => {
-       const leaderboardGains = [];
-      let index = 1;
-     // this.setState({ isLoading: true });
+      const leaderboardGains = [];
+      const index = 1;
+      // this.setState({ isLoading: true });
       const getGainsCollection = firebase.functions().httpsCallable('getGainsCollection');
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, '0');
@@ -42,18 +42,16 @@ class LeaderboardGains extends React.Component {
       const yyyy = today.getFullYear();
       const newToday = mm + dd + yyyy;
       getGainsCollection({
-        index: index,
-        newToday: newToday
+        index,
+        newToday,
       }).then((result) => {
         this.setState({
           leaderboardGains: result.data,
           isLoading: false,
         });
-
-      }).catch(err => {
+      }).catch((err) => {
         console.log(err);
-      })
-        
+      });
     }
 
 
@@ -68,20 +66,18 @@ class LeaderboardGains extends React.Component {
       const getMoreGains = firebase.functions().httpsCallable('getMoreGains');
       getMoreGains({
         score: this.state.leaderboardGains[lastItemIndex].score,
-        lastItemIndex: lastItemIndex,
-        newToday: newToday
+        lastItemIndex,
+        newToday,
       })
-      .then((result)=> {
-        this.setState({
-          leaderboardGains: this.state.leaderboardGains.concat(result.data),
-          isLoading: false,
+        .then((result) => {
+          this.setState({
+            leaderboardGains: this.state.leaderboardGains.concat(result.data),
+            isLoading: false,
+          });
+        })
+        .catch((err) => {
+          console.log('Error from leadarboard gains getMore');
         });
-        
-      })
-      .catch(err => {
-        console.log("Error from leadarboard gains getMore");
-      })
-
     }
 
     render() {
@@ -100,7 +96,7 @@ class LeaderboardGains extends React.Component {
           postID={item.key}
           navigation={navigation}
           index={item.index}
-          date_created={new Date(item.date_created.seconds * 1000 + item.date_created.nanoseconds/1000000)}
+          date_created={new Date(item.date_created.seconds * 1000 + item.date_created.nanoseconds / 1000000)}
         />
       );
       if (this.state.isLoading) {

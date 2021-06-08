@@ -62,7 +62,6 @@ class Notification extends React.Component {
         .get()
         .then((doc) => {
           if (doc.data().firstOpen) {
-            console.log('first_open');
             this.props.navigation.navigate('Onboarding');
           }
         });

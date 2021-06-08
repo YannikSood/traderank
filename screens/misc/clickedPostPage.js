@@ -1,15 +1,15 @@
 import React, { useState, useEffect }  from 'react';
-import {Alert, FlatList, View, Text,TextInput, StyleSheet, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Alert, FlatList, View, Text, TextInput, StyleSheet, KeyboardAvoidingView, Image, Dimensions, TouchableOpacity, ActivityIndicator, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import TimeAgo from 'react-native-timeago';
 import * as Analytics from 'expo-firebase-analytics';
 import { connect, useDispatch } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import firebase from '../../firebase';
 import UserComponent from '../cells/FFCcomponents/userComponent';
 import CommentCellClass from '../cells/commentCellClass';
 import CommentComponent from '../cells/FFCcomponents/commentComponent';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 // import ReplyButton from './replyButton';
 
 
@@ -26,7 +26,7 @@ const mapStateToProps = state => ({
 
 //Comments Page, when you click the comment button on a post
 const ClickedPostPage = (props) => {
-  const {user, route, navigation} = props;
+  const { user, route, navigation } = props;
   const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, date_created } = route.params;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,7 @@ const ClickedPostPage = (props) => {
   const [replyTo, setReplyTo] = useState('');
   const [replyData, setReplyData] = useState({});
   const [fetchComments, setFetchComments] = useState(true);
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState('');
   const commentorUID = firebase.auth().currentUser.uid;
   const commentorUsername = user.username;
   const [posterUID, setPosterUID] = useState('');
@@ -47,13 +47,13 @@ const ClickedPostPage = (props) => {
   const [userScore, setUserScore] = useState(0);
   const [replyCount, setReplyCount] = useState(0);
   const [notificationUID, setNotificationUID] = useState(0);
-let interval;
+  let interval;
   useEffect(() => {
     // console.log(`POST ID: ${postID}`);
     // if(Object.keys(replyData).length !== 0){
     //   getReplyData();
     // }
-    clearStorage(); 
+    clearStorage();
     setReplyTo('');
     getPosterUID();
     setIsLoading(true);
@@ -97,12 +97,10 @@ let interval;
   };
 
 
-
-
   const clearStorage = () => {
     clearReplyTo();
     clearReplyData();
-  }
+  };
 
   const getReplyData = async() => {
     try {
@@ -115,7 +113,6 @@ let interval;
   };
 
   useEffect(() => {
-    
     updateCommentCount();
 
     const getReplyTo = async() => {
@@ -132,12 +129,8 @@ let interval;
     getReplyTo();
 
 
-
     getReplyData();
-
-
-
-  }, [replyTo])
+  }, [replyTo]);
 
   const getReplyTo = async() => {
     try {
@@ -155,29 +148,27 @@ let interval;
 
   //listening to replyTo from misc/screens/cells/commentReplyCell.js
   useEffect(() => {
-    if(commentText.length == 0){
+    if (commentText.length == 0) {
       interval = setInterval(() => {
         getReplyTo();
         getReplyData();
       }, 1000);
       return () => clearInterval(interval);
     }
+  }, [commentText]);
 
-  }, [commentText])
 
-
-  
   // refreshes comments array once one is deleted
   useEffect(() => {
     fetchCollection();
-  }, [])
+  }, []);
 
 
   const refresh = () => {
     setIsLoading(true);
     fetchCollection();
   };
-//---- BEGINNING of new stuff ---- 
+  //---- BEGINNING of new stuff ----
   const addComment = () => {
     if (replyTo.length > 0) {
       addReplyComment();
@@ -188,7 +179,7 @@ let interval;
       addCommentToDB(); //regular comment
       fetchCollection(); //makes it refresh after comment is added
     }
-  }
+  };
 
   const addReplyComment = async() => {
     //TODO: ADD error checking from addCommentToDB for blank comments
@@ -199,7 +190,7 @@ let interval;
     if (replyTo.length > 0) { //isReplying
       //Send reply
       let commentId = replyData.commentID;
-      if(replyData.hasOwnProperty('topCommentID')){
+      if (replyData.hasOwnProperty('topCommentID')) {
         commentId = replyData.topCommentID;
       }
       await firebase.firestore()
@@ -211,7 +202,7 @@ let interval;
         .add({ //Add to this collection, and automatically generate iD for this new comment
           postID: replyData.postID,
           commentID: replyData.commentID,
-          commentText: commentText,
+          commentText,
           replyingToUsername: replyData.replyingToUsername,
           replyingToUID: replyData.replyingToUID,
           replierAuthorUID: replyData.replierAuthorUID,
@@ -223,7 +214,7 @@ let interval;
           setReplyTo('');
         })
         .catch((error) => {
-                  console.error("Error: ", error);
+          console.error('Error: ', error);
         });
 
       //get reply count first from calling async function
@@ -239,11 +230,11 @@ let interval;
           replyCount: replyCount + 1,
         }, { merge: true })
         .then(() => {
-         setReplyCount(replyCount + 1);
+          setReplyCount(replyCount + 1);
         })
         .catch((error) => {
-                    console.error("Error writing document to comments when updating replyCount: ", error);
-                });
+          console.error('Error writing document to comments when updating replyCount: ', error);
+        });
 
       //Update Post global CommentCount
       await firebase.firestore()
@@ -253,8 +244,8 @@ let interval;
           commentsCount: commentsCount + 1,
         }, { merge: true })
         .catch((error) => {
-                    console.error("Error writing document to user posts: ", error);
-                });
+          console.error('Error writing document to user posts: ', error);
+        });
 
 
       //Send notification that user has replied to comment
@@ -268,22 +259,22 @@ let interval;
             type: 6,
             senderUID: currentUser,
             recieverUID: replyData.replyingToUID,
-            postID: postID,
+            postID,
             read: false,
             date_created: new Date(),
             recieverToken: '',
           })
           .then(docref => setNotificationUID(docref.id))
           .catch((error) => {
-                              console.error("Error writing document to user posts: ", error);
-                          });
+            console.error('Error writing document to user posts: ', error);
+          });
 
         const sendCommentReplyNotification = firebase.functions().httpsCallable('sendCommentReplyNotification');
         sendCommentReplyNotification({
           type: 3,
           senderUID: currentUser,
           recieverUID: replyData.replyingToUID,
-          postID: postID,
+          postID,
           senderUsername: user.username,
         })
           .then((result) => {
@@ -292,12 +283,11 @@ let interval;
           .catch((error) => {
             console.log(error);
           });
-      }
-      else {
+      } else {
 
       }
     }
-  }
+  };
 
   const addCommentToDB = async() => {
     if (commentText.trim().length == 0 || commentText.trim() == '') {
@@ -309,13 +299,11 @@ let interval;
         ],
         { cancelable: false },
       );
-    }
-    else {
+    } else {
       setIsLoading(true);
       Analytics.logEvent('User_Posted_Comment');
 
       //Replying to a comment
-
 
 
       //This should take us to the right place, adding a temp uid where we need it
@@ -324,9 +312,9 @@ let interval;
         .doc(postID)
         .collection('comments')
         .add({
-          commentorUID: commentorUID,
-          commentText: commentText,
-          commentorUsername: commentorUsername,
+          commentorUID,
+          commentText,
+          commentorUsername,
           commentLikes: 0,
           replyingToUID: '',
           date_created: new Date(),
@@ -334,8 +322,8 @@ let interval;
         .then(() => setCommentText(''))
         .then(() => writeToUserNotifications())
         .catch((error) => {
-              console.error("Error storing and retrieving image url: ", error);
-          });
+          console.error('Error storing and retrieving image url: ', error);
+        });
 
 
       await firebase.firestore()
@@ -345,10 +333,10 @@ let interval;
           commentsCount: commentsCount + 1,
         }, { merge: true })
         .catch((error) => {
-              console.error("Error writing document to user posts: ", error);
-          });
-//MAY be wrong with {} function 
-/** 
+          console.error('Error writing document to user posts: ', error);
+        });
+      //MAY be wrong with {} function
+      /**
  * this.setState({
             userScore: this.state.userScore + 1,
             isLoading: false,
@@ -363,127 +351,127 @@ let interval;
         .then(() => {
           setUserScore(userScore + 1);
           setIsLoading(false);
-        },)
-.then(() => updateCommentCount());
-    }
-  }
-
-      //Get the poster userID
-      const getPosterUID = async() => {
-        await firebase.firestore()
-          .collection('globalPosts')
-          .doc(postID)
-          .get()
-          .then((doc) => {
-            if (doc.exists) {
-              setPosterUID(doc.data().uid);
-              setCommentsCount(doc.data().commentsCount);
-            } else {
-              // doc.data() will be undefined in this case
-              console.log('No such document!');
-            }
-          });
-  
-        //Get the comments count of a user, how many comments they have posted
-        await firebase.firestore()
-          .collection('users')
-          .doc(commentorUID)
-          .get()
-          .then((doc) => {
-            if (doc.exists) {
-              setUserScore(doc.data().score)
-            } else {
-              // doc.data() will be undefined in this case
-              console.log('No such document!');
-            }
-          });
-      }
-
-      const updateCommentCount = async() => {
-        await firebase.firestore()
-          .collection('globalPosts')
-          .doc(postID)
-          .get()
-          .then((doc) => {
-            if (doc.exists) {
-              setCommentsCount(doc.data().commentsCount);
-            } else {
-              // doc.data() will be undefined in this case
-              console.log('No such document!');
-            }
-          });
-      }
-
-       //get number of replies associated with the comment
-   const getReplyCount = async() => {
-      await firebase.firestore()
-        .collection('comments')
-        .doc(postID)
-        .collection('comments')
-        .doc(replyData.commentID)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            setReplyCount(doc.data().replyCount);
-          } else {
-            console.log('No such document for getting replyCount.');
-          }
-        });
-    }
-
-
-    const writeToUserNotifications = async() => {
-      if (commentorUID != posterUID) {
-        await firebase.firestore()
-          .collection('users')
-          .doc(posterUID)
-          .collection('notifications')
-          .add({
-            type: 1,
-            senderUID: commentorUID,
-            recieverUID: posterUID,
-            postID: postID,
-            read: false,
-            date_created: new Date(),
-            recieverToken: '',
-          })
-          .then(docref => setNotificationUID(docref.id ))
-          .catch((error) => {
-                console.error("Error writing document to user posts: ", error);
-            });
-
-        const writeNotification = firebase.functions().httpsCallable('writeNotification');
-        writeNotification({
-          type: 1,
-          senderUID: commentorUID,
-          recieverUID: posterUID,
-          postID: postID,
-          senderUsername: commentorUsername,
         })
-          .then((result) => {
-            console.log(result);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-
-      }
+        .then(() => updateCommentCount());
     }
+  };
 
-    const removeFromUserNotifications = async() => {
+  //Get the poster userID
+  const getPosterUID = async() => {
+    await firebase.firestore()
+      .collection('globalPosts')
+      .doc(postID)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setPosterUID(doc.data().uid);
+          setCommentsCount(doc.data().commentsCount);
+        } else {
+          // doc.data() will be undefined in this case
+          console.log('No such document!');
+        }
+      });
+
+    //Get the comments count of a user, how many comments they have posted
+    await firebase.firestore()
+      .collection('users')
+      .doc(commentorUID)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setUserScore(doc.data().score);
+        } else {
+          // doc.data() will be undefined in this case
+          console.log('No such document!');
+        }
+      });
+  };
+
+  const updateCommentCount = async() => {
+    await firebase.firestore()
+      .collection('globalPosts')
+      .doc(postID)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setCommentsCount(doc.data().commentsCount);
+        } else {
+          // doc.data() will be undefined in this case
+          console.log('No such document!');
+        }
+      });
+  };
+
+  //get number of replies associated with the comment
+  const getReplyCount = async() => {
+    await firebase.firestore()
+      .collection('comments')
+      .doc(postID)
+      .collection('comments')
+      .doc(replyData.commentID)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setReplyCount(doc.data().replyCount);
+        } else {
+          console.log('No such document for getting replyCount.');
+        }
+      });
+  };
+
+
+  const writeToUserNotifications = async() => {
+    if (commentorUID != posterUID) {
       await firebase.firestore()
         .collection('users')
         .doc(posterUID)
         .collection('notifications')
-        .doc(notificationUID)
-        .delete()
+        .add({
+          type: 1,
+          senderUID: commentorUID,
+          recieverUID: posterUID,
+          postID,
+          read: false,
+          date_created: new Date(),
+          recieverToken: '',
+        })
+        .then(docref => setNotificationUID(docref.id))
         .catch((error) => {
           console.error('Error writing document to user posts: ', error);
         });
+
+      const writeNotification = firebase.functions().httpsCallable('writeNotification');
+      writeNotification({
+        type: 1,
+        senderUID: commentorUID,
+        recieverUID: posterUID,
+        postID,
+        senderUsername: commentorUsername,
+      })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+
     }
-  
- //END OF NEW STUFF
+  };
+
+  const removeFromUserNotifications = async() => {
+    await firebase.firestore()
+      .collection('users')
+      .doc(posterUID)
+      .collection('notifications')
+      .doc(notificationUID)
+      .delete()
+      .catch((error) => {
+        console.error('Error writing document to user posts: ', error);
+      });
+  };
+
+  //END OF NEW STUFF
   const setViewsCount = async() => {
     await firebase.firestore()
       .collection('globalPosts')
@@ -766,29 +754,29 @@ $
       >
         {/* <CommentComponent postID={postID} replyTo={replyTo} replyData={replyData} /> */}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <View
-                style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 15, marginBottom: 15 }}
-              >
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingBottom: 15, marginBottom: 15 }}
+          >
 
-                <TextInput
-                    style={styles.inputBox}
-                    value={commentText}
-                    onChangeText={(commentText) => {
-                        setCommentText(commentText);
-                      }}
-                    placeholder=" Add a comment..."
-                    placeholderTextColor="#696969"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    multiline
-                    maxLength={400}
-                  />
+            <TextInput
+              style={styles.inputBox}
+              value={commentText}
+              onChangeText={(commentText) => {
+                  setCommentText(commentText);
+                }}
+              placeholder=" Add a comment..."
+              placeholderTextColor="#696969"
+              autoCapitalize="none"
+              autoCorrect={false}
+              multiline
+              maxLength={400}
+            />
 
-                <TouchableOpacity onPress={() => {addComment() }}>
-                    <MaterialCommunityIcons name="message" size={30} color="white" />
-                  </TouchableOpacity>
-              </View>
-          </TouchableWithoutFeedback>
+            <TouchableOpacity onPress={() => { addComment(); }}>
+              <MaterialCommunityIcons name="message" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </View>
 

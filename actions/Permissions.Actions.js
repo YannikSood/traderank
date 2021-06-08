@@ -17,7 +17,6 @@ export const fetchPermissions = () => (dispatch, getState) => Permissions.getAsy
 
 
     const token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
     return token;
   })
   .then((token) => {

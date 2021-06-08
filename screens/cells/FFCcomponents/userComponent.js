@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 import firebase from '../../../firebase'
 import { clearUser } from '../../../redux/app-redux';
-import { Ionicons } from '@expo/vector-icons';
 
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
@@ -35,14 +35,14 @@ class UserComponent extends React.Component {
         .doc(this.state.postID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    posterUID: doc.data().uid
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document!");
-            }
+          if (doc.exists) {
+            this.setState({
+              posterUID: doc.data().uid,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            console.log('No such document!');
+          }
         });
 
       await firebase.firestore()
@@ -50,16 +50,16 @@ class UserComponent extends React.Component {
         .doc(this.state.posterUID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
-                this.setState ({
-                    posterUsername: doc.data().username,
-                    posterPic: doc.data().profilePic,
-                    isLoading: false
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                    console.log("No such document!");
-            }
+          if (doc.exists) {
+            this.setState({
+              posterUsername: doc.data().username,
+              posterPic: doc.data().profilePic,
+              isLoading: false,
+            });
+          } else {
+            // doc.data() will be undefined in this case
+            console.log('No such document!');
+          }
         });
     }
 
@@ -82,40 +82,41 @@ class UserComponent extends React.Component {
 
 
     render() {
-        //We want to render a profile pic and username side by side lookin nice and clickable. 
-        //When clicked, the modal opens with all the user info. 
-        //You can follow/unfollow from here.    
-        if(this.state.isLoading){
-            return(
+      //We want to render a profile pic and username side by side lookin nice and clickable.
+      //When clicked, the modal opens with all the user info.
+      //You can follow/unfollow from here.
+      if (this.state.isLoading) {
+        return (
               <View>
-                <ActivityIndicator size="small" color="#9E9E9E"/>
+                <ActivityIndicator size="small" color="#9E9E9E" />
               </View>
-            )
-        }    
-        
-            return (
-                <View >
-                    <TouchableOpacity 
-                        style={{flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }} 
-                        onPress={() => this.getProfile()} >
+        );
+      }
 
-                        <Image
-                            source={ this.state.posterPic ? { uri: this.state.posterPic } : null}
-                            style={styles.thumbnail}
+      return (
+              <View>
+                  <TouchableOpacity
+                      style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center' }}
+                      onPress={() => this.getProfile()}>
+
+                      <Image
+                          source={this.state.posterPic ? { uri: this.state.posterPic } : null}
+                          style={styles.thumbnail}
                         />
-                        {/* <CachedImage
+                      {/* <CachedImage
                           source={{ uri: `${this.state.posterPic}` }}
                           cacheKey={`${this.state.posterPic}t`}
                           backgroundColor="transparent"
                           style={styles.thumbnail}
                         /> */}
-                        <Text style ={styles.tradeText}> {this.state.posterUsername}</Text>
-                        
+                      <Text style={styles.tradeText}> 
+{' '}
+{this.state.posterUsername}
+</Text>
+
                     </TouchableOpacity>
                 </View>
-            )
-        
-        
+      );
     }
 }
 

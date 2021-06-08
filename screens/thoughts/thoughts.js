@@ -133,7 +133,6 @@ const ThoughtsFeed = (props) => {
   //Uploads picture to storage so I didn't have to learn a new lib. Tired af.
   //TODO: Move pic upload to the backend
   const handleSubmit = async() => {
-    console.log(`${selectedId} ${text.trim()} `);
     if (selectedId === null) {
       Alert.alert(
         'wait',
@@ -245,7 +244,6 @@ const ThoughtsFeed = (props) => {
       if (pickerResult.cancelled === true) {
         setHasImage(false);
         setImage('');
-        console.log('pickerResult is cancelled');
         return;
       }
 
@@ -253,12 +251,9 @@ const ThoughtsFeed = (props) => {
         setHasImage(true);
         setImage(pickerResult.uri);
         setMediaType(pickerResult.type);
-        console.log(image);
-        console.log(pickerResult.type);
       } else {
         setImage('');
         setHasImage(false);
-        console.log('pickerResult is null');
         return;
       }
     } catch (error) {

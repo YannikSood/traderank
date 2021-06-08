@@ -297,7 +297,6 @@ class Profile extends React.Component {
           });
         })
         .catch((err) => {
-          console.log(`Error from pullUserInfo: ${err}`);
           reject(err);
         });
     }

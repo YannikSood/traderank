@@ -679,8 +679,8 @@ const ThoughtsComments = (props) => {
               style={styles.inputBox}
               value={commentText}
               onChangeText={(commentText) => {
-                  setCommentText(commentText);
-                }}
+                setCommentText(commentText);
+              }}
               placeholder=" Add a comment..."
               placeholderTextColor="#696969"
               autoCapitalize="none"

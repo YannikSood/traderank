@@ -12,6 +12,7 @@ import UserComponent from '../cells/FFCcomponents/userComponent';
 import CommentCellClass from '../cells/commentCellClass';
 import CommentComponent from '../cells/FFCcomponents/commentComponent';
 import CachedImage from '../image/CachedImage';
+
 const mapStateToProps = state => ({
   user: state.UserReducer.user,
 });
@@ -88,7 +89,6 @@ class SpecialClickedPostPage extends React.Component {
     }
 
     showPostPage = () => {
-      console.log(this.state.date_created);
       this.state.navigation.push('ClickedPostPage',
         {
           username: this.state.username,
@@ -175,10 +175,10 @@ $
 
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
               <CachedImage
-                  source={{ uri: `${this.state.image}` }}
-                  cacheKey={`${this.state.image}t`}
-                  backgroundColor="transparent"
-                  style={styles.fullScreenImage}
+                source={{ uri: `${this.state.image}` }}
+                cacheKey={`${this.state.image}t`}
+                backgroundColor="transparent"
+                style={styles.fullScreenImage}
               />
             </View>
           </Modal>
@@ -187,26 +187,26 @@ $
             <View style={{ flexDirection: 'row', padding: 6, justifyContent: 'space-between', alignItems: 'left' }}>
 
               <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
-                  <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
-                      <UserComponent
-                      postID={this.state.postID}
-                      navigation={this.props.navigation}
-                    />
-                    </View>
+                <View style={{ flexDirection: 'row', paddingLeft: 12 }}>
+                    <UserComponent
+                        postID={this.state.postID}
+                        navigation={this.props.navigation}
+                      />
+                  </View>
 
-                </View>
+              </View>
 
               <View style={{ flexDirection: 'column', paddingTop: 10, paddingRight: 10 }}>
-                  <Text style={styles.tradeText}>
+                <Text style={styles.tradeText}>
 $
-                      {this.state.ticker}
-                    </Text>
-                  <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
+                    {this.state.ticker}
+                  </Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', alignContent: 'center', color: '#696969', paddingRight: 10 }}>
 #
-                      {this.state.security}
-                      {' '}
-                    </Text>
-                </View>
+                    {this.state.security}
+                    {' '}
+                  </Text>
+              </View>
 
 
             </View>
@@ -220,11 +220,11 @@ $
             style={{ alignItems: 'center', marginLeft: Dimensions.get('window').width * 0.2, marginRight: Dimensions.get('window').width * 0.2 }}
           >
 
-              <CachedImage
-                  source={{ uri: `${this.state.image}` }}
-                  cacheKey={`${this.state.image}t`}
-                  backgroundColor="transparent"
-                  style={styles.thumbnail}
+            <CachedImage
+                source={{ uri: `${this.state.image}` }}
+                cacheKey={`${this.state.image}t`}
+                backgroundColor="transparent"
+                style={styles.thumbnail}
               />
           </TouchableOpacity>
 

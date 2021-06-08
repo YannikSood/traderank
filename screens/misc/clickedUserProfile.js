@@ -146,7 +146,6 @@ class ClickedUserProfile extends React.Component {
             posterInstagram: result.data.posterInstagram,
             isLoading: false,
           });
-          console.log('date joined');
         }).catch((error) => {
           console.log(error);
         });
