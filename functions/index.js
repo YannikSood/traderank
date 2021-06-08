@@ -7,6 +7,7 @@ const algoliasearch = require('algoliasearch');
 
 const client = algoliasearch('5BS4R91W97', '1dd2a5427b3daed5059c1dc62bdd2197');
 const index = client.initIndex('usernames');
+const tickerIndex = client.initIndex('tickers');
 
 admin.initializeApp();
 
@@ -720,20 +721,6 @@ exports.sendCommentReplyNotification = functions.https.onCall((data, context) =>
 
 //Function to add new user to algolio 
 exports.addUserToAlgolia = functions.https.onCall((data, context) => {
-    // admin.firestore()
-    // .collection('usernames')
-    // .doc(data.username)
-    // .get()
-    // .then(function(doc) {
-    //     if(doc.exists){
-
-    //     } else{
-    //         console.log("No such document!");
-    //         return
-    //     }
-    // }).catch(function(error){
-    //     console.error("Error finding user: ", error);
-    // })
     const record = {
         "username": data.username,
         "objectID": data.uid,
@@ -749,6 +736,23 @@ exports.addUserToAlgolia = functions.https.onCall((data, context) => {
         .catch(err => {
             console.log('Error when indexing contact into Algolia', err);
         })
+
+});
+
+exports.addTickerToAlgolia = functions.https.onCall((data, context) => {
+    const record = {
+        "ticker": data.ticker,
+        "objectID" : data.ticker
+    }
+    tickerIndex.
+        saveObject(record)
+        .then(() => {
+            console.log(`${data.ticker} ticker added to Algolia`);
+        })
+        .catch(err => {
+            console.log('Error adding ticker to algolia');
+        })
+
 
 });
 

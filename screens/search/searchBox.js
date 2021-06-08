@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     height: 48,
     padding: 12,
     fontSize: 16,
+    marginBottom: 10,
     width:  Dimensions.get('window').width-20,
     backgroundColor: '#fff',
     borderRadius: 4,
@@ -36,7 +37,6 @@ const SearchBox = ({ currentRefinement, refine, navigation }) => {
 
   const storeSearchItem = async(value) => {
     try {
-      console.log(`storing search item: ${value}`);
       await AsyncStorage.setItem('searchItem', value);
     } catch (e) {
       // saving error
@@ -46,12 +46,9 @@ const SearchBox = ({ currentRefinement, refine, navigation }) => {
 
 
   let input = currentRefinement;
-  console.log(input);
   if(input.length > 0 && input.charAt(0) === '$'){
-    console.log("Searching... tickers")
     storeSearchItem("ticker");
   } else{
-    console.log("Searching users...");
     storeSearchItem("username");
   }
   return (

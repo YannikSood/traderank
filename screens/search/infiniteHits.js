@@ -34,7 +34,6 @@ const InfiniteHits = ({ hits, hasMore, refineNext, navigation, index }) => {
       const value = await AsyncStorage.getItem('searchItem');
       if (value !== null) {
         setSearchItem(value);
-        console.log(`searchItem from infiniteHits ${searchItem}`);
       }
     } catch (e) {
       // error reading value
@@ -44,7 +43,7 @@ const InfiniteHits = ({ hits, hasMore, refineNext, navigation, index }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       getSearchItem();
-    }, 100);
+    }, 10);
     return () => clearInterval(interval);
   })
 return (
@@ -74,7 +73,7 @@ return (
             marginLeft: 5,
             padding: 0 }}
         >
-          <Text style={{ fontSize: 16, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingLeft: 10 }}>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', alignContent: 'center', color: '#FFFFFF', paddingLeft: 10, paddingRight: 10 }}>
             {item.ticker}
           </Text>
           </TouchableOpacity>

@@ -85,8 +85,7 @@ class Search extends Component {
   readSearchItem = () => {
     const interval = setInterval(() => {
       this.getSearchItem();
-      console.log(`searchItem: ${this.state.searchItem}`);
-    }, 100);
+    }, 10);
     return () => clearInterval(interval);
   }
 
@@ -130,15 +129,16 @@ class Search extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        flex: 1,
         justifyContent: 'center',
         alignItems: "center",
-        backgroundColor: '#000000'
+        backgroundColor: '#000000',
     },
     searchContainer: {
         backgroundColor: '#121212',
-        // position: 'absolute',
-        top: 0
+        position: 'absolute',
+        top: 0,
+        left: 0
     },
     bioText: {
         fontSize: 16,
