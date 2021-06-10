@@ -45,6 +45,7 @@ const ThoughtsFeed = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('DISCUSS');
+  const [categoryChanged, setCategoryChanged] = useState(false);
   const [image, setImage] = useState('');
   const [hasImage, setHasImage] = useState(false);
   const [hasLink, setHasLink] = useState(false);
@@ -75,8 +76,11 @@ const ThoughtsFeed = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
+    setIsLoading(categoryChanged);
     getCollection();
-  }, [selectedCategory]);
+  }, [categoryChanged]);
+
+  // if (!categoryChanged) return null;
 
   const refresh = () => {
     setIsLoading(true);
@@ -97,6 +101,11 @@ const ThoughtsFeed = (props) => {
     setText('');
   };
 
+  const changeCategory = (rowData) => {
+    setCategoryChanged(true);
+    setSelectedCategory(rowData);
+  };
+
   const getCollection = async() => {
     const index = 1;
     const getThoughtsOneCategory = await firebase.functions().httpsCallable('getThoughtsOneCategory');
@@ -105,7 +114,8 @@ const ThoughtsFeed = (props) => {
       category: selectedCategory,
     }).then((result) => {
       setThoughts(result.data);
-      setIsLoading(false);
+      setCategoryChanged(false);
+      // setIsLoading(false);
     }).catch((err) => {
       console.log(err);
     });
@@ -489,7 +499,7 @@ const ThoughtsFeed = (props) => {
           style={styles.flatList}
           renderItem={({ item: rowData }) => (
             <TouchableOpacity
-              onPress={() => setSelectedCategory(rowData)}
+              onPress={() => changeCategory(rowData)}
               style={rowData === selectedCategory ? styles.selected : styles.unselected}
             >
               <Text style={{ fontWeight: 'bold', color: '#FFFFFF', padding: 6 }}>

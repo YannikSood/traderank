@@ -232,7 +232,7 @@ const App = () => (
           name="SingleStockPosts"
           component={SingleStockPosts}
           options={({ route }) => ({
-            title: route.params.ticker,
+            title: `$${route.params.ticker}`,
             headerTitleStyle: {
               fontWeight: 'bold',
               fontSize: 25,

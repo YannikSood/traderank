@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Container, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { InstantSearch, connectRefinementList } from 'react-instantsearch-native';
+import { InstantSearch, connectRefinementList, Index, Configure } from 'react-instantsearch-native';
 import algoliasearch from 'algoliasearch/lite';
 import * as Analytics from 'expo-firebase-analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchBox from './searchBox';
 import InfiniteHits from './infiniteHits';
 import RefinementList from './refinementList';
@@ -13,9 +14,12 @@ const VirtualRefinementList = connectRefinementList(() => null);
 //Need to put this in secret file and add that to .gitignore
 const searchClient = algoliasearch(
   '5BS4R91W97',
-  '1dd2a5427b3daed5059c1dc62bdd2197',
+  '0207d80e22ad5ab4d65fe92fed7958d7',
 );
 
+/**
+ * Get searchItem and make it be item.ticker or item.username via setInterval 500
+ */
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -26,9 +30,14 @@ class Search extends Component {
       searchState: {},
       refresh: false,
       navigation: this.props.navigation,
+      searchItem: '',
     };
     Analytics.logEvent('Search_Clicked');
     Analytics.setCurrentScreen('SearchScreen');
+  }
+
+  componentDidMount() {
+    this.readSearchItem();
   }
 
     root = {
@@ -61,6 +70,25 @@ class Search extends Component {
     );
   };
 
+  getSearchItem = async() => {
+    try {
+      const value = await AsyncStorage.getItem('searchItem');
+      if (value !== null) {
+        this.setState({ searchItem: value });
+      }
+    } catch (e) {
+      // error reading value
+      console.log(`Error getting searchItem... ${e}`);
+    }
+  };
+
+  readSearchItem = () => {
+    const interval = setInterval(() => {
+      this.getSearchItem();
+    }, 10);
+    return () => clearInterval(interval);
+  }
+
 
   render() {
     const { refresh, searchState } = this.state;
@@ -75,21 +103,18 @@ class Search extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.searchContainer}>
+
           <InstantSearch
             searchClient={searchClient}
-            indexName="usernames"
+            indexName={this.state.searchItem == 'username' ? 'usernames' : 'tickers'}
             refresh={refresh}
             searchState={searchState}
             onSearchStateChange={this.onSearchStateChange}
             root={this.root}
           >
-            {/* <VirtualRefinementList attribute="username" /> */}
-            <SearchBox />
-            {/* <RefinementList attribute="username" limit={5} /> */}
+            <SearchBox navigation={this.state.navigation} />
 
-            <InfiniteHits navigation={this.state.navigation} />
 
-            {/* <Highlight key={index} attribute="username" hit={item} navigation={navigation} /> */}
           </InstantSearch>
 
         </View>
@@ -101,15 +126,16 @@ class Search extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000000',
   },
   searchContainer: {
     backgroundColor: '#121212',
-    // position: 'absolute',
+    position: 'absolute',
     top: 0,
+    left: 0,
   },
   bioText: {
     fontSize: 16,

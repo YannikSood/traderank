@@ -47,6 +47,9 @@ class YoloConfirm extends React.Component {
       });
     }
 
+          
+
+
     onSubmit = async() => {
       //create a new document in firestore with the path posts/uid/posts/postID
       //get the newly created post ID (docRef.id)
@@ -54,6 +57,8 @@ class YoloConfirm extends React.Component {
       //now we have the screenshot stored baby
 
       Analytics.logEvent('Trade_Posted');
+
+
 
       await firebase.firestore()
         .collection('globalPosts')
@@ -89,6 +94,18 @@ class YoloConfirm extends React.Component {
         })
         .catch((error) => {
           console.error('Error writing document to global posts: ', error);
+        });
+        
+        //add ticker to algolia
+        const addTickerToAlgolia = firebase.functions().httpsCallable('addTickerToAlgolia');
+        addTickerToAlgolia({
+          ticker: `$${this.state.ticker}`
+        })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
         });
 
       await firebase.firestore()

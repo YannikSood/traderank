@@ -90,6 +90,18 @@ class GainTradeConfirm extends React.Component {
           console.error('Error writing document to global posts: ', error);
         });
 
+        //add ticker to algolia for search
+        const addTickerToAlgolia = firebase.functions().httpsCallable('addTickerToAlgolia');
+        addTickerToAlgolia({
+          ticker: `$${this.state.ticker}`
+        })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
       //And now we are storing user posts. Now, we do the same thing for global posts, to display in the global feed
       await firebase.firestore()
         .collection('gain')

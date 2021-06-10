@@ -54,7 +54,7 @@ const RefinementList = ({ items, refine }) => (
             onPress={() => refine(item.value)}
             style={styles.item}
           >
-            <Text style={labelStyle}>{item.username}</Text>
+            <Text style={labelStyle}>{item.ticker}</Text>
           </TouchableOpacity>
         );
       })}
