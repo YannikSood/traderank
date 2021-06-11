@@ -27,7 +27,7 @@ class Create extends React.Component {
         {/* <Text style={styles.headerText}>get ranked</Text> */}
 
         {/* <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}> */}
-        <View style={{ flexDirection: 'column' }}>
+        <View style={{ flexDirection: 'column', paddingTop: 100 }}>
           <Text style={styles.subheaderText}>holding?</Text>
 
           <TouchableOpacity
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     backgroundColor: '#000000',
   },
   yoloButton: {

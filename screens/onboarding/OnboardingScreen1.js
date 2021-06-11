@@ -26,7 +26,7 @@ const OnboardingScreen1 = (props) => {
       .set({
         firstOpen: false,
       }, { merge: true });
-      
+
     navigation.reset({
       index: 0,
       routes: [{ name: 'Tabs' }],

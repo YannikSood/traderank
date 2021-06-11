@@ -211,7 +211,7 @@ const App = () => (
             headerBackTitle: '',
           }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Leaderboard"
           component={LBTopTabs}
           options={{
@@ -227,7 +227,7 @@ const App = () => (
             },
             headerBackTitle: '',
           }}
-        />
+        /> */}
         <Stack.Screen
           name="SingleStockPosts"
           component={SingleStockPosts}
@@ -250,6 +250,23 @@ const App = () => (
           component={Search}
           options={{
             title: 'search',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 25,
+              color: '#FFFFFF',
+            },
+            headerStyle: {
+              backgroundColor: '#121212',
+              shadowColor: 'transparent',
+            },
+            headerBackTitle: '',
+          }}
+        />
+        <Stack.Screen
+          name="Create"
+          component={createFlowStack}
+          options={{
+            title: null,
             headerTitleStyle: {
               fontWeight: 'bold',
               fontSize: 25,
@@ -469,13 +486,6 @@ const App = () => (
                   <Ionicons name="ios-search" size={25} color="white" />
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={{ paddingRight: 20 }}
-                  onPress={() => navigation.navigate('Leaderboard')}
-                >
-                  <Ionicons name="ios-trophy" size={25} color="#FFD700" />
-                </TouchableOpacity>
-
               </View>
 
             ),
@@ -550,19 +560,6 @@ function Tabs() {
         }}
       />
 
-      {/* <Tab.Screen
-        name="ChatRooms"
-        component={chatRoomsStackView}
-        options={{
-          tabBarLabel: ' ',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-chatbubbles" size={25} color={color} />
-          ),
-          tabBarBadge: renderChatBadge(),
-
-
-        }}
-      /> */}
       <Tab.Screen
         name="Thoughts"
         component={ThoughtsFeed}
@@ -577,14 +574,13 @@ function Tabs() {
         }}
       />
 
-
       <Tab.Screen
-        name="Create"
-        component={createFlowStack}
+        name="Leaderboard"
+        component={LBTopTabs}
         options={{
           tabBarLabel: ' ',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-add-circle" size={28} color={color} />
+            <Ionicons name="ios-trophy" size={size} color={color} />
           ),
         }}
 

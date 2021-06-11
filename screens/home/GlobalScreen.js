@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import * as Analytics from 'expo-firebase-analytics';
 import { useScrollToTop } from '@react-navigation/native';
 import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
+import { Ionicons } from '@expo/vector-icons';
 import FeedCellClass from '../cells/feedCellClass.js';
 import firebase from '../../firebase';
 // import PostsReducer from '../../redux/Posts.Reducer';
@@ -235,6 +236,12 @@ const GlobalScreen = (props) => {
         onEndReached={handleFetchMorePosts}
       />
       <KeyboardSpacer />
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => navigation.push('Create')}
+      >
+        <Ionicons name="add-circle-sharp" size={70} color="#07dbd1" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -336,6 +343,15 @@ const styles = StyleSheet.create({
   },
   twoPickerItems: {
     height: 88,
+  },
+  createButton: {
+    // width: 60,
+    // height: 60,
+    // borderRadius: 30,
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
 });
 
