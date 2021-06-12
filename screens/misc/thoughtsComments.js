@@ -164,6 +164,8 @@ const ThoughtsComments = (props) => {
     if (replyTo.length > 0) {
       addReplyComment();
       fetchCollection(); //makes it refresh after comment is added
+      setCommentText('');
+      clearStorage();
     } else {
       addCommentToDB(); //regular comment
       fetchCollection(); //makes it refresh after comment is added
@@ -196,6 +198,7 @@ const ThoughtsComments = (props) => {
         })
         .then(() => {
           setCommentText('');
+          setReplyTo('');
         })
         .catch((error) => {
           console.error('Error: ', error);
