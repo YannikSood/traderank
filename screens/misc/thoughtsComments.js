@@ -39,6 +39,8 @@ const ThoughtsComments = (props) => {
   const [notificationUID, setNotificationUID] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
+  let interval;
+
   useEffect(() => {
     clearStorage();
     setReplyTo('');
@@ -64,6 +66,29 @@ const ThoughtsComments = (props) => {
 
     fetchCollection();
   }, []);
+
+  const getReplyTo = async() => {
+    try {
+      const value = await AsyncStorage.getItem('replyTo');
+      if (value !== null && value !== replyTo) {
+        setCommentText(`@${value}`);
+        setReplyTo(value);
+        clearInterval(interval);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  const getReplyData = async() => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('replyData');
+      setReplyData(JSON.parse(jsonValue));
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
 
   const clearReplyTo = async() => {
     try {
@@ -117,6 +142,18 @@ const ThoughtsComments = (props) => {
     };
     getReplyData();
   }, [replyTo]);
+
+    //listening to replyTo from misc/screens/cells/commentReplyCell.js
+    useEffect(() => {
+      if (commentText.length == 0) {
+        interval = setInterval(() => {
+          getReplyTo();
+          getReplyData();
+        }, 1000);
+        return () => clearInterval(interval);
+      }
+    }, [commentText]);
+  
 
   const refresh = () => {
     setIsLoading(true);
@@ -315,7 +352,7 @@ const ThoughtsComments = (props) => {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          setPosterUID(doc.data().uid);
+          //setPosterUID(doc.data().uid);
           setCommentsCount(doc.data().commentsCount);
         } else {
           // doc.data() will be undefined in this case
