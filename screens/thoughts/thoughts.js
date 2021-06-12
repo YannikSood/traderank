@@ -76,9 +76,8 @@ const ThoughtsFeed = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    setIsLoading(categoryChanged);
     getCollection();
-  }, [categoryChanged]);
+  }, [selectedCategory]);
 
   // if (!categoryChanged) return null;
 
@@ -114,8 +113,8 @@ const ThoughtsFeed = (props) => {
       category: selectedCategory,
     }).then((result) => {
       setThoughts(result.data);
-      setCategoryChanged(false);
-      // setIsLoading(false);
+      // setCategoryChanged(false);
+      setIsLoading(false);
     }).catch((err) => {
       console.log(err);
     });
@@ -499,7 +498,7 @@ const ThoughtsFeed = (props) => {
           style={styles.flatList}
           renderItem={({ item: rowData }) => (
             <TouchableOpacity
-              onPress={() => changeCategory(rowData)}
+              onPress={() => setSelectedCategory(rowData)}
               style={rowData === selectedCategory ? styles.selected : styles.unselected}
             >
               <Text style={{ fontWeight: 'bold', color: '#FFFFFF', padding: 6 }}>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import {  Alert, Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, ActivityIndicator } from 'react-native';
 import TimeAgo from 'react-native-timeago';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,8 +12,16 @@ import CommentIconComponent from './FFCcomponents/commentIconComponent';
 import CommentReplyCellClass from './commentReplyCell'; 
 import { Entypo } from '@expo/vector-icons';
 
-const CommentCellClass = ({ commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation, extraData, user }) => {
-//   const { commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation } = props.params;
+const mapStateToProps  = (state) => {
+  const { UserReducer } = state;
+  return {
+    user: UserReducer.user,
+  };
+};
+
+
+const CommentCellClass = (props) => {
+  const { commentLikes, commentText, commentorUID, commentorUsername, date_created, commentID, postID, button, replyCount, navigation, user } = props;
 
 
   const [isLoading, setIsLoading] = useState(false);
@@ -353,4 +362,5 @@ const styles = StyleSheet.create({
 
 });
 
-export default CommentCellClass;
+
+export default connect(mapStateToProps)(CommentCellClass);
