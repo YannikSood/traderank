@@ -135,10 +135,11 @@ const ClickedPostPage = (props) => {
   const getReplyTo = async() => {
     try {
       const value = await AsyncStorage.getItem('replyTo');
-      if (value !== null && value !== replyTo) {
+      //console.log(`${value} from thoughtsComments`);
+      if ( value !== replyTo && value !== null) {
         setCommentText(`@${value}`);
         setReplyTo(value);
-        clearInterval(interval);
+        //clearInterval(interval);
       }
     } catch (e) {
       // error reading value
@@ -148,13 +149,13 @@ const ClickedPostPage = (props) => {
 
   //listening to replyTo from misc/screens/cells/commentReplyCell.js
   useEffect(() => {
-    if (commentText.length == 0) {
+    //if (commentText.length == 0) {
       interval = setInterval(() => {
         getReplyTo();
         getReplyData();
-      }, 1000);
+      }, 100);
       return () => clearInterval(interval);
-    }
+    //}
   }, [commentText]);
 
 

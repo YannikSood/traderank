@@ -70,10 +70,11 @@ const ThoughtsComments = (props) => {
   const getReplyTo = async() => {
     try {
       const value = await AsyncStorage.getItem('replyTo');
-      if (value !== null && value !== replyTo) {
+      //console.log(`${value} from thoughtsComments`);
+      if ( value !== replyTo && value !== null) {
         setCommentText(`@${value}`);
         setReplyTo(value);
-        clearInterval(interval);
+        //clearInterval(interval);
       }
     } catch (e) {
       // error reading value
@@ -131,27 +132,18 @@ const ThoughtsComments = (props) => {
     getReplyTo();
 
 
-    const getReplyData = async() => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('replyData');
-        setReplyData(JSON.parse(jsonValue));
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      } catch (e) {
-        // error reading value
-      }
-    };
     getReplyData();
   }, [replyTo]);
 
     //listening to replyTo from misc/screens/cells/commentReplyCell.js
     useEffect(() => {
-      if (commentText.length == 0) {
+      //if (commentText.length == 0) {
         interval = setInterval(() => {
           getReplyTo();
           getReplyData();
-        }, 1000);
+        }, 100);
         return () => clearInterval(interval);
-      }
+      //}
     }, [commentText]);
   
 
@@ -662,7 +654,7 @@ const ThoughtsComments = (props) => {
               commentLikes: 0,
               //may need to change
             };
-            console.log(replyDataObj);
+            //console.log(replyDataObj);
 
             //replyData that will be stored in the DB
             const storeReplyData = async(value) => {
