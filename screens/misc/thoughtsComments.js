@@ -39,6 +39,8 @@ const ThoughtsComments = (props) => {
   const [notificationUID, setNotificationUID] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
+  let interval;
+
   useEffect(() => {
     clearStorage();
     setReplyTo('');
@@ -64,6 +66,30 @@ const ThoughtsComments = (props) => {
 
     fetchCollection();
   }, []);
+
+  const getReplyTo = async() => {
+    try {
+      const value = await AsyncStorage.getItem('replyTo');
+      //console.log(`${value} from thoughtsComments`);
+      if ( value !== replyTo && value !== null) {
+        setCommentText(`@${value}`);
+        setReplyTo(value);
+        //clearInterval(interval);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  const getReplyData = async() => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('replyData');
+      setReplyData(JSON.parse(jsonValue));
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
 
   const clearReplyTo = async() => {
     try {
@@ -106,17 +132,20 @@ const ThoughtsComments = (props) => {
     getReplyTo();
 
 
-    const getReplyData = async() => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('replyData');
-        setReplyData(JSON.parse(jsonValue));
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      } catch (e) {
-        // error reading value
-      }
-    };
     getReplyData();
   }, [replyTo]);
+
+    //listening to replyTo from misc/screens/cells/commentReplyCell.js
+    useEffect(() => {
+      //if (commentText.length == 0) {
+        interval = setInterval(() => {
+          getReplyTo();
+          getReplyData();
+        }, 100);
+        return () => clearInterval(interval);
+      //}
+    }, [commentText]);
+  
 
   const refresh = () => {
     setIsLoading(true);
@@ -127,6 +156,8 @@ const ThoughtsComments = (props) => {
     if (replyTo.length > 0) {
       addReplyComment();
       fetchCollection(); //makes it refresh after comment is added
+      setCommentText('');
+      clearStorage();
     } else {
       addCommentToDB(); //regular comment
       fetchCollection(); //makes it refresh after comment is added
@@ -159,6 +190,7 @@ const ThoughtsComments = (props) => {
         })
         .then(() => {
           setCommentText('');
+          setReplyTo('');
         })
         .catch((error) => {
           console.error('Error: ', error);
@@ -315,7 +347,7 @@ const ThoughtsComments = (props) => {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          setPosterUID(doc.data().uid);
+          //setPosterUID(doc.data().uid);
           setCommentsCount(doc.data().commentsCount);
         } else {
           // doc.data() will be undefined in this case
@@ -622,7 +654,7 @@ const ThoughtsComments = (props) => {
               commentLikes: 0,
               //may need to change
             };
-            console.log(replyDataObj);
+            //console.log(replyDataObj);
 
             //replyData that will be stored in the DB
             const storeReplyData = async(value) => {
