@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {  Alert, View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, ActivityIndicator } from 'react-native';
 import TimeAgo from 'react-native-timeago';
 import Modal from 'react-native-modal';
@@ -14,65 +14,55 @@ import CachedImage from '../image/CachedImage';
 
 //The cell you see when you scroll through the home screen
 
-class FeedCellClass extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: this.props.username,
-      image: this.props.image,
-      ticker: this.props.ticker,
-      security: this.props.security,
-      description: this.props.description,
-      profit_loss: this.props.profit_loss,
-      percent_gain_loss: this.props.percent_gain_loss,
-      gain_loss: this.props.gain_loss,
-      postID: this.props.postID,
-      navigation: this.props.navigation,
-      date_created: this.props.date_created,
-      viewsCount: this.props.viewsCount,
-      isLoaded: false,
-      currentUser: firebase.auth().currentUser.uid,
-      posterUID: this.props.uid,
-      currentUserPosted: false,
-      modalOpen: false,
-    };
-  }
+const FeedCellClass = (props) => {
+      const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, navigation, date_created, viewsCount, posterUID} = props;
+ 
 
-  componentDidMount() {
-    setTimeout(
-      function() {
-          this.setState({isLoaded: true});
-      }
-      .bind(this),
-      500
+      const [isLoaded, setIsLoaded] = useState(false);
+      const currentUser = firebase.auth().currentUser.uid;
+      const [currentUserPosted, setCurrentUserPosted] = useState(false);
+      const [modalOpen, setModalOpen] = useState(false);
+    
+  
+  useEffect(() => {
+    // setTimeout(
+    //   function() {
+    //       setIsLoaded(true);
+    //   }
+    //   .bind(this),
+    //   500
+    // );
+    setTimeout(() => setIsLoaded(true), 500)
+
+    if (posterUID == currentUser) {
+      setCurrentUserPosted(true);
+    }
+
+  })
+
+  if (isLoaded === false) {
+    setIsLoaded(true);
+    return (
+      <View style={{ flexDirection: 'row', color: '#FFFFFF' }}>
+        <ActivityIndicator size="large" color="#9E9E9E" />
+      </View>
     );
-    if (this.state.isLoaded === false) {
-      return (
-        <View style={{ flexDirection: 'row', color: '#FFFFFF' }}>
-          <ActivityIndicator size="large" color="#9E9E9E" />
-        </View>
-      );
-      this.setState({ isLoaded: true });
-    }
-
-    if (this.state.posterUID == this.state.currentUser) {
-      this.setState({ currentUserPosted: true });
-    }
+   
   }
 
-    renderGainLoss = () => {
-      if (this.state.gain_loss === 'gain') {
+    const renderGainLoss = () => {
+      if (gain_loss === 'gain') {
         return (
           <View styles={{ flexDirection: 'row' }}>
             <Text style={styles.pnlContainer}>
               <Text style={styles.gainText}>
   $
-                {this.state.profit_loss}
+                {profit_loss}
               </Text>
 
               <Text style={styles.regularTradeText}> 🚀</Text>
               <Text style={styles.gainText}>
-                {this.state.percent_gain_loss}
+                {percent_gain_loss}
   %
               </Text>
             </Text>
@@ -81,18 +71,18 @@ class FeedCellClass extends React.Component {
 
         );
       }
-      if (this.state.gain_loss === 'loss') {
+      if (gain_loss === 'loss') {
         return (
           <View styles={{ flexDirection: 'row' }}>
             <Text style={styles.pnlContainer}>
               <Text style={styles.lossText}>
 -$
-                {this.state.profit_loss}
+                {profit_loss}
               </Text>
               <Text style={styles.tradeText}> 🥴 </Text>
               <Text style={styles.lossText}>
 -
-                {this.state.percent_gain_loss}
+                {percent_gain_loss}
 %
               </Text>
               {/* <Text style={styles.tradeText}> on </Text> */}
@@ -106,7 +96,7 @@ class FeedCellClass extends React.Component {
             <Text style={styles.pnlContainer}>
               <Text style={styles.yoloText}>
     $
-                {this.state.profit_loss}
+                {profit_loss}
 
     🙏TRADE
               </Text>
@@ -118,32 +108,32 @@ class FeedCellClass extends React.Component {
       );
     }
 
-    showPostPage = () => {
-      // console.log(this.state.date_created);
-      this.state.navigation.push('ClickedPostPage',
+    const showPostPage = () => {
+      // console.log(date_created);
+      navigation.push('ClickedPostPage',
         {
-          username: this.state.username,
-          image: this.state.image,
-          ticker: this.state.ticker,
-          security: this.state.security,
-          description: this.state.description,
-          profit_loss: this.state.profit_loss,
-          percent_gain_loss: this.state.percent_gain_loss,
-          gain_loss: this.state.gain_loss,
-          postID: this.state.postID,
-          date_created: this.state.date_created,
+          username: username,
+          image: image,
+          ticker: ticker,
+          security: security,
+          description: description,
+          profit_loss: profit_loss,
+          percent_gain_loss: percent_gain_loss,
+          gain_loss: gain_loss,
+          postID: postID,
+          date_created: date_created,
         });
     }
 
-    renderCellComponents = () => {
-      if (this.state.posterUID == this.state.currentUser) {
+    const renderCellComponents = () => {
+      if (posterUID == currentUser) {
         return (
           <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingLeft: 4, color: '#FFFFFF' }}>
 
             <View style={styles.buttonContainer}>
 
               <View style={{ paddingTop: 2 }}>
-                <LikeComponent postID={this.state.postID} />
+                <LikeComponent postID={postID} />
 
               </View>
 
@@ -151,11 +141,11 @@ class FeedCellClass extends React.Component {
 
             <TouchableOpacity
               style={styles.buttonContainer}
-              onPress={() => this.showPostPage()}
+              onPress={() => showPostPage()}
             >
 
 
-              <CommentIconComponent postID={this.state.postID} />
+              <CommentIconComponent postID={postID} />
 
             </TouchableOpacity>
 
@@ -163,7 +153,7 @@ class FeedCellClass extends React.Component {
 
               <View style={{ paddingBottom: 2, flexDirection: 'row' }}>
                 <Ionicons name="eye-sharp" size={24} color="white" />
-                <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{this.state.viewsCount}</Text>
+                <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{viewsCount}</Text>
               </View>
 
             </View>
@@ -172,10 +162,10 @@ class FeedCellClass extends React.Component {
             <View style={styles.buttonContainer}>
 
               <ShareComponent
-                postID={this.state.postID}
-                image={this.state.image}
-                gain_loss={this.state.gain_loss}
-                profit_loss={this.state.profit_loss}
+                postID={postID}
+                image={image}
+                gain_loss={gain_loss}
+                profit_loss={profit_loss}
               />
 
             </View>
@@ -184,7 +174,7 @@ class FeedCellClass extends React.Component {
             <View style={styles.buttonContainer}>
 
               <View style={{ paddingBottom: 4 }}>
-                <DeleteComponent postID={this.state.postID} postType={this.state.gain_loss} />
+                <DeleteComponent postID={postID} postType={gain_loss} />
               </View>
 
             </View>
@@ -199,17 +189,17 @@ class FeedCellClass extends React.Component {
 
           <View style={styles.buttonContainer}>
 
-            <LikeComponent postID={this.state.postID} />
+            <LikeComponent postID={postID} />
 
           </View>
 
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() => this.showPostPage()}
+            onPress={() => showPostPage()}
           >
 
 
-            <CommentIconComponent postID={this.state.postID} />
+            <CommentIconComponent postID={postID} />
 
           </TouchableOpacity>
 
@@ -218,7 +208,7 @@ class FeedCellClass extends React.Component {
 
             <View style={{ paddingBottom: 2, flexDirection: 'row' }}>
               <Ionicons name="eye-sharp" size={24} color="white" />
-              <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{this.state.viewsCount}</Text>
+              <Text style={{ color: '#FFFFFF', paddingLeft: 4, paddingTop: 4 }}>{viewsCount}</Text>
             </View>
 
           </View>
@@ -226,10 +216,10 @@ class FeedCellClass extends React.Component {
           <View style={styles.buttonContainer}>
 
             <ShareComponent
-              postID={this.state.postID}
-              image={this.state.image}
-              gain_loss={this.state.gain_loss}
-              profit_loss={this.state.profit_loss}
+              postID={postID}
+              image={image}
+              gain_loss={gain_loss}
+              profit_loss={profit_loss}
             />
 
           </View>
@@ -239,17 +229,17 @@ class FeedCellClass extends React.Component {
       );
     }
 
-    openImageModal = () => {
-      this.setState({ modalOpen: true });
+    const openImageModal = () => {
+      setModalOpen(true);
     }
 
-    closeImageModal = () => {
-      this.setState({ modalOpen: false });
+    const closeImageModal = () => {
+      setModalOpen(false);
     }
 
 
-    render() {
-      if (this.state.isLoaded === false) {
+
+      if (isLoaded === false) {
         return (
           <View style={styles.gainFeedCell}>
             <ActivityIndicator size="large" color="#9E9E9E" />
@@ -261,19 +251,19 @@ class FeedCellClass extends React.Component {
         <View style={styles.gainFeedCell}>
 
           <Modal
-            isVisible={this.state.modalOpen}
+            isVisible={modalOpen}
             animationIn="fadeIn"
-            onSwipeComplete={() => this.closeImageModal()}
+            onSwipeComplete={() => closeImageModal()}
             swipeDirection="down"
           >
 
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
 
 
-            { this.state.isLoaded === true ? 
+            { isLoaded === true ? 
                 <CachedImage
-                  source={{ uri: `${this.state.image}` }}
-                  cacheKey={`${this.state.image}t`}
+                  source={{ uri: `${image}` }}
+                  cacheKey={`${image}t`}
                   backgroundColor="transparent"
                   style={styles.fullScreenImage}
                 />
@@ -289,7 +279,7 @@ class FeedCellClass extends React.Component {
 
             <View style={{ flexDirection: 'column', paddingTop: 10, paddingLeft: 4 }}>
               <View style={{ flexDirection: 'row', paddingLeft: 17 }}>
-                <MiscUserComponent uid={this.state.posterUID} navigation={this.state.navigation} />
+                <MiscUserComponent uid={posterUID} navigation={navigation} />
               </View>
 
 
@@ -315,17 +305,17 @@ class FeedCellClass extends React.Component {
 
             <Text style={styles.descriptionText}>
 
-              {this.state.description}
+              {description}
             </Text>
 
           </View>
 
 
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingBottom: 5 }}>
-            { this.renderGainLoss() }
+            {renderGainLoss() }
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('SingleStockPosts', {
-                ticker: this.state.ticker,
+              onPress={() => props.navigation.navigate('SingleStockPosts', {
+                ticker: ticker,
               })
                         }
               style={{ backgroundColor: 'transparent',
@@ -339,25 +329,25 @@ class FeedCellClass extends React.Component {
             >
               <Text style={styles.tradeText}>
                         $
-                {this.state.ticker}
+                {ticker}
               </Text>
 
             </TouchableOpacity>
 
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#696969', paddingTop: 10, marginLeft: 10 }}>
     #
-              {this.state.security}
+              {security}
               {' '}
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => this.openImageModal()}>
+          <TouchableOpacity onPress={() => openImageModal()}>
             <View style={styles.thumbnailContainer}>
 
-            { this.state.isLoaded === true ? 
+            { isLoaded === true ? 
                         <CachedImage
-                        source={{ uri: `${this.state.image}` }}
-                        cacheKey={`${this.state.image}t`}
+                        source={{ uri: `${image}` }}
+                        cacheKey={`${image}t`}
                         backgroundColor="transparent"
                         style={styles.thumbnail}
                     />
@@ -371,7 +361,7 @@ class FeedCellClass extends React.Component {
           {/* <View style={styles.lineStyle} /> */}
 
 
-          {this.renderCellComponents()}
+          {renderCellComponents()}
 
 
           {/* <View style={styles.lineStyle} /> */}
@@ -379,7 +369,7 @@ class FeedCellClass extends React.Component {
 
         </View>
       );
-    }
+    
 }
 
 
