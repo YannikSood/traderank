@@ -25,8 +25,8 @@ const ThoughtsFeed = (props) => {
 
   // Props
   const { user, navigation, postsLoading } = props;
-  const flagOptions = ['DISCUSS', 'MEMES', 'MOVES'];
-  const categories = ['DISCUSS', 'MEMES', 'MOVES'];
+  const flagOptions = ['MEMES', 'MOVES'];
+  const categories = ['MEMES', 'MOVES'];
 
   /**
      * The `useDispatch()` hook is given to us from react-redux and it allows us to make calls to our action creators
