@@ -15,16 +15,18 @@ import CachedImage from '../image/CachedImage';
 //The cell you see when you scroll through the home screen
 
 const FeedCellClass = (props) => {
-      const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, navigation, date_created, viewsCount, posterUID} = props;
+      const { username, image, ticker, security, description, profit_loss, percent_gain_loss, gain_loss, postID, navigation, date_created, viewsCount} = props;
  
 
       const [isLoaded, setIsLoaded] = useState(false);
       const currentUser = firebase.auth().currentUser.uid;
       const [currentUserPosted, setCurrentUserPosted] = useState(false);
       const [modalOpen, setModalOpen] = useState(false);
+      const posterUID = props.uid;
     
   
   useEffect(() => {
+    console.log(`posterUID: ${posterUID}`);
     // setTimeout(
     //   function() {
     //       setIsLoaded(true);
@@ -32,7 +34,8 @@ const FeedCellClass = (props) => {
     //   .bind(this),
     //   500
     // );
-    setTimeout(() => setIsLoaded(true), 500)
+    // setTimeout(() => setIsLoaded(true), 500)
+    setIsLoaded(true);
 
     if (posterUID == currentUser) {
       setCurrentUserPosted(true);

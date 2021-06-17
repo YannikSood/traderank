@@ -21,7 +21,6 @@ class MiscUserComponent extends React.Component {
       navigation: this.props.navigation,
       username: '',
       profilePic: '',
-      isLoading: true,
       isLoaded: false,
       currentUserUID: firebase.auth().currentUser.uid,
     };
@@ -41,7 +40,6 @@ class MiscUserComponent extends React.Component {
             this.setState({
               username: doc.data().username,
               profilePic: doc.data().profilePic,
-              isLoading: false,
               isLoaded: true
             });
           } else {
@@ -68,21 +66,6 @@ class MiscUserComponent extends React.Component {
       //We want to render a profile pic and username side by side lookin nice and clickable.
       //When clicked, the modal opens with all the user info.
       //You can follow/unfollow from here.
-      if (this.state.isLoading) {
-        return (
-          <View>
-            <TouchableOpacity
-              style={{ flexDirection: 'row', justifyContent: 'left', alignItems: 'center', paddingLeft: 5, paddingBottom: 15 }}
-              onPress={() => this.getProfile()}
-            >
-
-              <ActivityIndicator size="small" color="#9E9E9E" />
-
-            </TouchableOpacity>
-          </View>
-
-        );
-      }
 
       return (
         <View>
@@ -92,8 +75,12 @@ class MiscUserComponent extends React.Component {
           >
 
             <Image
-              source={{ uri: this.state.profilePic }}
+              source={{ 
+                uri: this.state.profilePic,
+                cache: 'force-cache'
+               }}
               style={styles.thumbnail}
+              
             />
             { this.state.isLoaded
                 ? (
